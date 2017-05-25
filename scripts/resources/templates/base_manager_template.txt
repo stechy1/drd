@@ -1,0 +1,141 @@
+package cz.stechy.drd.model.persistent;
+
+import cz.stechy.drd.model.db.BaseDatabaseManager;
+import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.db.base.Database;
+import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.item.{generic_class};
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+
+public class {generic_class}Manager extends BaseDatabaseManager<{generic_class}> {
+
+    // region Constants
+
+    // Název tabulky
+    private static final String TABLE = "{table}";
+
+    // Názvy sloupců v databázi
+    private static final String COLUMN_ID = TABLE + "_id";
+    private static final String COLUMN_NAME = TABLE + "_name";
+    private static final String COLUMN_DESCRIPTION = TABLE + "_description";
+    private static final String COLUMN_AUTHOR = TABLE + "_author";
+    private static final String COLUMN_WEIGHT = TABLE + "_weight";
+    private static final String COLUMN_PRICE = TABLE + "_price";
+    {columns}
+    private static final String COLUMN_IMAGE = TABLE + "_image";
+    private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
+        COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, {column_array} COLUMN_IMAGE};
+    private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
+    private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
+    private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
+    private static final String QUERY_CREATE = String.format("CREATE TABLE IF NOT EXISTS %s("
+            + "%s VARCHAR(255) PRIMARY KEY NOT NULL UNIQUE,"    // id
+            + "%s VARCHAR(255) NOT NULL,"                       // name
+            + "%s VARCHAR(255),"                                // description
+            + "%s VARCHAR(255) NOT NULL,"                       // autor
+            + "%s INT NOT NULL,"                                // weight
+            + "%s INT NOT NULL,"                                // price{query_create}
+            + "%s BLOB,"                                        // image
+            + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
+        COLUMN_PRICE, {column_array} COLUMN_IMAGE);
+
+    // endregion
+
+    // region Variables
+
+    private static boolean tableInitialized;
+
+    // endregion
+
+    // region Constructors
+
+    public {generic_class}Manager(Database db) {
+        super(db);
+
+        ItemRegistry.getINSTANCE().addColection(items);
+    }
+
+    // endregion
+
+    // region Private methods
+
+    @Override
+    protected {generic_class} parseResultSet(ResultSet resultSet) throws SQLException {
+        return new {generic_class}.Builder()
+            .id(resultSet.getString(COLUMN_ID))
+            .name(resultSet.getString(COLUMN_NAME))
+            .description(resultSet.getString(COLUMN_DESCRIPTION))
+            .author(resultSet.getString(COLUMN_AUTHOR))
+            .weight(resultSet.getInt(COLUMN_WEIGHT))
+            .price(resultSet.getInt(COLUMN_PRICE))
+            {parse_result_set}
+            .image(readBlob(resultSet, COLUMN_IMAGE))
+            .build();
+    }
+
+    @Override
+    protected List<Object> itemToParams({generic_class} item) {
+        return new ArrayList<>(Arrays.asList(
+            item.getId(),
+            item.getName(),
+            item.getDescription(),
+            item.getAuthor(),
+            item.getWeight(),
+            item.getPrice().getRaw(),
+            {item_to_params}
+            item.getImage()
+        ));
+    }
+
+    @Override
+    protected String getTable() {
+        return TABLE;
+    }
+
+    @Override
+    protected String getColumnWithId() {
+        return COLUMN_ID;
+    }
+
+    @Override
+    protected String getColumnsKeys() {
+        return COLUMNS_KEYS;
+    }
+
+    @Override
+    protected String getColumnValues() {
+        return COLUMNS_VALUES;
+    }
+
+    @Override
+    protected String getColumnsUpdate() {
+        return COLUMNS_UPDATE;
+    }
+
+    @Override
+    protected String getInitializationQuery() {
+        return QUERY_CREATE;
+    }
+
+    // endregion
+
+    // region Public methods
+
+    @Override
+    public void createTable() throws DatabaseException {
+        if (tableInitialized) {
+            return;
+        }
+
+        super.createTable();
+        tableInitialized = true;
+    }
+
+    // endregion
+
+}

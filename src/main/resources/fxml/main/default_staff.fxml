@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cz.stechy.drd.widget.LabeledProgressBar?>
+<?import cz.stechy.drd.widget.LabeledText?>
+<?import cz.stechy.drd.widget.MoneyLabel?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="cz.stechy.drd.controller.main.DefaultStaffController">
+  <HBox>
+    <ImageView fitHeight="100.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+      <HBox.margin>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+      </HBox.margin>
+    </ImageView>
+    <GridPane HBox.hgrow="ALWAYS">
+      <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10" prefWidth="150"/>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10" prefWidth="150"/>
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10" prefHeight="20" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10" prefHeight="20" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10" prefHeight="20" vgrow="SOMETIMES"/>
+      </rowConstraints>
+      <LabeledText fx:id="lblHeroName" text="Stechy1" title="%drd_hero_name"/>
+      <LabeledText fx:id="lblHeroRaceAndProfession" text="Kudůk alchymista"
+        title="%drd_hero_race_and_profession" GridPane.columnIndex="1"
+        VBox.vgrow="ALWAYS"/>
+      <LabeledProgressBar fx:id="lblLive" displayMode="LIVE" label="%drd_hero_live"
+        prefWidth="10.0" GridPane.rowIndex="1"/>
+      <LabeledProgressBar fx:id="lblMag" displayMode="MAG" label="%drd_hero_mag"
+        prefWidth="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+      <MoneyLabel fx:id="lblMoney" label="%drd_hero_money" GridPane.columnIndex="1"
+        GridPane.rowIndex="2"/>
+    </GridPane>
+  </HBox>
+  <HBox VBox.vgrow="ALWAYS">
+    <fx:include fx:id="defaultStaffLeft" source="default_staff_left.fxml"
+      HBox.hgrow="ALWAYS"/>
+    <fx:include fx:id="defaultStaffRight" source="default_staff_right.fxml"
+      HBox.hgrow="ALWAYS"/>
+  </HBox>
+</VBox>

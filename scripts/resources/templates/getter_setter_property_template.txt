@@ -1,0 +1,11 @@
+public {type} get{name_title}() {
+    return {name}.get();
+}
+
+public {type}Property {name}Property() {
+return {name};
+}
+
+public void set{name_title}({type} {name}) {
+    this.{name}.set({name});
+}

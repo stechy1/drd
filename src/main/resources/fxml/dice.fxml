@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<HBox prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112"
+  xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.dice.DiceController">
+  <ListView fx:id="lvDices" prefWidth="65.0"/>
+  <VBox HBox.hgrow="ALWAYS">
+    <TableView fx:id="tableAdditions" editable="true" prefHeight="150.0">
+      <columnResizePolicy>
+        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+      </columnResizePolicy>
+      <columns>
+        <TableColumn fx:id="columnAdditionType" prefWidth="75.0" text="%drd_dice_property" editable="true"/>
+        <TableColumn fx:id="columnUseRepair" prefWidth="75.0" text="%drd_dice_rate_repair" editable="true"/>
+        <TableColumn fx:id="columnUseSubtract" prefWidth="75.0" text="%drd_dice_add_subtract"
+          editable="true"/>
+      </columns>
+    </TableView>
+    <GridPane>
+      <padding>
+        <Insets left="8.0" right="8.0" bottom="8.0"/>
+      </padding>
+      <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0"/>
+        <ColumnConstraints hgrow="SOMETIMES" prefWidth="100.0"/>
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints vgrow="SOMETIMES" prefHeight="30.0"/>
+        <RowConstraints vgrow="SOMETIMES" prefHeight="30.0"/>
+      </rowConstraints>
+      <VBox>
+        <padding>
+          <Insets top="8.0"/>
+        </padding>
+        <Label text="%drd_dice_custom_side_count"/>
+        <Spinner fx:id="spinnerDiceSideCount">
+          <valueFactory>
+            <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="1000000"/>
+          </valueFactory>
+        </Spinner>
+      </VBox>
+      <VBox GridPane.columnIndex="1">
+        <padding>
+          <Insets top="8.0"/>
+        </padding>
+        <Label text="%drd_dice_roll_count"/>
+        <Spinner fx:id="spinnerRollCount">
+          <valueFactory>
+            <SpinnerValueFactory.IntegerSpinnerValueFactory min="1" max="1000000"/>
+          </valueFactory>
+        </Spinner>
+      </VBox>
+      <Button onAction="#handleRoll" text="%drd_dice_roll" GridPane.columnIndex="1"
+        GridPane.rowIndex="1"/>
+    </GridPane>
+    <Label fx:id="lblRollResult" textAlignment="CENTER">
+      <padding>
+        <Insets left="8.0"/>
+      </padding>
+      <font>
+        <Font size="15"/>
+      </font>
+    </Label>
+  </VBox>
+  <VBox prefWidth="50.0" spacing="8.0" HBox.hgrow="NEVER">
+    <padding>
+      <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
+    </padding>
+    <Button onAction="#handleAddAddition" prefHeight="16.0" prefWidth="16.0">
+      <styleClass>
+        <String fx:value="icon-add"/>
+      </styleClass>
+    </Button>
+    <Button onAction="#handleRemoveAddition" prefHeight="16.0" prefWidth="16.0">
+      <styleClass>
+        <String fx:value="icon-subtract"/>
+      </styleClass>
+    </Button>
+  </VBox>
+</HBox>

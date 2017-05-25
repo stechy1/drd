@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
+  prefWidth="900" prefHeight="500"
+  fx:controller="cz.stechy.drd.controller.shop.ShopController1">
+  <center>
+    <Accordion fx:id="accodionShopContainer" BorderPane.alignment="CENTER">
+      <panes>
+        <TitledPane animated="true" text="%drd_item_type_weapon_mele">
+          <fx:include fx:id="tableMeleWeapon" source="shop_mele_weapon.fxml"/>
+        </TitledPane>
+        <TitledPane animated="true" text="%drd_item_type_weapon_ranged">
+          <fx:include fx:id="tableRangedWeapon" source="shop_ranged_weapon.fxml"/>
+        </TitledPane>
+        <TitledPane animated="true" text="%drd_item_type_armor">
+          <fx:include fx:id="tableArmor" source="shop_armor.fxml"/>
+        </TitledPane>
+        <TitledPane animated="true" text="%drd_item_type_general">
+          <fx:include fx:id="tableGeneral" source="shop_general.fxml"/>
+        </TitledPane>
+      </panes>
+    </Accordion>
+  </center>
+  <right>
+    <VBox prefWidth="50.0" spacing="8.0">
+      <padding>
+        <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
+      </padding>
+      <Button fx:id="btnAddItem" onAction="#handleAddItem" prefWidth="16" prefHeight="16">
+        <tooltip>
+          <Tooltip text="%drd_shop_item_add"/>
+        </tooltip>
+        <styleClass>
+          <String fx:value="icon-add"/>
+        </styleClass>
+      </Button>
+      <Button fx:id="btnRemoveItem" onAction="#handleRemoveItem" prefWidth="16" prefHeight="16">
+        <tooltip>
+          <Tooltip text="%drd_shop_item_remove"/>
+        </tooltip>
+        <styleClass>
+          <String fx:value="icon-subtract"/>
+        </styleClass>
+      </Button>
+      <Button fx:id="btnEditItem" onAction="#handleEditItem" prefWidth="16" prefHeight="16">
+        <tooltip>
+          <Tooltip text="%drd_shop_item_edit"/>
+        </tooltip>
+        <styleClass>
+          <String fx:value="icon-edit"/>
+        </styleClass>
+      </Button>
+      <ToggleButton fx:id="btnToggleOnline" onAction="#handleToggleOnline" prefWidth="16"
+        prefHeight="16">
+        <tooltip>
+          <Tooltip text="%drd_shop_toggle_online_database"/>
+        </tooltip>
+        <styleClass>
+          <String fx:value="icon-online"/>
+        </styleClass>
+      </ToggleButton>
+    </VBox>
+  </right>
+  <bottom>
+    <HBox prefHeight="50.0" spacing="8.0">
+      <padding>
+        <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
+      </padding>
+      <Region HBox.hgrow="ALWAYS"/>
+      <Button fx:id="btnContinueShopping" onAction="#handleContinueShopping"
+        text="%drd_shop_continue_shopping" disable="true"/>
+    </HBox>
+  </bottom>
+</BorderPane>

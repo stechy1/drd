@@ -1,0 +1,63 @@
+.toolbar-button {
+    -fx-background-color: transparent;
+    -fx-background-repeat: no-repeat;
+    -fx-border-color: rgba(0, 0, 0, 0.2);
+    -fx-border-radius: 5px;
+    -fx-border-style: solid;
+    -fx-width: 32px;
+    -fx-height: 32px;
+}
+.toolbar-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+}
+.icon-new {
+    -fx-graphic: url("../images/icon/32/new.png");
+}
+.icon-open {
+    -fx-graphic: url("../images/icon/32/open.png");
+}
+.icon-save {
+    -fx-graphic: url("../images/icon/32/save.png");
+}
+.icon-dice {
+    -fx-graphic: url("../images/icon/32/dice.png");
+}
+.icon-bestiary {
+    -fx-graphic: url("../images/icon/32/bestiary.png");
+}
+.icon-shop {
+    -fx-graphic: url("../images/icon/32/shop.png");
+}
+.icon-close-hero {
+    -fx-graphic: url("../images/icon/32/close_hero.png");
+}
+.icon-add {
+    -fx-graphic: url("../images/icon/16/add.png");
+}
+.icon-subtract {
+    -fx-graphic: url("../images/icon/16/subtract.png");
+}
+.icon-edit {
+    -fx-graphic: url("../images/icon/16/edit.png");
+}
+.icon-import {
+    -fx-graphic: url("../images/icon/32/import.png");
+}
+.icon-login {
+    -fx-graphic: url("../images/icon/32/login.png");
+}
+.icon-online {
+    -fx-graphic: url("../images/icon/16/online.png");
+}
+.table-column {
+    -fx-alignment: CENTER-LEFT;
+}
+.item-slot {
+    -fx-background-color: rgba(128, 0, 0, 0.5);
+}
+.item-slot.accepting {
+    -fx-background-color: green;
+}
+.item-slot.decline {
+    -fx-background-color: red;
+}

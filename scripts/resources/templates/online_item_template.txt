@@ -1,0 +1,126 @@
+package cz.stechy.drd.model.item;
+
+import cz.stechy.drd.model.IClonable;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+public class {class_name} extends ItemBase {
+
+    // region Variables
+
+    {properties}
+
+    // endregion
+
+    // region Constructors
+
+    public {class_name}({class_name} item) {
+        this(item.getId(), item.getName(), item.getDescription(), item.getAuthor(),
+             item.getWeight(), item.getPrice().getRaw(), {fields_in_constructor_params}
+             item.getImage(), item.isDownloaded(), item.isUploaded());
+    }
+
+    public {class_name}(String id, String author, String name, String description, int weight,
+        int price, {fields_in_constructor}byte[] image, boolean downloaded, boolean uploaded) {
+        super(id, author, name, description, weight, price, image, downloaded, uploaded);
+
+        {fields_assignment}
+    }
+
+    // endregion
+
+    // region Getters & Setters
+
+    {getters_and_setters}
+
+    // endregion
+
+    // region Public methods
+
+    @Override
+    public ItemType getItemType() {
+        return ItemType.GENERAL;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends IClonable> T duplicate() {
+        return (T) new {class_name}(this);
+    }
+
+
+    // endregion
+
+    public static class Builder {
+
+        private String id;
+        private String author;
+        private String name;
+        private String description;
+        private int weight;
+        private int price;
+        {builder_fields}
+        private byte[] image;
+        private boolean downloaded;
+        private boolean uploaded;
+
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder author(String author) {
+            this.author = author;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder weight(int weight) {
+            this.weight = weight;
+            return this;
+        }
+
+        public Builder price(int price) {
+            this.price = price;
+            return this;
+        }
+
+        {builder_setters}
+
+        public Builder image(byte[] image) {
+            this.image = image;
+            return this;
+        }
+
+        public Builder downloaded(boolean downloaded) {
+            this.downloaded = downloaded;
+            return this;
+        }
+
+        public Builder uploaded(boolean uploaded) {
+            this.uploaded = uploaded;
+            return this;
+        }
+
+        public {class_name} build() {
+            return new {class_name}(id, author, name, description, weight, price, {builder_constructor_fields} image, downloaded,
+                uploaded);
+        }
+    }
+
+}
