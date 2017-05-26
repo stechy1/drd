@@ -150,6 +150,7 @@ public class MainController extends BaseController implements Initializable {
     }
 
     public void handleMenuCloseHero(ActionEvent actionEvent) {
+        closeChildScreens();
         hero.setValue(new Hero.Builder().build());
     }
 
