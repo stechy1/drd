@@ -18,10 +18,9 @@
         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
       </columnResizePolicy>
       <columns>
-        <TableColumn fx:id="columnAdditionType" prefWidth="75.0" text="%drd_dice_property" editable="true"/>
-        <TableColumn fx:id="columnUseRepair" prefWidth="75.0" text="%drd_dice_rate_repair" editable="true"/>
-        <TableColumn fx:id="columnUseSubtract" prefWidth="75.0" text="%drd_dice_add_subtract"
-          editable="true"/>
+        <TableColumn fx:id="columnAdditionType" prefWidth="75.0" text="%drd_dice_property"/>
+        <TableColumn fx:id="columnUseRepair" prefWidth="75.0" text="%drd_dice_rate_repair"/>
+        <TableColumn fx:id="columnUseSubtract" prefWidth="75.0" text="%drd_dice_add_subtract"/>
       </columns>
     </TableView>
     <GridPane>

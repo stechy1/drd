@@ -17,58 +17,58 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-
-<VBox xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.main.MainController">
+<VBox xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="cz.stechy.drd.controller.main.MainController">
   <MenuBar BorderPane.alignment="CENTER">
     <Menu text="%drd_main_menu_file">
       <MenuItem onAction="#handleMenuNewHero" text="%drd_main_menu_file_new_hero">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/new.png" />
+            <Image url="@../../images/icon/16/new.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuLoadHero" text="%drd_main_menu_file_load_hero">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/open.png" />
+            <Image url="@../../images/icon/16/open.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleExportHero" text="%drd_main_menu_file_export_hero">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/export.png" />
+            <Image url="@../../images/icon/16/export.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleImportHero" text="%drd_main_menu_file_import_hero">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/import.png" />
+            <Image url="@../../images/icon/16/import.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuCloseHero" text="%drd_main_menu_file_close_hero">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/close_hero.png" />
+            <Image url="@../../images/icon/16/close_hero.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
-      <SeparatorMenuItem />
+      <SeparatorMenuItem/>
       <MenuItem onAction="#handleMenuLogin" text="%drd_main_menu_file_login">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/login.png" />
+            <Image url="@../../images/icon/16/login.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
-      <SeparatorMenuItem />
+      <SeparatorMenuItem/>
       <MenuItem text="%drd_main_menu_file_close_program">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/close.png" />
+            <Image url="@../../images/icon/16/close.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
@@ -77,28 +77,28 @@
       <MenuItem onAction="#handleMenuDice" text="%drd_main_menu_tools_dice">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/dice.png" />
+            <Image url="@../../images/icon/16/dice.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuBestiary" text="%drd_main_menu_tools_bestiary">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/bestiary.png" />
+            <Image url="@../../images/icon/16/bestiary.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuShop" text="%drd_main_menu_tools_shop">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/shop.png" />
+            <Image url="@../../images/icon/16/shop.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuFight" text="%drd_main_menu_tools_fight">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/fight.png" />
+            <Image url="@../../images/icon/16/fight.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
@@ -107,21 +107,21 @@
       <MenuItem onAction="#handleMenuAbout" text="%drd_main_menu_help_about">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/about.png" />
+            <Image url="@../../images/icon/16/about.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuChangelog" text="%drd_main_menu_help_changelog">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/changelog.png" />
+            <Image url="@../../images/icon/16/changelog.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuHelp" text="%drd_main_menu_help">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/help.png" />
+            <Image url="@../../images/icon/16/help.png"/>
           </ImageView>
         </graphic>
       </MenuItem>
@@ -130,69 +130,70 @@
   <ToolBar minHeight="50.0" prefHeight="50.0">
     <Button onAction="#handleMenuNewHero">
       <styleClass>
-        <String fx:value="toolbar-button" />
-        <String fx:value="icon-new" />
+        <String fx:value="toolbar-button"/>
+        <String fx:value="icon-new"/>
       </styleClass>
       <tooltip>
-        <Tooltip text="%drd_main_menu_file_new_hero" />
+        <Tooltip text="%drd_main_menu_file_new_hero"/>
       </tooltip>
     </Button>
     <Button onAction="#handleMenuLoadHero">
       <styleClass>
-        <String fx:value="toolbar-button" />
-        <String fx:value="icon-open" />
+        <String fx:value="toolbar-button"/>
+        <String fx:value="icon-open"/>
       </styleClass>
       <tooltip>
-        <Tooltip text="%drd_main_menu_file_load_hero" />
+        <Tooltip text="%drd_main_menu_file_load_hero"/>
       </tooltip>
     </Button>
     <Button onAction="#handleMenuCloseHero">
       <styleClass>
-        <String fx:value="toolbar-button" />
-        <String fx:value="icon-close-hero" />
+        <String fx:value="toolbar-button"/>
+        <String fx:value="icon-close-hero"/>
       </styleClass>
       <tooltip>
-        <Tooltip text="%drd_main_menu_file_close_hero" />
+        <Tooltip text="%drd_main_menu_file_close_hero"/>
       </tooltip>
     </Button>
-    <Separator />
+    <Separator/>
     <Button onAction="#handleMenuDice">
       <styleClass>
-        <String fx:value="toolbar-button" />
-        <String fx:value="icon-dice" />
+        <String fx:value="toolbar-button"/>
+        <String fx:value="icon-dice"/>
       </styleClass>
       <tooltip>
-        <Tooltip text="%drd_main_menu_tools_dice" />
+        <Tooltip text="%drd_main_menu_tools_dice"/>
       </tooltip>
     </Button>
     <Button onAction="#handleMenuBestiary">
       <styleClass>
-        <String fx:value="toolbar-button" />
-        <String fx:value="icon-bestiary" />
+        <String fx:value="toolbar-button"/>
+        <String fx:value="icon-bestiary"/>
       </styleClass>
       <tooltip>
-        <Tooltip text="%drd_main_menu_tools_bestiary" />
+        <Tooltip text="%drd_main_menu_tools_bestiary"/>
       </tooltip>
     </Button>
     <Button onAction="#handleMenuShop">
       <styleClass>
-        <String fx:value="toolbar-button" />
-        <String fx:value="icon-shop" />
+        <String fx:value="toolbar-button"/>
+        <String fx:value="icon-shop"/>
       </styleClass>
       <tooltip>
-        <Tooltip text="%drd_main_menu_tools_shop" />
+        <Tooltip text="%drd_main_menu_tools_shop"/>
       </tooltip>
     </Button>
   </ToolBar>
-  <TabPane side="BOTTOM" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER" HBox.hgrow="ALWAYS">
-      <Tab text="%drd_main_tab_defaults">
-        <fx:include fx:id="defaultStaff" source="default_staff.fxml" />
-      </Tab>
-      <Tab text="%drd_main_tab_inventory">
-        <fx:include fx:id="inventory" source="inventory.fxml" />
-      </Tab>
-      <padding>
-         <Insets left="8.0" right="8.0" />
-      </padding>
-    </TabPane>
+  <TabPane side="BOTTOM" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER"
+    HBox.hgrow="ALWAYS">
+    <Tab text="%drd_main_tab_defaults">
+      <fx:include fx:id="defaultStaff" source="default_staff.fxml"/>
+    </Tab>
+    <Tab text="%drd_main_tab_inventory">
+      <fx:include fx:id="inventory" source="inventory.fxml"/>
+    </Tab>
+    <padding>
+      <Insets left="8.0" right="8.0"/>
+    </padding>
+  </TabPane>
 </VBox>

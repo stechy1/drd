@@ -5,16 +5,17 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<BorderPane fx:id="container" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112"
+<BorderPane fx:id="container" prefHeight="400.0" prefWidth="600.0"
+  xmlns="http://javafx.com/javafx/8.0.112"
   xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="cz.stechy.drd.controller.main.InventoryController">
   <top>
-    <Label text="Inventář" />
+    <Label text="Inventář"/>
   </top>
   <bottom>
     <HBox>
-      <Region HBox.hgrow="ALWAYS" />
-      <Label fx:id="lblWeight" />
+      <Region HBox.hgrow="ALWAYS"/>
+      <Label fx:id="lblWeight"/>
     </HBox>
   </bottom>
 </BorderPane>

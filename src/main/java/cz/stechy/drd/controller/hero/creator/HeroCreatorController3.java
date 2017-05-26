@@ -49,6 +49,8 @@ import javafx.scene.text.TextAlignment;
  */
 public class HeroCreatorController3 extends BaseController implements Initializable {
 
+
+
     // region Variables
 
     // region FXML

@@ -38,5 +38,6 @@
     min="0" max="99"/>
   <Spinner fx:id="spinnerCopper" editable="true" GridPane.columnIndex="1" GridPane.rowIndex="2"
     min="0" max="99"/>
-  <Button onAction="#handleFinish" text="%drd_finish" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+  <Button onAction="#handleFinish" text="%drd_finish" GridPane.columnIndex="1"
+    GridPane.rowIndex="3"/>
 </GridPane>

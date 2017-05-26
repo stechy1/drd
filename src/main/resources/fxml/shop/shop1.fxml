@@ -17,16 +17,16 @@
   <center>
     <Accordion fx:id="accodionShopContainer" BorderPane.alignment="CENTER">
       <panes>
-        <TitledPane animated="true" text="%drd_item_type_weapon_mele">
+        <TitledPane text="%drd_item_type_weapon_mele">
           <fx:include fx:id="tableMeleWeapon" source="shop_mele_weapon.fxml"/>
         </TitledPane>
-        <TitledPane animated="true" text="%drd_item_type_weapon_ranged">
+        <TitledPane text="%drd_item_type_weapon_ranged">
           <fx:include fx:id="tableRangedWeapon" source="shop_ranged_weapon.fxml"/>
         </TitledPane>
-        <TitledPane animated="true" text="%drd_item_type_armor">
+        <TitledPane text="%drd_item_type_armor">
           <fx:include fx:id="tableArmor" source="shop_armor.fxml"/>
         </TitledPane>
-        <TitledPane animated="true" text="%drd_item_type_general">
+        <TitledPane text="%drd_item_type_general">
           <fx:include fx:id="tableGeneral" source="shop_general.fxml"/>
         </TitledPane>
       </panes>

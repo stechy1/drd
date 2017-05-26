@@ -23,7 +23,7 @@
         <TableColumn fx:id="columnName" minWidth="100.0" text="%drd_item_name"
           style="-fx-alignment: CENTER-LEFT;"/>
         <TableColumn fx:id="columnAmmount" minWidth="40.0" text="%drd_item_ammount"
-          editable="true" style="-fx-alignment: CENTER-LEFT;"/>
+          style="-fx-alignment: CENTER-LEFT;"/>
         <TableColumn fx:id="columnWeight" minWidth="40.0" text="%drd_item_weight"
           style="-fx-alignment: CENTER-LEFT;"/>
       </columns>
@@ -61,7 +61,7 @@
       <Button onAction="#handleCancel" text="%drd_cancel"/>
       <Region HBox.hgrow="ALWAYS"/>
       <Button onAction="#handleReset" text="%drd_reset"/>
-      <Button fx:id="btnNext" onAction="#handleFinish" text="%drd_next"/>
+      <Button onAction="#handleFinish" text="%drd_next"/>
     </HBox>
   </bottom>
 </BorderPane>

@@ -51,14 +51,15 @@
     <TextField fx:id="txtRangeLong" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
     <ComboBox fx:id="cmbWeaponType" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
     <TextField fx:id="txtWeight" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-    <Hyperlink fx:id="lblPrice" onAction="#handleShowMoneyPopup" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
+    <Hyperlink fx:id="lblPrice" onAction="#handleShowMoneyPopup" GridPane.columnIndex="1"
+      GridPane.rowIndex="8"/>
   </GridPane>
   <VBox prefWidth="300.0">
-    <Label text="%drd_item_image" />
+    <Label text="%drd_item_image"/>
     <ImageView fx:id="imageView" onMouseClicked="#handleSelectImage" fitHeight="150.0"
-      fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+      fitWidth="200.0" pickOnBounds="true" preserveRatio="true"/>
     <Label text="%drd_item_description"/>
     <TextArea fx:id="txtDescription"/>
-    <Button onAction="#handleFinish" text="%drd_finish" />
+    <Button onAction="#handleFinish" text="%drd_finish"/>
   </VBox>
 </HBox>

@@ -23,7 +23,7 @@
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
   </rowConstraints>
   <padding>
-    <Insets left="8.0" top="8.0" right="8.0" bottom="8.0" />
+    <Insets left="8.0" top="8.0" right="8.0" bottom="8.0"/>
   </padding>
   <Label text="%drd_user_register_title" GridPane.halignment="CENTER">
     <font>

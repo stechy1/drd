@@ -27,7 +27,7 @@
       <padding>
         <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
       </padding>
-      <Button onAction="#handleBack" text="%drd_back" />
+      <Button onAction="#handleBack" text="%drd_back"/>
       <Region HBox.hgrow="ALWAYS"/>
       <Button onAction="#handleFinishShopping" text="%drd_finish"/>
     </HBox>

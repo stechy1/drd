@@ -12,11 +12,13 @@
     <TableColumn fx:id="columnImage" minWidth="40.0" text="%drd_item_image"/>
     <TableColumn fx:id="columnName" minWidth="100.0" text="%drd_item_name"/>
     <TableColumn fx:id="columnAuthor" minWidth="100.0" text="%drd_item_author"/>
-    <TableColumn fx:id="columnDefenceNumber" minWidth="75" text="%drd_item_weapon_mele_armor_defence_number"/>
-    <TableColumn fx:id="columnMinimumStrength" minWidth="75" text="%drd_item_armor_minimum_strength"/>
+    <TableColumn fx:id="columnDefenceNumber" minWidth="75"
+      text="%drd_item_weapon_mele_armor_defence_number"/>
+    <TableColumn fx:id="columnMinimumStrength" minWidth="75"
+      text="%drd_item_armor_minimum_strength"/>
     <TableColumn fx:id="columnWeight" minWidth="50.0" text="%drd_item_weight"/>
     <TableColumn fx:id="columnPrice" minWidth="50.0" text="%drd_item_price"/>
-    <TableColumn fx:id="columnAmmount" minWidth="75.0" text="%drd_item_ammount" editable="true"/>
+    <TableColumn fx:id="columnAmmount" minWidth="75.0" text="%drd_item_ammount"/>
     <TableColumn fx:id="columnAction" minWidth="135.0" text="%drd_shop_action"/>
   </columns>
 </TableView>
