@@ -2,8 +2,8 @@ package cz.stechy.drd.controller.hero.opener;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
-import cz.stechy.drd.model.db.DatabaseManager;
 import cz.stechy.drd.model.entity.hero.Hero;
+import cz.stechy.drd.model.persistent.HeroManager;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.widget.LabeledHeroProperty;
 import cz.stechy.screens.BaseController;
@@ -14,24 +14,20 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.util.Callback;
 
 /**
  * Kontroler pro načtení hrdiny
  */
 public class HeroOpenerController extends BaseController implements Initializable {
 
-    // region Constants
 
-    private static final String TITLE_KEY = "drd_opener_title";
-
-    // endregion
 
     // region Variables
 
@@ -57,12 +53,15 @@ public class HeroOpenerController extends BaseController implements Initializabl
     private LabeledHeroProperty lblIntelligence;
     @FXML
     private LabeledHeroProperty lblCharisma;
+    @FXML
+    private Button btnOpen;
 
     // endregion
 
     private final ObservableList<Hero> heroes = FXCollections.observableArrayList();
+    private final FilteredList<Hero> filteredHeroes = new FilteredList<>(heroes);
     private final ObjectProperty<Hero> selectedHero = new SimpleObjectProperty<>();
-    private final DatabaseManager heroManager;
+    private final HeroManager heroManager;
     private Translator translator;
     private String title;
 
@@ -95,25 +94,12 @@ public class HeroOpenerController extends BaseController implements Initializabl
             lblIntelligence.setHeroProperty(newValue.getIntelligence());
             lblCharisma.setHeroProperty(newValue.getCharisma());
         });
-        lvHeroes.setItems(heroes);
-        lvHeroes.setCellFactory(new Callback<ListView<Hero>, ListCell<Hero>>() {
-            @Override
-            public ListCell<Hero> call(ListView<Hero> param) {
-                ListCell<Hero> cell = new ListCell<Hero>() {
-                    @Override
-                    protected void updateItem(Hero item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setText(null);
-                        } else {
-                            setText(item.getName());
-                        }
-                    }
-                };
 
-                return cell;
-            }
-        });
+        btnOpen.disableProperty().bind(selectedHero.isNull());
+
+        filteredHeroes.setPredicate(hero -> !hero.equals(heroManager.getHero().get()));
+
+        lvHeroes.setItems(filteredHeroes);
     }
 
     @Override

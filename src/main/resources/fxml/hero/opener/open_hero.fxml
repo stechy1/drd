@@ -36,13 +36,13 @@
       <Insets left="8.0" bottom="8.0" right="8.0"/>
     </padding>
     <Label text="%drd_hero_name"/>
-    <Label fx:id="lblName" text="Label" GridPane.columnIndex="1"/>
+    <Label fx:id="lblName" GridPane.columnIndex="1"/>
     <Label text="%drd_hero_conviction" GridPane.rowIndex="1"/>
-    <Label fx:id="lblConviction" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    <Label fx:id="lblConviction" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
     <Label text="%drd_guide_new_hero_1_hero_race" GridPane.rowIndex="2"/>
-    <Label fx:id="lblRace" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    <Label fx:id="lblRace" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
     <Label text="%drd_guide_new_hero_1_hero_profession" GridPane.rowIndex="3"/>
-    <Label fx:id="lblProfession" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    <Label fx:id="lblProfession" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
     <Label text="%drd_hero_strength" GridPane.rowIndex="4"/>
     <Label text="%drd_hero_dexterity" GridPane.rowIndex="5"/>
     <Label text="%drd_hero_immunity" GridPane.rowIndex="6"/>
@@ -53,7 +53,7 @@
     <LabeledHeroProperty fx:id="lblImmunity" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
     <LabeledHeroProperty fx:id="lblIntelligence" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
     <LabeledHeroProperty fx:id="lblCharisma" GridPane.columnIndex="1" GridPane.rowIndex="8"/>
-    <Button onAction="#handleOpenHero" text="%drd_opener_title" GridPane.columnIndex="1"
+    <Button fx:id="btnOpen" onAction="#handleOpenHero" text="%drd_opener_title" GridPane.columnIndex="1"
       GridPane.halignment="CENTER" GridPane.rowIndex="9"/>
   </GridPane>
 </HBox>
