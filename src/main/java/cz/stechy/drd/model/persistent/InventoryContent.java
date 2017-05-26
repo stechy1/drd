@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
@@ -62,11 +63,15 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
 
     // region Variables
 
+     /* Celková hmotnost VŠECH inventáře
+     Normálně to nedělám, ale zde mi to příjde jako vhodné
+     Statickou finální metodou získám globální hmotnost všech inventářů, které má postava
+     u sebe */
+    private static final ReadOnlyIntegerWrapper WEIGHT = new ReadOnlyIntegerWrapper();
+
     private static boolean tableInitialized = false;
     // Inventář
     private final Inventory inventory;
-    // Celková hmotnost inventáře
-    private final ReadOnlyIntegerWrapper weight = new ReadOnlyIntegerWrapper();
 
     // endregion
 
@@ -78,7 +83,7 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
      * @param db Databáze, do které se ukládají informace
      * @param inventory Inventář, ke kterému je přidružen obsah
      */
-    public InventoryContent(Database db, Inventory inventory) {
+    InventoryContent(Database db, Inventory inventory) {
         super(db);
 
         this.inventory = inventory;
@@ -89,6 +94,18 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
         }
 
         items.addListener(itemsListener);
+    }
+
+    // endregion
+
+    // region Public static methods
+
+    /**
+     * Vynuluje váhu inventářů.
+     * Mělo by se volat před změnou hrdiny
+     */
+    public static void clearWeight() {
+        WEIGHT.set(0);
     }
 
     // endregion
@@ -174,7 +191,7 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
     @Override
     public void update(InventoryRecord inventoryRecord) throws DatabaseException {
         final Optional<InventoryRecord> inventoryRecordOptional = items.stream()
-            .filter(record -> record.equals(record))
+            .filter(record -> Objects.equals(record, record))
             .findFirst();
         final ItemBase item = ItemRegistry.getINSTANCE().getItemById(inventoryRecord.getItemId());
         int oldAmmount = 0;
@@ -183,8 +200,8 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
         }
 
         super.update(inventoryRecord);
-        final int w = weight.get();
-        weight.set(w - oldAmmount + inventoryRecord.getAmmount() * item.getWeight());
+        final int w = WEIGHT.get();
+        WEIGHT.set(w - oldAmmount + inventoryRecord.getAmmount() * item.getWeight());
     }
 
     /**
@@ -276,8 +293,8 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
         return inventory;
     }
 
-    public ReadOnlyIntegerProperty getWeight() {
-        return weight.getReadOnlyProperty();
+    public static ReadOnlyIntegerProperty getWeight() {
+        return WEIGHT.getReadOnlyProperty();
     }
 
     // endregion
@@ -289,12 +306,12 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
     private final ListChangeListener<? super InventoryRecord> itemsListener = c -> {
         while (c.next()) {
             if (c.wasAdded()) {
-                final int w = weight.get();
-                weight.set(w + c.getAddedSubList().stream().mapToInt(mapper).sum());
+                final int w = WEIGHT.get();
+                WEIGHT.set(w + c.getAddedSubList().stream().mapToInt(mapper).sum());
             }
             if (c.wasRemoved()) {
-                final int w = weight.get();
-                weight.set(w - c.getRemoved().stream().mapToInt(mapper).sum());
+                final int w = WEIGHT.get();
+                WEIGHT.set(w - c.getRemoved().stream().mapToInt(mapper).sum());
             }
         }
     };

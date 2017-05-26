@@ -14,9 +14,7 @@ import cz.stechy.drd.model.persistent.InventoryManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Predicate;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,14 +28,10 @@ public class InventoryController implements Initializable, MainScreen {
 
     // region Constants
 
-    private static final InventoryType MAIN_INVENTORY_TYPE = InventoryType.MAIN;
-    private static final InventoryType EQUIP_INVENTORY_TYPE = InventoryType.EQUIP;
-
     private static final Predicate<? super Inventory> MAIN_INVENTORY_FILTER = inventory ->
-        inventory.getInventoryType() == MAIN_INVENTORY_TYPE;
+        inventory.getInventoryType() == InventoryType.MAIN;
     private static final Predicate<? super Inventory> EQUIP_INVENTORY_FILTER = inventory ->
-        inventory.getInventoryType() == EQUIP_INVENTORY_TYPE;
-
+        inventory.getInventoryType() == InventoryType.EQUIP;
 
     // endregion
 
@@ -58,7 +52,6 @@ public class InventoryController implements Initializable, MainScreen {
 
     private HeroManager heroManager;
     private ObjectProperty<Hero> hero;
-    private IntegerProperty weight = new SimpleIntegerProperty(0);
 
     // endregion
 
@@ -85,19 +78,17 @@ public class InventoryController implements Initializable, MainScreen {
         container.setLeft(equipItemContainer.getGraphics());
         container.setCenter(mainItemContainer.getGraphics());
 
-        lblWeight.textProperty().bind(weight.asString());
+        lblWeight.textProperty().bind(InventoryContent.getWeight().asString());
     }
 
     private final ChangeListener<? super Hero> heroChangeListener = (observable, oldValue, newValue) -> {
         // Získám správce inventáře podle hrdiny
         final InventoryManager inventoryManager = heroManager.getInventory();
+        InventoryContent.clearWeight();
         try {
             // Získám záznam hlavního inventáře
             final Inventory mainInventory = inventoryManager.select(MAIN_INVENTORY_FILTER);
             mainItemContainer.setInventoryManager(inventoryManager, mainInventory);
-            // Získám obsah hlavního inventáře
-            final InventoryContent mainInventoryContent = inventoryManager.getInventoryContent(mainInventory);
-            weight.bind(mainInventoryContent.getWeight());
             // Inicializace inventáře výbavy hrdiny
             Inventory equipInventory = null;
             try {
@@ -106,7 +97,7 @@ public class InventoryController implements Initializable, MainScreen {
                 // Ještě nebyl vytvořen záznam o equip inventáři pro danou postavu
                 equipInventory = new Inventory.Builder()
                     .heroId(mainInventory.getHeroId())
-                    .inventoryType(EQUIP_INVENTORY_TYPE)
+                    .inventoryType(InventoryType.EQUIP)
                     .capacity(EquipItemContainer.CAPACITY)
                     .build();
                 inventoryManager.insert(equipInventory);
