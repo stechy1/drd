@@ -120,7 +120,7 @@ class ItemBuilder:
         builder_setters += format(builder_template, [{'name': 'name', 'replace': name}, {'name': 'type', 'replace': final_type}])
         builder_constructor_fields += '{}, '.format(name)
 
-        content = format(online_item_template, [{'name': 'class_name', 'replace': class_name},
+      content = format(online_item_template, [{'name': 'class_name', 'replace': class_name},
                                                 {'name': 'properties', 'replace': properties},
                                                 {'name': 'fields_in_constructor', 'replace': fields_in_constructor},
                                                 {'name': 'fields_in_constructor_params', 'replace': fields_in_constructor_params},
