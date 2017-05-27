@@ -63,10 +63,10 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
 
     // region Variables
 
-     /* Celková hmotnost VŠECH inventáře
-     Normálně to nedělám, ale zde mi to příjde jako vhodné
-     Statickou finální metodou získám globální hmotnost všech inventářů, které má postava
-     u sebe */
+    /* Celková hmotnost VŠECH inventáře
+    Normálně to nedělám, ale zde mi to příjde jako vhodné
+    Statickou finální metodou získám globální hmotnost všech inventářů, které má postava
+    u sebe */
     private static final ReadOnlyIntegerWrapper WEIGHT = new ReadOnlyIntegerWrapper();
 
     private static boolean tableInitialized = false;

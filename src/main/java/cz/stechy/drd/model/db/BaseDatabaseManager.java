@@ -100,8 +100,6 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
      * @param resultSet {@link ResultSet}
      * @param column Sloupeček, který obsahuje blob
      * @return Pole bytu
-     * @throws SQLException
-     * @throws IOException
      */
     public static byte[] readBlob(ResultSet resultSet, String column) {
         final ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
@@ -119,7 +117,6 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
 
         return arrayOutputStream.toByteArray();
     }
-
 
     // endregion
 
@@ -292,6 +289,7 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
     // endregion
 
     public interface UpdateListener<T extends DatabaseItem> {
+
         void onUpdate(T item);
     }
 

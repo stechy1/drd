@@ -34,7 +34,8 @@ public class InventoryRecord extends DatabaseItem {
      * @param record Kopírovaný záznam
      */
     public InventoryRecord(InventoryRecord record) {
-        this(record.getId(), record.getInventoryId(), record.getSlotId(), record.getItemId(), record.getAmmount());
+        this(record.getId(), record.getInventoryId(), record.getSlotId(), record.getItemId(),
+            record.getAmmount());
     }
 
     /**

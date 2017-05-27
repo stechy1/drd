@@ -1,7 +1,6 @@
 package cz.stechy.drd.controller.user;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.persistent.UserManager;
 import cz.stechy.drd.model.persistent.UserManager.UserException;

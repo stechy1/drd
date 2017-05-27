@@ -41,7 +41,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(ShopGeneralController.class);
-    
+
     // endregion
 
     // region Variables

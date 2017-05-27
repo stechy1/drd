@@ -18,14 +18,14 @@ public abstract class ValidatedModel {
     /**
      * Nastaví validitu zadanému příznaku
      *
-     * @param flag  Příznak
+     * @param flag Příznak
      * @param value True, pokud je příznak validní, jinak false
      */
     protected void setValidityFlag(int flag, boolean value) {
         int oldFlagValue = validityFlag.get();
         int newFlag = BitUtils.setBit(oldFlagValue, flag, value);
 
-        if (newFlag== oldFlagValue) {
+        if (newFlag == oldFlagValue) {
             return;
         }
 

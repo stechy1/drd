@@ -108,7 +108,6 @@ public class ItemGeneralController extends BaseController implements Initializab
         bundle.putBoolean(DOWNLOADED, weapon.isDownloaded());
     }
 
-
     // endregion
 
     @Override
@@ -123,7 +122,8 @@ public class ItemGeneralController extends BaseController implements Initializab
         lblPrice.textProperty().bind(model.price.text);
         imageView.imageProperty().bindBidirectional(model.image);
 
-        btnFinish.disableProperty().bind(Bindings.or(model.name.isEmpty(), model.imageRaw.isNull()));
+        btnFinish.disableProperty()
+            .bind(Bindings.or(model.name.isEmpty(), model.imageRaw.isNull()));
     }
 
     @Override
@@ -190,6 +190,7 @@ public class ItemGeneralController extends BaseController implements Initializab
     // endregion
 
     private static class ItemModel {
+
         final StringProperty id = new SimpleStringProperty();
         final StringProperty name = new SimpleStringProperty();
         final StringProperty description = new SimpleStringProperty();

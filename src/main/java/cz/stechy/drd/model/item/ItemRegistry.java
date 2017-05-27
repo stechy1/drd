@@ -22,7 +22,8 @@ public final class ItemRegistry {
 
     // region Constructors
 
-    private ItemRegistry() {}
+    private ItemRegistry() {
+    }
 
     // endregion
 

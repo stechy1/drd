@@ -33,7 +33,8 @@ public class Inventory extends DatabaseItem {
      * @param inventory Kopírovaný inventář
      */
     public Inventory(Inventory inventory) {
-        this(inventory.getId(), inventory.getHeroId(), inventory.getInventoryType(), inventory.getCapacity());
+        this(inventory.getId(), inventory.getHeroId(), inventory.getInventoryType(),
+            inventory.getCapacity());
     }
 
     /**
@@ -128,7 +129,8 @@ public class Inventory extends DatabaseItem {
 
         Inventory inventory = (Inventory) o;
 
-        if (getHeroId() != null ? !getHeroId().equals(inventory.getHeroId()) : inventory.getHeroId() != null) {
+        if (getHeroId() != null ? !getHeroId().equals(inventory.getHeroId())
+            : inventory.getHeroId() != null) {
             return false;
         }
         if (getInventoryType() != null ? !getInventoryType().equals(inventory.getInventoryType())

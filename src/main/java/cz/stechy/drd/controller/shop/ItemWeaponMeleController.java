@@ -175,7 +175,8 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         lblPrice.textProperty().bind(model.price.text);
         imageView.imageProperty().bindBidirectional(model.image);
 
-        btnFinish.disableProperty().bind(Bindings.or(model.name.isEmpty(), model.imageRaw.isNull()));
+        btnFinish.disableProperty()
+            .bind(Bindings.or(model.name.isEmpty(), model.imageRaw.isNull()));
     }
 
     @Override
@@ -251,7 +252,7 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
 
     // endregion
 
-    private static class WeaponMeleModel  {
+    private static class WeaponMeleModel {
 
         final StringProperty id = new SimpleStringProperty();
         final StringProperty name = new SimpleStringProperty();

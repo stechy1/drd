@@ -27,13 +27,14 @@ public class TestManager extends BaseDatabaseManager<Test> {
     private static final String COLUMN_WEIGHT = TABLE + "_weight";
     private static final String COLUMN_PRICE = TABLE + "_price";
     private static final String COLUMN_ID2 = TABLE + "_id2";
-private static final String COLUMN_NAME2 = TABLE + "_name2";
-private static final String COLUMN_DOWNLOADED2 = TABLE + "_downloaded2";
-private static final String COLUMN_BLOB_TYPE2 = TABLE + "_blob_type2";
+    private static final String COLUMN_NAME2 = TABLE + "_name2";
+    private static final String COLUMN_DOWNLOADED2 = TABLE + "_downloaded2";
+    private static final String COLUMN_BLOB_TYPE2 = TABLE + "_blob_type2";
 
     private static final String COLUMN_IMAGE = TABLE + "_image";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
-        COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_ID2, COLUMN_NAME2, COLUMN_DOWNLOADED2, COLUMN_BLOB_TYPE2,  COLUMN_IMAGE};
+        COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_ID2, COLUMN_NAME2, COLUMN_DOWNLOADED2,
+        COLUMN_BLOB_TYPE2, COLUMN_IMAGE};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -44,13 +45,14 @@ private static final String COLUMN_BLOB_TYPE2 = TABLE + "_blob_type2";
             + "%s VARCHAR(255) NOT NULL,"                       // autor
             + "%s INT NOT NULL,"                                // weight
             + "%s INT NOT NULL,"                                // price
-+ "%s INT NOT NULL,"
-+ "%s VARCHAR(255) NOT NULL,"
-+ "%s BOOLEAN NOT NULL,"
-+ "%s BLOB,"
+            + "%s INT NOT NULL,"
+            + "%s VARCHAR(255) NOT NULL,"
+            + "%s BOOLEAN NOT NULL,"
+            + "%s BLOB,"
             + "%s BLOB,"                                        // image
             + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
-        COLUMN_PRICE, COLUMN_ID2, COLUMN_NAME2, COLUMN_DOWNLOADED2, COLUMN_BLOB_TYPE2,  COLUMN_IMAGE);
+        COLUMN_PRICE, COLUMN_ID2, COLUMN_NAME2, COLUMN_DOWNLOADED2, COLUMN_BLOB_TYPE2,
+        COLUMN_IMAGE);
 
     // endregion
 
@@ -82,9 +84,9 @@ private static final String COLUMN_BLOB_TYPE2 = TABLE + "_blob_type2";
             .weight(resultSet.getInt(COLUMN_WEIGHT))
             .price(resultSet.getInt(COLUMN_PRICE))
             .id2(resultSet.getInt(COLUMN_ID2))
-.name2(resultSet.getString(COLUMN_NAME2))
-.downloaded2(resultSet.getBoolean(COLUMN_DOWNLOADED2))
-.blob_type2(readBlob(resultSet, COLUMN_BLOB_TYPE2))
+            .name2(resultSet.getString(COLUMN_NAME2))
+            .downloaded2(resultSet.getBoolean(COLUMN_DOWNLOADED2))
+            .blob_type2(readBlob(resultSet, COLUMN_BLOB_TYPE2))
 
             .image(readBlob(resultSet, COLUMN_IMAGE))
             .build();
@@ -100,9 +102,9 @@ private static final String COLUMN_BLOB_TYPE2 = TABLE + "_blob_type2";
             item.getWeight(),
             item.getPrice().getRaw(),
             item.getId2(),
-item.getName2(),
-item.getDownloaded2(),
-item.getBlob_Type2(),
+            item.getName2(),
+            item.getDownloaded2(),
+            item.getBlob_Type2(),
 
             item.getImage()
         ));

@@ -44,7 +44,6 @@ public class ShopController1 extends BaseController implements Initializable {
     private static final int ACTION_ADD_ITEM = 1;
     private static final int ACTION_UPDATE_ITEM = 2;
 
-
     // endregion
 
     // region Variables

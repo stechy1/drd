@@ -33,7 +33,8 @@ public class GeneralItemManager extends AdvancedDatabaseManager<GeneralItem> {
     private static final String COLUMN_DOWNLOADED = TABLE + "_downloaded";
     private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
-        COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_IMAGE, COLUMN_DOWNLOADED, COLUMN_UPLOADED};
+        COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_IMAGE, COLUMN_DOWNLOADED,
+        COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);

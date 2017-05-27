@@ -113,7 +113,8 @@ public class ShopController2 extends BaseController implements Initializable {
                     final InventoryRecord inventoryRecord = inventoryContent
                         .select(record -> slotIndex == record.getSlotId());
                     final InventoryRecord inventoryRecordCopy = inventoryRecord.duplicate();
-                    inventoryRecordCopy.setAmmount(inventoryRecord.getAmmount() + item.getAmmount());
+                    inventoryRecordCopy
+                        .setAmmount(inventoryRecord.getAmmount() + item.getAmmount());
                     inventoryContent.update(inventoryRecordCopy);
 
                 } catch (InventoryException e) {

@@ -28,8 +28,6 @@ import javafx.scene.control.ListView;
  */
 public class HeroOpenerController extends BaseController implements Initializable {
 
-
-
     // region Variables
 
     // region FXML
@@ -101,9 +99,9 @@ public class HeroOpenerController extends BaseController implements Initializabl
         btnOpen.disableProperty().bind(selectedHero.isNull());
 
         filteredHeroes.setPredicate(hero -> !hero.equals(heroManager.getHero().get()) &&
-                heroManager.getHero().get() != null &&
-                hero.getAuthor().equals(heroManager.getHero().get().getAuthor())
-            );
+            heroManager.getHero().get() != null &&
+            hero.getAuthor().equals(heroManager.getHero().get().getAuthor())
+        );
 
         lvHeroes.setItems(filteredHeroes);
     }

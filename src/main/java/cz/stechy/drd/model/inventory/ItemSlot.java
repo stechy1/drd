@@ -31,7 +31,6 @@ public class ItemSlot {
     private static final int LABEL_SIZE = 10;
     private static final int LABEL_AMMOUNT_HEGHT = 15;
 
-
     // endregion
 
     // region Variables
@@ -309,7 +308,6 @@ public class ItemSlot {
          * Rozhodne, zda-li je možné vloit item na cílový slot
          *
          * @param destinationSlot {@link ItemSlot} Cílový slot
-         * @return
          */
         boolean acceptDrop(ItemSlot destinationSlot);
 

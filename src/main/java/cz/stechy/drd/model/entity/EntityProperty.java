@@ -8,7 +8,6 @@ import javafx.beans.property.SimpleIntegerProperty;
  */
 public abstract class EntityProperty {
 
-
     // region Variables
 
     // Samotná hodnota vlaastnosti

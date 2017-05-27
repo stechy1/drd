@@ -84,7 +84,7 @@ public class ItemArmorController extends BaseController implements Initializable
     @FXML
     private Hyperlink lblPriceC;
     @FXML
-    private  ImageView imageView;
+    private ImageView imageView;
 
     // endregion
 

@@ -34,6 +34,7 @@ public abstract class ItemBase extends OnlineItem {
 
     /**
      * Konstruktor pro každý předmět
+     *
      * @param id Id předmětu
      * @param author Autor předmětu
      * @param name Název předmětu

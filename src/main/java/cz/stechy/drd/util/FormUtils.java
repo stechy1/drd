@@ -60,8 +60,9 @@ public final class FormUtils {
             FormUtils.integerFilter(
                 maxActValue.getMinValue().intValue(),
                 maxActValue.getMaxValue().intValue()
-        )));
-        textField.textProperty().bindBidirectional(maxActValue.actValueProperty(), new NumberStringConverter());
+            )));
+        textField.textProperty()
+            .bindBidirectional(maxActValue.actValueProperty(), new NumberStringConverter());
     }
 
 }

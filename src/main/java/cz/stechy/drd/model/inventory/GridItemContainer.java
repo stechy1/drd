@@ -27,7 +27,8 @@ public class GridItemContainer extends ItemContainer {
 
     /**
      * Inicializuje inventář
-     *  @param capacity Počet slotů v inventáři
+     *
+     * @param capacity Počet slotů v inventáři
      * @param cols Počet sloupečků
      * @param rows Počet řádků
      */

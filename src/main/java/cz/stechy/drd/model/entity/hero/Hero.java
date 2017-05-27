@@ -110,7 +110,8 @@ public class Hero extends EntityBase {
 
     /**
      * Vytvoří nového hrdinu
-     *  @param id Id hrdiny
+     *
+     * @param id Id hrdiny
      * @param name Jméno hrdiny
      * @param description Popis hrdiny
      * @param author Autor hrdiny

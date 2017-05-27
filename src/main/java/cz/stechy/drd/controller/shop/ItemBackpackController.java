@@ -114,7 +114,6 @@ public class ItemBackpackController extends BaseController implements Initializa
         bundle.putBoolean(DOWNLOADED, backpack.isDownloaded());
     }
 
-
     // endregion
 
     @Override
@@ -130,7 +129,8 @@ public class ItemBackpackController extends BaseController implements Initializa
         lblPrice.textProperty().bind(model.price.text);
         imageView.imageProperty().bindBidirectional(model.image);
 
-        btnFinish.disableProperty().bind(Bindings.or(model.name.isEmpty(), model.imageRaw.isNull()));
+        btnFinish.disableProperty()
+            .bind(Bindings.or(model.name.isEmpty(), model.imageRaw.isNull()));
     }
 
     @Override
@@ -199,6 +199,7 @@ public class ItemBackpackController extends BaseController implements Initializa
     // endregion
 
     private static class ItemModel {
+
         final StringProperty id = new SimpleStringProperty();
         final StringProperty name = new SimpleStringProperty();
         final StringProperty description = new SimpleStringProperty();

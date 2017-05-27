@@ -22,6 +22,7 @@ public abstract class WeaponBase extends ItemBase {
 
     /**
      * Konstruktor pro všechny zbraně
+     *
      * @param id Id zbraně
      * @param name Název zbraně
      * @param description Popis zbraně

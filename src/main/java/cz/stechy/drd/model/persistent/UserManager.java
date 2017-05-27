@@ -84,7 +84,8 @@ public class UserManager implements Firebase<User> {
 
     public void login(String username, String password) throws UserException {
         final Optional<User> result = onlineDatabase.stream()
-            .filter(user -> user.getName().equals(username) && HashGenerator.checkSame(user.getPassword(), password))
+            .filter(user -> user.getName().equals(username) && HashGenerator
+                .checkSame(user.getPassword(), password))
             .findFirst();
         if (!result.isPresent()) {
             throw new UserException("User not found");

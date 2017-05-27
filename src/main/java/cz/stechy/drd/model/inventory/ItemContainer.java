@@ -99,8 +99,10 @@ public abstract class ItemContainer {
             try {
                 final InventoryRecord destinationInventoryRecord = inventoryContent
                     .select(record -> record.getSlotId() == destinationSlot.getId());
-                final InventoryRecord destinationInventoryRecordCopy = destinationInventoryRecord.duplicate();
-                destinationInventoryRecordCopy.setAmmount(destinationInventoryRecord.getAmmount() + transferAmmount);
+                final InventoryRecord destinationInventoryRecordCopy = destinationInventoryRecord
+                    .duplicate();
+                destinationInventoryRecordCopy
+                    .setAmmount(destinationInventoryRecord.getAmmount() + transferAmmount);
                 inventoryContent.update(destinationInventoryRecordCopy);
             } catch (DatabaseException e) {
                 InventoryRecord destinationInventoryRecord = new InventoryRecord.Builder()
@@ -300,6 +302,7 @@ public abstract class ItemContainer {
     };
 
     private static final class DragInformations {
+
         final String sourceInventoryId;
         final ItemSlot sourceSlot;
         final ItemStack draggedStack;
