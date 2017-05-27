@@ -5,6 +5,7 @@ import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.persistent.UserManager;
 import cz.stechy.drd.model.persistent.UserManager.UserException;
 import cz.stechy.screens.BaseController;
+import cz.stechy.screens.Notification.Length;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -45,6 +46,7 @@ public class RegisterController extends BaseController implements Initializable 
     private final LoginModel loginModel = new LoginModel();
 
     private String title;
+    private String registerFail;
 
     // endregion
 
@@ -59,6 +61,7 @@ public class RegisterController extends BaseController implements Initializable 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.USER_REGISTER_TITLE);
+        registerFail = resources.getString(R.Translate.NOTIFY_REGISTER_FAIL);
 
         txtLogin.textProperty().bindBidirectional(loginModel.login);
         txtPassword.textProperty().bindBidirectional(loginModel.password);
@@ -79,6 +82,7 @@ public class RegisterController extends BaseController implements Initializable 
             finish();
         } catch (UserException e) {
             logger.info("Registrace se nezdařila", e);
+            showNotification(registerFail, Length.SHORT);
             loginModel.valid.set(false);
         }
     }

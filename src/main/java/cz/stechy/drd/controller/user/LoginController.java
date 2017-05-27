@@ -1,11 +1,13 @@
 package cz.stechy.drd.controller.user;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.persistent.UserManager;
 import cz.stechy.drd.model.persistent.UserManager.UserException;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification.Length;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -49,6 +51,8 @@ public class LoginController extends BaseController implements Initializable {
     private final UserManager userManager;
 
     private String title;
+    private String loginFail;
+    private String registerSuccess;
 
     // endregion
 
@@ -63,6 +67,8 @@ public class LoginController extends BaseController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.USER_LOGIN_TITLE);
+        loginFail = resources.getString(R.Translate.NOTIFY_LOGIN_FAIL);
+        registerSuccess = resources.getString(R.Translate.NOTIFY_REGISTER_SUCCESS);
 
         txtLogin.textProperty().bindBidirectional(loginModel.login);
         txtPassword.textProperty().bindBidirectional(loginModel.password);
@@ -82,6 +88,7 @@ public class LoginController extends BaseController implements Initializable {
                 if (statusCode != RESULT_SUCCESS) {
                     return;
                 }
+                showNotification(registerSuccess, Length.SHORT);
 
                 break;
             case ACTION_LOST_PASSWORD:
@@ -99,6 +106,7 @@ public class LoginController extends BaseController implements Initializable {
             finish();
         } catch (UserException e) {
             logger.info("Přihlášení se nezdařilo", e);
+            showNotification(loginFail, Length.SHORT);
             loginModel.valid.set(false);
         }
     }

@@ -160,5 +160,9 @@ public static final String USER_QUESTION_REGISTRATION = "drd_user_question_regis
 public static final String USER_GO_REGISTRATION = "drd_user_go_registration";
 public static final String USER_REGISTER_TITLE = "drd_user_register_title";
 public static final String ITEM_MAX_LOAD = "drd_item_max_load";
+public static final String NOTIFY_LOGIN_SUCCESS = "drd_notify_login_success";
+public static final String NOTIFY_LOGIN_FAIL = "drd_notify_login_fail";
+public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";
+public static final String NOTIFY_REGISTER_FAIL = "drd_notify_register_fail";
     }
 }

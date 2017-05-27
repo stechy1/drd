@@ -1,6 +1,7 @@
 package cz.stechy.drd.controller.main;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper;
 import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper.ItemEntry;
 import cz.stechy.drd.controller.hero.opener.HeroOpenerHelper;
@@ -12,6 +13,7 @@ import cz.stechy.drd.model.persistent.UserManager;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification.Length;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
@@ -65,6 +67,7 @@ public class MainController extends BaseController implements Initializable {
 
     private MainScreen[] controllers;
     private String title;
+    private String loginSuccess;
 
     // endregion
 
@@ -78,6 +81,7 @@ public class MainController extends BaseController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.MAIN_TITLE);
+        loginSuccess = resources.getString(R.Translate.NOTIFY_LOGIN_SUCCESS);
 
         controllers = new MainScreen[] {
             defaultStaffController,
@@ -127,6 +131,7 @@ public class MainController extends BaseController implements Initializable {
                     return;
                 }
 
+                showNotification(loginSuccess, Length.SHORT);
                 break;
         }
     }
