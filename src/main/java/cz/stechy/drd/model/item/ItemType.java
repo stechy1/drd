@@ -5,7 +5,7 @@ package cz.stechy.drd.model.item;
  */
 public enum ItemType {
 
-    GENERAL, WEAPON_MELE, WEAPON_RANGED, ARMOR;
+    GENERAL, WEAPON_MELE, WEAPON_RANGED, ARMOR, BACKPACK;
 
     public static ItemType valueOf(int index) {
         if (index < 0) {

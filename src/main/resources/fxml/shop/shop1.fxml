@@ -29,6 +29,9 @@
         <TitledPane text="%drd_item_type_general">
           <fx:include fx:id="tableGeneral" source="shop_general.fxml"/>
         </TitledPane>
+        <TitledPane text="%drd_item_type_backpack">
+          <fx:include fx:id="tableBackpack" source="shop_backpack.fxml"/>
+        </TitledPane>
       </panes>
     </Accordion>
   </center>

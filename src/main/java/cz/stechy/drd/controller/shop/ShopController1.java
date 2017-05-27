@@ -44,6 +44,7 @@ public class ShopController1 extends BaseController implements Initializable {
     private static final int ACTION_ADD_ITEM = 1;
     private static final int ACTION_UPDATE_ITEM = 2;
 
+
     // endregion
 
     // region Variables
@@ -61,6 +62,8 @@ public class ShopController1 extends BaseController implements Initializable {
     private ShopArmorController tableArmorController;
     @FXML
     private ShopGeneralController tableGeneralController;
+    @FXML
+    private ShopBackpackController tableBackpackController;
 
     @FXML
     private TableView tableMeleWeapon;
@@ -70,6 +73,8 @@ public class ShopController1 extends BaseController implements Initializable {
     private TableView tableArmor;
     @FXML
     private TableView tableGeneral;
+    @FXML
+    private TableView tableBackpack;
 
     @FXML
     private Button btnAddItem;
@@ -119,7 +124,8 @@ public class ShopController1 extends BaseController implements Initializable {
             tableMeleWeaponController,
             tableRangedWeaponController,
             tableArmorController,
-            tableGeneralController
+            tableGeneralController,
+            tableBackpackController
         };
 
         accodionShopContainer.expandedPaneProperty()

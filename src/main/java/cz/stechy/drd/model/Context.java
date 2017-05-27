@@ -9,6 +9,7 @@ import cz.stechy.drd.model.db.DatabaseManager;
 import cz.stechy.drd.model.db.SQLite;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.persistent.ArmorManager;
+import cz.stechy.drd.model.persistent.BackpackManager;
 import cz.stechy.drd.model.persistent.GeneralItemManager;
 import cz.stechy.drd.model.persistent.HeroManager;
 import cz.stechy.drd.model.persistent.MeleWeaponManager;
@@ -22,8 +23,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Kontext aplikace
@@ -31,6 +35,9 @@ import net.harawata.appdirs.AppDirsFactory;
 public class Context {
 
     // region Constants
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LoggerFactory.getLogger(Context.class);
 
     private static final String FIREBASE_URL = "https://drd-personal-diary.firebaseio.com";
     private static final String FIREBASE_CREDENTAILS = "/other/firebase_credentials.json";
@@ -50,6 +57,7 @@ public class Context {
     public static final String MANAGER_WEAPON_RANGED = "ranged";
     public static final String MANAGER_ARMOR = "armor";
     public static final String MANAGER_GENERAL = "general";
+    public static final String MANAGER_BACKPACK = "backpack";
 
     // endregion
 
@@ -80,7 +88,10 @@ public class Context {
         this.appDirectory = new File(appDirs
             .getUserDataDir(CREDENTAILS_APP_NAME, CREDENTAILS_APP_VERSION, CREDENTILS_APP_AUTHOR));
         if (!appDirectory.exists()) {
-            appDirectory.mkdirs();
+            if (!appDirectory.mkdirs()) {
+                logger.error("Nepodařilo se vytvořit složku aplikace, zavírám...");
+                Platform.exit();
+            }
         }
         try {
             database = new SQLite(appDirectory.getPath() + SEPARATOR + databaseName);
@@ -111,8 +122,7 @@ public class Context {
 
             FirebaseApp.initializeApp(options);
         } catch (Exception e) {
-            System.err.println("Nemůžu se připojit k firebase");
-            e.printStackTrace();
+            logger.info("Nemůžu se připojit k firebase", e);
         }
     }
 
@@ -125,6 +135,7 @@ public class Context {
         managerMap.put(MANAGER_WEAPON_RANGED, initManager(RangedWeaponManager.class));
         managerMap.put(MANAGER_ARMOR, initManager(ArmorManager.class));
         managerMap.put(MANAGER_GENERAL, initManager(GeneralItemManager.class));
+        managerMap.put(MANAGER_BACKPACK, initManager(BackpackManager.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -132,6 +143,7 @@ public class Context {
         return (T) managerMap.get(name);
     }
 
+    @SuppressWarnings("unchecked")
     private DatabaseManager initManager(Class clazz) {
         try {
             DatabaseManager manager = (DatabaseManager) clazz.getConstructor(Database.class)
@@ -143,9 +155,11 @@ public class Context {
             manager.createTable();
             manager.selectAll();
             return manager;
-        } catch (Exception ex) {
+        } catch (Exception e) {
             // nikdy by se nemělo stát
-            ex.printStackTrace();
+            // pokud se ale tak stane, tak aplikace není schopná běhu
+            logger.error("Chyba při inicializaci manažeru", e);
+            Platform.exit();
             return null;
         }
     }
