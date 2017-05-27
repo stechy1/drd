@@ -65,7 +65,7 @@ public class App extends Application {
      * Inicializuje screen manager
      */
     private void initScreenManager() {
-        ScreenManagerConfiguration configuration = new ScreenManagerConfiguration.ConfigurationBuilder()
+        ScreenManagerConfiguration configuration = new ScreenManagerConfiguration.Builder()
             .baseFxml(App.class.getClassLoader().getResource(BASE_FXML))
             .fxml(App.class.getClassLoader().getResource(FOLDER_FXML))
             .css(App.class.getClassLoader().getResource(FILE_CSS))
