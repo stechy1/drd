@@ -76,6 +76,7 @@ public final class Translator {
             R.Translate.ITEM_TYPE_WEAPON_RANGED,
             R.Translate.ITEM_TYPE_ARMOR,
             R.Translate.ITEM_TYPE_GENERAL,
+            R.Translate.ITEM_TYPE_BACKPACK
         };
     }
 
