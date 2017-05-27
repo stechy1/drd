@@ -7,22 +7,22 @@ getter_setter_property_template = ''
 getter_setter_object_property_template = ''
 builder_template = ''
 
-with open(templates + 'online_item_template.txt', 'r') as online_item_template_file:
+with open(templates + 'online_item_template.txt', 'r', encoding="utf8") as online_item_template_file:
   online_item_template = online_item_template_file.read()
 
-with open(templates + 'base_manager_template.txt', 'r') as base_manager_template_file:
+with open(templates + 'base_manager_template.txt', 'r', encoding="utf8") as base_manager_template_file:
   base_manager_template = base_manager_template_file.read()
 
-with open(templates + 'advanced_manager_template.txt', 'r') as advanced_manager_template_file:
+with open(templates + 'advanced_manager_template.txt', 'r', encoding="utf8") as advanced_manager_template_file:
   advanced_manager_template = advanced_manager_template_file.read()
 
-with open(templates + 'getter_setter_property_template.txt', 'r') as getter_setter_property_template_file:
+with open(templates + 'getter_setter_property_template.txt', 'r', encoding="utf8") as getter_setter_property_template_file:
   getter_setter_property_template = getter_setter_property_template_file.read()
 
-with open(templates + 'getter_setter_object_property_template.txt', 'r') as getter_setter_object_property_template_file:
+with open(templates + 'getter_setter_object_property_template.txt', 'r', encoding="utf8") as getter_setter_object_property_template_file:
   getter_setter_object_property_template = getter_setter_object_property_template_file.read()
 
-with open(templates + 'builder_template.txt', 'r') as builder_template_file:
+with open(templates + 'builder_template.txt', 'r', encoding="utf8") as builder_template_file:
   builder_template = builder_template_file.read()
 
 def type_to_class_wrap(type):
@@ -204,8 +204,8 @@ class ItemBuilder:
 
       file.write(content)
 
-    with open(source_path + base_package + 'model/item/{}.java'.format(self.generic_class), 'w') as file:
+    with open(source_path + base_package + 'model/item/{}.java'.format(self.generic_class), 'w', encoding="utf8") as file:
       build_item(file)
 
-    with open(source_path + base_package + 'model/persistent/{}Manager.java'.format(self.generic_class), 'w') as file:
+    with open(source_path + base_package + 'model/persistent/{}Manager.java'.format(self.generic_class), 'w', encoding="utf8") as file:
       build_manager(file)

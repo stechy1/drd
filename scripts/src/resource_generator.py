@@ -18,7 +18,7 @@ def generate_resources(root_folder, requested_extension, class_name, output_file
 
 def generate_translate_keys(translate_file, output_file):
   output_file.write("public static class Translate {\n")
-  with open(translate_file, "r") as f:
+  with open(translate_file, "r", encoding="utf8") as f:
     lines = f.readlines()
     for line in lines:
       if "=" not in line:
@@ -28,7 +28,7 @@ def generate_translate_keys(translate_file, output_file):
   output_file.write("    }\n")
 
 
-with open(output_path, "w") as file:
+with open(output_path, "w", encoding="utf8") as file:
   file.write("package cz.stechy.drd;\n\n")
   file.write('@SuppressWarnings("unused")\n')
   file.write("public final class R {\n")
