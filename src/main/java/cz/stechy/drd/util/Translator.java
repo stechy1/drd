@@ -1,5 +1,6 @@
 package cz.stechy.drd.util;
 
+import cz.stechy.drd.R;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -12,110 +13,69 @@ public final class Translator {
 
     // region Constants
 
-    private static final String CONVICTION_LAWFUL_GOOD = "drd_conviction_lawful_good";
-    private static final String CONVICTION_CONFUSED_GOODNESS = "drd_conviction_confused_goodness";
-    private static final String CONVICTION_NEUTRAL = "drd_conviction_neutral";
-    private static final String CONVICTION_CONFUSED_EVIL = "drd_conviction_confused_evil";
-    private static final String CONVICTION_LAWFUL_EVIL = "drd_conviction_lawful_evil";
     private static final String[] CONVICTIONS;
-
-    private static final String RACE_HOBIT = "drd_race_hobit";
-    private static final String RACE_KUDUK = "drd_race_kuduk";
-    private static final String RACE_DWARF = "drd_race_dwarf";
-    private static final String RACE_ELF = "drd_race_elf";
-    private static final String RACE_HUMAN = "drd_race_human";
-    private static final String RACE_BARBAR = "drd_race_barbar";
-    private static final String RACE_KROLL = "drd_race_kroll";
     private static final String[] RACES;
-
-    private static final String PROFESSION_WARIOR = "drd_profession_warior";
-    private static final String PROFESSION_RANGER = "drd_profession_ranger";
-    private static final String PROFESSION_ALCHEMIST = "drd_profession_alchemist";
-    private static final String PROFESSION_MAGICIAN = "drd_profession_magician";
-    private static final String PROFESSION_THIEF = "drd_profession_thief";
     private static final String[] PROFESSIONS;
-
-    private static final String WEAPON_MELE_CLASS_LIGHT = "drd_item_weapon_mele_class_light";
-    private static final String WEAPON_MELE_CLASS_MEDIUM = "drd_item_weapon_mele_class_medium";
-    private static final String WEAPON_MELE_CLASS_HEAVY = "drd_item_weapon_mele_class_heavy";
     private static final String[] WEAPON_MELE_CLASSES;
-
-    private static final String WEAPON_MELE_TYPE_ONE_HAND = "drd_item_weapon_mele_type_one_hand";
-    private static final String WEAPON_MELE_TYPE_DOUBLE_HAND = "drd_item_weapon_mele_type_double_hand";
     private static final String[] WEAPON_MELE_TYPES;
-
-    private static final String WEAPON_RANGED_TYPE_FIRE = "drd_item_weapon_ranged_type_fire";
-    private static final String WEAPON_RANGED_TYPE_PROJECTILE = "drd_item_weapon_ranged_type_projectile";
     private static final String[] WEAPON_RANGED_TYPES;
-
-    private static final String CUSTOM_CONSTANT = "drd_custom_constant";
-    private static final String HERO_STRENGTH = "drd_hero_strength";
-    private static final String HERO_DEXTERITY = "drd_hero_dexterity";
-    private static final String HERO_IMMUNITY = "drd_hero_immunity";
-    private static final String HERO_INTELLIGENCE = "drd_hero_intelligence";
-    private static final String HERO_CHARISMA = "drd_hero_charisma";
     private static final String[] DICE_ADDITION_PROPERTIES;
-
-    private static final String SHOP_ITEM_WEAPON_MELE = "drd_item_type_weapon_mele";
-    private static final String SHOP_ITEM_WEAPON_RANGED = "drd_item_type_weapon_ranged";
-    private static final String SHOP_ITEM_ARMOR = "drd_item_type_armor";
-    private static final String SHOP_ITEM_GENERAL = "drd_item_type_general";
     private static final String[] SHOP_ITEMS;
 
     // endregion
 
     static {
         CONVICTIONS = new String[]{
-            CONVICTION_LAWFUL_GOOD,
-            CONVICTION_CONFUSED_GOODNESS,
-            CONVICTION_NEUTRAL,
-            CONVICTION_CONFUSED_EVIL,
-            CONVICTION_LAWFUL_EVIL
+            R.Translate.CONVICTION_LAWFUL_GOOD,
+            R.Translate.CONVICTION_CONFUSED_GOODNESS,
+            R.Translate.CONVICTION_NEUTRAL,
+            R.Translate.CONVICTION_CONFUSED_EVIL,
+            R.Translate.CONVICTION_LAWFUL_EVIL
         };
         RACES = new String[]{
-            RACE_HOBIT,
-            RACE_KUDUK,
-            RACE_DWARF,
-            RACE_ELF,
-            RACE_HUMAN,
-            RACE_BARBAR,
-            RACE_KROLL
+            R.Translate.RACE_HOBIT,
+            R.Translate.RACE_KUDUK,
+            R.Translate.RACE_DWARF,
+            R.Translate.RACE_ELF,
+            R.Translate.RACE_HUMAN,
+            R.Translate.RACE_BARBAR,
+            R.Translate.RACE_KROLL
         };
         PROFESSIONS = new String[]{
-            PROFESSION_WARIOR,
-            PROFESSION_RANGER,
-            PROFESSION_ALCHEMIST,
-            PROFESSION_MAGICIAN,
-            PROFESSION_THIEF
+            R.Translate.PROFESSION_WARIOR,
+            R.Translate.PROFESSION_RANGER,
+            R.Translate.PROFESSION_ALCHEMIST,
+            R.Translate.PROFESSION_MAGICIAN,
+            R.Translate.PROFESSION_THIEF
         };
 
         WEAPON_MELE_CLASSES = new String[]{
-            WEAPON_MELE_CLASS_LIGHT,
-            WEAPON_MELE_CLASS_MEDIUM,
-            WEAPON_MELE_CLASS_HEAVY
+            R.Translate.ITEM_WEAPON_MELE_CLASS_LIGHT,
+            R.Translate.ITEM_WEAPON_MELE_CLASS_MEDIUM,
+            R.Translate.ITEM_WEAPON_MELE_CLASS_HEAVY
         };
         WEAPON_MELE_TYPES = new String[]{
-            WEAPON_MELE_TYPE_ONE_HAND,
-            WEAPON_MELE_TYPE_DOUBLE_HAND
+            R.Translate.ITEM_WEAPON_MELE_TYPE_ONE_HAND,
+            R.Translate.ITEM_WEAPON_MELE_TYPE_DOUBLE_HAND
         };
         WEAPON_RANGED_TYPES = new String[]{
-            WEAPON_RANGED_TYPE_FIRE,
-            WEAPON_RANGED_TYPE_PROJECTILE
+            R.Translate.ITEM_WEAPON_RANGED_TYPE_FIRE,
+            R.Translate.ITEM_WEAPON_RANGED_TYPE_PROJECTILE
         };
 
         DICE_ADDITION_PROPERTIES = new String[]{
-            HERO_STRENGTH,
-            HERO_DEXTERITY,
-            HERO_IMMUNITY,
-            HERO_INTELLIGENCE,
-            HERO_CHARISMA
+            R.Translate.HERO_STRENGTH,
+            R.Translate.HERO_DEXTERITY,
+            R.Translate.HERO_IMMUNITY,
+            R.Translate.HERO_INTELLIGENCE,
+            R.Translate.HERO_CHARISMA
         };
 
         SHOP_ITEMS = new String[]{
-            SHOP_ITEM_WEAPON_MELE,
-            SHOP_ITEM_WEAPON_RANGED,
-            SHOP_ITEM_ARMOR,
-            SHOP_ITEM_GENERAL
+            R.Translate.ITEM_TYPE_WEAPON_MELE,
+            R.Translate.ITEM_TYPE_WEAPON_RANGED,
+            R.Translate.ITEM_TYPE_ARMOR,
+            R.Translate.ITEM_TYPE_GENERAL,
         };
     }
 
