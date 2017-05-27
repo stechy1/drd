@@ -1,7 +1,6 @@
 package cz.stechy.drd.controller.main;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper;
 import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper.ItemEntry;
 import cz.stechy.drd.controller.hero.opener.HeroOpenerHelper;
@@ -83,7 +82,7 @@ public class MainController extends BaseController implements Initializable {
         title = resources.getString(R.Translate.MAIN_TITLE);
         loginSuccess = resources.getString(R.Translate.NOTIFY_LOGIN_SUCCESS);
 
-        controllers = new MainScreen[] {
+        controllers = new MainScreen[]{
             defaultStaffController,
             inventoryController
         };
@@ -112,7 +111,8 @@ public class MainController extends BaseController implements Initializable {
                 closeChildScreens();
                 Hero hero = HeroCreatorHelper.fromBundle(bundle);
                 hero.setAuthor(userManager.getUser().getName());
-                ObservableList<HeroCreatorHelper.ItemEntry> itemsToInventory = (ObservableList<ItemEntry>) bundle.get(HeroCreatorHelper.INVENTORY);
+                ObservableList<HeroCreatorHelper.ItemEntry> itemsToInventory = (ObservableList<ItemEntry>) bundle
+                    .get(HeroCreatorHelper.INVENTORY);
                 try {
                     heroManager.insert(hero, itemsToInventory);
                     this.hero.setValue(hero);
