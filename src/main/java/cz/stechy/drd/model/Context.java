@@ -93,6 +93,7 @@ public class Context {
                 Platform.exit();
             }
         }
+        logger.info("Používám pracovní adresář: {}", appDirectory.getPath());
         try {
             database = new SQLite(appDirectory.getPath() + SEPARATOR + databaseName);
         } catch (SQLException e) {
