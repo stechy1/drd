@@ -79,9 +79,9 @@ public final class Money {
     private void init() {
         raw.addListener((observable, oldValue, newValue) -> {
             int value = newValue.intValue();
-            gold.setValue((value & ~0xFFFF) >> MULTIPLIER_GOLD);
-            silver.setValue((value & 0xFF00) >> MULTIPLIER_SILVER);
-            copper.setValue(value & ((1 << 8) - 1));
+            gold.setValue((value & MASK_GOLD) >> MULTIPLIER_GOLD);
+            silver.setValue((value & MASK_SILVER) >> MULTIPLIER_SILVER);
+            copper.setValue(value & MASK_COPPER);
             text.setValue(toString());
         });
     }
@@ -95,88 +95,11 @@ public final class Money {
      *
      * @param other Druhá instance peněz, která se přičte k aktuální hodnotě
      */
-    public void add(Money other) {
-        this.raw.add(other.raw.intValue());
-    }
+    public Money add(Money other) {
+        final int rawValue = getRaw();
+        this.raw.setValue(rawValue + other.getRaw());
 
-    /**
-     * Nastaví počet zlaťáků
-     *
-     * @param gold Počet zlaťáků
-     */
-    public void setGold(int gold) {
-        int rawValue = raw.intValue();
-        rawValue = (rawValue & (~MASK_GOLD)) | (gold << MULTIPLIER_GOLD);
-        raw.setValue(rawValue);
-    }
-
-    /**
-     * Přidá zlaťáky
-     *
-     * @param gold Počet zlaťáků
-     */
-    public void addGold(int gold) {
-        if (gold <= 0) {
-            return;
-        }
-
-        raw.add(gold << MULTIPLIER_GOLD);
-    }
-
-    /**
-     * Nastaí počet stříbrňáků
-     *
-     * @param silver Počet stříbrňáků
-     */
-    public void setSilver(int silver) {
-        if ((silver / 100) != 0) {
-            setGold(silver / 100);
-        }
-        int rawValue = raw.intValue();
-        rawValue = (rawValue & (~MASK_SILVER)) | ((silver % 100) << MULTIPLIER_SILVER);
-        raw.setValue(rawValue);
-    }
-
-    /**
-     * Přidá stříbrňáky
-     *
-     * @param silver Počet stříbrňáků
-     */
-    public void addSilver(int silver) {
-        if (silver <= 0) {
-            return;
-        }
-
-        addGold(silver / 100);
-        raw.add((silver % 100) << MULTIPLIER_SILVER);
-    }
-
-    /**
-     * Nastaví počet měďáků
-     *
-     * @param copper Počet měďáků
-     */
-    public void setCopper(int copper) {
-        if ((copper / 100) != 0) {
-            setSilver(copper / 100);
-        }
-        int rawValue = raw.intValue();
-        rawValue = (rawValue & (~MASK_COPPER)) | (copper % 100);
-        raw.setValue(rawValue);
-    }
-
-    /**
-     * Přidá měďáky
-     *
-     * @param copper Počet měďáků
-     */
-    public void addCopper(int copper) {
-        if (copper <= 0) {
-            return;
-        }
-
-        addSilver(copper / 100);
-        raw.add(copper % 100);
+        return this;
     }
 
     /**
@@ -184,8 +107,43 @@ public final class Money {
      *
      * @param other Druhá instance peněz, která se bude odčítat
      */
-    public void subtract(Money other) {
-        this.raw.subtract(other.raw.intValue());
+    public Money subtract(Money other) {
+        final int rawValue = getRaw();
+        this.raw.setValue(rawValue - other.raw.intValue());
+
+        return this;
+    }
+
+    /**
+     * Nastaví počet zlaťáků
+     *
+     * @param gold Počet zlaťáků
+     */
+    public Money setGold(int gold) {
+        if (gold < 0) {
+            return this;
+        }
+
+        final int rawValue = getRaw();
+        raw.setValue(rawValue | (gold << MULTIPLIER_GOLD));
+
+        return this;
+    }
+
+    /**
+     * Přidá zlaťáky
+     *
+     * @param gold Počet zlaťáků
+     */
+    public Money addGold(int gold) {
+        if (gold < 0) {
+            return this;
+        }
+
+        final int rawValue = getRaw();
+        raw.setValue(rawValue + (gold << MULTIPLIER_GOLD));
+
+        return this;
     }
 
     /**
@@ -193,12 +151,49 @@ public final class Money {
      *
      * @param gold Počet zlaťáků
      */
-    public void subtractGold(int gold) {
-        if (gold <= 0) {
-            return;
+    public Money subtractGold(int gold) {
+        if (gold < 0) {
+            return this;
         }
 
-        raw.subtract(gold);
+        int rawValue = getRaw();
+        raw.setValue(rawValue - (gold << MULTIPLIER_GOLD));
+
+        return this;
+    }
+
+    /**
+     * Nastaí počet stříbrňáků
+     *
+     * @param silver Počet stříbrňáků
+     */
+    public Money setSilver(int silver) {
+        if ((silver / 100) != 0) {
+            setGold(silver / 100);
+        }
+
+        final int rawValue = getRaw();
+        raw.setValue(rawValue | ((silver % 100) << MULTIPLIER_SILVER));
+
+        return this;
+    }
+
+    /**
+     * Přidá stříbrňáky
+     *
+     * @param silver Počet stříbrňáků
+     */
+    public Money addSilver(int silver) {
+        if (silver <= 0) {
+            return this;
+        }
+
+        silver = getSilver() + silver;
+        addGold(silver / 100);
+        final int rawValue = getRaw();
+        raw.setValue(rawValue + (((silver % 100) - getSilver()) << MULTIPLIER_SILVER));
+
+        return this;
     }
 
     /**
@@ -206,13 +201,56 @@ public final class Money {
      *
      * @param silver Počet stříbrňáků
      */
-    public void subtractSilver(int silver) {
+    public Money subtractSilver(int silver) {
         if (silver <= 0) {
-            return;
+            return this;
         }
 
         subtractGold(silver / 100);
-        raw.subtract(silver % 100);
+        silver = getSilver() - (silver % 100);
+        if (silver < 0) {
+            silver = 100 + silver;
+            subtractGold(1);
+        }
+
+        final int rawValue = getRaw();
+        raw.setValue(rawValue - (getSilver() - (silver % 100) << MULTIPLIER_SILVER));
+
+        return this;
+    }
+
+    /**
+     * Nastaví počet měďáků
+     *
+     * @param copper Počet měďáků
+     */
+    public Money setCopper(int copper) {
+        if ((copper / 100) != 0) {
+            setSilver(copper / 100);
+        }
+
+        final int rawValue = getRaw();
+        raw.setValue(rawValue | (copper % 100));
+
+        return this;
+    }
+
+    /**
+     * Přidá měďáky
+     *
+     * @param copper Počet měďáků
+     */
+    public Money addCopper(int copper) {
+        if (copper <= 0) {
+            return this;
+        }
+
+        copper = getCopper() + copper;
+        addSilver(copper / 100);
+        final int rawValue = getRaw();
+        raw.setValue(rawValue + (copper % 100) - getCopper());
+
+        return this;
     }
 
     /**
@@ -220,13 +258,22 @@ public final class Money {
      *
      * @param copper Počet měďáků
      */
-    public void subtractCopper(int copper) {
+    public Money subtractCopper(int copper) {
         if (copper <= 0) {
-            return;
+            return this;
         }
 
-        subtractSilver(copper % 100);
-        raw.subtract(copper);
+        subtractSilver(copper / 100);
+        copper = getCopper() - (copper % 100);
+        if (copper < 0) {
+            copper = 100 + copper;
+            subtractSilver(1);
+        }
+
+        final int rawValue = getRaw();
+        raw.setValue(rawValue - (getCopper() - (copper % 100)));
+
+        return this;
     }
 
     // endregion
@@ -241,7 +288,37 @@ public final class Money {
         return this.raw.intValue();
     }
 
+    public int getGold() {
+        return this.gold.getValue();
+    }
+
+    public int getSilver() {
+        return this.silver.getValue();
+    }
+
+    public int getCopper() {
+        return this.copper.getValue();
+    }
+
     // endregion
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Money money = (Money) o;
+
+        return raw.get() == money.raw.get();
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * raw.get();
+    }
 
     @Override
     public String toString() {
@@ -249,4 +326,5 @@ public final class Money {
             .format("%dzl %dst %dmd", gold.getValue().intValue(), silver.getValue().intValue(),
                 copper.getValue().intValue());
     }
+
 }
