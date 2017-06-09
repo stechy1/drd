@@ -55,7 +55,6 @@ public final class FormUtils {
     }
 
     public static void initTextFormater(TextField textField, MaxActValue maxActValue) {
-        textField.setTextFormatter(new TextFormatter<>(new NumberStringConverter()));
         textField.setTextFormatter(new TextFormatter<>(new NumberStringConverter(), null,
             FormUtils.integerFilter(
                 maxActValue.getMinValue().intValue(),
@@ -63,6 +62,12 @@ public final class FormUtils {
             )));
         textField.textProperty()
             .bindBidirectional(maxActValue.actValueProperty(), new NumberStringConverter());
+    }
+
+    public static void disposeTextFormater(TextField textField, MaxActValue maxActValue) {
+        textField.setTextFormatter(null);
+        textField.textProperty().unbindBidirectional(maxActValue.actValueProperty());
+
     }
 
 }

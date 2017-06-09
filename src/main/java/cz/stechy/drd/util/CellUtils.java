@@ -14,15 +14,13 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.Spinner;
 import javafx.scene.control.TableCell;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -57,48 +55,30 @@ public final class CellUtils {
 
     public static final <S> TableCell<S, MaxActValue> forMaxActValue() {
         return new TableCell<S, MaxActValue>() {
-            private final Spinner<Integer> spinner;
-
-            private final javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory valueFactory;
-            private final ChangeListener<Number> valueChangeListener;
+            private final TextField input;
 
             {
-                valueFactory = new javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory(
-                    0, 0);
-                spinner = new Spinner<>(valueFactory);
-                spinner.setVisible(false);
-                setGraphic(spinner);
+                input = new TextField();
+                input.setVisible(false);
+                setGraphic(input);
                 setText(null);
-                valueChangeListener = (ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-                    valueFactory.setValue(newValue.intValue());
-                };
-                spinner.valueProperty().addListener((obs, oldValue, newValue) -> {
-                    if (getItem() != null) {
-                        getItem().setActValue(newValue);
-                    }
-                });
             }
 
             @Override
             public void updateItem(MaxActValue item, boolean empty) {
                 // unbind old values
-                valueFactory.maxProperty().unbind();
                 if (getItem() != null) {
-                    getItem().maxValueProperty().removeListener(valueChangeListener);
+                    FormUtils.disposeTextFormater(input, getItem());
                 }
 
                 super.updateItem(item, empty);
 
                 // update according to new item
                 if (empty || item == null) {
-                    spinner.setVisible(false);
-                    setText(null);
+                    input.setVisible(false);
                 } else {
-                    valueFactory.maxProperty().bind(item.maxValueProperty());
-                    valueFactory.setValue(item.getActValue().intValue());
-                    item.actValueProperty().addListener(valueChangeListener);
-                    spinner.setVisible(true);
-                    setText(null);
+                    FormUtils.initTextFormater(input, item);
+                    input.setVisible(true);
                 }
 
             }
