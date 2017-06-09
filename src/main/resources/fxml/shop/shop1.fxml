@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
   prefWidth="900" prefHeight="500"
   fx:controller="cz.stechy.drd.controller.shop.ShopController1">
@@ -80,6 +81,7 @@
       <padding>
         <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
       </padding>
+      <Label fx:id="lblTotalPrice"/>
       <Region HBox.hgrow="ALWAYS"/>
       <Button fx:id="btnContinueShopping" onAction="#handleContinueShopping"
         text="%drd_shop_continue_shopping" disable="true"/>

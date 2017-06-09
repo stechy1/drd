@@ -30,6 +30,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 
@@ -43,6 +44,7 @@ public class ShopController1 extends BaseController implements Initializable {
     private static final int NO_SELECTED_INDEX = -1;
     private static final int ACTION_ADD_ITEM = 1;
     private static final int ACTION_UPDATE_ITEM = 2;
+
 
     // endregion
 
@@ -83,6 +85,8 @@ public class ShopController1 extends BaseController implements Initializable {
     private Button btnEditItem;
     @FXML
     private ToggleButton btnToggleOnline;
+    @FXML
+    private Label lblTotalPrice;
     @FXML
     private Button btnContinueShopping;
 
@@ -160,6 +164,8 @@ public class ShopController1 extends BaseController implements Initializable {
 
             controllers[index].clearSelectedRow();
         });
+
+        lblTotalPrice.textProperty().bind(shoppingCart.totalPrice.text);
 
         showOnlineDatabase.bindBidirectional(btnToggleOnline.selectedProperty());
 
