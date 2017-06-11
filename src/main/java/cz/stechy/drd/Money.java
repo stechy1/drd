@@ -21,17 +21,25 @@ public final class Money {
     private static final int MASK_SILVER = 0xFF00;
     private static final int MASK_COPPER = 0xFF;
 
+    public static final int MAX_GOLD = Integer.MAX_VALUE;
+    public static final int MAX_SILVER = 99;
+    public static final int MAX_COPPER = 99;
+
     // endregion
 
     // region Variables
 
+    private final Object lock = new Object();
+
     // Interní reprezentace peněz
     private final IntegerProperty raw = new SimpleIntegerProperty(0);
-    public final ObjectProperty<Integer> gold = new SimpleObjectProperty<>(0);
-    public final ObjectProperty<Integer> silver = new SimpleObjectProperty<>(0);
-    public final ObjectProperty<Integer> copper = new SimpleObjectProperty<>(0);
+    public final ObjectProperty<Number> gold = new SimpleObjectProperty<>(0);
+    public final ObjectProperty<Number> silver = new SimpleObjectProperty<>(0);
+    public final ObjectProperty<Number> copper = new SimpleObjectProperty<>(0);
 
     public final StringProperty text = new SimpleStringProperty(toString());
+
+    private boolean changing = false;
 
     // endregion
 
@@ -78,11 +86,49 @@ public final class Money {
      */
     private void init() {
         raw.addListener((observable, oldValue, newValue) -> {
+            synchronized (lock) {
+                if (changing) {
+                    return;
+                }
+            }
+            changing = true;
             int value = newValue.intValue();
             gold.setValue((value & MASK_GOLD) >> MULTIPLIER_GOLD);
             silver.setValue((value & MASK_SILVER) >> MULTIPLIER_SILVER);
             copper.setValue(value & MASK_COPPER);
             text.setValue(toString());
+            changing = false;
+        });
+        gold.addListener((observable, oldValue, newValue) -> {
+            synchronized (lock) {
+                if (changing) {
+                    return;
+                }
+            }
+            changing = true;
+            //gold.setValue((newValue.intValue() & MASK_GOLD) >> MULTIPLIER_GOLD);
+            setGold(newValue.intValue());
+            changing = false;
+        });
+        silver.addListener((observable, oldValue, newValue) -> {
+            synchronized (lock) {
+                if (changing) {
+                    return;
+                }
+            }
+            changing = true;
+            setSilver(newValue.intValue());
+            changing = false;
+        });
+        copper.addListener((observable, oldValue, newValue) -> {
+            synchronized (lock) {
+                if (changing) {
+                    return;
+                }
+            }
+            changing = true;
+            setCopper(newValue.intValue());
+            changing = false;
         });
     }
 
@@ -289,18 +335,19 @@ public final class Money {
     }
 
     public int getGold() {
-        return this.gold.getValue();
+        return this.gold.getValue().intValue();
     }
 
     public int getSilver() {
-        return this.silver.getValue();
+        return this.silver.getValue().intValue();
     }
 
     public int getCopper() {
-        return this.copper.getValue();
+        return this.copper.getValue().intValue();
     }
 
     // endregion
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

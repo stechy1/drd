@@ -1,11 +1,13 @@
 package cz.stechy.drd.controller;
 
 import cz.stechy.drd.Money;
+import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.util.FormUtils;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Spinner;
+import javafx.scene.control.TextField;
 
 /**
  * Kontroler pro popup okno obsahující nastavení peněz
@@ -23,30 +25,35 @@ public class MoneyController extends BaseController {
     // region FXML
 
     @FXML
-    private Spinner<Integer> spinnerGold;
+    private TextField txtGold;
     @FXML
-    private Spinner<Integer> spinnerSilver;
+    private TextField txtSilver;
     @FXML
-    private Spinner<Integer> spinnerCopper;
+    private TextField txtCopper;
 
     // endregion
+
+    private final Money money = new Money();
+
+    private final MaxActValue goldValue = new MaxActValue(0, Money.MAX_GOLD, money.getGold());
+    private final MaxActValue silverValue = new MaxActValue(0, Money.MAX_SILVER, money.getSilver());
+    private final MaxActValue copperValue = new MaxActValue(0, Money.MAX_COPPER, money.getCopper());
+
+    {
+        goldValue.actValueProperty().bindBidirectional(money.gold);
+        silverValue.actValueProperty().bindBidirectional(money.silver);
+        copperValue.actValueProperty().bindBidirectional(money.copper);
+    }
 
     // endregion
 
     @Override
     protected void onCreate(Bundle bundle) {
-        Money money = bundle.get(MONEY);
+        money.setRaw(bundle.getInt(MONEY));
 
-        spinnerGold.getValueFactory().valueProperty().bindBidirectional(money.gold);
-        spinnerSilver.getValueFactory().valueProperty().bindBidirectional(money.silver);
-        spinnerCopper.getValueFactory().valueProperty().bindBidirectional(money.copper);
-
-        spinnerGold.valueProperty()
-            .addListener((observable, oldValue, newValue) -> money.setGold(newValue));
-        spinnerSilver.valueProperty()
-            .addListener((observable, oldValue, newValue) -> money.setSilver(newValue));
-        spinnerCopper.valueProperty()
-            .addListener((observable, oldValue, newValue) -> money.setCopper(newValue));
+        FormUtils.initTextFormater(txtGold, goldValue);
+        FormUtils.initTextFormater(txtSilver, silverValue);
+        FormUtils.initTextFormater(txtCopper, copperValue);
     }
 
     @Override
@@ -54,11 +61,23 @@ public class MoneyController extends BaseController {
         setScreenSize(250, 150);
     }
 
+    @Override
+    protected void onClose() {
+        goldValue.actValueProperty().unbindBidirectional(money.gold);
+        silverValue.actValueProperty().unbindBidirectional(money.silver);
+        copperValue.actValueProperty().unbindBidirectional(money.copper);
+
+        FormUtils.disposeTextFormater(txtGold, goldValue);
+        FormUtils.disposeTextFormater(txtSilver, silverValue);
+        FormUtils.disposeTextFormater(txtCopper, copperValue);
+    }
+
     // region Button handles
 
     @FXML
     private void handleFinish(ActionEvent actionEvent) {
-        finish();
+        setResult(RESULT_SUCCESS);
+        finish(new Bundle().putInt(MONEY, money.getRaw()));
     }
 
     // endregion
