@@ -33,6 +33,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.paint.Color;
 
 /**
  * Kontroler pro obchod s předměty + jejich správu
@@ -93,7 +94,7 @@ public class ShopController1 extends BaseController implements Initializable {
     // endregion
 
     private final Translator translator;
-    private final ShoppingCart shoppingCart = new ShoppingCart();
+    private final ShoppingCart shoppingCart;
     private final List<String> translatedItemType = new ArrayList<>();
     private final IntegerProperty selectedAccordionPaneIndex = new SimpleIntegerProperty(
         NO_SELECTED_INDEX);
@@ -115,6 +116,7 @@ public class ShopController1 extends BaseController implements Initializable {
         this.translatedItemType.addAll(translator.getShopTypeList());
         this.user = context.getUserManager().getUser();
         this.hero = ((HeroManager) context.getManager(Context.MANAGER_HERO)).getHero();
+        this.shoppingCart = new ShoppingCart(hero.get());
     }
 
     // endregion
@@ -156,6 +158,12 @@ public class ShopController1 extends BaseController implements Initializable {
             Bindings.or(
                 selectedAccordionPaneIndex.isNotEqualTo(NO_SELECTED_INDEX).not(),
                 showOnlineDatabase)));
+        btnContinueShopping.disableProperty().bind(
+            Bindings.or(
+                Bindings.equal(
+                    "", hero.get().nameProperty()
+                ), shoppingCart.enoughtMoneyProperty().not()));
+
         selectedAccordionPaneIndex.addListener((observable, oldValue, newValue) -> {
             int index = newValue.intValue();
             if (index < 0) {
@@ -164,9 +172,11 @@ public class ShopController1 extends BaseController implements Initializable {
 
             controllers[index].clearSelectedRow();
         });
-
         lblTotalPrice.textProperty().bind(shoppingCart.totalPrice.text);
-
+        lblTotalPrice.textFillProperty().bind(Bindings
+                .when(shoppingCart.enoughtMoneyProperty())
+                .then(Color.GREEN)
+                .otherwise(Color.RED));
         showOnlineDatabase.bindBidirectional(btnToggleOnline.selectedProperty());
 
         for (ShopItemController controller : controllers) {
@@ -175,9 +185,7 @@ public class ShopController1 extends BaseController implements Initializable {
             controller.setShowOnlineDatabase(showOnlineDatabase);
         }
 
-        btnContinueShopping.setDisable(hero.get().getName().isEmpty());
-        hero.addListener((observable, oldValue, newValue) ->
-            btnContinueShopping.setDisable(newValue.getName().isEmpty()));
+        //btnContinueShopping.setDisable(hero.get().getName().isEmpty());
     }
 
     @Override
