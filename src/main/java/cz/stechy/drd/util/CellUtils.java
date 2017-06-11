@@ -1,5 +1,6 @@
 package cz.stechy.drd.util;
 
+import cz.stechy.drd.Money;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.shop.OnAddItemToCart;
@@ -19,6 +20,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -201,6 +203,27 @@ public final class CellUtils {
                             .otherwise(downloadHandlerInternal)));
                     btnRemote.disableProperty().bind(user.loggedProperty().not());
                     setGraphic(container);
+                }
+            }
+        };
+    }
+
+    public static final <S> TableCell<S, Money> forMoney() {
+        final Label text = new Label();
+
+        return new TableCell<S, Money>() {
+            @Override
+            protected void updateItem(Money item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if(empty) {
+                    setGraphic(null);
+                } else {
+                    text.textProperty().bind(Bindings.concat(
+                        item.gold.asString(), "zl ",
+                        item.silver.asString(), "st ",
+                        item.copper.asString(), "md"));
+                    setGraphic(text);
                 }
             }
         };
