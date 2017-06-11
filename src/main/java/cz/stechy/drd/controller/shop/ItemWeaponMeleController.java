@@ -49,6 +49,8 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
 
     // region Constants
 
+    private static final int ACTION_MONEY = 1;
+
     private static final String ID = "id";
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
@@ -204,6 +206,19 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         setScreenSize(570, 350);
     }
 
+    @Override
+    protected void onScreenResult(int statusCode, int actionId, Bundle bundle) {
+        switch (actionId) {
+            case ACTION_MONEY:
+                if (statusCode != RESULT_SUCCESS) {
+                    return;
+                }
+                model.price.setRaw(bundle.getInt(MoneyController.MONEY));
+
+                break;
+        }
+    }
+
     // region Buton handles
 
     @FXML
@@ -230,8 +245,8 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
 
     @FXML
     private void handleShowMoneyPopup(ActionEvent actionEvent) {
-        Bundle bundle = new Bundle().put(MoneyController.MONEY, model.price);
-        startNewPopupWindow("money", bundle, (Node) actionEvent.getSource());
+        Bundle bundle = new Bundle().put(MoneyController.MONEY, model.price.getRaw());
+        startNewPopupWindowForResult("money", ACTION_MONEY, bundle, (Node) actionEvent.getSource());
     }
 
     @FXML

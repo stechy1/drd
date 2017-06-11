@@ -184,8 +184,6 @@ public class ShopController1 extends BaseController implements Initializable {
             controller.setRowSelectedIndexProperty(selectedRowIndex);
             controller.setShowOnlineDatabase(showOnlineDatabase);
         }
-
-        //btnContinueShopping.setDisable(hero.get().getName().isEmpty());
     }
 
     @Override

@@ -40,6 +40,9 @@ public class ItemArmorController extends BaseController implements Initializable
 
     // region Constants
 
+    private static final int ACTION_MONEY_A = 1;
+    private static final int ACTION_MONEY_B = 2;
+    private static final int ACTION_MONEY_C = 3;
 
     private static final String ID = "id";
     private static final String NAME = "name";
@@ -188,6 +191,33 @@ public class ItemArmorController extends BaseController implements Initializable
         setScreenSize(570, 350);
     }
 
+    @Override
+    protected void onScreenResult(int statusCode, int actionId, Bundle bundle) {
+        switch (actionId) {
+            case ACTION_MONEY_A:
+                if (statusCode != RESULT_SUCCESS) {
+                    return;
+                }
+                model.priceA.setRaw(bundle.getInt(MoneyController.MONEY));
+
+                break;
+            case ACTION_MONEY_B:
+                if (statusCode != RESULT_SUCCESS) {
+                    return;
+                }
+                model.priceB.setRaw(bundle.getInt(MoneyController.MONEY));
+
+                break;
+            case ACTION_MONEY_C:
+                if (statusCode != RESULT_SUCCESS) {
+                    return;
+                }
+                model.priceC.setRaw(bundle.getInt(MoneyController.MONEY));
+
+                break;
+        }
+    }
+
     // region Button handles
 
     @FXML
@@ -215,20 +245,20 @@ public class ItemArmorController extends BaseController implements Initializable
 
     @FXML
     private void handleShowMoneyAPopup(ActionEvent actionEvent) {
-        Bundle bundle = new Bundle().put(MoneyController.MONEY, model.priceA);
-        startNewPopupWindow("money", bundle, (Node) actionEvent.getSource());
+        Bundle bundle = new Bundle().put(MoneyController.MONEY, model.priceA.getRaw());
+        startNewPopupWindowForResult("money", ACTION_MONEY_A, bundle, (Node) actionEvent.getSource());
     }
 
     @FXML
     private void handleShowMoneyBPopup(ActionEvent actionEvent) {
-        Bundle bundle = new Bundle().put(MoneyController.MONEY, model.priceB);
-        startNewPopupWindow("money", bundle, (Node) actionEvent.getSource());
+        Bundle bundle = new Bundle().put(MoneyController.MONEY, model.priceB.getRaw());
+        startNewPopupWindowForResult("money", ACTION_MONEY_B, bundle, (Node) actionEvent.getSource());
     }
 
     @FXML
     private void handleShowMoneyCPopup(ActionEvent actionEvent) {
-        Bundle bundle = new Bundle().put(MoneyController.MONEY, model.priceC);
-        startNewPopupWindow("money", bundle, (Node) actionEvent.getSource());
+        Bundle bundle = new Bundle().put(MoneyController.MONEY, model.priceC.getRaw());
+        startNewPopupWindowForResult("money", ACTION_MONEY_C,  bundle, (Node) actionEvent.getSource());
     }
 
     @FXML
