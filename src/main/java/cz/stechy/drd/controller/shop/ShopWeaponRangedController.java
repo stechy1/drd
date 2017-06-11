@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.shop;
 
+import cz.stechy.drd.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
@@ -76,7 +77,7 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
     @FXML
     private TableColumn<RangedWeaponEntry, Integer> columnWeight;
     @FXML
-    private TableColumn<RangedWeaponEntry, Integer> columnPrice;
+    private TableColumn<RangedWeaponEntry, Money> columnPrice;
     @FXML
     private TableColumn<RangedWeaponEntry, MaxActValue> columnAmmount;
     @FXML
@@ -128,6 +129,7 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
             TextFieldTableCell.forTableColumn(StringConvertors.forRangedWeaponType(translator)));
         columnWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
 

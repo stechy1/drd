@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.shop;
 
+import cz.stechy.drd.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
@@ -67,7 +68,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
     @FXML
     private TableColumn<ArmorEntry, Integer> columnWeight;
     @FXML
-    private TableColumn<ArmorEntry, Integer> columnPrice;
+    private TableColumn<ArmorEntry, Money> columnPrice;
     @FXML
     private TableColumn<ArmorEntry, MaxActValue> columnAmmount;
     @FXML
@@ -122,6 +123,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
         columnMinimumStrength.setCellValueFactory(new PropertyValueFactory<>("minimumStrength"));
         columnWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
+        columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
 
