@@ -75,7 +75,8 @@ public class RegisterController extends BaseController implements Initializable 
     }
 
     // region Button handlers
-    public void handleRegister(ActionEvent actionEvent) {
+    @FXML
+    private void handleRegister(ActionEvent actionEvent) {
         try {
             userManager.register(loginModel.login.getValue(), loginModel.password.getValue());
             setResult(RESULT_SUCCESS);
@@ -87,11 +88,13 @@ public class RegisterController extends BaseController implements Initializable 
         }
     }
 
-    public void handleBack(ActionEvent actionEvent) {
+    @FXML
+    private void handleBack(ActionEvent actionEvent) {
         back();
     }
 
-    public void handleCancel(ActionEvent actionEvent) {
+    @FXML
+    private void handleCancel(ActionEvent actionEvent) {
         finish();
     }
 

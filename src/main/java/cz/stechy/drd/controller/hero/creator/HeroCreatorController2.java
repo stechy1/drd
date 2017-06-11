@@ -91,15 +91,18 @@ public class HeroCreatorController2 extends BaseController implements Initializa
 
     // region Button handles
 
-    public void handleBack(ActionEvent actionEvent) {
+    @FXML
+    private void handleBack(ActionEvent actionEvent) {
         back();
     }
 
-    public void handleCancel(ActionEvent actionEvent) {
+    @FXML
+    private void handleCancel(ActionEvent actionEvent) {
         finish();
     }
 
-    public void handleReset(ActionEvent actionEvent) {
+    @FXML
+    private void handleReset(ActionEvent actionEvent) {
         bundle.remove(HeroCreatorHelper.LIVE);
         bundle.remove(HeroCreatorHelper.STRENGTH);
         bundle.remove(HeroCreatorHelper.DEXTERITY);
@@ -115,7 +118,8 @@ public class HeroCreatorController2 extends BaseController implements Initializa
         model.charisma.setValue(generator.charisma());
     }
 
-    public void handleNext(ActionEvent actionEvent) {
+    @FXML
+    private void handleNext(ActionEvent actionEvent) {
         bundle.putInt(HeroCreatorHelper.LIVE, model.live.getValue());
         bundle.putInt(HeroCreatorHelper.STRENGTH, model.strength.getValue());
         bundle.putInt(HeroCreatorHelper.DEXTERITY, model.dexterity.getValue());

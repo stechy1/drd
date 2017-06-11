@@ -98,7 +98,9 @@ public class LoginController extends BaseController implements Initializable {
     }
 
     // region Button handlers
-    public void handleLogin(ActionEvent actionEvent) {
+
+    @FXML
+    private void handleLogin(ActionEvent actionEvent) {
         try {
             userManager.login(loginModel.login.getValue(), loginModel.password.getValue());
             setResult(RESULT_SUCCESS);
@@ -110,16 +112,19 @@ public class LoginController extends BaseController implements Initializable {
         }
     }
 
-    public void handleCancel(ActionEvent actionEvent) {
+    @FXML
+    private void handleCancel(ActionEvent actionEvent) {
         finish();
     }
 
-    public void handleRegistration(ActionEvent actionEvent) {
+    @FXML
+    private void handleRegistration(ActionEvent actionEvent) {
         startNewDialogForResult(R.FXML.REGISTER, ACTION_REGISTRATION);
     }
 
-    public void handleLostPassword(ActionEvent actionEvent) {
-        //startScreenForResult("lost_password", ACTION_LOST_PASSWORD);
+    @FXML
+    private void handleLostPassword(ActionEvent actionEvent) {
+        showNotification("Funkce není implementována", Length.SHORT);
     }
 
     // endregion

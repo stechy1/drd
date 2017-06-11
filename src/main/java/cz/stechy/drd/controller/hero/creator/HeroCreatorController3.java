@@ -112,25 +112,30 @@ public class HeroCreatorController3 extends BaseController implements Initializa
 
     // region Button handles
 
-    public void handleBack(ActionEvent actionEvent) {
+    @FXML
+    private void handleBack(ActionEvent actionEvent) {
         back();
     }
 
-    public void handleCancel(ActionEvent actionEvent) {
+    @FXML
+    private void handleCancel(ActionEvent actionEvent) {
         finish();
     }
 
-    public void handleReset(ActionEvent actionEvent) {
+    @FXML
+    private void handleReset(ActionEvent actionEvent) {
         items.clear();
     }
 
-    public void handleFinish(ActionEvent actionEvent) {
+    @FXML
+    private void handleFinish(ActionEvent actionEvent) {
         setResult(RESULT_SUCCESS);
         bundle.put(HeroCreatorHelper.INVENTORY, items);
         finish(bundle);
     }
 
-    public void handleAddItem(ActionEvent actionEvent) {
+    @FXML
+    private void handleAddItem(ActionEvent actionEvent) {
         ChoiceDialog<ChoiceEntry> dialog = new ChoiceDialog<>(null, item_registry);
         dialog.setTitle("Přidat item");
         dialog.setHeaderText("Výběr itemu");
@@ -159,7 +164,8 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         });
     }
 
-    public void handleRemoveItem(ActionEvent actionEvent) {
+    @FXML
+    private void handleRemoveItem(ActionEvent actionEvent) {
         items.remove(selectedItem.get());
     }
 

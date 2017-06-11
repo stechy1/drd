@@ -174,15 +174,18 @@ public class DiceController extends BaseController implements Initializable {
 
     // region Button handles
 
-    public void handleAddAddition(ActionEvent actionEvent) {
+    @FXML
+    private void handleAddAddition(ActionEvent actionEvent) {
         diceHelper.additions.add(new DiceAddition());
     }
 
-    public void handleRemoveAddition(ActionEvent actionEvent) {
+    @FXML
+    private void handleRemoveAddition(ActionEvent actionEvent) {
         diceHelper.additions.removeAll(tableAdditions.getSelectionModel().getSelectedItems());
     }
 
-    public void handleRoll(ActionEvent actionEvent) {
+    @FXML
+    private void handleRoll(ActionEvent actionEvent) {
         diceHelper.roll(diceSideCount.getValue(), diceRollCount.getValue());
     }
 

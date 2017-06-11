@@ -117,10 +117,15 @@ public class HeroOpenerController extends BaseController implements Initializabl
         setTitle(title);
     }
 
-    public void handleOpenHero(ActionEvent actionEvent) {
+    // region Buton handlers
+
+    @FXML
+    private void handleOpenHero(ActionEvent actionEvent) {
         setResult(selectedHero.isNull().get() ? RESULT_FAIL : RESULT_SUCCESS);
         Bundle bundle = new Bundle();
         bundle.put(HeroOpenerHelper.HERO, selectedHero.getValue());
         finish(bundle);
     }
+
+    // endregion
 }

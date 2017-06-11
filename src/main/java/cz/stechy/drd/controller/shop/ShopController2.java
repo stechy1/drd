@@ -96,7 +96,8 @@ public class ShopController2 extends BaseController implements Initializable {
 
     // region Button handlers
 
-    public void handleFinishShopping(ActionEvent actionEvent) {
+    @FXML
+    private void handleFinishShopping(ActionEvent actionEvent) {
         try {
             final InventoryManager inventoryManager = heroManager.getInventory();
             final Inventory inventory = inventoryManager.selectAll().stream()
@@ -138,7 +139,8 @@ public class ShopController2 extends BaseController implements Initializable {
         finish();
     }
 
-    public void handleBack(ActionEvent actionEvent) {
+    @FXML
+    private void handleBack(ActionEvent actionEvent) {
         back();
     }
 

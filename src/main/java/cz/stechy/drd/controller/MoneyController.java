@@ -56,7 +56,8 @@ public class MoneyController extends BaseController {
 
     // region Button handles
 
-    public void handleFinish(ActionEvent actionEvent) {
+    @FXML
+    private void handleFinish(ActionEvent actionEvent) {
         finish();
     }
 

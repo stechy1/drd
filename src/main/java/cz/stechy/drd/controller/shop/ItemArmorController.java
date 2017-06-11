@@ -190,7 +190,8 @@ public class ItemArmorController extends BaseController implements Initializable
 
     // region Button handles
 
-    public void handleFinish(ActionEvent actionEvent) {
+    @FXML
+    private void handleFinish(ActionEvent actionEvent) {
         setResult(RESULT_SUCCESS);
         Bundle bundle = new Bundle();
         bundle.putInt(ShopHelper.ITEM_ACTION, action);
@@ -212,22 +213,26 @@ public class ItemArmorController extends BaseController implements Initializable
         finish(bundle);
     }
 
-    public void handleShowMoneyAPopup(ActionEvent actionEvent) {
+    @FXML
+    private void handleShowMoneyAPopup(ActionEvent actionEvent) {
         Bundle bundle = new Bundle().put(MoneyController.MONEY, model.priceA);
         startNewPopupWindow("money", bundle, (Node) actionEvent.getSource());
     }
 
-    public void handleShowMoneyBPopup(ActionEvent actionEvent) {
+    @FXML
+    private void handleShowMoneyBPopup(ActionEvent actionEvent) {
         Bundle bundle = new Bundle().put(MoneyController.MONEY, model.priceB);
         startNewPopupWindow("money", bundle, (Node) actionEvent.getSource());
     }
 
-    public void handleShowMoneyCPopup(ActionEvent actionEvent) {
+    @FXML
+    private void handleShowMoneyCPopup(ActionEvent actionEvent) {
         Bundle bundle = new Bundle().put(MoneyController.MONEY, model.priceC);
         startNewPopupWindow("money", bundle, (Node) actionEvent.getSource());
     }
 
-    public void handleSelectImage(MouseEvent mouseEvent) {
+    @FXML
+    private void handleSelectImage(MouseEvent mouseEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(imageChooserTitle);
         fileChooser.getExtensionFilters().add(new ExtensionFilter("PNG", "*.png"));

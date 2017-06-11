@@ -206,7 +206,8 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
 
     // region Buton handles
 
-    public void handleFinish(ActionEvent actionEvent) {
+    @FXML
+    private void handleFinish(ActionEvent actionEvent) {
         setResult(RESULT_SUCCESS);
         Bundle bundle = new Bundle();
         bundle.putInt(ShopHelper.ITEM_ACTION, action);
@@ -227,12 +228,14 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         finish(bundle);
     }
 
-    public void handleShowMoneyPopup(ActionEvent actionEvent) {
+    @FXML
+    private void handleShowMoneyPopup(ActionEvent actionEvent) {
         Bundle bundle = new Bundle().put(MoneyController.MONEY, model.price);
         startNewPopupWindow("money", bundle, (Node) actionEvent.getSource());
     }
 
-    public void handleSelectImage(MouseEvent mouseEvent) {
+    @FXML
+    private void handleSelectImage(MouseEvent mouseEvent) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(imageChooserTitle);
         fileChooser.getExtensionFilters().add(new ExtensionFilter("PNG", "*.png"));

@@ -137,56 +137,69 @@ public class MainController extends BaseController implements Initializable {
 
     // region Button handle
 
-    public void handleMenuNewHero(ActionEvent actionEvent) {
+    @FXML
+    private void handleMenuNewHero(ActionEvent actionEvent) {
         startNewDialogForResult(R.FXML.NEW_HERO_1, ACTION_NEW_HERO);
     }
 
-    public void handleMenuLoadHero(ActionEvent actionEvent) {
+    @FXML
+    private void handleMenuLoadHero(ActionEvent actionEvent) {
         startNewDialogForResult(R.FXML.OPEN_HERO, ACTION_LOAD_HERO);
     }
 
-    public void handleExportHero(ActionEvent actionEvent) {
+    @FXML
+    private void handleExportHero(ActionEvent actionEvent) {
 
     }
 
-    public void handleImportHero(ActionEvent actionEvent) {
+    @FXML
+    private void handleImportHero(ActionEvent actionEvent) {
 
     }
 
-    public void handleMenuCloseHero(ActionEvent actionEvent) {
+    @FXML
+    private void handleMenuCloseHero(ActionEvent actionEvent) {
         closeChildScreens();
         hero.setValue(new Hero.Builder().build());
     }
 
-    public void handleMenuLogin(ActionEvent actionEvent) {
+    @FXML
+    private void handleMenuLogin(ActionEvent actionEvent) {
         startNewDialogForResult(R.FXML.LOGIN, ACTION_LOGIN);
     }
 
-    public void handleMenuDice(ActionEvent actionEvent) {
+    @FXML
+    private void handleMenuDice(ActionEvent actionEvent) {
         startNewDialog(R.FXML.DICE);
     }
 
-    public void handleMenuBestiary(ActionEvent actionEvent) {
+    @FXML
+    private void handleMenuBestiary(ActionEvent actionEvent) {
 
     }
 
-    public void handleMenuShop(ActionEvent actionEvent) {
+    @FXML
+    private void handleMenuShop(ActionEvent actionEvent) {
         startNewDialog(R.FXML.SHOP1);
     }
 
-    public void handleMenuFight(ActionEvent actionEvent) {
+    @FXML
+    private void handleMenuFight(ActionEvent actionEvent) {
 
     }
 
-    public void handleMenuAbout(ActionEvent actionEvent) {
+    @FXML
+    private void handleMenuAbout(ActionEvent actionEvent) {
 
     }
 
-    public void handleMenuChangelog(ActionEvent actionEvent) {
+    @FXML
+    private void handleMenuChangelog(ActionEvent actionEvent) {
 
     }
 
-    public void handleMenuHelp(ActionEvent actionEvent) {
+    @FXML
+    private void handleMenuHelp(ActionEvent actionEvent) {
 
     }
 

@@ -110,15 +110,18 @@ public class HeroCreatorController1 extends BaseController implements Initializa
 
     // region Button handles
 
-    public void handleBack(ActionEvent actionEvent) {
+    @FXML
+    private void handleBack(ActionEvent actionEvent) {
         back();
     }
 
-    public void handleCancel(ActionEvent actionEvent) {
+    @FXML
+    private void handleCancel(ActionEvent actionEvent) {
         finish();
     }
 
-    public void handleReset(ActionEvent actionEvent) {
+    @FXML
+    private void handleReset(ActionEvent actionEvent) {
         model.resetValues();
         bundle.remove(HeroCreatorHelper.NAME);
         bundle.remove(HeroCreatorHelper.CONVICTION);
@@ -127,7 +130,8 @@ public class HeroCreatorController1 extends BaseController implements Initializa
         bundle.remove(HeroCreatorHelper.DESCRIPTION);
     }
 
-    public void handleNext(ActionEvent actionEvent) {
+    @FXML
+    private void handleNext(ActionEvent actionEvent) {
         bundle.putString(HeroCreatorHelper.NAME, model.name.getValue());
         bundle.putInt(HeroCreatorHelper.CONVICTION, model.conviction.getValue().ordinal());
         bundle.putInt(HeroCreatorHelper.RACE, model.race.getValue().ordinal());

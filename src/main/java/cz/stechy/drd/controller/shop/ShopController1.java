@@ -224,18 +224,21 @@ public class ShopController1 extends BaseController implements Initializable {
 
     // region Button handlers
 
-    public void handleAddItem(ActionEvent actionEvent) {
+    @FXML
+    private void handleAddItem(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
         bundle.putInt(ShopHelper.ITEM_ACTION, ShopHelper.ITEM_ACTION_ADD);
         startNewDialogForResult(controllers[selectedAccordionPaneIndex.get()].getEditScreenName(),
             ACTION_ADD_ITEM, bundle);
     }
 
-    public void handleRemoveItem(ActionEvent actionEvent) {
+    @FXML
+    private void handleRemoveItem(ActionEvent actionEvent) {
         controllers[selectedAccordionPaneIndex.get()].requestRemoveItem(selectedRowIndex.get());
     }
 
-    public void handleEditItem(ActionEvent actionEvent) {
+    @FXML
+    private void handleEditItem(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
         ShopItemController controller = controllers[selectedAccordionPaneIndex.get()];
         bundle.putInt(ShopHelper.ITEM_ACTION, ShopHelper.ITEM_ACTION_UPDATE);
@@ -244,11 +247,13 @@ public class ShopController1 extends BaseController implements Initializable {
             ACTION_UPDATE_ITEM, bundle);
     }
 
-    public void handleToggleOnline(ActionEvent actionEvent) {
+    @FXML
+    private void handleToggleOnline(ActionEvent actionEvent) {
 
     }
 
-    public void handleContinueShopping(ActionEvent actionEvent) {
+    @FXML
+    private void handleContinueShopping(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
         bundle.put(ShopController2.HERO_ID, hero.get().getId());
         bundle.put(ShopController2.SHOPPING_CART, shoppingCart);

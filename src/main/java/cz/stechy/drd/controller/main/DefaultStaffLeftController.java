@@ -24,17 +24,6 @@ public class DefaultStaffLeftController {
     @FXML
     private Label lblHeight;
 
-//    @FXML
-//    private LabeledText lblStrengthRepair;
-//    @FXML
-//    private Label lblDexterityRepair;
-//    @FXML
-//    private Label lblImmunityRepair;
-//    @FXML
-//    private Label lblIntelligenceRepair;
-//    @FXML
-//    private Label lblCharismaRepair;
-
     // endregion
 
     // endregion
@@ -47,6 +36,5 @@ public class DefaultStaffLeftController {
         lblCharisma.setHeroProperty(hero.getCharisma());
         lblHeight.textProperty().bind(hero.heightProperty().asString());
     }
-
 
 }
