@@ -35,7 +35,7 @@ public class MoneyController extends BaseController {
 
     @Override
     protected void onCreate(Bundle bundle) {
-        Money money = (Money) bundle.get(MONEY);
+        Money money = bundle.get(MONEY);
 
         spinnerGold.getValueFactory().valueProperty().bindBidirectional(money.gold);
         spinnerSilver.getValueFactory().valueProperty().bindBidirectional(money.silver);

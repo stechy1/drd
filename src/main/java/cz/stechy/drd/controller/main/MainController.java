@@ -2,7 +2,6 @@ package cz.stechy.drd.controller.main;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper;
-import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper.ItemEntry;
 import cz.stechy.drd.controller.hero.opener.HeroOpenerHelper;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -111,7 +110,7 @@ public class MainController extends BaseController implements Initializable {
                 closeChildScreens();
                 Hero hero = HeroCreatorHelper.fromBundle(bundle);
                 hero.setAuthor(userManager.getUser().getName());
-                ObservableList<HeroCreatorHelper.ItemEntry> itemsToInventory = (ObservableList<ItemEntry>) bundle
+                ObservableList<HeroCreatorHelper.ItemEntry> itemsToInventory = bundle
                     .get(HeroCreatorHelper.INVENTORY);
                 try {
                     heroManager.insert(hero, itemsToInventory);
@@ -124,7 +123,7 @@ public class MainController extends BaseController implements Initializable {
                 if (statusCode != RESULT_SUCCESS) {
                     return;
                 }
-                this.hero.setValue((Hero) bundle.get(HeroOpenerHelper.HERO));
+                this.hero.setValue(bundle.get(HeroOpenerHelper.HERO));
                 break;
             case ACTION_LOGIN:
                 if (statusCode != RESULT_SUCCESS) {

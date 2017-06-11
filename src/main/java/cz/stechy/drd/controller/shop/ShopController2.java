@@ -62,8 +62,6 @@ public class ShopController2 extends BaseController implements Initializable {
     private final ObservableList<ItemResultEntry> items = FXCollections.observableArrayList();
     private final HeroManager heroManager;
 
-    private String heroId;
-
     // endregion
 
     // region Constructors
@@ -85,8 +83,7 @@ public class ShopController2 extends BaseController implements Initializable {
 
     @Override
     protected void onCreate(Bundle bundle) {
-        this.heroId = bundle.getString(HERO_ID);
-        ShoppingCart shoppingCart = (ShoppingCart) bundle.get(SHOPPING_CART);
+        ShoppingCart shoppingCart = bundle.get(SHOPPING_CART);
         items.setAll(shoppingCart.orderList.stream()
             .map(shopEntry -> new ItemResultEntry(shopEntry))
             .collect(Collectors.toList()));
