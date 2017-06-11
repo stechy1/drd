@@ -106,8 +106,8 @@ public final class Money {
                 }
             }
             changing = true;
-            //gold.setValue((newValue.intValue() & MASK_GOLD) >> MULTIPLIER_GOLD);
-            setGold(newValue.intValue());
+            subtractGold(oldValue.intValue());
+            addGold(newValue.intValue());
             changing = false;
         });
         silver.addListener((observable, oldValue, newValue) -> {
@@ -117,7 +117,8 @@ public final class Money {
                 }
             }
             changing = true;
-            setSilver(newValue.intValue());
+            subtractSilver(oldValue.intValue());
+            addSilver(newValue.intValue());
             changing = false;
         });
         copper.addListener((observable, oldValue, newValue) -> {
@@ -127,7 +128,8 @@ public final class Money {
                 }
             }
             changing = true;
-            setCopper(newValue.intValue());
+            subtractCopper(oldValue.intValue());
+            addCopper(newValue.intValue());
             changing = false;
         });
     }
