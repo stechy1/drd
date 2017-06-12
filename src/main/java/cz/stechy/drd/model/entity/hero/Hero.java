@@ -336,13 +336,6 @@ public class Hero extends EntityBase {
         this.intelligence.setValue(hero.getIntelligence().getValue());
         this.charisma.setValue(hero.getCharisma().getValue());
         this.defenceNumber.setValue(hero.getDefenceNumber());
-        this.capacity.setValue(hero.getCapacity());
-        this.agility.setValue(hero.getAgility().getValue());
-        this.lowLoad.setValue(hero.getLowLoad().getValue());
-        this.mediumLoad.setValue(hero.getMediumLoad().getValue());
-        this.highLoad.setValue(hero.getHighLoad().getValue());
-        this.observationObjects.setValue(hero.getObservationObjects().getValue());
-        this.observationMechanics.setValue(hero.getObservationMechanics().getValue());
     }
 
     @Override
