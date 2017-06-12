@@ -23,4 +23,28 @@ public interface Database {
      * @param params Parametry dotazu
      */
     void select(OnRowHandler handler, String query, Object... params) throws SQLException;
+
+    /**
+     * Započne novou transakci.
+     */
+    void beginTransaction() throws SQLException;
+
+    /**
+     * Potvrdí veškeré změny transakce.
+     */
+    void commit() throws SQLException;
+
+    /**
+     * Vrátí všechny transakce do původního stavu.
+     */
+    void rollback() throws SQLException;
+
+    /**
+     * Zjistí, zda-li byla započata nová transakce
+     *
+     * @return True, pokud byla započata nová transakce, jinak false
+     */
+    boolean isTransactional();
+
+    void addCommitHandler(CommitHandler handler);
 }

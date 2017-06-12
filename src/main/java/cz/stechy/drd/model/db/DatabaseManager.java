@@ -19,4 +19,10 @@ public interface DatabaseManager<T> {
     void update(T item) throws DatabaseException;
 
     void delete(String id) throws DatabaseException;
+
+    void beginTransaction() throws DatabaseException;
+
+    void commit() throws DatabaseException;
+
+    void rollback() throws DatabaseException;
 }
