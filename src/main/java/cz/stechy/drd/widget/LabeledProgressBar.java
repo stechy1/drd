@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 /**
  * Kontrolka pro grafické zobrazení životů a magů
@@ -17,7 +18,7 @@ public class LabeledProgressBar extends VBox {
     private static final int DEFAULT_LABEL_PADDING = 5;
 
     private static final String[] COLORS = new String[]{
-        "-fx-accent: red", "-fx-accent: blue"
+        "-fx-accent: red", "-fx-accent: blue", "-fx-accent: #FEFF8A"
     };
 
     // endregion
@@ -37,7 +38,7 @@ public class LabeledProgressBar extends VBox {
     public LabeledProgressBar() {
         setDisplayMode(DisplayMode.LIVE);
 
-        progressLabel.setStyle("-fx-text-fill: black; -fx-background-color: rgba(0, 0, 0, 0.1)");
+        label.setFont(Font.font(10));
 
         progressBar.setPrefWidth(Double.MAX_VALUE);
         getChildren().setAll(label, container);
@@ -99,6 +100,6 @@ public class LabeledProgressBar extends VBox {
     // endregion
 
     public enum DisplayMode {
-        LIVE, MAG
+        LIVE, MAG, EXPERIENCE
     }
 }

@@ -2,6 +2,7 @@ package cz.stechy.drd.model.entity.hero;
 
 import cz.stechy.drd.Money;
 import cz.stechy.drd.model.IClonable;
+import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.EntityBase;
@@ -51,7 +52,7 @@ public class Hero extends EntityBase {
     // Peníze
     protected final Money money = new Money();
     // Zkušenosti
-    protected final IntegerProperty experiences = new SimpleIntegerProperty();
+    protected final MaxActValue experiences = new MaxActValue();
     // Síla
     protected final EntityProperty strength = new SimpleEntityProperty();
     // Obratnost
@@ -93,7 +94,7 @@ public class Hero extends EntityBase {
             hero.getProfession(),
             hero.getLevel(),
             hero.getMoney().getRaw(),
-            hero.getExperiences(),
+            hero.getExperiences().getActValue().intValue(),
             hero.getStrength().getValue(),
             hero.getDexterity().getValue(),
             hero.getImmunity().getValue(),
@@ -149,7 +150,7 @@ public class Hero extends EntityBase {
         this.profession.setValue(profession);
         this.level.setValue(level);
         this.money.setRaw(money);
-        this.experiences.setValue(experiences);
+        this.experiences.setActValue(experiences);
         this.strength.setValue(strength);
         this.dexterity.setValue(dexterity);
         this.immunity.setValue(immunity);
@@ -190,6 +191,10 @@ public class Hero extends EntityBase {
             this.lowLoad.setValue(Math.round(Math.floor(value * WEIGHT_LOW_MULTIPLICATOR)));
             this.mediumLoad.setValue(Math.round(Math.floor(value * WEIGHT_MEDIUM_MULTIPLICATOR)));
             this.highLoad.setValue(Math.round(Math.floor(value * WEIGHT_HIGH_MULTIPLICATOR)));
+        });
+
+        this.levelProperty().addListener((observable, oldValue, newValue) -> {
+            // TODO implementovat tabulku zkušeností
         });
     }
 
@@ -237,16 +242,8 @@ public class Hero extends EntityBase {
         return money;
     }
 
-    public int getExperiences() {
-        return experiences.get();
-    }
-
-    public IntegerProperty experiencesProperty() {
+    public MaxActValue getExperiences() {
         return experiences;
-    }
-
-    public void setExperiences(int experiences) {
-        this.experiences.set(experiences);
     }
 
     public EntityProperty getStrength() {
@@ -329,7 +326,7 @@ public class Hero extends EntityBase {
         this.profession.setValue(hero.getProfession());
         this.level.setValue(hero.getLevel());
         this.money.setRaw(hero.getMoney().getRaw());
-        this.experiences.setValue(hero.getExperiences());
+        this.experiences.update(hero.getExperiences());
         this.strength.setValue(hero.getStrength().getValue());
         this.dexterity.setValue(hero.getDexterity().getValue());
         this.immunity.setValue(hero.getImmunity().getValue());

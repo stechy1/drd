@@ -57,6 +57,12 @@ public final class MaxActValue {
         actValue.set(act - ammount);
     }
 
+    public void update(MaxActValue other) {
+        this.setMaxValue(other.getMaxValue());
+        this.setMinValue(other.getMinValue());
+        this.setActValue(other.getActValue());
+    }
+
     // endregion
 
     // region Getters & Setters

@@ -34,6 +34,8 @@ public class DefaultStaffController implements MainScreen {
     @FXML
     private LabeledProgressBar lblMag;
     @FXML
+    private LabeledProgressBar lblExperience;
+    @FXML
     private MoneyLabel lblMoney;
     @FXML
     private GridPane defaultStaffLeft;
@@ -62,6 +64,7 @@ public class DefaultStaffController implements MainScreen {
                 .bind(StringConvertors.forRaceAndProfessionConverter(translator, newValue));
             lblLive.setMaxActValue(newValue.getLive());
             lblMag.setMaxActValue(newValue.getMag());
+            lblExperience.setMaxActValue(newValue.getExperiences());
             defaultStaffLeftController.bindWithHero(newValue);
             defaultStaffRightController.bindWithHero(newValue);
             lblMoney.forMoney(newValue.getMoney());
