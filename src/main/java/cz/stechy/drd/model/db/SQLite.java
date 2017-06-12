@@ -1,6 +1,6 @@
 package cz.stechy.drd.model.db;
 
-import cz.stechy.drd.model.db.base.CommitHandler;
+import cz.stechy.drd.model.db.base.TransactionHandler;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.OnRowHandler;
 import java.sql.Connection;
@@ -21,7 +21,7 @@ public class SQLite implements Database {
 
     private final SQLiteConnectionPoolDataSource dataSource = new SQLiteConnectionPoolDataSource();
     private final MiniConnectionPoolManager pool;
-    private final List<CommitHandler> commitHandlers = new ArrayList<>();
+    private final List<TransactionHandler> transactionHandlers = new ArrayList<>();
 
     private Connection transactionalConnection = null;
 
@@ -102,7 +102,7 @@ public class SQLite implements Database {
 
         transactionalConnection.commit();
         transactionalConnection = null;
-        commitHandlers.forEach(CommitHandler::onCommit);
+        transactionHandlers.forEach(TransactionHandler::onCommit);
     }
 
     @Override
@@ -113,6 +113,7 @@ public class SQLite implements Database {
 
         transactionalConnection.rollback();
         transactionalConnection = null;
+        transactionHandlers.forEach(TransactionHandler::onRollback);
     }
 
     @Override
@@ -121,7 +122,7 @@ public class SQLite implements Database {
     }
 
     @Override
-    public void addCommitHandler(CommitHandler handler) {
-        commitHandlers.add(handler);
+    public void addCommitHandler(TransactionHandler handler) {
+        transactionHandlers.add(handler);
     }
 }

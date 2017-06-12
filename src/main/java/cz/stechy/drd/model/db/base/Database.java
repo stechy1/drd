@@ -46,5 +46,5 @@ public interface Database {
      */
     boolean isTransactional();
 
-    void addCommitHandler(CommitHandler handler);
+    void addCommitHandler(TransactionHandler handler);
 }

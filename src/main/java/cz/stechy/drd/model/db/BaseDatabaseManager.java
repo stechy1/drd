@@ -4,7 +4,7 @@ import cz.stechy.drd.model.db.base.TransactionOperation;
 import cz.stechy.drd.model.db.base.TransactionOperation.DeleteOperation;
 import cz.stechy.drd.model.db.base.TransactionOperation.InsertOperation;
 import cz.stechy.drd.model.db.base.TransactionOperation.UpdateOperation;
-import cz.stechy.drd.model.db.base.CommitHandler;
+import cz.stechy.drd.model.db.base.TransactionHandler;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import java.io.ByteArrayOutputStream;
@@ -91,7 +91,7 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
      */
     protected BaseDatabaseManager(Database db) {
         this.db = db;
-        db.addCommitHandler(commitHandler);
+        db.addCommitHandler(transactionHandler);
     }
 
     // endregion
@@ -345,8 +345,17 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
 
     // endregion
 
-    private final CommitHandler commitHandler = () -> {
-        operations.forEach(operation -> operation.commit(items));
+    private final TransactionHandler transactionHandler = new TransactionHandler() {
+        @Override
+        public void onCommit() {
+            operations.forEach(operation -> operation.commit(items));
+            operations.clear();
+        }
+
+        @Override
+        public void onRollback() {
+            operations.clear();
+        }
     };
 
     public interface UpdateListener<T extends DatabaseItem> {
