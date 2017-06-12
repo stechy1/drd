@@ -103,6 +103,7 @@ public class ShopController2 extends BaseController implements Initializable {
     private void handleFinishShopping(ActionEvent actionEvent) {
         try {
             // Odečtení peněz
+            heroManager.beginTransaction();
             final Hero heroCopy = heroManager.getHero().get().duplicate();
             heroCopy.getMoney().subtract(shoppingCart.totalPrice);
             heroManager.update(heroCopy);
@@ -136,13 +137,20 @@ public class ShopController2 extends BaseController implements Initializable {
                         inventoryContent.insert(inventoryRecord);
                     } catch (InventoryException e1) {
                         e1.printStackTrace();
+                        heroManager.rollback();
                         return;
                     }
                 }
             }
+            heroManager.commit();
 
         } catch (DatabaseException e) {
             e.printStackTrace();
+            try {
+                heroManager.rollback();
+            } catch (DatabaseException e1) {
+                e1.printStackTrace();
+            }
             return;
         }
         finish();
