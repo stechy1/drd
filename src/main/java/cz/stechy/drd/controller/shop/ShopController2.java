@@ -3,6 +3,7 @@ package cz.stechy.drd.controller.shop;
 import cz.stechy.drd.Money;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryException;
 import cz.stechy.drd.model.inventory.InventoryRecord;
@@ -62,6 +63,8 @@ public class ShopController2 extends BaseController implements Initializable {
     private final ObservableList<ItemResultEntry> items = FXCollections.observableArrayList();
     private final HeroManager heroManager;
 
+    private ShoppingCart shoppingCart;
+
     // endregion
 
     // region Constructors
@@ -83,7 +86,7 @@ public class ShopController2 extends BaseController implements Initializable {
 
     @Override
     protected void onCreate(Bundle bundle) {
-        ShoppingCart shoppingCart = bundle.get(SHOPPING_CART);
+        this.shoppingCart = bundle.get(SHOPPING_CART);
         items.setAll(shoppingCart.orderList.stream()
             .map(shopEntry -> new ItemResultEntry(shopEntry))
             .collect(Collectors.toList()));
@@ -99,6 +102,12 @@ public class ShopController2 extends BaseController implements Initializable {
     @FXML
     private void handleFinishShopping(ActionEvent actionEvent) {
         try {
+            // Odečtení peněz
+            final Hero heroCopy = heroManager.getHero().get().duplicate();
+            heroCopy.getMoney().subtract(shoppingCart.totalPrice);
+            heroManager.update(heroCopy);
+
+            // Postupné přidání koupených předmětů do inventáře postavy
             final InventoryManager inventoryManager = heroManager.getInventory();
             final Inventory inventory = inventoryManager.selectAll().stream()
                 .filter(i -> i.getInventoryType() == InventoryType.MAIN).findFirst().get();
