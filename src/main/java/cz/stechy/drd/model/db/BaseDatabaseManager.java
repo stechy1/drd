@@ -1,5 +1,10 @@
 package cz.stechy.drd.model.db;
 
+import cz.stechy.drd.model.db.base.TransactionOperation;
+import cz.stechy.drd.model.db.base.TransactionOperation.DeleteOperation;
+import cz.stechy.drd.model.db.base.TransactionOperation.InsertOperation;
+import cz.stechy.drd.model.db.base.TransactionOperation.UpdateOperation;
+import cz.stechy.drd.model.db.base.CommitHandler;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import java.io.ByteArrayOutputStream;
@@ -7,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -67,8 +73,9 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
 
     // Databáze
     protected final Database db;
-    //protected final ObservableList<T> offlineDatabase = FXCollections.observableArrayList();
     protected final ObservableList<T> items = FXCollections.observableArrayList();
+    // Operace transakce
+    protected final List<TransactionOperation<T>> operations = new ArrayList<>();
 
     private boolean selectAllCalled = false;
     private UpdateListener<T> updateListener;
@@ -84,6 +91,7 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
      */
     protected BaseDatabaseManager(Database db) {
         this.db = db;
+        db.addCommitHandler(commitHandler);
     }
 
     // endregion
@@ -232,7 +240,12 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
         try {
             logger.trace("Vkládám položku {} do databáze.", item.toString());
             db.query(query, itemToParams(item).toArray());
-            items.add(item);
+            TransactionOperation<T> operation = new InsertOperation<>(item);
+            if (db.isTransactional()) {
+                operations.add(operation);
+            } else {
+                operation.commit(items);
+            }
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
@@ -248,18 +261,28 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
         try {
             logger.trace("Aktualizuji položku {} v databázi", item.toString());
             db.query(query, params.toArray());
+            Optional<T> result = items.stream()
+                .filter(t -> t.equals(item))
+                .findFirst();
+            assert result.isPresent();
+                //.ifPresent(t -> t.update(item));
+
+
+//            if (updateListener != null) {
+//                updateListener.onUpdate(item);
+//            }
+            TransactionOperation<T> operation = new UpdateOperation<>(result.get(), item);
+            if (db.isTransactional()) {
+                operations.add(operation);
+            } else {
+                operation.commit(items);
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
             return;
         }
-        items.stream()
-            .filter(t -> t.equals(item))
-            .findFirst()
-            .ifPresent(t -> t.update(item));
 
-        if (updateListener != null) {
-            updateListener.onUpdate(item);
-        }
     }
 
     @Override
@@ -269,10 +292,44 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
         try {
             logger.trace("Mažu položku {} z databáze.", id);
             db.query(query, id);
-            items.stream()
+            Optional<T> result = items.stream()
                 .filter(item -> item.getId().equals(id))
-                .findFirst()
-                .ifPresent(items::remove);
+                .findFirst();
+                //.ifPresent(items::remove);
+            assert result.isPresent();
+            TransactionOperation<T> operation = new DeleteOperation<>(result.get());
+            if (db.isTransactional()) {
+                operations.add(operation);
+            } else {
+                operation.commit(items);
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void beginTransaction() throws DatabaseException {
+        try {
+            db.beginTransaction();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void commit() throws DatabaseException {
+        try {
+            db.commit();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
+    }
+
+    @Override
+    public void rollback() throws DatabaseException {
+        try {
+            db.rollback();
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
@@ -287,6 +344,10 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
     }
 
     // endregion
+
+    private final CommitHandler commitHandler = () -> {
+        operations.forEach(operation -> operation.commit(items));
+    };
 
     public interface UpdateListener<T extends DatabaseItem> {
 

@@ -1,11 +1,14 @@
 package cz.stechy.drd.model.db;
 
+import cz.stechy.drd.model.db.base.CommitHandler;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.OnRowHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 
 /**
@@ -18,6 +21,9 @@ public class SQLite implements Database {
 
     private final SQLiteConnectionPoolDataSource dataSource = new SQLiteConnectionPoolDataSource();
     private final MiniConnectionPoolManager pool;
+    private final List<CommitHandler> commitHandlers = new ArrayList<>();
+
+    private Connection transactionalConnection = null;
 
     /**
      * Vytvoří novou instanci databází pro SQLite
@@ -27,13 +33,15 @@ public class SQLite implements Database {
         pool = new MiniConnectionPoolManager(dataSource, MAX_CONNECTIONS);
     }
 
-    @Override
-    public long query(String query, Object... params) throws SQLException {
+    private long queryTransactional(String query, Object... params) throws SQLException {
+        try (Connection connection = pool.getConnection()) {
+            return query(connection, query, params);
+        }
+    }
+
+    private long query(Connection connection, String query, Object... params) throws SQLException {
         long result = -1;
-        try (
-            Connection connection = pool.getConnection();
-            PreparedStatement statement = connection
-                .prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
             for (int i = 0; i < params.length; i++) {
                 // Indexy v databázi jsou od 1, proto i+1
                 statement.setObject(i + 1, params[i]);
@@ -46,7 +54,17 @@ public class SQLite implements Database {
                 }
             }
         }
+
         return result;
+    }
+
+    @Override
+    public long query(String query, Object... params) throws SQLException {
+        if (isTransactional()) {
+            return query(transactionalConnection, query, params);
+        } else {
+            return queryTransactional(query, params);
+        }
     }
 
     @Override
@@ -64,5 +82,46 @@ public class SQLite implements Database {
                 handler.onRow(result);
             }
         }
+    }
+
+    @Override
+    public void beginTransaction() throws SQLException {
+        if (transactionalConnection != null) {
+            return;
+        }
+
+        transactionalConnection = pool.getConnection();
+        transactionalConnection.setAutoCommit(false);
+    }
+
+    @Override
+    public void commit() throws SQLException {
+        if (transactionalConnection == null) {
+            return;
+        }
+
+        transactionalConnection.commit();
+        transactionalConnection = null;
+        commitHandlers.forEach(CommitHandler::onCommit);
+    }
+
+    @Override
+    public void rollback() throws SQLException {
+        if (transactionalConnection == null) {
+            return;
+        }
+
+        transactionalConnection.rollback();
+        transactionalConnection = null;
+    }
+
+    @Override
+    public boolean isTransactional() {
+        return transactionalConnection != null;
+    }
+
+    @Override
+    public void addCommitHandler(CommitHandler handler) {
+        commitHandlers.add(handler);
     }
 }
