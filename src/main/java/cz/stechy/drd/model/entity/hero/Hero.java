@@ -193,9 +193,8 @@ public class Hero extends EntityBase {
             this.highLoad.setValue(Math.round(Math.floor(value * WEIGHT_HIGH_MULTIPLICATOR)));
         });
 
-        this.levelProperty().addListener((observable, oldValue, newValue) -> {
-            // TODO implementovat tabulku zkušeností
-        });
+        this.levelProperty().addListener((observable, oldValue, newValue) ->
+            this.experiences.setMaxValue(HeroGenerator.experience(getRace(), newValue.intValue())));
     }
 
     // endregion

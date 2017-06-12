@@ -38,6 +38,7 @@ public class LabeledProgressBar extends VBox {
     public LabeledProgressBar() {
         setDisplayMode(DisplayMode.LIVE);
 
+        progressLabel.setStyle("-fx-text-fill: black; -fx-background-color: rgba(0, 0, 0, 0.1)");
         label.setFont(Font.font(10));
 
         progressBar.setPrefWidth(Double.MAX_VALUE);
@@ -51,7 +52,7 @@ public class LabeledProgressBar extends VBox {
     // region Private methods
 
     private void sync(int actValue, int maxValue) {
-        progressBar.setProgress(Math.round(actValue / (double) maxValue));
+        progressBar.setProgress(actValue / (double) maxValue);
         progressLabel.setText(String.format("%d / %d", actValue, maxValue));
 
         progressBar.setMinHeight(
