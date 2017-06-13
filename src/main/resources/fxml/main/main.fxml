@@ -81,6 +81,7 @@
           </ImageView>
         </graphic>
       </MenuItem>
+      <MenuItem onAction="#handleMenuMoney" text="%drd_main_menu_tools_money" />
       <MenuItem onAction="#handleMenuBestiary" text="%drd_main_menu_tools_bestiary">
         <graphic>
           <ImageView>

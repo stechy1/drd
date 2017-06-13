@@ -174,6 +174,11 @@ public class MainController extends BaseController implements Initializable {
     }
 
     @FXML
+    private void handleMenuMoney(ActionEvent actionEvent) {
+        startNewDialog(R.FXML.MONEY_XP);
+    }
+
+    @FXML
     private void handleMenuBestiary(ActionEvent actionEvent) {
 
     }
