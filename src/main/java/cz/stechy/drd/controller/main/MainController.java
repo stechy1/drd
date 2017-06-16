@@ -3,6 +3,7 @@ package cz.stechy.drd.controller.main;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper;
 import cz.stechy.drd.controller.hero.opener.HeroOpenerHelper;
+import cz.stechy.drd.controller.moneyxp.MoneyXpController;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -37,6 +38,7 @@ public class MainController extends BaseController implements Initializable {
     private static final int ACTION_NEW_HERO = 1;
     private static final int ACTION_LOAD_HERO = 2;
     private static final int ACTION_LOGIN = 3;
+    private static final int ACTION_MONEY_EXPERIENCE = 4;
 
     // endregion
 
@@ -132,6 +134,20 @@ public class MainController extends BaseController implements Initializable {
 
                 showNotification(loginSuccess, Length.SHORT);
                 break;
+            case ACTION_MONEY_EXPERIENCE:
+                if (statusCode != RESULT_SUCCESS) {
+                    return;
+                }
+                final Hero heroCopy = this.hero.get().duplicate();
+                heroCopy.getMoney().setRaw(bundle.getInt(MoneyXpController.MONEY));
+                heroCopy.getExperiences().setActValue(bundle.getInt(MoneyXpController.EXPERIENCE));
+                try {
+                    heroManager.update(heroCopy);
+                } catch (DatabaseException e) {
+                    logger.warn("Hrdinu se nepodařilo aktualizovat", e);
+                    showNotification("Akce se nezdařila", Length.SHORT);
+                }
+                break;
         }
     }
 
@@ -175,7 +191,7 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuMoney(ActionEvent actionEvent) {
-        startNewDialog(R.FXML.MONEY_XP);
+        startNewDialogForResult(R.FXML.MONEY_XP, ACTION_MONEY_EXPERIENCE);
     }
 
     @FXML

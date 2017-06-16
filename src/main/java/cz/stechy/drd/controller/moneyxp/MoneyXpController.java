@@ -7,6 +7,7 @@ import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroManager;
 import cz.stechy.drd.util.FormUtils;
+import cz.stechy.drd.widget.LabeledProgressBar;
 import cz.stechy.drd.widget.MoneyLabel;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -22,7 +23,12 @@ import javafx.scene.control.TextField;
  */
 public class MoneyXpController extends BaseController implements Initializable {
 
+    // region Constants
 
+    public static final String MONEY = "money";
+    public static final String EXPERIENCE = "experience";
+
+    // endregion
 
     // region Variables
 
@@ -30,6 +36,8 @@ public class MoneyXpController extends BaseController implements Initializable {
 
     @FXML
     private MoneyLabel lblMoney;
+    @FXML
+    private LabeledProgressBar lblExperience;
     @FXML
     private TextField txtGold;
     @FXML
@@ -61,7 +69,7 @@ public class MoneyXpController extends BaseController implements Initializable {
         silverValue.actValueProperty().bindBidirectional(moneyModel.silver);
         copperValue.actValueProperty().bindBidirectional(moneyModel.copper);
 
-        lblMoney.forMoney(hero.getMoney());
+        experienceModel.update(hero.getExperiences());
     }
 
     // endregion
@@ -70,6 +78,8 @@ public class MoneyXpController extends BaseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.MONEY_TITLE);
 
+        lblMoney.forMoney(hero.getMoney());
+        lblExperience.setMaxActValue(hero.getExperiences());
     }
 
     @Override
@@ -78,18 +88,6 @@ public class MoneyXpController extends BaseController implements Initializable {
         FormUtils.initTextFormater(txtSilver, silverValue);
         FormUtils.initTextFormater(txtCopper, copperValue);
         FormUtils.initTextFormater(txtExperience, experienceModel);
-    }
-
-    @Override
-    protected void onClose() {
-        goldValue.actValueProperty().unbindBidirectional(moneyModel.gold);
-        silverValue.actValueProperty().unbindBidirectional(moneyModel.silver);
-        copperValue.actValueProperty().unbindBidirectional(moneyModel.copper);
-
-        FormUtils.disposeTextFormater(txtGold, goldValue);
-        FormUtils.disposeTextFormater(txtSilver, silverValue);
-        FormUtils.disposeTextFormater(txtCopper, copperValue);
-        FormUtils.disposeTextFormater(txtExperience, experienceModel);
     }
 
     @Override
@@ -116,6 +114,19 @@ public class MoneyXpController extends BaseController implements Initializable {
     private void handleXpAdd(ActionEvent actionEvent) {
         hero.getExperiences().add(experienceModel.getActValue().intValue());
         experienceModel.setActValue(0);
+    }
+
+    @FXML
+    private void handleCancel(ActionEvent actionEvent) {
+        finish();
+    }
+
+    @FXML
+    private void handleFinish(ActionEvent actionEvent) {
+        setResult(RESULT_SUCCESS);
+        finish(new Bundle()
+            .putInt(MONEY, hero.getMoney().getRaw())
+            .putInt(EXPERIENCE, hero.getExperiences().getActValue().intValue()));
     }
 
     // endregion

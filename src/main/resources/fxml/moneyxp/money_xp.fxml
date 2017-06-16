@@ -10,8 +10,8 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<GridPane hgap="8.0" prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.112"
-  xmlns:fx="http://javafx.com/fxml/1"
+<GridPane xmlns:fx="http://javafx.com/fxml/1" hgap="8.0" prefHeight="200.0" prefWidth="500.0"
+  xmlns="http://javafx.com/javafx/8.0.112"
   fx:controller="cz.stechy.drd.controller.moneyxp.MoneyXpController">
   <padding>
     <Insets topRightBottomLeft="8.0"/>
@@ -21,14 +21,14 @@
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
   </columnConstraints>
   <rowConstraints>
+    <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES"/>
   </rowConstraints>
-  <MoneyLabel fx:id="lblMoney" label="%drd_hero_money"/>
-  <LabeledProgressBar fx:id="lblExperience" displayMode="EXPERIENCE" label="%drd_hero_experience"
-    GridPane.columnIndex="1"/>
-  <GridPane alignment="CENTER" hgap="8.0" vgap="8.0" GridPane.rowIndex="1">
+  <MoneyLabel label="%drd_hero_money" fx:id="lblMoney"/>
+  <LabeledProgressBar GridPane.columnIndex="1" displayMode="EXPERIENCE" label="%drd_hero_experience"
+    fx:id="lblExperience"/>
+  <GridPane GridPane.rowIndex="1" alignment="CENTER" hgap="8.0" vgap="8.0">
     <Label text="%drd_money_gold"/>
     <Label text="%drd_money_silver" GridPane.rowIndex="1"/>
     <Label text="%drd_money_copper" GridPane.rowIndex="2"/>
@@ -44,17 +44,20 @@
       <RowConstraints/>
       <RowConstraints/>
       <RowConstraints/>
+      <RowConstraints/>
     </rowConstraints>
   </GridPane>
-  <HBox alignment="CENTER" GridPane.columnIndex="1" GridPane.rowIndex="1">
+  <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" alignment="CENTER">
     <Label text="%drd_hero_experience"/>
     <TextField fx:id="txtExperience"/>
   </HBox>
-  <HBox alignment="CENTER" GridPane.rowIndex="2">
+  <HBox GridPane.rowIndex="2" alignment="CENTER">
     <Button onAction="#handleMoneyAdd" text="%drd_money_add"/>
     <Button onAction="#handleMoneySubtract" text="%drd_money_subtract"/>
   </HBox>
-  <Button onAction="#handleXpAdd" text="%drd_xp_add" GridPane.columnIndex="1"
-    GridPane.halignment="CENTER" GridPane.rowIndex="2"/>
-
+  <Button GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2"
+    onAction="#handleXpAdd" text="%drd_xp_add"/>
+  <Button GridPane.rowIndex="3" onAction="#handleCancel" text="%drd_cancel"/>
+  <Button GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3"
+    onAction="#handleFinish" text="%drd_finish"/>
 </GridPane>
