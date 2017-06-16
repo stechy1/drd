@@ -151,7 +151,7 @@ public class HeroManager extends BaseDatabaseManager<Hero> {
             hero.getProfession().ordinal(),
             hero.getLevel(),
             hero.getMoney().getRaw(),
-            hero.getExperiences(),
+            hero.getExperiences().getActValue().intValue(),
             hero.getStrength().getValue(),
             hero.getDexterity().getValue(),
             hero.getImmunity().getValue(),
