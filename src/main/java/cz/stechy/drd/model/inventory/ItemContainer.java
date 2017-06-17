@@ -2,6 +2,7 @@ package cz.stechy.drd.model.inventory;
 
 import cz.stechy.drd.model.db.BaseDatabaseManager.UpdateListener;
 import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.inventory.ItemSlot.ClickListener;
 import cz.stechy.drd.model.inventory.ItemSlot.DragDropHandlers;
 import cz.stechy.drd.model.inventory.ItemSlot.HighlightState;
 import cz.stechy.drd.model.item.ItemBase;
@@ -31,6 +32,7 @@ public abstract class ItemContainer {
     protected InventoryContent inventoryContent;
     protected final int capacity;
     private ObservableList<InventoryRecord> oldRecords;
+    private ItemClickListener itemClickListener;
     // Kolekce slotů pro itemy v inventáři
     public final ObservableList<ItemSlot> itemSlots = FXCollections.observableArrayList();
 
@@ -211,7 +213,11 @@ public abstract class ItemContainer {
      * @param slotIndex Index slotu, do kterého se má vložit item
      */
     public void insert(ItemBase item, int ammount, int slotIndex) {
-        itemSlots.get(slotIndex).addItem(item, ammount);
+        final ItemSlot itemSlot = itemSlots.get(slotIndex);
+        if (!itemSlot.containsItem()) {
+            itemSlot.setClickListener(clickListener);
+        }
+        itemSlot.addItem(item, ammount);
     }
 
     /**
@@ -226,6 +232,9 @@ public abstract class ItemContainer {
             return;
         }
         itemSlot.removeItems(ammount);
+        if (!itemSlot.containsItem()) {
+            itemSlot.setClickListener(null);
+        }
     }
 
     // endregion
@@ -244,6 +253,10 @@ public abstract class ItemContainer {
      * @return {@link Node}
      */
     public abstract Node getGraphics();
+
+    public void setItemClickListener(ItemClickListener listener) {
+        this.itemClickListener = listener;
+    }
 
     // endregion
 
@@ -297,8 +310,15 @@ public abstract class ItemContainer {
         itemSlots.get(item.getSlotId()).getItemStack().setAmmount(item.getAmmount());
 
     // Listener pro změnu váhy inventáře
-    private ChangeListener<? super Number> weightListener = (observable, oldValue, newValue) -> {
+    private final ChangeListener<? super Number> weightListener = (observable, oldValue, newValue) -> {
 
+    };
+
+    // Listener pro kliknutí na položku v inventáři
+    private final ClickListener clickListener = itemSlot -> {
+        if (itemClickListener != null) {
+            itemClickListener.onClick(itemSlot);
+        }
     };
 
     private static final class DragInformations {

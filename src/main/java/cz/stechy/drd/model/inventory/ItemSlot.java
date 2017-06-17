@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -44,6 +45,7 @@ public class ItemSlot {
     // Id slotu
     private int id;
     private DragDropHandlers dragDropHandlers;
+    private ClickListener clickListener;
     private ItemStack itemStack;
     // Výchozí item filster, který přijímá vše
     private Predicate<ItemBase> filter = itemBase -> true;
@@ -128,23 +130,31 @@ public class ItemSlot {
         event.consume();
     };
 
+    private final EventHandler<? super MouseEvent> onMouseClicked = event -> {
+        if (clickListener != null) {
+            clickListener.onClick(this);
+        }
+    };
+
     // endregion
 
     {
         container.setPrefWidth(SLOT_SIZE);
         container.setPrefHeight(SLOT_SIZE);
 
-//        imgItem.hoverProperty().addListener((observable, oldValue, newValue) ->
-//            imgItem.setEffect(newValue ? new GaussianBlur(20) : null));
+        imgItem.setOnMouseClicked(onMouseClicked);
+
+        // Source slot drag events
         imgItem.setOnDragDetected(onDragDetected);
         imgItem.setOnDragDone(onDragDone);
 
+        // Destination slot drag events
         imgItem.setOnDragOver(onDragOver);
-//        imgItem.setOnDragEntered(onDragEntered);
-//        imgItem.setOnDragExited(onDragExited);
         imgItem.setOnDragDropped(onDragDropped);
+
         imgItem.setFitWidth(SLOT_SIZE);
         imgItem.setFitHeight(SLOT_SIZE);
+        imgItem.setCursor(Cursor.HAND);
 
         lblAmmount.setMaxSize(SLOT_SIZE, LABEL_AMMOUNT_HEGHT);
         lblAmmount.setTranslateY(LABEL_TRANSLATE_Y);
@@ -154,8 +164,6 @@ public class ItemSlot {
         container.getStyleClass().add("item-slot");
         container.getChildren().setAll(imgItem, lblAmmount);
         container.setOnDragOver(onDragOver);
-//        container.setOnDragEntered(onDragEntered);
-//        container.setOnDragExited(onDragExited);
         container.setOnDragDropped(onDragDropped);
     }
 
@@ -284,9 +292,17 @@ public class ItemSlot {
         return id;
     }
 
-    public ItemSlot setFilter(Predicate<ItemBase> filter) {
+    /**
+     * Nastaví filtr, podle kterého se bude zjišťovat, zda-li může slot přijmout item, či nikoliv
+     *
+     * @param filter Filtr pro příjem itemů
+     */
+    public void setFilter(Predicate<ItemBase> filter) {
         this.filter = filter;
-        return this;
+    }
+
+    public void setClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     // endregion
@@ -324,6 +340,16 @@ public class ItemSlot {
          */
         void onDragEnd();
 
+    }
+
+    interface ClickListener {
+
+        /**
+         * Handler na kliknutí myši na slot
+         *
+         * @param itemSlot {@link ItemSlot} Item slot, na který se kliklo
+         */
+        void onClick(ItemSlot itemSlot);
     }
 
     public enum HighlightState {

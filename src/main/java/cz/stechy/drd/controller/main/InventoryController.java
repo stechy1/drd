@@ -7,6 +7,7 @@ import cz.stechy.drd.model.inventory.EquipItemContainer;
 import cz.stechy.drd.model.inventory.GridItemContainer;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryType;
+import cz.stechy.drd.model.inventory.ItemClickListener;
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.persistent.HeroManager;
 import cz.stechy.drd.model.persistent.InventoryContent;
@@ -59,6 +60,9 @@ public class InventoryController implements Initializable, MainScreen {
 
     public InventoryController(Context context) {
         this.heroManager = context.getManager(Context.MANAGER_HERO);
+
+        mainItemContainer.setItemClickListener(itemClickListener);
+        equipItemContainer.setItemClickListener(itemClickListener);
     }
 
     // endregion
@@ -108,6 +112,14 @@ public class InventoryController implements Initializable, MainScreen {
         } catch (DatabaseException e) {
             mainItemContainer.clear();
             equipItemContainer.clear();
+        }
+    };
+
+    private final ItemClickListener itemClickListener = itemSlot -> {
+        switch (itemSlot.getItemStack().getItem().getItemType()) {
+            case BACKPACK:
+
+                break;
         }
     };
 }
