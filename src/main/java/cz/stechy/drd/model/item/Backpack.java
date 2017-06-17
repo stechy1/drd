@@ -12,6 +12,7 @@ public class Backpack extends ItemBase {
 
     // region Variables
 
+    // Maximální nosnost baťohu
     protected final IntegerProperty maxLoad = new SimpleIntegerProperty();
 
     // endregion
@@ -80,7 +81,7 @@ public class Backpack extends ItemBase {
 
     @Override
     public ItemType getItemType() {
-        return ItemType.GENERAL;
+        return ItemType.BACKPACK;
     }
 
     @Override
