@@ -43,9 +43,9 @@ public final class InventoryManager extends BaseDatabaseManager<Inventory> {
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
     private static final String QUERY_CREATE = String.format("CREATE TABLE IF NOT EXISTS %s("
         + "%s VARCHAR(255) PRIMARY KEY NOT NULL UNIQUE,"     // id
-        + "%s VARCHAR(255) NOT NULL,"                       // hero id
+        + "%s VARCHAR(255) NOT NULL,"                        // hero id
         + "%s INT NOT NULL,"                                 // inventory type
-        + "%s INT NOT NULL"                                 // capacity
+        + "%s INT NOT NULL"                                  // capacity
         + ");", TABLE, COLUMN_ID, COLUMN_HERO_ID, COLUMN_INVENTORY_TYPE, COLUMN_CAPACITY);
     // endregion
 
@@ -237,6 +237,25 @@ public final class InventoryManager extends BaseDatabaseManager<Inventory> {
         }
 
         return inventoryContent;
+    }
+
+    /**
+     * Inicializuje nový inventář
+     *
+     * @param capacity Kapacita inventáře
+     * @param inventoryType Typ inventáře
+     * @return Id inventáře
+     * @throws DatabaseException
+     */
+    public String initSubInventory(final int capacity, final InventoryType inventoryType)
+        throws DatabaseException {
+        Inventory subInventory = new Inventory.Builder()
+            .heroId(hero.getId())
+            .inventoryType(inventoryType)
+            .capacity(capacity)
+            .build();
+        insert(subInventory);
+        return subInventory.getId();
     }
 
     // endregion

@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- *
+ * Třída reprezentující záznam v databázi o jednom inventáři
  */
 public class Inventory extends DatabaseItem {
 
@@ -62,9 +62,9 @@ public class Inventory extends DatabaseItem {
         super.update(other);
 
         Inventory inventory = (Inventory) other;
-        this.heroId.setValue(inventory.getHeroId());
-        this.inventoryType.setValue(inventory.getInventoryType());
-        this.capacity.setValue(inventory.getCapacity());
+        setHeroId(inventory.getHeroId());
+        setInventoryType(inventory.getInventoryType());
+        setCapacity(inventory.getCapacity());
     }
 
     @Override
