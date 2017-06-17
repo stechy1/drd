@@ -6,6 +6,7 @@ import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryException;
 import cz.stechy.drd.model.inventory.InventoryRecord;
+import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
 import java.sql.ResultSet;
@@ -44,9 +45,10 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
     private static final String COLUMN_ITEM_ID = TABLE + "_item_id";
     private static final String COLUMN_ITEM_AMMOUNT = TABLE + "_ammount";
     private static final String COLUMN_SLOT = TABLE + "_slot";
+    private static final String COLUMN_METADATA = TABLE + "_metadata";
     // TODO poškození itemu?
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_INVENTORY_ID,
-        COLUMN_ITEM_ID, COLUMN_ITEM_AMMOUNT, COLUMN_SLOT};
+        COLUMN_ITEM_ID, COLUMN_ITEM_AMMOUNT, COLUMN_SLOT, COLUMN_METADATA};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -55,9 +57,10 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
             + "%s VARCHAR(255) NOT NULL,"                       // inventory id
             + "%s VARCHAR(255) NOT NULL,"                       // item id
             + "%S INT NOT NULL,"                                // ammount
-            + "%s INT NOT NULL"                                // slot index
+            + "%s INT NOT NULL,"                                // slot index
+            + "%s BLOB"                                         // image
             + ");", TABLE, COLUMN_ID, COLUMN_INVENTORY_ID, COLUMN_ITEM_ID, COLUMN_ITEM_AMMOUNT,
-        COLUMN_SLOT);
+        COLUMN_SLOT, COLUMN_METADATA);
 
     // endregion
 
@@ -120,6 +123,7 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
             .itemId(resultSet.getString(COLUMN_ITEM_ID))
             .ammount(resultSet.getInt(COLUMN_ITEM_AMMOUNT))
             .slotId(resultSet.getInt(COLUMN_SLOT))
+            .metadata(Metadata.deserialize(readBlob(resultSet, COLUMN_METADATA)))
             .build();
     }
 
@@ -130,7 +134,8 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
             record.getInventoryId(),
             record.getItemId(),
             record.getAmmount(),
-            record.getSlotId()
+            record.getSlotId(),
+            Metadata.serialize(record.getMetadata())
         ));
     }
 
@@ -191,7 +196,7 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
     @Override
     public void update(InventoryRecord inventoryRecord) throws DatabaseException {
         final Optional<InventoryRecord> inventoryRecordOptional = items.stream()
-            .filter(record -> Objects.equals(record, record))
+            .filter(record -> Objects.equals(record, inventoryRecord))
             .findFirst();
         final ItemBase item = ItemRegistry.getINSTANCE().getItemById(inventoryRecord.getItemId());
         int oldAmmount = 0;
