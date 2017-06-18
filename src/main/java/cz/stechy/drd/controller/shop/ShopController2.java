@@ -9,6 +9,7 @@ import cz.stechy.drd.model.inventory.InventoryException;
 import cz.stechy.drd.model.inventory.InventoryRecord;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.InventoryType;
+import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
 import cz.stechy.drd.model.item.ItemType;
@@ -138,12 +139,10 @@ public class ShopController2 extends BaseController implements Initializable {
                             .build();
                         if (itemBase.getItemType() == ItemType.BACKPACK) {
                             final Metadata metadata = inventoryRecord.getMetadata();
-//                            final Backpack backpack = (Backpack) itemBase;
-                            // TODO odstranit magické hodnoty
+                            final Backpack backpack = (Backpack) itemBase;
                             final String childInventoryId = inventoryManager
-                                .initSubInventory(10);
-                            // TODO přesunout do konstanty
-                            metadata.put("child_inventory_id", childInventoryId);
+                                .initSubInventory(backpack.getSize().size);
+                            metadata.put(Backpack.CHILD_INVENTORY_ID, childInventoryId);
                         }
                         inventoryContent.insert(inventoryRecord);
                     } catch (InventoryException e1) {

@@ -47,6 +47,11 @@ public final class InventoryManager extends BaseDatabaseManager<Inventory> {
         + "%s INT NOT NULL,"                                 // inventory type
         + "%s INT NOT NULL"                                  // capacity
         + ");", TABLE, COLUMN_ID, COLUMN_HERO_ID, COLUMN_INVENTORY_TYPE, COLUMN_CAPACITY);
+
+    public static final Predicate<? super Inventory> MAIN_INVENTORY_FILTER = inventory ->
+        inventory.getInventoryType() == InventoryType.MAIN;
+    public static final Predicate<? super Inventory> EQUIP_INVENTORY_FILTER = inventory ->
+        inventory.getInventoryType() == InventoryType.EQUIP;
     // endregion
 
     // region Variables
@@ -200,13 +205,6 @@ public final class InventoryManager extends BaseDatabaseManager<Inventory> {
         throws DatabaseException {
         final Inventory inventory = new Inventory.Builder().id(inventoryId).build();
         return getInventoryContent(inventory, ID_FILTER(inventory));
-    }
-
-    public InventoryContent getInventoryContentByCreditails(final int capacity,
-        final InventoryType inventoryType) throws DatabaseException {
-        final Inventory inventory = new Inventory.Builder().capacity(capacity)
-            .inventoryType(inventoryType).heroId(hero.getId()).build();
-        return getInventoryContent(inventory, CREDITAILS_FILTER(inventory));
     }
 
     public InventoryContent getInventoryContent(final Inventory inventory)

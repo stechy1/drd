@@ -14,7 +14,6 @@ import cz.stechy.drd.model.persistent.InventoryContent;
 import cz.stechy.drd.model.persistent.InventoryManager;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.function.Predicate;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -26,15 +25,6 @@ import javafx.scene.layout.BorderPane;
  * Kontroler pro inventář hrdiny
  */
 public class InventoryController implements Initializable, MainScreen {
-
-    // region Constants
-
-    private static final Predicate<? super Inventory> MAIN_INVENTORY_FILTER = inventory ->
-        inventory.getInventoryType() == InventoryType.MAIN;
-    private static final Predicate<? super Inventory> EQUIP_INVENTORY_FILTER = inventory ->
-        inventory.getInventoryType() == InventoryType.EQUIP;
-
-    // endregion
 
     // region Variables
 
@@ -91,12 +81,12 @@ public class InventoryController implements Initializable, MainScreen {
         InventoryContent.clearWeight();
         try {
             // Získám záznam hlavního inventáře
-            final Inventory mainInventory = inventoryManager.select(MAIN_INVENTORY_FILTER);
+            final Inventory mainInventory = inventoryManager.select(InventoryManager.MAIN_INVENTORY_FILTER);
             mainItemContainer.setInventoryManager(inventoryManager, mainInventory);
             // Inicializace inventáře výbavy hrdiny
             Inventory equipInventory = null;
             try {
-                equipInventory = inventoryManager.select(EQUIP_INVENTORY_FILTER);
+                equipInventory = inventoryManager.select(InventoryManager.EQUIP_INVENTORY_FILTER);
             } catch (DatabaseException e) {
                 // Ještě nebyl vytvořen záznam o equip inventáři pro danou postavu
                 equipInventory = new Inventory.Builder()

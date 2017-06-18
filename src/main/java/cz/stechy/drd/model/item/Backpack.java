@@ -12,6 +12,12 @@ import javafx.beans.property.SimpleObjectProperty;
  */
 public class Backpack extends ItemBase {
 
+    // region Constants
+
+    public static final String CHILD_INVENTORY_ID = "child_inventory_id";
+
+    // endregion
+
     // region Variables
 
     // Maximální nosnost baťohu
