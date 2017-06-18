@@ -21,6 +21,7 @@ public final class Translator {
     private static final String[] WEAPON_RANGED_TYPES;
     private static final String[] DICE_ADDITION_PROPERTIES;
     private static final String[] SHOP_ITEMS;
+    private static final String[] BACKPACK_SIZES;
 
     // endregion
 
@@ -78,6 +79,12 @@ public final class Translator {
             R.Translate.ITEM_TYPE_GENERAL,
             R.Translate.ITEM_TYPE_BACKPACK
         };
+
+        BACKPACK_SIZES = new String[]{
+            R.Translate.ITEM_BACKPACK_SIZE_SMALL,
+            R.Translate.ITEM_BACKPACK_SIZE_MEDIUM,
+            R.Translate.ITEM_BACKPACK_SIZE_LARGE
+        };
     }
 
     // region Variables
@@ -91,6 +98,7 @@ public final class Translator {
     private List<String> weaponRangedTypeList;
     private List<String> diceAdditionProertyList;
     private List<String> shopItemList;
+    private List<String> backpackSizeList;
 
     // endregion
 
@@ -203,6 +211,15 @@ public final class Translator {
         }
 
         return shopItemList;
+    }
+
+    public List<String> getBackpackSizeList() {
+        if (backpackSizeList == null) {
+            backpackSizeList = Arrays.stream(BACKPACK_SIZES).map(resources::getString)
+                .collect(Collectors.toList());
+        }
+
+        return backpackSizeList;
     }
 
     // endregion

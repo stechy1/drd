@@ -6,6 +6,8 @@ import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
 import cz.stechy.drd.model.entity.hero.Hero.Race;
+import cz.stechy.drd.model.item.Backpack;
+import cz.stechy.drd.model.item.Backpack.Size;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponType;
@@ -169,5 +171,21 @@ public final class StringConvertors {
         return Bindings.concat(translatedRace, " ", translatedProfession);
     }
 
+    public static StringConverter<Backpack.Size> forBackpackSize(Translator translator) {
+        return new StringConverter<Size>() {
+            @Override
+            public String toString(Size object) {
+                if (object == null) {
+                    return "";
+                }
 
+                return translator.getBackpackSizeList().get(object.ordinal());
+            }
+
+            @Override
+            public Size fromString(String string) {
+                return Size.valueOf(string);
+            }
+        };
+    }
 }
