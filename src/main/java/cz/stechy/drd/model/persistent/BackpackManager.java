@@ -30,12 +30,12 @@ public class BackpackManager extends AdvancedDatabaseManager<Backpack> {
     private static final String COLUMN_WEIGHT = TABLE + "_weight";
     private static final String COLUMN_PRICE = TABLE + "_price";
     private static final String COLUMN_MAX_LOAD = TABLE + "_max_load";
-
+    private static final String COLUMN_SIZE = TABLE + "_size";
     private static final String COLUMN_IMAGE = TABLE + "_image";
     private static final String COLUMN_DOWNLOADED = TABLE + "_downloaded";
     private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
-        COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_IMAGE,
+        COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE,
         COLUMN_DOWNLOADED, COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
@@ -48,11 +48,13 @@ public class BackpackManager extends AdvancedDatabaseManager<Backpack> {
             + "%s INT NOT NULL,"                                // weight
             + "%s INT NOT NULL,"                                // price
             + "%s INT NOT NULL,"                                // max load
+            + "%s INT NOT NULL,"                                // size
             + "%s BLOB,"                                        // image
             + "%s BOOLEAN NOT NULL,"                            // je položka stažená
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
             + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
-        COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_IMAGE, COLUMN_DOWNLOADED, COLUMN_UPLOADED);
+        COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE, COLUMN_DOWNLOADED,
+        COLUMN_UPLOADED);
 
     // endregion
 
@@ -84,6 +86,7 @@ public class BackpackManager extends AdvancedDatabaseManager<Backpack> {
             .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
             .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
             .maxLoad(snapshot.child(COLUMN_MAX_LOAD).getValue(Integer.class))
+            .size(snapshot.child(COLUMN_SIZE).getValue(Integer.class))
             .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
             .build();
     }
@@ -98,6 +101,7 @@ public class BackpackManager extends AdvancedDatabaseManager<Backpack> {
             .weight(resultSet.getInt(COLUMN_WEIGHT))
             .price(resultSet.getInt(COLUMN_PRICE))
             .maxLoad(resultSet.getInt(COLUMN_MAX_LOAD))
+            .size(resultSet.getInt(COLUMN_SIZE))
             .image(readBlob(resultSet, COLUMN_IMAGE))
             .downloaded(resultSet.getBoolean(COLUMN_DOWNLOADED))
             .uploaded(resultSet.getBoolean(COLUMN_UPLOADED))
@@ -114,6 +118,7 @@ public class BackpackManager extends AdvancedDatabaseManager<Backpack> {
             item.getWeight(),
             item.getPrice().getRaw(),
             item.getMaxLoad(),
+            item.getSize().ordinal(),
             item.getImage(),
             item.isDownloaded(),
             item.isUploaded()

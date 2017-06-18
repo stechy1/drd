@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import cz.stechy.drd.widget.EnumComboBox?>
 <HBox spacing="8" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="cz.stechy.drd.controller.shop.ItemBackpackController">
   <padding>
@@ -28,20 +29,20 @@
       <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
       <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
       <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-      <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-      <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-      <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
 
     <Label text="%drd_item_name"/>
     <Label text="%drd_item_weight" GridPane.rowIndex="1"/>
     <Label text="%drd_item_max_load" GridPane.rowIndex="2"/>
-    <Label text="%drd_item_price" GridPane.rowIndex="3"/>
+    <Label text="%drd_item_backpack_size" GridPane.rowIndex="3" />
+    <Label text="%drd_item_price" GridPane.rowIndex="4"/>
     <TextField fx:id="txtName" GridPane.columnIndex="1"/>
     <TextField fx:id="txtWeight" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
     <TextField fx:id="txtMaxLoad" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+    <EnumComboBox fx:id="cmbSize" GridPane.columnIndex="1" GridPane.rowIndex="3"
+      enumType="cz.stechy.drd.model.item.Backpack$Size" />
     <Hyperlink fx:id="lblPrice" onAction="#handleShowMoneyPopup" GridPane.columnIndex="1"
-      GridPane.rowIndex="3"/>
+      GridPane.rowIndex="4"/>
   </GridPane>
   <VBox prefWidth="300.0">
     <Label text="%drd_item_image"/>

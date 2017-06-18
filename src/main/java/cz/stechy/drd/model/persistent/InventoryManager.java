@@ -243,15 +243,14 @@ public final class InventoryManager extends BaseDatabaseManager<Inventory> {
      * Inicializuje nový inventář
      *
      * @param capacity Kapacita inventáře
-     * @param inventoryType Typ inventáře
      * @return Id inventáře
      * @throws DatabaseException
      */
-    public String initSubInventory(final int capacity, final InventoryType inventoryType)
+    public String initSubInventory(final int capacity)
         throws DatabaseException {
         Inventory subInventory = new Inventory.Builder()
             .heroId(hero.getId())
-            .inventoryType(inventoryType)
+            .inventoryType(InventoryType.BACKPACK)
             .capacity(capacity)
             .build();
         insert(subInventory);

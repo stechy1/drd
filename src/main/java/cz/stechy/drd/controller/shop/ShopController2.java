@@ -141,7 +141,7 @@ public class ShopController2 extends BaseController implements Initializable {
 //                            final Backpack backpack = (Backpack) itemBase;
                             // TODO odstranit magické hodnoty
                             final String childInventoryId = inventoryManager
-                                .initSubInventory(10, InventoryType.SMALL);
+                                .initSubInventory(10);
                             // TODO přesunout do konstanty
                             metadata.put("child_inventory_id", childInventoryId);
                         }

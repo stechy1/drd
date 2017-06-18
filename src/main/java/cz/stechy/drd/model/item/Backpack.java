@@ -3,7 +3,9 @@ package cz.stechy.drd.model.item;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Třída představující batoh
@@ -14,6 +16,8 @@ public class Backpack extends ItemBase {
 
     // Maximální nosnost baťohu
     protected final IntegerProperty maxLoad = new SimpleIntegerProperty();
+    // Počet slotů v batohu
+    protected final ObjectProperty<Size> size = new SimpleObjectProperty<>();
 
     // endregion
 
@@ -27,7 +31,8 @@ public class Backpack extends ItemBase {
     public Backpack(Backpack backpack) {
         this(backpack.getId(), backpack.getName(), backpack.getDescription(), backpack.getAuthor(),
             backpack.getWeight(), backpack.getPrice().getRaw(), backpack.getMaxLoad(),
-            backpack.getImage(), backpack.isDownloaded(), backpack.isUploaded());
+            backpack.getSize(), backpack.getImage(), backpack.isDownloaded(),
+            backpack.isUploaded());
     }
 
     /**
@@ -39,16 +44,18 @@ public class Backpack extends ItemBase {
      * @param description Popis batohu
      * @param weight Váha batohu
      * @param price Cena batohu
+     * @param size Velikost batohu
      * @param image Obrázek batohu
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
     public Backpack(String id, String author, String name, String description, int weight,
-        int price, int maxLoad, byte[] image, boolean downloaded, boolean uploaded) {
+        int price, int maxLoad, Size size, byte[] image,
+        boolean downloaded, boolean uploaded) {
         super(id, author, name, description, weight, price, image, downloaded, uploaded);
 
         this.maxLoad.setValue(maxLoad);
-
+        this.size.setValue(size);
     }
 
     // endregion
@@ -67,6 +74,18 @@ public class Backpack extends ItemBase {
         this.maxLoad.set(max_load);
     }
 
+    public Size getSize() {
+        return size.get();
+    }
+
+    public ObjectProperty<Size> sizeProperty() {
+        return size;
+    }
+
+    public void setSize(Size size) {
+        this.size.set(size);
+    }
+
     // endregion
 
     // region Public methods
@@ -77,6 +96,7 @@ public class Backpack extends ItemBase {
 
         Backpack backpack = (Backpack) other;
         this.maxLoad.set(backpack.getMaxLoad());
+        this.size.set(backpack.getSize());
     }
 
     @Override
@@ -105,6 +125,7 @@ public class Backpack extends ItemBase {
         private byte[] image;
         private boolean downloaded;
         private boolean uploaded;
+        private Size size;
 
         public Builder id(String id) {
             this.id = id;
@@ -141,6 +162,15 @@ public class Backpack extends ItemBase {
             return this;
         }
 
+        public Builder size(Size size) {
+            this.size = size;
+            return this;
+        }
+
+        public Builder size(int size) {
+            this.size = Size.values()[size];
+            return this;
+        }
 
         public Builder image(byte[] image) {
             this.image = image;
@@ -158,8 +188,18 @@ public class Backpack extends ItemBase {
         }
 
         public Backpack build() {
-            return new Backpack(id, author, name, description, weight, price, maxLoad, image,
-                downloaded, uploaded);
+            return new Backpack(id, author, name, description, weight, price, maxLoad, size,
+                image, downloaded, uploaded);
+        }
+    }
+
+    public enum Size {
+        SMALL(10), MEDIUM(20), LARGE(40);
+
+        public final int size;
+
+        Size(int size) {
+            this.size = size;
         }
     }
 

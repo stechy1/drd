@@ -4,10 +4,15 @@ import cz.stechy.drd.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.controller.MoneyController;
+import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.item.Backpack;
+import cz.stechy.drd.model.item.Backpack.Size;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ImageUtils;
+import cz.stechy.drd.util.StringConvertors;
+import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.widget.EnumComboBox;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.io.ByteArrayInputStream;
@@ -51,10 +56,12 @@ public class ItemBackpackController extends BaseController implements Initializa
     private static final String PRICE = "price";
     private static final String WEIGHT = "weight";
     private static final String MAX_LOAD = "max_load";
+    private static final String SIZE = "size";
     private static final String AUTHOR = "author";
     private static final String IMAGE = "image";
     private static final String UPLOADED = "uploaded";
     private static final String DOWNLOADED = "downloaded";
+
 
     // endregion
 
@@ -71,6 +78,8 @@ public class ItemBackpackController extends BaseController implements Initializa
     @FXML
     private TextField txtMaxLoad;
     @FXML
+    private EnumComboBox<Size> cmbSize;
+    @FXML
     private Hyperlink lblPrice;
     @FXML
     private Button btnFinish;
@@ -79,10 +88,19 @@ public class ItemBackpackController extends BaseController implements Initializa
 
     // endregion
 
+    private final Translator translator;
     private final ItemModel model = new ItemModel();
     private String title;
     private String imageChooserTitle;
     private int action;
+
+    // endregion
+
+    // region Constructors
+
+    public ItemBackpackController(Context context) {
+        this.translator = context.getTranslator();
+    }
 
     // endregion
 
@@ -96,6 +114,7 @@ public class ItemBackpackController extends BaseController implements Initializa
             .weight(bundle.getInt(WEIGHT))
             .price(bundle.getInt(PRICE))
             .maxLoad(bundle.getInt(MAX_LOAD))
+            .size(bundle.getInt(SIZE))
             .author(bundle.getString(AUTHOR))
             .image(bundle.getByteArray(IMAGE))
             .uploaded(bundle.getBoolean(UPLOADED))
@@ -110,6 +129,7 @@ public class ItemBackpackController extends BaseController implements Initializa
         bundle.putInt(WEIGHT, backpack.getWeight());
         bundle.putInt(PRICE, backpack.getPrice().getRaw());
         bundle.putInt(MAX_LOAD, backpack.getMaxLoad());
+        bundle.putInt(SIZE, backpack.getSize().size);
         bundle.putString(AUTHOR, backpack.getAuthor());
         bundle.putByteArray(IMAGE, backpack.getImage());
         bundle.putBoolean(UPLOADED, backpack.isUploaded());
@@ -128,6 +148,9 @@ public class ItemBackpackController extends BaseController implements Initializa
         FormUtils.initTextFormater(txtWeight, model.weight);
         FormUtils.initTextFormater(txtMaxLoad, model.maxLoad);
 
+        cmbSize.converterProperty().setValue(StringConvertors.forBackpackSize(translator));
+        cmbSize.valueProperty().bindBidirectional(model.size);
+
         lblPrice.textProperty().bind(model.price.text);
         imageView.imageProperty().bindBidirectional(model.image);
 
@@ -143,6 +166,7 @@ public class ItemBackpackController extends BaseController implements Initializa
         model.price.setRaw(bundle.getInt(PRICE));
         model.weight.setActValue(bundle.getInt(WEIGHT));
         model.maxLoad.setActValue(bundle.getInt(MAX_LOAD));
+        model.size.setValue(Size.values()[bundle.getInt(SIZE)]);
         model.author.setValue(bundle.getString(AUTHOR));
         model.imageRaw.setValue(bundle.getByteArray(IMAGE));
         model.uploaded.setValue(bundle.getBoolean(UPLOADED));
@@ -182,6 +206,7 @@ public class ItemBackpackController extends BaseController implements Initializa
         bundle.putInt(PRICE, model.price.getRaw());
         bundle.putInt(WEIGHT, model.weight.getActValue().intValue());
         bundle.putInt(MAX_LOAD, model.maxLoad.getActValue().intValue());
+        bundle.putInt(SIZE, model.size.getValue().ordinal());
         bundle.putString(AUTHOR, model.author.getValue());
         bundle.putByteArray(IMAGE, model.imageRaw.getValue());
         bundle.putBoolean(UPLOADED, model.uploaded.getValue());
@@ -229,6 +254,7 @@ public class ItemBackpackController extends BaseController implements Initializa
         final ObjectProperty<Image> image = new SimpleObjectProperty<>();
         final BooleanProperty uploaded = new SimpleBooleanProperty();
         final BooleanProperty downloaded = new SimpleBooleanProperty();
+        final ObjectProperty<Size> size = new SimpleObjectProperty<>();
 
         {
             imageRaw.addListener((observable, oldValue, newValue) -> {
