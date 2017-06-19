@@ -1,5 +1,6 @@
 package cz.stechy.drd.model.inventory;
 
+import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry.ItemException;
 import javafx.beans.property.IntegerProperty;
@@ -20,20 +21,31 @@ public class ItemStack {
 
     private final ItemBase item;
     private final IntegerProperty ammount = new SimpleIntegerProperty();
+    private final Metadata metadata;
 
     // endregion
 
     // region Constructors
 
     /**
-     * Vytvoří nový {@link ItemStack} s definovaným počtem itemů
+     * Kopy konstruktor
      *
-     * @param item {@link ItemBase}
-     * @param ammount Počet itemů na stacku
+     * @param itemStack {@link ItemStack} Kopírovaný stack
      */
-    public ItemStack(ItemBase item, int ammount) {
+    public ItemStack(ItemStack itemStack) {
+        this(itemStack.getItem(), itemStack.getAmmount(), itemStack.getMetadata());
+    }
+
+    /**
+     * Vytvoří nový {@link ItemStack} s definovaným počtem itemů
+     *  @param item {@link ItemBase}
+     * @param ammount Počet itemů na stacku
+     * @param metadata
+     */
+    public ItemStack(ItemBase item, int ammount, Metadata metadata) {
         this.item = item;
         this.ammount.set(ammount);
+        this.metadata = metadata;
     }
 
     // endregion
@@ -97,6 +109,10 @@ public class ItemStack {
 
     public void setAmmount(int ammount) {
         this.ammount.set(ammount);
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
     }
 
     // endregion

@@ -188,6 +188,7 @@ public class ItemSlot {
         itemStack = null;
         imgItem.setImage(null);
         lblAmmount.setText(null);
+        clickListener = null;
     }
 
     /**
@@ -195,21 +196,22 @@ public class ItemSlot {
      * Pokud slot neobsahuje žádný item, tak je vložen celý.
      * Pokud slot obsahuje jiný item, tak se nic nevloží, jinak se pouze přičte počet
      *
-     * @param item {@link ItemBase}
-     * @param ammount Počet, který se má přidat
+     * @param itemStack
      */
-    public void addItem(ItemBase item, int ammount) {
-        if (itemStack == null) {
-            itemStack = new ItemStack(item, ammount);
+    public void addItem(ItemStack itemStack) {
+        final ItemBase item = itemStack.getItem();
+        final int ammount = itemStack.getAmmount();
+        if (this.itemStack == null) {
+            this.itemStack = new ItemStack(itemStack);
             lblAmmount.textProperty()
-                .bindBidirectional(itemStack.ammountProperty(), new NumberStringConverter());
+                .bindBidirectional(this.itemStack.ammountProperty(), new NumberStringConverter());
             setImage(item.getImage());
-            itemStack.getItem().imageProperty().addListener(imageChangeListener);
+            this.itemStack.getItem().imageProperty().addListener(imageChangeListener);
             return;
         }
 
-        if (itemStack.containsItemType(item)) {
-            itemStack.addAmmount(ammount);
+        if (this.itemStack.containsItemType(item)) {
+            this.itemStack.addAmmount(ammount);
         }
     }
 
@@ -226,7 +228,7 @@ public class ItemSlot {
         assert totalAmmount >= ammount;
         final int remaining = totalAmmount - ammount;
         final int count = (remaining >= 0) ? ammount : totalAmmount;
-        ItemStack stack = new ItemStack(itemStack.getItem(), count);
+        ItemStack stack = new ItemStack(itemStack.getItem(), count, itemStack.getMetadata());
 
         if (remaining == 0) {
             clearSlot();

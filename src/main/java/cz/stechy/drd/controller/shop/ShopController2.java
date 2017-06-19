@@ -8,7 +8,6 @@ import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryException;
 import cz.stechy.drd.model.inventory.InventoryRecord;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
-import cz.stechy.drd.model.inventory.InventoryType;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
@@ -113,12 +112,12 @@ public class ShopController2 extends BaseController implements Initializable {
 
             // Postupné přidání koupených předmětů do inventáře postavy
             final InventoryManager inventoryManager = heroManager.getInventory();
-            final Inventory inventory = inventoryManager.selectAll().stream()
-                .filter(i -> i.getInventoryType() == InventoryType.MAIN).findFirst().get();
+            final Inventory inventory = inventoryManager.select(InventoryManager.MAIN_INVENTORY_FILTER);
             final InventoryContent inventoryContent = inventoryManager
                 .getInventoryContent(inventory);
             for (ItemResultEntry item : items) {
-                final ItemBase itemBase = ItemRegistry.getINSTANCE().getItemById(item.getId());
+                final ItemBase itemBase = (ItemBase) ItemRegistry.getINSTANCE()
+                    .getItemById(item.getId()).get();
                 try {
                     final int slotIndex = inventoryContent.getItemSlotIndexById(itemBase);
                     final InventoryRecord inventoryRecord = inventoryContent

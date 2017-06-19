@@ -68,8 +68,8 @@ public final class ItemRegistry {
      * @param id Id itemu
      * @return {@link ItemBase}
      */
-    public <T extends DatabaseItem> T getItemById(String id) {
-        return (T) getItem(databaseItem -> id.equals(databaseItem.getId()));
+    public Optional<DatabaseItem> getItemById(String id) {
+        return getItem(databaseItem -> id.equals(databaseItem.getId()));
     }
 
     /**
@@ -78,12 +78,12 @@ public final class ItemRegistry {
      * @param filter Filter
      * @return {@link ItemBase}
      */
-    public <T extends DatabaseItem> T getItem(Predicate<DatabaseItem> filter) {
-        final Optional<? super DatabaseItem> item = registry.stream()
+    public Optional<DatabaseItem> getItem(Predicate<DatabaseItem> filter) {
+        final Optional<DatabaseItem> optional = registry.stream()
             .filter(filter)
             .findFirst();
 
-        return (T) item.get();
+        return optional;
     }
 
     public ObservableList<DatabaseItem> getRegistry() {

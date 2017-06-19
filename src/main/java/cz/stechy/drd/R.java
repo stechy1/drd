@@ -11,6 +11,7 @@ public final class R {
         public static final String NEW_HERO_2 = "new_hero_2";
         public static final String NEW_HERO_3 = "new_hero_3";
         public static final String OPEN_HERO = "open_hero";
+        public static final String BACKPACK = "backpack";
         public static final String DEFAULT_STAFF = "default_staff";
         public static final String DEFAULT_STAFF_LEFT = "default_staff_left";
         public static final String DEFAULT_STAFF_RIGHT = "default_staff_right";
@@ -115,6 +116,7 @@ public final class R {
         public static final String ITEM_WEAPON_MELE_TYPE_DOUBLE_HAND = "drd_item_weapon_mele_type_double_hand";
         public static final String ITEM_WEAPON_RANGED_TYPE_FIRE = "drd_item_weapon_ranged_type_fire";
         public static final String ITEM_WEAPON_RANGED_TYPE_PROJECTILE = "drd_item_weapon_ranged_type_projectile";
+        public static final String ITEM_BACKPACK_SIZE = "drd_item_backpack_size";
         public static final String ITEM_BACKPACK_SIZE_SMALL = "drd_item_backpack_size_small";
         public static final String ITEM_BACKPACK_SIZE_MEDIUM = "drd_item_backpack_size_medium";
         public static final String ITEM_BACKPACK_SIZE_LARGE = "drd_item_backpack_size_large";

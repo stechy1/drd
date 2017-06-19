@@ -2,6 +2,8 @@ package cz.stechy.drd.model.inventory;
 
 import cz.stechy.drd.model.db.BaseDatabaseManager.UpdateListener;
 import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.db.base.DatabaseItem;
+import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.ItemSlot.ClickListener;
 import cz.stechy.drd.model.inventory.ItemSlot.DragDropHandlers;
 import cz.stechy.drd.model.inventory.ItemSlot.HighlightState;
@@ -10,6 +12,7 @@ import cz.stechy.drd.model.item.ItemRegistry;
 import cz.stechy.drd.model.item.ItemRegistry.ItemException;
 import cz.stechy.drd.model.persistent.InventoryContent;
 import cz.stechy.drd.model.persistent.InventoryManager;
+import java.util.Optional;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -64,10 +67,21 @@ public abstract class ItemContainer {
      * @param record {@link InventoryRecord}
      * @throws ItemException Pokud se item nepodaří vložit
      */
-    private void insertItemToContainer(InventoryRecord record) throws ItemException {
-        insert(ItemRegistry.getINSTANCE().getItem(
-            databaseItem -> databaseItem.getId().equals(record.getItemId())),
-            record.getAmmount(), record.getSlotId());
+    private void insert(final InventoryRecord record) {
+        final Optional<DatabaseItem> itemOptional = ItemRegistry.getINSTANCE()
+            .getItem(databaseItem -> databaseItem.getId().equals(record.getItemId()));
+        if (itemOptional.isPresent()) {
+            final ItemBase item = (ItemBase) itemOptional.get();
+            final int ammount = record.getAmmount();
+            final int slotIndex = record.getSlotId();
+            final Metadata metadata = record.getMetadata();
+            final ItemSlot itemSlot = itemSlots.get(slotIndex);
+            if (!itemSlot.containsItem()) {
+                itemSlot.setClickListener(clickListener);
+            }
+
+            itemSlot.addItem(new ItemStack(item, ammount, metadata));
+        }
     }
 
     /**
@@ -75,12 +89,15 @@ public abstract class ItemContainer {
      *
      * @param record {@link InventoryRecord}
      */
-    private void removeItemFromContainer(InventoryRecord record) {
-        try {
-            remove(record.getSlotId(), record.getAmmount());
-        } catch (ItemException e) {
-            e.printStackTrace();
+    private void remove(final InventoryRecord record) {
+        final int ammount = record.getAmmount();
+        final int slotIndex = record.getSlotId();
+        final ItemSlot itemSlot = itemSlots.get(slotIndex);
+        if (!itemSlot.containsItem()) {
+            return;
         }
+
+        itemSlot.removeItems(ammount);
     }
 
     /**
@@ -178,10 +195,7 @@ public abstract class ItemContainer {
         inventoryContent.setUpdateListener(inventoryUpdateListener);
         inventoryContent.getWeight().addListener(weightListener);
         final ObservableList<InventoryRecord> inventoryRecords = inventoryContent.selectAll();
-        inventoryRecords.forEach(record -> insert(ItemRegistry.getINSTANCE()
-                .getItem(databaseItem -> databaseItem.getId().equals(record.getItemId())),
-            record.getAmmount(),
-            record.getSlotId()));
+        inventoryRecords.forEach(this::insert);
         inventoryRecords.addListener(inventoryRecordListener);
         this.inventoryContent = inventoryContent;
         this.oldRecords = inventoryRecords;
@@ -202,38 +216,6 @@ public abstract class ItemContainer {
         }
         if (inventoryContent != null) {
             inventoryContent.setUpdateListener(null);
-        }
-    }
-
-    /**
-     * Vloži item do slotu
-     *
-     * @param item {@link ItemBase}
-     * @param ammount Počet itemů
-     * @param slotIndex Index slotu, do kterého se má vložit item
-     */
-    public void insert(ItemBase item, int ammount, int slotIndex) {
-        final ItemSlot itemSlot = itemSlots.get(slotIndex);
-        if (!itemSlot.containsItem()) {
-            itemSlot.setClickListener(clickListener);
-        }
-        itemSlot.addItem(item, ammount);
-    }
-
-    /**
-     * Odebere ze slotu item
-     *
-     * @param slotIndex Index slotu, ze kterého se má odebrat item
-     * @param ammount Počet itemů, který se má odebrat
-     */
-    public void remove(int slotIndex, int ammount) throws ItemException {
-        final ItemSlot itemSlot = itemSlots.get(slotIndex);
-        if (!itemSlot.containsItem()) {
-            return;
-        }
-        itemSlot.removeItems(ammount);
-        if (!itemSlot.containsItem()) {
-            itemSlot.setClickListener(null);
         }
     }
 
@@ -288,20 +270,8 @@ public abstract class ItemContainer {
     // Listener pro změnu obsahu inventáře
     private final ListChangeListener<? super InventoryRecord> inventoryRecordListener = (ListChangeListener<InventoryRecord>) c -> {
         while (c.next()) {
-            if (c.wasAdded()) {
-                for (InventoryRecord record : c.getAddedSubList()) {
-                    try {
-                        insertItemToContainer(record);
-                    } catch (ItemException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            if (c.wasRemoved()) {
-                for (InventoryRecord record : c.getRemoved()) {
-                    removeItemFromContainer(record);
-                }
-            }
+            c.getAddedSubList().forEach(this::insert);
+            c.getRemoved().forEach(this::remove);
         }
     };
 
