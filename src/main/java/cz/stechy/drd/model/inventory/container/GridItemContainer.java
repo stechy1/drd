@@ -1,5 +1,7 @@
-package cz.stechy.drd.model.inventory;
+package cz.stechy.drd.model.inventory.container;
 
+import cz.stechy.drd.model.inventory.ItemContainer;
+import cz.stechy.drd.model.inventory.ItemSlot;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 
@@ -38,6 +40,9 @@ public class GridItemContainer extends ItemContainer {
         this.cols = cols;
         this.rows = rows;
 
+        container.setHgap(SLOT_SPACING);
+        container.setVgap(SLOT_SPACING);
+
         init();
     }
 
@@ -46,8 +51,6 @@ public class GridItemContainer extends ItemContainer {
     // region Private methods
 
     private void init() {
-        container.setHgap(SLOT_SPACING);
-        container.setVgap(SLOT_SPACING);
         int remaining = capacity;
         int index = 0;
         for (int y = 0; y < rows; y++) {

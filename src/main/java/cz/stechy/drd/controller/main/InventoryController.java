@@ -1,17 +1,22 @@
 package cz.stechy.drd.controller.main;
 
+import cz.stechy.drd.controller.inventory.BackpackController;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.model.inventory.EquipItemContainer;
-import cz.stechy.drd.model.inventory.GridItemContainer;
 import cz.stechy.drd.model.inventory.Inventory;
+import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.InventoryType;
 import cz.stechy.drd.model.inventory.ItemClickListener;
 import cz.stechy.drd.model.inventory.ItemContainer;
+import cz.stechy.drd.model.inventory.container.EquipItemContainer;
+import cz.stechy.drd.model.inventory.container.GridItemContainer;
+import cz.stechy.drd.model.item.Backpack;
+import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.persistent.HeroManager;
 import cz.stechy.drd.model.persistent.InventoryContent;
 import cz.stechy.drd.model.persistent.InventoryManager;
+import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
@@ -106,9 +111,16 @@ public class InventoryController implements Initializable, MainScreen {
     };
 
     private final ItemClickListener itemClickListener = itemSlot -> {
-        switch (itemSlot.getItemStack().getItem().getItemType()) {
+        final ItemBase item = itemSlot.getItemStack().getItem();
+        switch (item.getItemType()) {
             case BACKPACK:
-
+                final Backpack backpack = (Backpack) item;
+                final Bundle bundle = new Bundle();
+                final Metadata metadata = itemSlot.getItemStack().getMetadata();
+                final String childInventoryId = (String) metadata.get(Backpack.CHILD_INVENTORY_ID);
+                bundle.putInt(BackpackController.BACKPACK_SIZE, backpack.getSize().size);
+                bundle.putString(BackpackController.INVENTORY_ID, childInventoryId);
+                //startNewDialog(R.FXML.BACKPACK, bundle);
                 break;
         }
     };

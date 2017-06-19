@@ -1,5 +1,7 @@
-package cz.stechy.drd.model.inventory;
+package cz.stechy.drd.model.inventory.container;
 
+import cz.stechy.drd.model.inventory.ItemContainer;
+import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.item.ItemType;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -14,7 +16,7 @@ public class EquipItemContainer extends ItemContainer {
 
     public static final int CAPACITY = 3;
 
-    private HBox container;
+    private HBox container = new HBox();
     private int idCounter = 0;
 
     /**
@@ -27,7 +29,6 @@ public class EquipItemContainer extends ItemContainer {
     }
 
     private void init() {
-        container = new HBox();
         container.setSpacing(1);
         BorderPane.setAlignment(container, Pos.CENTER);
         container.prefHeight(100);
