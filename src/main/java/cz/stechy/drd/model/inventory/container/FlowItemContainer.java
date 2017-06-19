@@ -22,6 +22,8 @@ public class FlowItemContainer extends ItemContainer {
     public FlowItemContainer(int capacity) {
         super(capacity);
 
+        container.setHgap(SLOT_SPACING);
+        container.setVgap(SLOT_SPACING);
         init();
     }
 

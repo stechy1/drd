@@ -10,12 +10,6 @@ import javafx.scene.layout.GridPane;
  */
 public class GridItemContainer extends ItemContainer {
 
-    // region Constants
-
-    private static final int SLOT_SPACING = 1;
-
-    // endregion
-
     // region Variables
 
     // Node, který reprezentuje jeden inventář

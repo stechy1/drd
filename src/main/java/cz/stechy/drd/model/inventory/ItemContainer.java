@@ -26,6 +26,12 @@ import javafx.scene.Node;
  */
 public abstract class ItemContainer {
 
+    // region Constsnts
+
+    public static final int SLOT_SPACING = 1;
+
+    // endregion
+
     // region Variables
 
     // Globální informace obsahující přesouvaný item

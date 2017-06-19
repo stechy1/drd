@@ -8,6 +8,7 @@ import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.ItemClickListener;
 import cz.stechy.drd.model.inventory.ItemContainer;
+import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.inventory.container.FlowItemContainer;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
@@ -29,6 +30,8 @@ import javafx.scene.layout.BorderPane;
 public class BackpackController extends BaseController implements Initializable {
 
     // region Constants
+
+    private static final int SLOT_ON_ROW = 8;
 
     public static final String BACKPACK_SIZE = "backpack_size";
     public static final String INVENTORY_ID = "inventory_id";
@@ -75,6 +78,7 @@ public class BackpackController extends BaseController implements Initializable 
         itemContainer = new FlowItemContainer(backpackSize);
         container.setCenter(itemContainer.getGraphics());
         itemContainer.setItemClickListener(itemClickListener);
+        setScreenSize(ItemSlot.SLOT_SIZE * SLOT_ON_ROW + ItemContainer.SLOT_SPACING * SLOT_ON_ROW, 200);
     }
 
     private final ChangeListener<? super Hero> heroChangeListener = (observable, oldValue, newValue) -> {
