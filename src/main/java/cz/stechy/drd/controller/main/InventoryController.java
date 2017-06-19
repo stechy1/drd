@@ -126,8 +126,10 @@ public class InventoryController implements Initializable, MainScreen {
                 final Bundle bundle = new Bundle();
                 final Metadata metadata = itemSlot.getItemStack().getMetadata();
                 final String childInventoryId = (String) metadata.get(Backpack.CHILD_INVENTORY_ID);
+                final String itemName = backpack.getName();
                 bundle.putInt(BackpackController.BACKPACK_SIZE, backpack.getSize().size);
                 bundle.putString(BackpackController.INVENTORY_ID, childInventoryId);
+                bundle.putString(BackpackController.ITEM_NAME, itemName);
                 screenSupport.startNewDialog(R.FXML.BACKPACK, bundle);
                 break;
         }

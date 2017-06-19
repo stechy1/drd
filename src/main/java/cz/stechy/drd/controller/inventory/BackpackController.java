@@ -3,7 +3,6 @@ package cz.stechy.drd.controller.inventory;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.db.DatabaseException;
-import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.ItemClickListener;
@@ -16,8 +15,6 @@ import cz.stechy.drd.model.persistent.HeroManager;
 import cz.stechy.drd.model.persistent.InventoryManager;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 
@@ -39,6 +36,7 @@ public class BackpackController extends BaseController {
                 + 16; // Width of scrollbar
     }
 
+    public static final String ITEM_NAME = "item_name";
     public static final String BACKPACK_SIZE = "backpack_size";
     public static final String INVENTORY_ID = "inventory_id";
 
@@ -53,9 +51,8 @@ public class BackpackController extends BaseController {
 
     // endregion
 
+    private final HeroManager heroManager;
     private ItemContainer itemContainer;
-    private ObjectProperty<Hero> hero;
-    private HeroManager heroManager;
     // Velikost inventáře = počet slotů v inventáři
     private int backpackSize;
     private String inventoryId;
@@ -66,8 +63,6 @@ public class BackpackController extends BaseController {
 
     public BackpackController(Context context) {
         this.heroManager = context.getManager(Context.MANAGER_HERO);
-        this.hero = heroManager.getHero();
-        this.hero.addListener(heroChangeListener);
     }
 
     // endregion
@@ -95,13 +90,12 @@ public class BackpackController extends BaseController {
     protected void onCreate(Bundle bundle) {
         backpackSize = bundle.getInt(BACKPACK_SIZE);
         inventoryId = bundle.getString(INVENTORY_ID);
+        setTitle(bundle.getString(ITEM_NAME));
         itemContainer = new FlowItemContainer(backpackSize);
         container.setContent(itemContainer.getGraphics());
         itemContainer.setItemClickListener(itemClickListener);
         setScreenSize(WIDTH, BackpackController.computeHeight(backpackSize));
-    }
 
-    private final ChangeListener<? super Hero> heroChangeListener = (observable, oldValue, newValue) -> {
         final InventoryManager inventoryManager = heroManager.getInventory();
         try {
             final Inventory backpackInventory = inventoryManager.select(InventoryManager.ID_FILTER(inventoryId));
@@ -109,7 +103,7 @@ public class BackpackController extends BaseController {
         } catch (DatabaseException e) {
             itemContainer.clear();
         }
-    };
+    }
 
     private final ItemClickListener itemClickListener = itemSlot -> {
         final ItemBase item = itemSlot.getItemStack().getItem();
@@ -119,8 +113,10 @@ public class BackpackController extends BaseController {
                 final Bundle bundle = new Bundle();
                 final Metadata metadata = itemSlot.getItemStack().getMetadata();
                 final String childInventoryId = (String) metadata.get(Backpack.CHILD_INVENTORY_ID);
+                final String itemName = backpack.getName();
                 bundle.putInt(BACKPACK_SIZE, backpack.getSize().size);
                 bundle.putString(INVENTORY_ID, childInventoryId);
+                bundle.putString(ITEM_NAME, itemName);
                 startNewDialog(R.FXML.BACKPACK, bundle);
                 break;
         }
