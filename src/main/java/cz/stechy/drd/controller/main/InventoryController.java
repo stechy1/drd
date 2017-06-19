@@ -1,5 +1,7 @@
 package cz.stechy.drd.controller.main;
 
+import cz.stechy.drd.R;
+import cz.stechy.drd.controller.IScreenSupport;
 import cz.stechy.drd.controller.inventory.BackpackController;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -48,6 +50,7 @@ public class InventoryController implements Initializable, MainScreen {
 
     private HeroManager heroManager;
     private ObjectProperty<Hero> hero;
+    private IScreenSupport screenSupport;
 
     // endregion
 
@@ -70,6 +73,11 @@ public class InventoryController implements Initializable, MainScreen {
 
         this.hero = hero;
         this.hero.addListener(heroChangeListener);
+    }
+
+    @Override
+    public void setScreenSupport(IScreenSupport screenSupport) {
+        this.screenSupport = screenSupport;
     }
 
     @Override
@@ -120,7 +128,7 @@ public class InventoryController implements Initializable, MainScreen {
                 final String childInventoryId = (String) metadata.get(Backpack.CHILD_INVENTORY_ID);
                 bundle.putInt(BackpackController.BACKPACK_SIZE, backpack.getSize().size);
                 bundle.putString(BackpackController.INVENTORY_ID, childInventoryId);
-                //startNewDialog(R.FXML.BACKPACK, bundle);
+                screenSupport.startNewDialog(R.FXML.BACKPACK, bundle);
                 break;
         }
     };

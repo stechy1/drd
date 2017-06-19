@@ -2,12 +2,14 @@ package cz.stechy.drd.controller.hero.creator;
 
 import cz.stechy.drd.controller.hero.creator.HeroCreatorController3.ChoiceEntry;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
 import cz.stechy.drd.model.item.ItemRegistry.ItemException;
 import cz.stechy.screens.Bundle;
 import java.io.ByteArrayInputStream;
+import java.util.Optional;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -72,7 +74,13 @@ public final class HeroCreatorHelper {
         private final MaxActValue ammount = new MaxActValue();
 
         public ItemEntry(ChoiceEntry entry) throws ItemException {
-            ItemBase itemBase = ItemRegistry.getINSTANCE().getItemById(entry.id.get());
+            final Optional<DatabaseItem> itemOptional = ItemRegistry.getINSTANCE()
+                .getItemById(entry.id.get());
+            if (!itemOptional.isPresent()) {
+                return;
+            }
+
+            ItemBase itemBase = (ItemBase) itemOptional.get();
             this.id.setValue(itemBase.getId());
             this.name.setValue(itemBase.getName());
             this.weight.setValue(itemBase.getWeight());

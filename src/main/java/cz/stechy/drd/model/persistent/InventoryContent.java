@@ -3,6 +3,7 @@ package cz.stechy.drd.model.persistent;
 import cz.stechy.drd.model.db.BaseDatabaseManager;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
+import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryException;
 import cz.stechy.drd.model.inventory.InventoryRecord;
@@ -198,7 +199,13 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
         final Optional<InventoryRecord> inventoryRecordOptional = items.stream()
             .filter(record -> Objects.equals(record, inventoryRecord))
             .findFirst();
-        final ItemBase item = ItemRegistry.getINSTANCE().getItemById(inventoryRecord.getItemId());
+
+        final Optional<DatabaseItem> itemOptional = ItemRegistry.getINSTANCE()
+            .getItemById(inventoryRecord.getItemId());
+        if (!itemOptional.isPresent()) {
+            return;
+        }
+        final ItemBase item = (ItemBase) itemOptional.get();
         int oldAmmount = 0;
         if (inventoryRecordOptional.isPresent()) {
             oldAmmount = inventoryRecordOptional.get().getAmmount() * item.getWeight();
@@ -305,8 +312,14 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
     // endregion
 
     // Pomocná mapovací funkce pro získání váhy předmětu podle počtu
-    private static final ToIntFunction<InventoryRecord> mapper = value -> value.getAmmount()
-        * ((ItemBase) ItemRegistry.getINSTANCE().getItemById(value.getItemId())).getWeight();
+    private static final ToIntFunction<InventoryRecord> mapper = value -> {
+        final Optional<DatabaseItem> itemOptional = ItemRegistry.getINSTANCE()
+            .getItemById(value.getItemId());
+        if (itemOptional.isPresent()) {
+            return value.getAmmount() * ((ItemBase) itemOptional.get()).getWeight();
+        }
+        return 0;
+    };
 
     private final ListChangeListener<? super InventoryRecord> itemsListener = c -> {
         while (c.next()) {

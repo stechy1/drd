@@ -1,6 +1,7 @@
 package cz.stechy.drd.controller.main;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.controller.IScreenSupport;
 import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper;
 import cz.stechy.drd.controller.hero.opener.HeroOpenerHelper;
 import cz.stechy.drd.controller.moneyxp.MoneyXpController;
@@ -20,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
@@ -90,6 +92,7 @@ public class MainController extends BaseController implements Initializable {
 
         for (MainScreen controller : controllers) {
             controller.setHero(hero);
+            controller.setScreenSupport(screenSupport);
         }
 
         hero.setValue(new Hero.Builder().build());
@@ -225,4 +228,37 @@ public class MainController extends BaseController implements Initializable {
     }
 
     // endregion
+
+    private final IScreenSupport screenSupport = new IScreenSupport() {
+        @Override
+        public void startScreen(String name, Bundle bundle) {
+            MainController.this.startScreen(name, bundle);
+        }
+
+        @Override
+        public void startScreenForResult(String name, int actionId, Bundle bundle) {
+            MainController.this.startScreenForResult(name, actionId, bundle);
+        }
+
+        @Override
+        public void startNewDialog(String name, Bundle bundle) {
+            MainController.this.startNewDialog(name, bundle);
+        }
+
+        @Override
+        public void startNewDialogForResult(String name, int actionId, Bundle bundle) {
+            MainController.this.startNewDialogForResult(name, actionId, bundle);
+        }
+
+        @Override
+        public void startNewPopupWindow(String name, Bundle bundle, Node parentNode) {
+            MainController.this.startNewPopupWindow(name, bundle, parentNode);
+        }
+
+        @Override
+        public void startNewPopupWindowForResult(String name, int actionId,
+            Bundle bundle, Node parentNode) {
+            MainController.this.startNewPopupWindowForResult(name, actionId, bundle, parentNode);
+        }
+    };
 }
