@@ -21,9 +21,9 @@ public class Backpack extends ItemBase {
     // region Variables
 
     // Maximální nosnost baťohu
-    protected final IntegerProperty maxLoad = new SimpleIntegerProperty();
+    private final IntegerProperty maxLoad = new SimpleIntegerProperty();
     // Počet slotů v batohu
-    protected final ObjectProperty<Size> size = new SimpleObjectProperty<>();
+    private final ObjectProperty<Size> size = new SimpleObjectProperty<>();
 
     // endregion
 
@@ -34,7 +34,7 @@ public class Backpack extends ItemBase {
      *
      * @param backpack Kopírovaný batoh
      */
-    public Backpack(Backpack backpack) {
+    private Backpack(Backpack backpack) {
         this(backpack.getId(), backpack.getName(), backpack.getDescription(), backpack.getAuthor(),
             backpack.getWeight(), backpack.getPrice().getRaw(), backpack.getMaxLoad(),
             backpack.getSize(), backpack.getImage(), backpack.isDownloaded(),
@@ -55,7 +55,7 @@ public class Backpack extends ItemBase {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public Backpack(String id, String author, String name, String description, int weight,
+    private Backpack(String id, String author, String name, String description, int weight,
         int price, int maxLoad, Size size, byte[] image,
         boolean downloaded, boolean uploaded) {
         super(id, author, name, description, weight, price, image, downloaded, uploaded);

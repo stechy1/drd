@@ -41,7 +41,7 @@ public class InventoryRecord extends DatabaseItem {
      *
      * @param record Kopírovaný záznam
      */
-    public InventoryRecord(InventoryRecord record) {
+    private InventoryRecord(InventoryRecord record) {
         this(record.getId(), record.getInventoryId(), record.getSlotId(), record.getItemId(),
             record.getAmmount(), new Metadata(record.getMetadata()));
     }
@@ -53,9 +53,9 @@ public class InventoryRecord extends DatabaseItem {
      * @param slotId Id slotu, který obsahuje item
      * @param itemId Id itemu, který je obsažen ve slozu
      * @param ammount Množství itemu ve slotu
-     * @param metadata
+     * @param metadata {@link Metadata}
      */
-    public InventoryRecord(String id, String inventoryId, int slotId, String itemId, int ammount,
+    private InventoryRecord(String id, String inventoryId, int slotId, String itemId, int ammount,
         Metadata metadata) {
         super(id);
 
@@ -223,14 +223,11 @@ public class InventoryRecord extends DatabaseItem {
             final ByteArrayInputStream bais = new ByteArrayInputStream(raw);
             try (final ObjectInputStream in = new ObjectInputStream(bais)) {
                 metadata = (Metadata) in.readObject();
-            } catch (IOException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                return metadata;
             }
 
+            return metadata;
         }
     }
 }

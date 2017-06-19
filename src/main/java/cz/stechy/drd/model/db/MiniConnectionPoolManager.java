@@ -22,9 +22,9 @@ import javax.sql.PooledConnection;
  */
 public class MiniConnectionPoolManager {
 
-    private ConnectionPoolDataSource dataSource;
-    private int maxConnections;
-    private long timeoutMs;
+    private final ConnectionPoolDataSource dataSource;
+    private final int maxConnections;
+    private final long timeoutMs;
     private PrintWriter logWriter;
     private Semaphore semaphore;
     private PoolConnectionEventListener poolConnectionEventListener;
@@ -78,13 +78,13 @@ public class MiniConnectionPoolManager {
         this.timeoutMs = timeout * 1000L;
         try {
             logWriter = dataSource.getLogWriter();
-        } catch (SQLException e) {
+        } catch (SQLException ignored) {
         }
         if (maxConnections < 1) {
             throw new IllegalArgumentException("Invalid maxConnections value.");
         }
         semaphore = new Semaphore(maxConnections, true);
-        recycledConnections = new LinkedList<PooledConnection>();
+        recycledConnections = new LinkedList<>();
         poolConnectionEventListener = new PoolConnectionEventListener();
     }
 
@@ -239,7 +239,7 @@ public class MiniConnectionPoolManager {
             if (conn.isValid(rtimeSecs)) {
                 return conn;
             }
-        } catch (SQLException e) {
+        } catch (SQLException ignored) {
         }
         // This Exception should never occur. If it nevertheless occurs, it's because of an error in the
         // JDBC driver which we ignore and assume that the connection is not valid.
@@ -259,7 +259,7 @@ public class MiniConnectionPoolManager {
             // has an effect only if the JDBC driver calls connectionClosed() synchronously within
             // Connection.close().)
             conn.close();
-        } catch (SQLException e) {
+        } catch (SQLException ignored) {
         }
         // ignore exception from close()
         finally {
@@ -318,7 +318,7 @@ public class MiniConnectionPoolManager {
             } else {
                 logWriter.println(s);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 

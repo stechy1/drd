@@ -23,7 +23,7 @@ public abstract class DatabaseItem implements IClonable {
      *
      * @param id Id předmětu
      */
-    public DatabaseItem(String id) {
+    protected DatabaseItem(String id) {
         this.id.set(id);
     }
 

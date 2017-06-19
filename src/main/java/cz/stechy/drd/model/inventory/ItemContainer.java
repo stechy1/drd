@@ -2,14 +2,12 @@ package cz.stechy.drd.model.inventory;
 
 import cz.stechy.drd.model.db.BaseDatabaseManager.UpdateListener;
 import cz.stechy.drd.model.db.DatabaseException;
-import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.ItemSlot.ClickListener;
 import cz.stechy.drd.model.inventory.ItemSlot.DragDropHandlers;
 import cz.stechy.drd.model.inventory.ItemSlot.HighlightState;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
-import cz.stechy.drd.model.item.ItemRegistry.ItemException;
 import cz.stechy.drd.model.persistent.InventoryContent;
 import cz.stechy.drd.model.persistent.InventoryManager;
 import java.util.Optional;
@@ -35,21 +33,21 @@ public abstract class ItemContainer {
     // region Variables
 
     // Globální informace obsahující přesouvaný item
-    private static ObjectProperty<DragInformations> dragInformations = new SimpleObjectProperty<>();
+    private static final ObjectProperty<DragInformations> dragInformations = new SimpleObjectProperty<>();
 
     private InventoryManager inventoryManager;
-    protected InventoryContent inventoryContent;
+    private InventoryContent inventoryContent;
     protected final int capacity;
     private ObservableList<InventoryRecord> oldRecords;
     private ItemClickListener itemClickListener;
     // Kolekce slotů pro itemy v inventáři
-    public final ObservableList<ItemSlot> itemSlots = FXCollections.observableArrayList();
+    protected final ObservableList<ItemSlot> itemSlots = FXCollections.observableArrayList();
 
     // endregion
 
     // region Constructors
 
-    public ItemContainer(int capacity) {
+    protected ItemContainer(int capacity) {
         this.capacity = capacity;
     }
 
@@ -71,23 +69,22 @@ public abstract class ItemContainer {
      * Vloží item z {@link InventoryRecord} do správného slotu
      *
      * @param record {@link InventoryRecord}
-     * @throws ItemException Pokud se item nepodaří vložit
      */
     private void insert(final InventoryRecord record) {
-        final Optional<DatabaseItem> itemOptional = ItemRegistry.getINSTANCE()
+        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
             .getItem(databaseItem -> databaseItem.getId().equals(record.getItemId()));
-        if (itemOptional.isPresent()) {
-            final ItemBase item = (ItemBase) itemOptional.get();
+        itemOptional.ifPresent(itemBase -> {
+            final ItemBase item = itemBase;
             final int ammount = record.getAmmount();
             final int slotIndex = record.getSlotId();
             final Metadata metadata = record.getMetadata();
             final ItemSlot itemSlot = itemSlots.get(slotIndex);
-            if (!itemSlot.containsItem()) {
+            if (itemSlot.isEmpty()) {
                 itemSlot.setClickListener(clickListener);
             }
 
             itemSlot.addItem(new ItemStack(item, ammount, metadata));
-        }
+        });
     }
 
     /**
@@ -99,7 +96,7 @@ public abstract class ItemContainer {
         final int ammount = record.getAmmount();
         final int slotIndex = record.getSlotId();
         final ItemSlot itemSlot = itemSlots.get(slotIndex);
-        if (!itemSlot.containsItem()) {
+        if (itemSlot.isEmpty()) {
             return;
         }
 
@@ -199,7 +196,7 @@ public abstract class ItemContainer {
         clear();
 
         inventoryContent.setUpdateListener(inventoryUpdateListener);
-        inventoryContent.getWeight().addListener(weightListener);
+        InventoryContent.getWeight().addListener(weightListener);
         final ObservableList<InventoryRecord> inventoryRecords = inventoryContent.selectAll();
         inventoryRecords.forEach(this::insert);
         inventoryRecords.addListener(inventoryRecordListener);

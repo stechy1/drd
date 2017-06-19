@@ -75,7 +75,7 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
     protected final Database db;
     protected final ObservableList<T> items = FXCollections.observableArrayList();
     // Operace transakce
-    protected final List<TransactionOperation<T>> operations = new ArrayList<>();
+    private final List<TransactionOperation<T>> operations = new ArrayList<>();
 
     private boolean selectAllCalled = false;
     private UpdateListener<T> updateListener;
@@ -109,7 +109,7 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
      * @param column Sloupeček, který obsahuje blob
      * @return Pole bytu
      */
-    public static byte[] readBlob(ResultSet resultSet, String column) {
+    protected static byte[] readBlob(ResultSet resultSet, String column) {
         final ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
         try {
             final InputStream binaryStream = resultSet.getBinaryStream(column);
@@ -117,10 +117,8 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
             while (binaryStream.read(buffer) > 0) {
                 arrayOutputStream.write(buffer);
             }
-        } catch (SQLException sqlException) {
+        } catch (SQLException | IOException sqlException) {
             sqlException.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
         return arrayOutputStream.toByteArray();
@@ -280,7 +278,6 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
 
         } catch (SQLException e) {
             e.printStackTrace();
-            return;
         }
 
     }

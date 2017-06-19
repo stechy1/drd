@@ -35,7 +35,7 @@ public abstract class WeaponBase extends ItemBase {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public WeaponBase(String id, String name, String description, int weight, int price,
+    protected WeaponBase(String id, String name, String description, int weight, int price,
         int strength, int rampancy, String author, byte[] image, boolean downloaded,
         boolean uploaded) {
         super(id, author, name, description, weight, price, image, downloaded, uploaded);

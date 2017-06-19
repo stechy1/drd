@@ -31,7 +31,7 @@ public abstract class OnlineItem extends DatabaseItem {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public OnlineItem(String id, String author, boolean downloaded, boolean uploaded) {
+    protected OnlineItem(String id, String author, boolean downloaded, boolean uploaded) {
         super(id);
 
         this.author.set(author);

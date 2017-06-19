@@ -32,7 +32,7 @@ public class Inventory extends DatabaseItem {
      *
      * @param inventory Kopírovaný inventář
      */
-    public Inventory(Inventory inventory) {
+    private Inventory(Inventory inventory) {
         this(inventory.getId(), inventory.getHeroId(), inventory.getInventoryType(),
             inventory.getCapacity());
     }
@@ -45,7 +45,7 @@ public class Inventory extends DatabaseItem {
      * @param inventoryType Typ inventáře
      * @param capacity Kapacita inventáře
      */
-    public Inventory(String id, String heroId, InventoryType inventoryType, int capacity) {
+    private Inventory(String id, String heroId, InventoryType inventoryType, int capacity) {
         super(id);
 
         this.heroId.set(heroId);

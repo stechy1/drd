@@ -16,18 +16,18 @@ public abstract class EntityBase extends OnlineItem {
     // region Variales
 
     // Jméno
-    protected final StringProperty name = new SimpleStringProperty();
+    private final StringProperty name = new SimpleStringProperty();
     // Popis entity
-    protected final StringProperty description = new SimpleStringProperty();
+    private final StringProperty description = new SimpleStringProperty();
     // Aktuální počet životů
-    protected final MaxActValue live = new MaxActValue();
+    private final MaxActValue live = new MaxActValue();
     // Aktuální počet magů
-    protected final MaxActValue mag = new MaxActValue();
+    private final MaxActValue mag = new MaxActValue();
     // Přesvědčení
-    protected final ObjectProperty<Conviction> conviction = new SimpleObjectProperty<>(
+    private final ObjectProperty<Conviction> conviction = new SimpleObjectProperty<>(
         Conviction.NEUTRAL);
     // Velikost
-    protected final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
+    private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
 
     // endregion
 
@@ -49,7 +49,7 @@ public abstract class EntityBase extends OnlineItem {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public EntityBase(String id, String author, String name, String description, int live,
+    protected EntityBase(String id, String author, String name, String description, int live,
         int maxLive, int mag, int maxMag, Conviction conviction, Height height, boolean downloaded,
         boolean uploaded) {
         super(id, author, downloaded, uploaded);

@@ -7,26 +7,20 @@ import javafx.collections.ObservableList;
  */
 public abstract class TransactionOperation<T extends DatabaseItem> {
 
-    final Operation operation;
     final T before;
     final T after;
 
-    TransactionOperation(Operation operation, T before, T after) {
-        this.operation = operation;
+    TransactionOperation(T before, T after) {
         this.before = before;
         this.after = after;
     }
 
     public abstract void commit(final ObservableList<T> items);
 
-    enum Operation {
-        INSERT, UPDATE, DELETE
-    }
-
     public static final class InsertOperation<T extends DatabaseItem> extends TransactionOperation<T> {
 
         public InsertOperation(T model) {
-            super(Operation.INSERT, null, model);
+            super(null, model);
         }
 
         @Override
@@ -38,7 +32,7 @@ public abstract class TransactionOperation<T extends DatabaseItem> {
     public static final class UpdateOperation<T extends DatabaseItem> extends TransactionOperation<T> {
 
         public UpdateOperation(T before, T after) {
-            super(Operation.UPDATE, before, after);
+            super(before, after);
         }
 
         @Override
@@ -50,7 +44,7 @@ public abstract class TransactionOperation<T extends DatabaseItem> {
     public static final class DeleteOperation<T extends DatabaseItem> extends TransactionOperation<T> {
 
         public DeleteOperation(T model) {
-            super(Operation.DELETE, model, null);
+            super(model, null);
         }
 
         @Override

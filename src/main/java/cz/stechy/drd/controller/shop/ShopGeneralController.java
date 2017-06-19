@@ -8,13 +8,11 @@ import cz.stechy.drd.model.db.AdvancedDatabaseManager;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.OnDeleteItem;
 import cz.stechy.drd.model.shop.OnDownloadItem;
 import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
-import cz.stechy.drd.model.shop.entry.MeleWeaponEntry;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
@@ -144,7 +142,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
             if (remote) {
                 generalItems.get(
                     generalItems.indexOf(
-                        new MeleWeaponEntry((MeleWeapon) item)))
+                        new GeneralEntry((GeneralItem) item)))
                     .setDownloaded(true);
             }
 

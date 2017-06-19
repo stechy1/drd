@@ -21,7 +21,7 @@ public final class FormUtils {
      * @param max Horní hranice intervalu
      * @return {@link UnaryOperator}
      */
-    public static UnaryOperator<Change> integerFilter(final int min, final int max) {
+    private static UnaryOperator<Change> integerFilter(final int min, final int max) {
         return t -> {
             if (t.isAdded()) {
                 if (t.getText().matches(INTEGER_PATTERN)) {

@@ -14,7 +14,7 @@ public class GeneralItem extends ItemBase {
      *
      * @param item Kopírovaný item
      */
-    public GeneralItem(GeneralItem item) {
+    private GeneralItem(GeneralItem item) {
         this(item.getId(), item.getName(), item.getDescription(), item.getAuthor(),
             item.getWeight(), item.getPrice().getRaw(), item.getImage(), item.isDownloaded(),
             item.isUploaded());
@@ -33,7 +33,7 @@ public class GeneralItem extends ItemBase {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public GeneralItem(String id, String author, String name, String description, int weight,
+    private GeneralItem(String id, String author, String name, String description, int weight,
         int price, byte[] image, boolean downloaded, boolean uploaded) {
         super(id, author, name, description, weight, price, image, downloaded, uploaded);
     }

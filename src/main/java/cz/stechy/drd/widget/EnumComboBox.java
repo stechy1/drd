@@ -11,7 +11,7 @@ import javafx.scene.control.ComboBox;
 public class EnumComboBox<T extends Enum<T>> extends ComboBox<T> {
 
     public EnumComboBox(@NamedArg("enumType") String enumType) throws Exception {
-        Class<T> enumClass = (Class<T>) Class.forName(enumType);
+        @SuppressWarnings("unchecked") Class<T> enumClass = (Class<T>) Class.forName(enumType);
         getItems().setAll(enumClass.getEnumConstants());
     }
 

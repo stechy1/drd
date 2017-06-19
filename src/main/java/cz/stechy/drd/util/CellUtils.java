@@ -33,7 +33,7 @@ import javafx.scene.text.Font;
  */
 public final class CellUtils {
 
-    public static final <S> TableCell<S, Image> forImage() {
+    public static <S> TableCell<S, Image> forImage() {
         final ImageView imageView = new ImageView();
         {
             imageView.setFitWidth(ItemSlot.SLOT_SIZE);
@@ -55,7 +55,7 @@ public final class CellUtils {
         };
     }
 
-    public static final <S> TableCell<S, MaxActValue> forMaxActValue() {
+    public static <S> TableCell<S, MaxActValue> forMaxActValue() {
         return new TableCell<S, MaxActValue>() {
             private final TextField input;
 
@@ -208,7 +208,7 @@ public final class CellUtils {
         };
     }
 
-    public static final <S> TableCell<S, Money> forMoney() {
+    public static <S> TableCell<S, Money> forMoney() {
         final Label text = new Label();
 
         return new TableCell<S, Money>() {

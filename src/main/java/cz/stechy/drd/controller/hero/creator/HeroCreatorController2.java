@@ -48,7 +48,7 @@ public class HeroCreatorController2 extends BaseController implements Initializa
     private Button btnNext;
     // endregion
 
-    private NewHeroModel2 model = new NewHeroModel2();
+    private final NewHeroModel2 model = new NewHeroModel2();
 
     private String title;
     private Bundle bundle;

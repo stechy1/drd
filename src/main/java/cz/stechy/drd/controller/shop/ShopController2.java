@@ -20,6 +20,7 @@ import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.beans.property.IntegerProperty;
@@ -90,7 +91,7 @@ public class ShopController2 extends BaseController implements Initializable {
     protected void onCreate(Bundle bundle) {
         this.shoppingCart = bundle.get(SHOPPING_CART);
         items.setAll(shoppingCart.orderList.stream()
-            .map(shopEntry -> new ItemResultEntry(shopEntry))
+            .map(ItemResultEntry::new)
             .collect(Collectors.toList()));
     }
 
@@ -116,8 +117,13 @@ public class ShopController2 extends BaseController implements Initializable {
             final InventoryContent inventoryContent = inventoryManager
                 .getInventoryContent(inventory);
             for (ItemResultEntry item : items) {
-                final ItemBase itemBase = (ItemBase) ItemRegistry.getINSTANCE()
-                    .getItemById(item.getId()).get();
+                final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
+                    .getItemById(item.getId());
+                if (!itemOptional.isPresent()) {
+                    continue;
+                }
+
+                final ItemBase itemBase = itemOptional.get();
                 try {
                     final int slotIndex = inventoryContent.getItemSlotIndexById(itemBase);
                     final InventoryRecord inventoryRecord = inventoryContent

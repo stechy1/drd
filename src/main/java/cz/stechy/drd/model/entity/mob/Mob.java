@@ -57,7 +57,7 @@ public final class Mob extends EntityBase {
      *
      * @param mob Mob, který se má zkopírovat
      */
-    public Mob(Mob mob) {
+    private Mob(Mob mob) {
         this(mob.getId(), mob.getAuthor(), mob.getName(), mob.getDescription(),
             mob.getLive().getActValue().intValue(), mob.getLive().getMaxValue().intValue(),
             mob.getMag().getActValue().intValue(), mob.getMag().getMaxValue().intValue(),
@@ -98,7 +98,7 @@ public final class Mob extends EntityBase {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public Mob(String id, String author, String name, String description, int live, int maxLive,
+    private Mob(String id, String author, String name, String description, int live, int maxLive,
         int mag, int maxMag, Conviction conviction, Height height, int attackNumber,
         int defenceNumber, int viability, int immunity, int mettle, Vulnerability vulnerability,
         int mobility, int perservance, int controlAbility, int intelligence, int charisma,
@@ -135,6 +135,7 @@ public final class Mob extends EntityBase {
 
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T extends IClonable> T duplicate() {
         return (T) new Mob(this);

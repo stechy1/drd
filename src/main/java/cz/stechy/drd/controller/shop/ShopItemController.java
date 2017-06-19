@@ -13,7 +13,7 @@ import javafx.beans.property.IntegerProperty;
 /**
  * Rozhraní pro definici kontroleru, který zprostředkovává nakupování
  */
-public interface ShopItemController {
+interface ShopItemController {
 
     /**
      * Nastaví referenci na nákupní košík

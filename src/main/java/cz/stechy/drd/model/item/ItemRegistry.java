@@ -49,17 +49,11 @@ public final class ItemRegistry {
     public void addColection(ObservableList<? extends DatabaseItem> items) {
         items.addListener((ListChangeListener<DatabaseItem>) c -> {
             while (c.next()) {
-                if (c.wasAdded()) {
-                    this.registry.addAll(c.getAddedSubList());
-                }
-                if (c.wasRemoved()) {
-                    this.registry.removeAll(c.getRemoved());
-                }
+                this.registry.addAll(c.getAddedSubList());
+                this.registry.removeAll(c.getRemoved());
             }
         });
-        for (DatabaseItem item : items) {
-            this.registry.add(item);
-        }
+        this.registry.addAll(items);
     }
 
     /**
@@ -68,7 +62,7 @@ public final class ItemRegistry {
      * @param id Id itemu
      * @return {@link ItemBase}
      */
-    public Optional<DatabaseItem> getItemById(String id) {
+    public Optional<ItemBase> getItemById(String id) {
         return getItem(databaseItem -> id.equals(databaseItem.getId()));
     }
 
@@ -78,12 +72,12 @@ public final class ItemRegistry {
      * @param filter Filter
      * @return {@link ItemBase}
      */
-    public Optional<DatabaseItem> getItem(Predicate<DatabaseItem> filter) {
+    public Optional<ItemBase> getItem(Predicate<DatabaseItem> filter) {
         final Optional<DatabaseItem> optional = registry.stream()
             .filter(filter)
             .findFirst();
 
-        return optional;
+        return optional.map(databaseItem -> (ItemBase) databaseItem);
     }
 
     public ObservableList<DatabaseItem> getRegistry() {

@@ -40,7 +40,7 @@ public class ItemStack {
      * Vytvoří nový {@link ItemStack} s definovaným počtem itemů
      *  @param item {@link ItemBase}
      * @param ammount Počet itemů na stacku
-     * @param metadata
+     * @param metadata {@link Metadata}
      */
     public ItemStack(ItemBase item, int ammount, Metadata metadata) {
         this.item = item;

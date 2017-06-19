@@ -4,7 +4,6 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroManager;
-import cz.stechy.drd.model.persistent.UserManager;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.widget.LabeledHeroProperty;
 import cz.stechy.screens.BaseController;
@@ -61,8 +60,8 @@ public class HeroOpenerController extends BaseController implements Initializabl
     private final FilteredList<Hero> filteredHeroes = new FilteredList<>(heroes);
     private final ObjectProperty<Hero> selectedHero = new SimpleObjectProperty<>();
     private final HeroManager heroManager;
-    private final UserManager userManager;
-    private Translator translator;
+    private final Translator translator;
+
     private String title;
 
     // endregion
@@ -71,7 +70,6 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
     public HeroOpenerController(Context context) {
         heroManager = context.getManager(Context.MANAGER_HERO);
-        userManager = context.getUserManager();
         translator = context.getTranslator();
     }
 

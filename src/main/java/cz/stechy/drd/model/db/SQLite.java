@@ -28,7 +28,7 @@ public class SQLite implements Database {
     /**
      * Vytvoří novou instanci databází pro SQLite
      */
-    public SQLite(String path) throws SQLException {
+    public SQLite(String path) {
         dataSource.setUrl(CONNECTION_PREFIX + path);
         pool = new MiniConnectionPoolManager(dataSource, MAX_CONNECTIONS);
     }

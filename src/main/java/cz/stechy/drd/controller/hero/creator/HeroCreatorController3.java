@@ -7,7 +7,6 @@ import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
-import cz.stechy.drd.model.item.ItemRegistry.ItemException;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.BaseController;
@@ -93,7 +92,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
 
-        ObservableMergers.mergeList(databaseItem -> new ChoiceEntry(databaseItem), item_registry,
+        ObservableMergers.mergeList(ChoiceEntry::new, item_registry,
             ItemRegistry.getINSTANCE().getRegistry());
 
         btnRemoveItem.disableProperty().bind(selectedItem.lessThan(0));
@@ -141,7 +140,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         dialog.setHeaderText("Výběr itemu");
         dialog.setContentText("Vyberte...");
         // Trocha čarování k získání reference na combobox abych ho mohl upravit
-        final ComboBox<ChoiceEntry> comboBox = (ComboBox) (((GridPane) dialog.getDialogPane()
+        @SuppressWarnings("unchecked") final ComboBox<ChoiceEntry> comboBox = (ComboBox) (((GridPane) dialog.getDialogPane()
             .getContent())
             .getChildren().get(1));
         comboBox.setPrefWidth(100);
@@ -151,15 +150,11 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         comboBox.setMinHeight(40);
         Optional<ChoiceEntry> result = dialog.showAndWait();
         result.ifPresent(choiceEntry -> {
-            try {
-                final Optional<ItemEntry> entry = items.stream()
-                    .filter(itemEntry -> itemEntry.getId().equals(choiceEntry.id.get()))
-                    .findFirst();
-                if (!entry.isPresent()) {
-                    items.add(new ItemEntry(choiceEntry));
-                }
-            } catch (ItemException e) {
-                e.printStackTrace();
+            final Optional<ItemEntry> entry = items.stream()
+                .filter(itemEntry -> itemEntry.getId().equals(choiceEntry.id.get()))
+                .findFirst();
+            if (!entry.isPresent()) {
+                items.add(new ItemEntry(choiceEntry));
             }
         });
     }

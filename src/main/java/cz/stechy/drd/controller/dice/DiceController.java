@@ -64,10 +64,10 @@ public class DiceController extends BaseController implements Initializable {
     private final IntegerProperty diceSideCount = new SimpleIntegerProperty();
     private final IntegerProperty diceRollCount = new SimpleIntegerProperty();
     private final ObjectProperty<Hero> hero;
+    private final Translator translator;
 
     private DiceHelper diceHelper;
     private String title;
-    private Translator translator;
 
     // endregion
 
@@ -109,13 +109,11 @@ public class DiceController extends BaseController implements Initializable {
         spinnerDiceSideCount.disableProperty().bind(
             lvDices.getFocusModel().focusedIndexProperty().isEqualTo(0).not());
         // TODO vymyslet lepší způsob
-        spinnerDiceSideCount.valueProperty().addListener((observable, oldValue, newValue) -> {
-            diceSideCount.setValue(newValue);
-        });
+        spinnerDiceSideCount.valueProperty().addListener((observable, oldValue, newValue) ->
+            diceSideCount.setValue(newValue));
         lvDices.getFocusModel().focusedItemProperty()
-            .addListener((observable, oldValue, newValue) -> {
-                diceSideCount.setValue(newValue.getSideCount());
-            });
+            .addListener((observable, oldValue, newValue) ->
+                diceSideCount.setValue(newValue.getSideCount()));
         diceRollCount.bind(spinnerRollCount.valueProperty());
 
         initTable();
@@ -151,14 +149,13 @@ public class DiceController extends BaseController implements Initializable {
         tableAdditions.setItems(diceHelper.additions);
 
         diceHelper.rollResults.addListener((ListChangeListener<Integer>) c -> {
-            String rolls = c.getList().stream().map(o -> {
-                int value = o.intValue();
-                if (value >= 0) {
-                    return String.valueOf(value);
+            String result = c.getList().stream().map(o -> {
+                int value1 = o.intValue();
+                if (value1 >= 0) {
+                    return String.valueOf(value1);
                 }
-                return "(" + value + ")";
+                return "(" + value1 + ")";
             }).collect(Collectors.joining(" + "));
-            String result = rolls;
             if (c.getList().size() > 1) {
                 result += " = " + c.getList().stream().mapToInt(value -> value).sum();
             }

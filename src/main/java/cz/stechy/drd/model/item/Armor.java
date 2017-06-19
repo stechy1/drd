@@ -31,7 +31,7 @@ public class Armor extends ItemBase {
      *
      * @param armor Brnění, které se má nakopírovat
      */
-    public Armor(Armor armor) {
+    private Armor(Armor armor) {
         this(armor.getId(), armor.getName(), armor.getDescription(), armor.getAuthor(),
             armor.getDefenceNumber(), armor.getMinimumStrength(), armor.getWeightA(),
             armor.getWeightB(), armor.getWeightC(), armor.getPriceA().getRaw(),
@@ -57,7 +57,7 @@ public class Armor extends ItemBase {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public Armor(String id, String author, String name, String description, int defenceNumber,
+    private Armor(String id, String author, String name, String description, int defenceNumber,
         int weightA, int weightB, int weightC, int priceA, int priceB, int priceC,
         int minimumStrength, byte[] image, boolean downloaded, boolean uploaded) {
         super(id, author, name, description, weightB, priceB, image, downloaded, uploaded);

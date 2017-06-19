@@ -45,7 +45,7 @@ public abstract class ItemBase extends OnlineItem {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public ItemBase(String id, String author, String name, String description, int weight,
+    ItemBase(String id, String author, String name, String description, int weight,
         int price, byte[] image, boolean downloaded, boolean uploaded) {
         super(id, author, downloaded, uploaded);
         this.name.setValue(name);

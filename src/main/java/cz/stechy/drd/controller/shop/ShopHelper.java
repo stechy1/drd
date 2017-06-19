@@ -3,7 +3,7 @@ package cz.stechy.drd.controller.shop;
 /**
  * Pomocní třída pro kontrolery s obchodem
  */
-public final class ShopHelper {
+final class ShopHelper {
 
     // region Constants
 

@@ -7,7 +7,7 @@ import javafx.beans.property.ObjectProperty;
 /**
  * Rozhraní pro komunikaci s kontrolery z třídy {@link MainController}
  */
-public interface MainScreen {
+interface MainScreen {
 
     /**
      * Nastaví referenci na hrdinu

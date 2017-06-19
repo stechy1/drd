@@ -3,7 +3,6 @@ package cz.stechy.drd.model.persistent;
 import cz.stechy.drd.model.db.BaseDatabaseManager;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
-import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryException;
 import cz.stechy.drd.model.inventory.InventoryRecord;
@@ -200,12 +199,12 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
             .filter(record -> Objects.equals(record, inventoryRecord))
             .findFirst();
 
-        final Optional<DatabaseItem> itemOptional = ItemRegistry.getINSTANCE()
+        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
             .getItemById(inventoryRecord.getItemId());
         if (!itemOptional.isPresent()) {
             return;
         }
-        final ItemBase item = (ItemBase) itemOptional.get();
+        final ItemBase item = itemOptional.get();
         int oldAmmount = 0;
         if (inventoryRecordOptional.isPresent()) {
             oldAmmount = inventoryRecordOptional.get().getAmmount() * item.getWeight();
@@ -313,12 +312,9 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
 
     // Pomocná mapovací funkce pro získání váhy předmětu podle počtu
     private static final ToIntFunction<InventoryRecord> mapper = value -> {
-        final Optional<DatabaseItem> itemOptional = ItemRegistry.getINSTANCE()
+        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
             .getItemById(value.getItemId());
-        if (itemOptional.isPresent()) {
-            return value.getAmmount() * ((ItemBase) itemOptional.get()).getWeight();
-        }
-        return 0;
+        return itemOptional.map(itemBase -> value.getAmmount() * itemBase.getWeight()).orElse(0);
     };
 
     private final ListChangeListener<? super InventoryRecord> itemsListener = c -> {

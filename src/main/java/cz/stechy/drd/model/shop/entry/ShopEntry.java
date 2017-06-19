@@ -44,7 +44,7 @@ public abstract class ShopEntry {
     /**
      * Vytvoří novou abstrakní nákupní položku
      */
-    public ShopEntry(ItemBase itemBase) {
+    ShopEntry(ItemBase itemBase) {
         ammount.minValueProperty().bind(Bindings
             .when(inShoppingCart)
             .then(1)

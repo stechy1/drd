@@ -99,19 +99,12 @@ public final class InventoryManager extends BaseDatabaseManager<Inventory> {
             .inventoryType(InventoryType.MAIN.ordinal()).build();
     }
 
-    public static final Predicate<? super Inventory> SIMPLE_FILTER(final Inventory inventory) {
-        return i -> inventory.equals(i);
+    private static Predicate<? super Inventory> SIMPLE_FILTER(final Inventory inventory) {
+        return inventory::equals;
     }
 
-    public static final Predicate<? super Inventory> ID_FILTER(final Inventory inventory) {
+    private static Predicate<? super Inventory> ID_FILTER(final Inventory inventory) {
         return i -> inventory.getId().equals(i.getId());
-    }
-
-    public static final Predicate<? super Inventory> CREDITAILS_FILTER(final Inventory inventory) {
-        return i ->
-            i.getCapacity() == inventory.getCapacity()
-                && i.getInventoryType() == inventory.getInventoryType()
-                && i.getHeroId() == inventory.getHeroId();
     }
 
     // endregion
@@ -242,7 +235,7 @@ public final class InventoryManager extends BaseDatabaseManager<Inventory> {
      *
      * @param capacity Kapacita inventáře
      * @return Id inventáře
-     * @throws DatabaseException
+     * @throws DatabaseException Pokud se inicializace inventáře nezdaří
      */
     public String initSubInventory(final int capacity)
         throws DatabaseException {

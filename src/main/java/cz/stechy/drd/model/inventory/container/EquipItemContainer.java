@@ -16,7 +16,8 @@ public class EquipItemContainer extends ItemContainer {
 
     public static final int CAPACITY = 3;
 
-    private HBox container = new HBox();
+    private final HBox container = new HBox();
+
     private int idCounter = 0;
 
     /**

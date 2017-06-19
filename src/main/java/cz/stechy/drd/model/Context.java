@@ -19,7 +19,6 @@ import cz.stechy.drd.util.Translator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -71,10 +70,10 @@ public class Context {
     private final Map<String, DatabaseManager> managerMap = new HashMap<>(MANAGERS_COUNT);
     // Jediný manažer, který nebude v mapě
     private final UserManager userManager;
+    private final ResourceBundle resources;
 
     // Překladač aplikace
     private Translator translator;
-    private ResourceBundle resources;
 
     // endregion
 
@@ -94,11 +93,7 @@ public class Context {
             }
         }
         logger.info("Používám pracovní adresář: {}", appDirectory.getPath());
-        try {
-            database = new SQLite(appDirectory.getPath() + SEPARATOR + databaseName);
-        } catch (SQLException e) {
-            throw new FileNotFoundException();
-        }
+        database = new SQLite(appDirectory.getPath() + SEPARATOR + databaseName);
 
         initFirebase();
         userManager = new UserManager(FirebaseDatabase.getInstance());

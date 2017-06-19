@@ -196,7 +196,7 @@ public class ItemSlot {
      * Pokud slot neobsahuje žádný item, tak je vložen celý.
      * Pokud slot obsahuje jiný item, tak se nic nevloží, jinak se pouze přičte počet
      *
-     * @param itemStack
+     * @param itemStack {@link ItemStack} Item zabalený do stacku, který se má přidat
      */
     public void addItem(ItemStack itemStack) {
         final ItemBase item = itemStack.getItem();
@@ -238,12 +238,12 @@ public class ItemSlot {
     }
 
     /**
-     * Zjistí, zda-li slot obsahuje nějaký item
+     * Zjistí, zda-li je slot prázdný
      *
-     * @return True, pokud slot obsahuje item, jinak false
+     * @return True, pokud je slot prázdný, jinak False
      */
-    public boolean containsItem() {
-        return itemStack != null;
+    public boolean isEmpty() {
+        return itemStack == null;
     }
 
     /**
@@ -309,7 +309,7 @@ public class ItemSlot {
 
     // endregion
 
-    private ChangeListener<byte[]> imageChangeListener = (observable, oldValue, newValue) -> setImage(
+    private final ChangeListener<byte[]> imageChangeListener = (observable, oldValue, newValue) -> setImage(
         newValue);
 
     public interface DragDropHandlers {

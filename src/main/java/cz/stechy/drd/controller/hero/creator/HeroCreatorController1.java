@@ -55,10 +55,10 @@ public class HeroCreatorController1 extends BaseController implements Initializa
 
     // endregion
 
-    private NewHeroModel1 model = new NewHeroModel1();
+    private final NewHeroModel1 model = new NewHeroModel1();
+    private final Translator translator;
 
     private String title;
-    private Translator translator;
     private Bundle bundle;
 
     // endregion

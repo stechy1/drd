@@ -32,7 +32,7 @@ public class MeleWeapon extends WeaponBase {
      *
      * @param weapon Kopírovaná zbraň
      */
-    public MeleWeapon(MeleWeapon weapon) {
+    private MeleWeapon(MeleWeapon weapon) {
         this(weapon.getId(), weapon.getName(), weapon.getDescription(), weapon.getAuthor(),
             weapon.getWeight(), weapon.getPrice().getRaw(), weapon.getStrength(),
             weapon.getRampancy(), weapon.getDefence(), weapon.getWeaponClass(),
@@ -57,7 +57,7 @@ public class MeleWeapon extends WeaponBase {
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      * @param downloaded Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public MeleWeapon(String id, String name, String description, String author, int weight,
+    private MeleWeapon(String id, String name, String description, String author, int weight,
         int price, int strength, int rampancy, int defence, MeleWeaponClass weaponClass,
         MeleWeaponType weaponType, byte[] image, boolean uploaded,
         boolean downloaded) {

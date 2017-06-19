@@ -9,7 +9,7 @@ import javafx.beans.property.SimpleIntegerProperty;
  */
 public class BackpackEntry extends ShopEntry {
 
-    protected final IntegerProperty maxLoad = new SimpleIntegerProperty();
+    private final IntegerProperty maxLoad = new SimpleIntegerProperty();
 
     // region Constructors
 

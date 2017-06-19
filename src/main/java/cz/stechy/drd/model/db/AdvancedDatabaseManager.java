@@ -47,7 +47,7 @@ public abstract class AdvancedDatabaseManager<T extends OnlineItem> extends
      *
      * @param db {@link Database}
      */
-    public AdvancedDatabaseManager(Database db) {
+    protected AdvancedDatabaseManager(Database db) {
         super(db);
     }
 
@@ -61,7 +61,7 @@ public abstract class AdvancedDatabaseManager<T extends OnlineItem> extends
      * @param source Base64
      * @return Pole bytu
      */
-    public static byte[] base64ToBlob(String source) {
+    protected static byte[] base64ToBlob(String source) {
         return Base64Util.decode(source);
     }
 
@@ -71,7 +71,7 @@ public abstract class AdvancedDatabaseManager<T extends OnlineItem> extends
      * @param source Pole bytu
      * @return Base64
      */
-    public static String blobToBase64(byte[] source) {
+    protected static String blobToBase64(byte[] source) {
         return Base64Util.encode(source);
     }
 

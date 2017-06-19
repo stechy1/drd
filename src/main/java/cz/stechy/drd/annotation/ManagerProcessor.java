@@ -81,9 +81,10 @@ public class ManagerProcessor extends AbstractProcessor {
                     typeElement.getQualifiedName() + "." + className);
 
                 try (Writer writter = fileObject.openWriter()) {
-                    writter.append("package " + typeElement.getQualifiedName() + ";");
+                    writter.append("package ")
+                        .append(String.valueOf(typeElement.getQualifiedName())).append(";");
                     writter.append("\\n\\n");
-                    writter.append("public class " + className + " {");
+                    writter.append("public class ").append(className).append(" {");
                     writter.append("\\n");
                     writter.append("}");
                 }

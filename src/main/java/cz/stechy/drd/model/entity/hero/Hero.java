@@ -44,47 +44,47 @@ public class Hero extends EntityBase {
     // region Variables
 
     // Rasa
-    protected final ObjectProperty<Race> race = new SimpleObjectProperty<>();
+    private final ObjectProperty<Race> race = new SimpleObjectProperty<>();
     // Profece
-    protected final ObjectProperty<Profession> profession = new SimpleObjectProperty<>();
+    private final ObjectProperty<Profession> profession = new SimpleObjectProperty<>();
     // Úroveň
-    protected final IntegerProperty level = new SimpleIntegerProperty();
+    private final IntegerProperty level = new SimpleIntegerProperty();
     // Peníze
-    protected final Money money = new Money();
+    private final Money money = new Money();
     // Zkušenosti
-    protected final MaxActValue experiences = new MaxActValue();
+    private final MaxActValue experiences = new MaxActValue();
     // Síla
-    protected final EntityProperty strength = new SimpleEntityProperty();
+    private final EntityProperty strength = new SimpleEntityProperty();
     // Obratnost
-    protected final EntityProperty dexterity = new SimpleEntityProperty();
+    private final EntityProperty dexterity = new SimpleEntityProperty();
     // Odolnost
-    protected final EntityProperty immunity = new SimpleEntityProperty();
+    private final EntityProperty immunity = new SimpleEntityProperty();
     // Inteligence
-    protected final EntityProperty intelligence = new SimpleEntityProperty();
+    private final EntityProperty intelligence = new SimpleEntityProperty();
     // Charisma
-    protected final EntityProperty charisma = new SimpleEntityProperty();
+    private final EntityProperty charisma = new SimpleEntityProperty();
     // Obranné číslo
-    protected final IntegerProperty defenceNumber = new SimpleIntegerProperty();
+    private final IntegerProperty defenceNumber = new SimpleIntegerProperty();
     // Nosnost
-    protected final IntegerProperty capacity = new SimpleIntegerProperty();
+    private final IntegerProperty capacity = new SimpleIntegerProperty();
     // Pohyblivost
-    protected final EntityProperty agility = new SimpleEntityProperty();
+    private final EntityProperty agility = new SimpleEntityProperty();
     // Mírné naložení
-    protected final EntityProperty lowLoad = new SimpleEntityProperty();
+    private final EntityProperty lowLoad = new SimpleEntityProperty();
     // Střední naložení
-    protected final EntityProperty mediumLoad = new SimpleEntityProperty();
+    private final EntityProperty mediumLoad = new SimpleEntityProperty();
     // Velké naložení
-    protected final EntityProperty highLoad = new SimpleEntityProperty();
+    private final EntityProperty highLoad = new SimpleEntityProperty();
     // Postřeh
-    protected final EntityProperty observationObjects = new SimpleEntityProperty();
+    private final EntityProperty observationObjects = new SimpleEntityProperty();
     // Postřeh na mechanické předměty
-    protected final EntityProperty observationMechanics = new SimpleEntityProperty();
+    private final EntityProperty observationMechanics = new SimpleEntityProperty();
 
     // endregion
 
     // region Constructors
 
-    public Hero(Hero hero) {
+    private Hero(Hero hero) {
         this(hero.getId(),
             hero.getName(),
             hero.getDescription(),
@@ -136,7 +136,7 @@ public class Hero extends EntityBase {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public Hero(String id, String name, String description, String author,
+    private Hero(String id, String name, String description, String author,
         Conviction conviction, Race race, Profession profession,
         int level, int money, int experiences, int strength, int dexterity, int immunity,
         int intelligence, int charisma, Height height, int defenceNumber, int live,
@@ -335,7 +335,7 @@ public class Hero extends EntityBase {
     }
 
     @Override
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "unchecked"})
     public <T extends IClonable> T duplicate() {
         return (T) new Hero(this);
     }

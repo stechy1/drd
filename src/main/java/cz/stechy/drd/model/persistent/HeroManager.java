@@ -8,7 +8,6 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryException;
 import cz.stechy.drd.model.inventory.InventoryRecord.Builder;
-import cz.stechy.drd.model.inventory.InventoryType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -215,8 +214,7 @@ public class HeroManager extends BaseDatabaseManager<Hero> {
         insert(hero);
 
         InventoryManager inventoryManager = getInventory(hero);
-        final Inventory inventory = inventoryManager.selectAll().stream()
-            .filter(i -> i.getInventoryType() == InventoryType.MAIN).findFirst().get();
+        final Inventory inventory = inventoryManager.select(InventoryManager.MAIN_INVENTORY_FILTER);
         final InventoryContent inventoryContent = inventoryManager
             .getInventoryContent(inventory);
         itemsToInventory.stream()

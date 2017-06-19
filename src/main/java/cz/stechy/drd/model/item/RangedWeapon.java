@@ -33,7 +33,7 @@ public class RangedWeapon extends WeaponBase {
      *
      * @param weapon Kopírovaná zbraň
      */
-    public RangedWeapon(RangedWeapon weapon) {
+    private RangedWeapon(RangedWeapon weapon) {
         this(weapon.getId(), weapon.getName(), weapon.getDescription(), weapon.getAuthor(),
             weapon.getWeight(), weapon.getPrice().getRaw(), weapon.getStrength(),
             weapon.getRampancy(), weapon.getWeaponType(), weapon.getRangeLow(),
@@ -60,7 +60,7 @@ public class RangedWeapon extends WeaponBase {
      * @param downloaded Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public RangedWeapon(String id, String name, String description, String author, int weight,
+    private RangedWeapon(String id, String name, String description, String author, int weight,
         int price,
         int strength, int rampancy, RangedWeaponType weaponType, int rangeLow, int rangeMedium,
         int rangeLong, byte[] image, boolean downloaded, boolean uploaded) {
