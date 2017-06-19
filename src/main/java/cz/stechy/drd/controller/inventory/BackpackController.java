@@ -16,22 +16,28 @@ import cz.stechy.drd.model.persistent.HeroManager;
 import cz.stechy.drd.model.persistent.InventoryManager;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.control.ScrollPane;
 
 /**
  * Obecný kontroler pro inventář v batohu či jiném předmětu
  */
-public class BackpackController extends BaseController implements Initializable {
+public class BackpackController extends BaseController {
 
     // region Constants
 
-    private static final int SLOT_ON_ROW = 8;
+    private static final int SLOTS_ON_ROW = 5;
+    private static final int WIDTH;
+
+    static {
+        WIDTH = 16 // Left padding
+                + ItemSlot.SLOT_SIZE * SLOTS_ON_ROW
+                + ItemContainer.SLOT_SPACING * SLOTS_ON_ROW
+                + 16 // Right padding
+                + 16; // Width of scrollbar
+    }
 
     public static final String BACKPACK_SIZE = "backpack_size";
     public static final String INVENTORY_ID = "inventory_id";
@@ -43,7 +49,7 @@ public class BackpackController extends BaseController implements Initializable 
     // region FXML
 
     @FXML
-    private BorderPane container;
+    private ScrollPane container;
 
     // endregion
 
@@ -66,19 +72,33 @@ public class BackpackController extends BaseController implements Initializable 
 
     // endregion
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    // region Private static methods
 
+    /**
+     * Spočítá potřebnou výšku inventáře
+     *
+     * @param slotCount Celkový počet slotů v inventáři
+     * @return Výška inventáře
+     */
+    private static int computeHeight(final int slotCount) {
+        final int rowCount = slotCount / SLOTS_ON_ROW;
+        return 8 // Top padding
+            + ItemSlot.SLOT_SIZE * rowCount
+            + ItemContainer.SLOT_SPACING * rowCount
+            + 8 // Bottom padding
+            + ItemSlot.SLOT_SIZE; // WTF constant
     }
+
+    // endregion
 
     @Override
     protected void onCreate(Bundle bundle) {
         backpackSize = bundle.getInt(BACKPACK_SIZE);
         inventoryId = bundle.getString(INVENTORY_ID);
         itemContainer = new FlowItemContainer(backpackSize);
-        container.setCenter(itemContainer.getGraphics());
+        container.setContent(itemContainer.getGraphics());
         itemContainer.setItemClickListener(itemClickListener);
-        setScreenSize(ItemSlot.SLOT_SIZE * SLOT_ON_ROW + ItemContainer.SLOT_SPACING * SLOT_ON_ROW, 200);
+        setScreenSize(WIDTH, BackpackController.computeHeight(backpackSize));
     }
 
     private final ChangeListener<? super Hero> heroChangeListener = (observable, oldValue, newValue) -> {
