@@ -73,13 +73,15 @@
     <padding>
       <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
     </padding>
-    <Button onAction="#handleAddAddition" prefHeight="16.0" prefWidth="16.0">
+    <Button onAction="#handleAddAddition">
       <styleClass>
+        <String fx:value="sidebar-button" />
         <String fx:value="icon-add"/>
       </styleClass>
     </Button>
-    <Button onAction="#handleRemoveAddition" prefHeight="16.0" prefWidth="16.0">
+    <Button onAction="#handleRemoveAddition">
       <styleClass>
+        <String fx:value="sidebar-button" />
         <String fx:value="icon-subtract"/>
       </styleClass>
     </Button>
