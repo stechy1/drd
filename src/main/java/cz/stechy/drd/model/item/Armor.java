@@ -2,6 +2,7 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.Money;
 import cz.stechy.drd.model.IClonable;
+import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Height;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -96,6 +97,20 @@ public class Armor extends ItemBase {
                 weight.setValue(weightC.getValue());
                 price.setRaw(priceC.getRaw());
         }
+    }
+
+    @Override
+    public void update(DatabaseItem other) {
+        super.update(other);
+        Armor armor = (Armor) other;
+        this.defenceNumber.setValue(armor.getDefenceNumber());
+        this.weightA.setValue(armor.getWeightA());
+        this.weightB.setValue(armor.getWeightB());
+        this.weightC.setValue(armor.getWeightC());
+        this.priceA.setRaw(armor.getPriceA().getRaw());
+        this.priceB.setRaw(armor.getPriceB().getRaw());
+        this.priceC.setRaw(armor.getPriceC().getRaw());
+        this.minimumStrength.setValue(armor.getMinimumStrength());
     }
 
     @Override
