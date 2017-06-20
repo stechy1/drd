@@ -49,6 +49,9 @@
 .icon-online {
     -fx-graphic: url("../images/icon/16/online.png");
 }
+.icon-synchronize {
+    -fx-graphic: url("../images/icon/16/synchronize.png");
+}
 .table-column {
     -fx-alignment: CENTER-LEFT;
 }

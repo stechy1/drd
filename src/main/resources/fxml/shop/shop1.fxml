@@ -65,6 +65,14 @@
           <String fx:value="icon-edit"/>
         </styleClass>
       </Button>
+      <Button fx:id="btnSynchronize" onAction="#handleSynchronize" prefWidth="16" prefHeight="16">
+        <tooltip>
+          <Tooltip text="%drd_shop_item_synchronize"/>
+        </tooltip>
+        <styleClass>
+          <String fx:value="icon-synchronize"/>
+        </styleClass>
+      </Button>
       <ToggleButton fx:id="btnToggleOnline" prefWidth="16" prefHeight="16">
         <tooltip>
           <Tooltip text="%drd_shop_toggle_online_database"/>

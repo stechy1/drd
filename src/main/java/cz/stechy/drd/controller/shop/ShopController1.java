@@ -261,6 +261,11 @@ public class ShopController1 extends BaseController implements Initializable {
         startScreen(R.FXML.SHOP2, bundle);
     }
 
+    @FXML
+    private void handleSynchronize(ActionEvent actionEvent) {
+
+    }
+
     // endregion
 
     private final OnUploadItem uploadHandler = item -> {
@@ -275,5 +280,4 @@ public class ShopController1 extends BaseController implements Initializable {
         ShopItemController controller = controllers[selectedAccordionPaneIndex.get()];
         controller.requestRemoveItem(item, remote);
     };
-
 }
