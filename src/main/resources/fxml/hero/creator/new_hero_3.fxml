@@ -34,19 +34,21 @@
       <padding>
         <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
       </padding>
-      <Button fx:id="btnAddItem" onAction="#handleAddItem" prefWidth="16" prefHeight="16">
+      <Button fx:id="btnAddItem" onAction="#handleAddItem">
         <tooltip>
           <Tooltip text="%drd_shop_item_add"/>
         </tooltip>
         <styleClass>
+          <String fx:value="sidebar-button" />
           <String fx:value="icon-add"/>
         </styleClass>
       </Button>
-      <Button fx:id="btnRemoveItem" onAction="#handleRemoveItem" prefWidth="16" prefHeight="16">
+      <Button fx:id="btnRemoveItem" onAction="#handleRemoveItem">
         <tooltip>
           <Tooltip text="%drd_shop_item_remove"/>
         </tooltip>
         <styleClass>
+          <String fx:value="sidebar-button" />
           <String fx:value="icon-subtract"/>
         </styleClass>
       </Button>

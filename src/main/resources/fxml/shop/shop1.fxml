@@ -41,43 +41,45 @@
       <padding>
         <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
       </padding>
-      <Button fx:id="btnAddItem" onAction="#handleAddItem" prefWidth="16" prefHeight="16">
-        <tooltip>
-          <Tooltip text="%drd_shop_item_add"/>
-        </tooltip>
+      <Button fx:id="btnAddItem" onAction="#handleAddItem">
         <styleClass>
-          <String fx:value="icon-add"/>
+          <String fx:value="sidebar-button" />
+          <String fx:value="icon-add" />
         </styleClass>
       </Button>
-      <Button fx:id="btnRemoveItem" onAction="#handleRemoveItem" prefWidth="16" prefHeight="16">
+      <Button fx:id="btnRemoveItem" onAction="#handleRemoveItem">
         <tooltip>
           <Tooltip text="%drd_shop_item_remove"/>
         </tooltip>
         <styleClass>
+          <String fx:value="sidebar-button" />
           <String fx:value="icon-subtract"/>
         </styleClass>
       </Button>
-      <Button fx:id="btnEditItem" onAction="#handleEditItem" prefWidth="16" prefHeight="16">
+      <Button fx:id="btnEditItem" onAction="#handleEditItem">
         <tooltip>
           <Tooltip text="%drd_shop_item_edit"/>
         </tooltip>
         <styleClass>
+          <String fx:value="sidebar-button" />
           <String fx:value="icon-edit"/>
         </styleClass>
       </Button>
-      <Button fx:id="btnSynchronize" onAction="#handleSynchronize" prefWidth="16" prefHeight="16">
+      <Button fx:id="btnSynchronize" onAction="#handleSynchronize">
         <tooltip>
           <Tooltip text="%drd_shop_item_synchronize"/>
         </tooltip>
         <styleClass>
+          <String fx:value="sidebar-button" />
           <String fx:value="icon-synchronize"/>
         </styleClass>
       </Button>
-      <ToggleButton fx:id="btnToggleOnline" prefWidth="16" prefHeight="16">
+      <ToggleButton fx:id="btnToggleOnline" >
         <tooltip>
           <Tooltip text="%drd_shop_toggle_online_database"/>
         </tooltip>
         <styleClass>
+          <String fx:value="sidebar-button" />
           <String fx:value="icon-online"/>
         </styleClass>
       </ToggleButton>

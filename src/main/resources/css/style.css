@@ -1,57 +1,73 @@
 .toolbar-button {
     -fx-background-color: transparent;
     -fx-background-repeat: no-repeat;
+    -fx-background-size: 80%;
+    -fx-background-position: center;
     -fx-border-color: rgba(0, 0, 0, 0.2);
     -fx-border-radius: 5px;
     -fx-border-style: solid;
-    -fx-width: 32px;
-    -fx-height: 32px;
+    -fx-min-width: 48px;
+    -fx-min-height: 48px;
+    -fx-max-width: 48px;
+    -fx-max-height: 48px;
 }
 .toolbar-button:hover {
     -fx-background-color: rgba(0, 0, 0, 0.1);
 }
+
+.sidebar-button {
+        -fx-background-repeat: no-repeat;
+        -fx-background-size: 80%;
+        -fx-background-position: center;
+        -fx-min-width: 32px;
+        -fx-min-height: 32px;
+        -fx-max-width: 32px;
+        -fx-max-height: 32px;
+}
+
 .icon-new {
-    -fx-graphic: url("../images/icon/32/new.png");
+    -fx-background-image: url("../images/icon/new.png");
 }
 .icon-open {
-    -fx-graphic: url("../images/icon/32/open.png");
+    -fx-background-image: url("../images/icon/open.png");
 }
 .icon-save {
-    -fx-graphic: url("../images/icon/32/save.png");
+    -fx-background-image: url("../images/icon/save.png");
 }
 .icon-dice {
-    -fx-graphic: url("../images/icon/32/dice.png");
+    -fx-background-image: url("../images/icon/dice.png");
 }
 .icon-bestiary {
-    -fx-graphic: url("../images/icon/32/bestiary.png");
+    -fx-background-image: url("../images/icon/bestiary.png");
 }
 .icon-shop {
-    -fx-graphic: url("../images/icon/32/shop.png");
+    -fx-background-image: url("../images/icon/shop.png");
 }
 .icon-close-hero {
-    -fx-graphic: url("../images/icon/32/close_hero.png");
+    -fx-background-image: url("../images/icon/close_hero.png");
 }
 .icon-add {
-    -fx-graphic: url("../images/icon/16/add.png");
+    -fx-background-image: url("../images/icon/add.png");
 }
 .icon-subtract {
-    -fx-graphic: url("../images/icon/16/subtract.png");
+    -fx-background-image: url("../images/icon/subtract.png");
 }
 .icon-edit {
-    -fx-graphic: url("../images/icon/16/edit.png");
+    -fx-background-image: url("../images/icon/edit.png");
 }
 .icon-import {
-    -fx-graphic: url("../images/icon/32/import.png");
+    -fx-background-image: url("../images/icon/import.png");
 }
 .icon-login {
-    -fx-graphic: url("../images/icon/32/login.png");
+    -fx-background-image: url("../images/icon/login.png");
 }
 .icon-online {
-    -fx-graphic: url("../images/icon/16/online.png");
+    -fx-background-image: url("../images/icon/online.png");
 }
 .icon-synchronize {
-    -fx-graphic: url("../images/icon/16/synchronize.png");
+    -fx-background-image: url("../images/icon/synchronize.png");
 }
+
 .table-column {
     -fx-alignment: CENTER-LEFT;
 }
