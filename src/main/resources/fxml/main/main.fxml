@@ -24,35 +24,35 @@
       <MenuItem onAction="#handleMenuNewHero" text="%drd_main_menu_file_new_hero">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/new.png"/>
+            <Image url="@../../images/icon/new.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuLoadHero" text="%drd_main_menu_file_load_hero">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/open.png"/>
+            <Image url="@../../images/icon/open.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleExportHero" text="%drd_main_menu_file_export_hero">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/export.png"/>
+            <Image url="@../../images/icon/export.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleImportHero" text="%drd_main_menu_file_import_hero">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/import.png"/>
+            <Image url="@../../images/icon/import.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuCloseHero" text="%drd_main_menu_file_close_hero">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/close_hero.png"/>
+            <Image url="@../../images/icon/close_hero.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
@@ -60,7 +60,7 @@
       <MenuItem onAction="#handleMenuLogin" text="%drd_main_menu_file_login">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/login.png"/>
+            <Image url="@../../images/icon/login.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
@@ -68,7 +68,7 @@
       <MenuItem text="%drd_main_menu_file_close_program">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/close.png"/>
+            <Image url="@../../images/icon/close.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
@@ -77,7 +77,7 @@
       <MenuItem onAction="#handleMenuDice" text="%drd_main_menu_tools_dice">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/dice.png"/>
+            <Image url="@../../images/icon/dice.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
@@ -85,21 +85,21 @@
       <MenuItem onAction="#handleMenuBestiary" text="%drd_main_menu_tools_bestiary">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/bestiary.png"/>
+            <Image url="@../../images/icon/bestiary.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuShop" text="%drd_main_menu_tools_shop">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/shop.png"/>
+            <Image url="@../../images/icon/shop.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuFight" text="%drd_main_menu_tools_fight">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/fight.png"/>
+            <Image url="@../../images/icon/fight.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
@@ -108,21 +108,21 @@
       <MenuItem onAction="#handleMenuAbout" text="%drd_main_menu_help_about">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/about.png"/>
+            <Image url="@../../images/icon/about.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuChangelog" text="%drd_main_menu_help_changelog">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/changelog.png"/>
+            <Image url="@../../images/icon/changelog.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem onAction="#handleMenuHelp" text="%drd_main_menu_help">
         <graphic>
           <ImageView>
-            <Image url="@../../images/icon/16/help.png"/>
+            <Image url="@../../images/icon/help.png" requestedWidth="16" requestedHeight="16" />
           </ImageView>
         </graphic>
       </MenuItem>
