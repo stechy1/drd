@@ -59,7 +59,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
     @FXML
     private TableColumn<ItemEntry, String> columnName;
     @FXML
-    private TableColumn<ItemEntry, MaxActValue> columnAmmount;
+    private TableColumn<ItemEntry, MaxActValue> columnItemCount;
     @FXML
     private TableColumn<ItemEntry, Integer> columnWeight;
 
@@ -89,8 +89,8 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
-        columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
-        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
+        columnItemCount.setCellValueFactory(new PropertyValueFactory<>("itemCount"));
+        columnItemCount.setCellFactory(param -> CellUtils.forMaxActValue());
 
         ObservableMergers.mergeList(ChoiceEntry::new, item_registry,
             ItemRegistry.getINSTANCE().getRegistry());

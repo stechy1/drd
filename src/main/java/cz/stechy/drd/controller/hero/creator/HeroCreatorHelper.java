@@ -3,6 +3,7 @@ package cz.stechy.drd.controller.hero.creator;
 import cz.stechy.drd.controller.hero.creator.HeroCreatorController3.ChoiceEntry;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
+import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
 import cz.stechy.screens.Bundle;
@@ -63,13 +64,13 @@ public final class HeroCreatorHelper {
             .build();
     }
 
-    public static final class ItemEntry {
+    public static final class ItemEntry implements InventoryHelper.ItemRecord {
 
         private final StringProperty id = new SimpleStringProperty();
         private final StringProperty name = new SimpleStringProperty();
         private final ObjectProperty<Image> image = new SimpleObjectProperty<>();
         private final IntegerProperty weight = new SimpleIntegerProperty();
-        private final MaxActValue ammount = new MaxActValue();
+        private final MaxActValue itemCount = new MaxActValue();
 
         public ItemEntry(ChoiceEntry entry) {
             final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
@@ -84,8 +85,8 @@ public final class HeroCreatorHelper {
             this.weight.setValue(itemBase.getWeight());
             final ByteArrayInputStream inputStream = new ByteArrayInputStream(itemBase.getImage());
             image.set(new Image(inputStream));
-            ammount.setMinValue(1);
-            ammount.setActValue(1);
+            itemCount.setMinValue(1);
+            itemCount.setActValue(1);
         }
 
         public String getId() {
@@ -136,8 +137,13 @@ public final class HeroCreatorHelper {
             this.weight.set(weight);
         }
 
-        public MaxActValue getAmmount() {
-            return ammount;
+        public MaxActValue getItemCount() {
+            return itemCount;
+        }
+
+        @Override
+        public int getAmmount() {
+            return itemCount.getActValue().intValue();
         }
     }
 }

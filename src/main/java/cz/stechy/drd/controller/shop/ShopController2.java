@@ -4,23 +4,14 @@ import cz.stechy.drd.Money;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.model.inventory.Inventory;
-import cz.stechy.drd.model.inventory.InventoryException;
-import cz.stechy.drd.model.inventory.InventoryRecord;
-import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
-import cz.stechy.drd.model.item.Backpack;
-import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemRegistry;
-import cz.stechy.drd.model.item.ItemType;
+import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.model.persistent.HeroManager;
-import cz.stechy.drd.model.persistent.InventoryContent;
 import cz.stechy.drd.model.persistent.InventoryManager;
 import cz.stechy.drd.model.shop.ShoppingCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.beans.property.IntegerProperty;
@@ -111,52 +102,9 @@ public class ShopController2 extends BaseController implements Initializable {
             heroCopy.getMoney().subtract(shoppingCart.totalPrice);
             heroManager.update(heroCopy);
 
-            // Postupné přidání koupených předmětů do inventáře postavy
             final InventoryManager inventoryManager = heroManager.getInventory();
-            final Inventory inventory = inventoryManager.select(InventoryManager.MAIN_INVENTORY_FILTER);
-            final InventoryContent inventoryContent = inventoryManager
-                .getInventoryContent(inventory);
-            for (ItemResultEntry item : items) {
-                final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
-                    .getItemById(item.getId());
-                if (!itemOptional.isPresent()) {
-                    continue;
-                }
+            InventoryHelper.insertItemsToInventory(inventoryManager, items);
 
-                final ItemBase itemBase = itemOptional.get();
-                try {
-                    final int slotIndex = inventoryContent.getItemSlotIndexById(itemBase);
-                    final InventoryRecord inventoryRecord = inventoryContent
-                        .select(record -> slotIndex == record.getSlotId());
-                    final InventoryRecord inventoryRecordCopy = inventoryRecord.duplicate();
-                    inventoryRecordCopy
-                        .setAmmount(inventoryRecord.getAmmount() + item.getAmmount());
-                    inventoryContent.update(inventoryRecordCopy);
-
-                } catch (InventoryException e) {
-                    try {
-                        final int slotIndex = inventoryContent.getFreeSlot();
-                        InventoryRecord inventoryRecord = new InventoryRecord.Builder()
-                            .inventoryId(inventoryContent.getInventory().getId())
-                            .slotId(slotIndex)
-                            .itemId(item.getId())
-                            .ammount(item.getAmmount())
-                            .build();
-                        if (itemBase.getItemType() == ItemType.BACKPACK) {
-                            final Metadata metadata = inventoryRecord.getMetadata();
-                            final Backpack backpack = (Backpack) itemBase;
-                            final String childInventoryId = inventoryManager
-                                .initSubInventory(backpack.getSize().size);
-                            metadata.put(Backpack.CHILD_INVENTORY_ID, childInventoryId);
-                        }
-                        inventoryContent.insert(inventoryRecord);
-                    } catch (InventoryException e1) {
-                        e1.printStackTrace();
-                        heroManager.rollback();
-                        return;
-                    }
-                }
-            }
             heroManager.commit();
 
         } catch (DatabaseException e) {
@@ -178,7 +126,7 @@ public class ShopController2 extends BaseController implements Initializable {
 
     // endregion
 
-    public static class ItemResultEntry {
+    public static class ItemResultEntry implements InventoryHelper.ItemRecord {
 
         // region Variables
 

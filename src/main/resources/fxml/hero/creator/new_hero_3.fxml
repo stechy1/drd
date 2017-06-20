@@ -22,7 +22,7 @@
           style="-fx-alignment: CENTER-LEFT;"/>
         <TableColumn fx:id="columnName" minWidth="100.0" text="%drd_item_name"
           style="-fx-alignment: CENTER-LEFT;"/>
-        <TableColumn fx:id="columnAmmount" minWidth="40.0" text="%drd_item_ammount"
+        <TableColumn fx:id="columnItemCount" minWidth="40.0" text="%drd_item_ammount"
           style="-fx-alignment: CENTER-LEFT;"/>
         <TableColumn fx:id="columnWeight" minWidth="40.0" text="%drd_item_weight"
           style="-fx-alignment: CENTER-LEFT;"/>

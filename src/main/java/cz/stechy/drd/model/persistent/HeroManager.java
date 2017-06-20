@@ -5,15 +5,12 @@ import cz.stechy.drd.model.db.BaseDatabaseManager;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.model.inventory.Inventory;
-import cz.stechy.drd.model.inventory.InventoryException;
-import cz.stechy.drd.model.inventory.InventoryRecord.Builder;
+import cz.stechy.drd.model.inventory.InventoryHelper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -209,36 +206,12 @@ public class HeroManager extends BaseDatabaseManager<Hero> {
         tableInitialized = true;
     }
 
-    public void insert(Hero hero, ObservableList<HeroCreatorHelper.ItemEntry> itemsToInventory)
+    public void insert(Hero hero, ObservableList<HeroCreatorHelper.ItemEntry> items)
         throws DatabaseException {
         insert(hero);
 
         InventoryManager inventoryManager = getInventory(hero);
-        final Inventory inventory = inventoryManager.select(InventoryManager.MAIN_INVENTORY_FILTER);
-        final InventoryContent inventoryContent = inventoryManager
-            .getInventoryContent(inventory);
-        itemsToInventory.stream()
-            .filter(itemEntry -> itemEntry.getAmmount().getMaxValue().intValue() > 0)
-            .map(itemEntry -> {
-                try {
-                    return new Builder()
-                        .inventoryId(inventory.getId())
-                        .itemId(itemEntry.getId())
-                        .ammount(itemEntry.getAmmount().getActValue().intValue())
-                        .slotId(inventoryContent.getFreeSlot())
-                        .build();
-                } catch (InventoryException e) {
-                    return null;
-                }
-            })
-            .filter(Objects::nonNull)
-            .forEach(record -> {
-                try {
-                    inventoryContent.insert(record);
-                } catch (DatabaseException e) {
-                    e.printStackTrace();
-                }
-            });
+        InventoryHelper.insertItemsToInventory(inventoryManager, items);
     }
 
     @Override
