@@ -72,7 +72,7 @@ public abstract class ItemContainer {
      */
     private void insert(final InventoryRecord record) {
         final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
-            .getItem(databaseItem -> databaseItem.getId().equals(record.getItemId()));
+            .getItemById(record.getItemId());
         itemOptional.ifPresent(itemBase -> {
             final ItemBase item = itemBase;
             final int ammount = record.getAmmount();

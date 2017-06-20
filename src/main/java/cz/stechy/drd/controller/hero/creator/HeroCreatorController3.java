@@ -8,13 +8,13 @@ import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
 import cz.stechy.drd.util.CellUtils;
-import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -92,8 +92,10 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         columnItemCount.setCellValueFactory(new PropertyValueFactory<>("itemCount"));
         columnItemCount.setCellFactory(param -> CellUtils.forMaxActValue());
 
-        ObservableMergers.mergeList(ChoiceEntry::new, item_registry,
-            ItemRegistry.getINSTANCE().getRegistry());
+        ItemRegistry.getINSTANCE().getRegistry().entrySet()
+            .stream()
+            .map(databaseItemEntry -> databaseItemEntry.getValue())
+            .collect(Collectors.toList());
 
         btnRemoveItem.disableProperty().bind(selectedItem.lessThan(0));
     }
