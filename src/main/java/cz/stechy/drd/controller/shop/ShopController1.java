@@ -254,11 +254,6 @@ public class ShopController1 extends BaseController implements Initializable {
     }
 
     @FXML
-    private void handleToggleOnline(ActionEvent actionEvent) {
-
-    }
-
-    @FXML
     private void handleContinueShopping(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
         bundle.put(ShopController2.HERO_ID, hero.get().getId());

@@ -65,8 +65,7 @@
           <String fx:value="icon-edit"/>
         </styleClass>
       </Button>
-      <ToggleButton fx:id="btnToggleOnline" onAction="#handleToggleOnline" prefWidth="16"
-        prefHeight="16">
+      <ToggleButton fx:id="btnToggleOnline" prefWidth="16" prefHeight="16">
         <tooltip>
           <Tooltip text="%drd_shop_toggle_online_database"/>
         </tooltip>
