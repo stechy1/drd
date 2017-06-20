@@ -2,7 +2,6 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
@@ -13,6 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import cz.stechy.drd.widget.EnumComboBox?>
 <HBox spacing="8" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="cz.stechy.drd.controller.shop.ItemWeaponMeleController">
   <padding>
@@ -46,8 +46,8 @@
     <TextField fx:id="txtStrength" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
     <TextField fx:id="txtRampancy" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
     <TextField fx:id="txtDefenceNumber" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-    <ComboBox fx:id="cmbWeaponClass" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-    <ComboBox fx:id="cmbWeaponType" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+    <EnumComboBox fx:id="cmbWeaponClass" GridPane.columnIndex="1" GridPane.rowIndex="4" enumType="cz.stechy.drd.model.item.MeleWeapon$MeleWeaponClass"/>
+    <EnumComboBox fx:id="cmbWeaponType" GridPane.columnIndex="1" GridPane.rowIndex="5"  enumType="cz.stechy.drd.model.item.MeleWeapon$MeleWeaponType"/>
     <TextField fx:id="txtWeight" GridPane.columnIndex="1" GridPane.rowIndex="6"/>
     <Hyperlink fx:id="lblPrice" onAction="#handleShowMoneyPopup" GridPane.columnIndex="1"
       GridPane.rowIndex="7"/>

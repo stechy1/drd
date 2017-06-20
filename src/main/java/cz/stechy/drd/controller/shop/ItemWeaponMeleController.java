@@ -26,7 +26,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -161,13 +160,11 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         txtName.textProperty().bindBidirectional(model.name);
         txtDescription.textProperty().bindBidirectional(model.description);
 
-        cmbWeaponType.setItems(FXCollections.observableArrayList(MeleWeaponType.values()));
         cmbWeaponType.valueProperty().bindBidirectional(model.weaponType);
         cmbWeaponType.converterProperty().setValue(StringConvertors.forMeleWeaponType(translator));
-        cmbWeaponClass.setItems(FXCollections.observableArrayList(MeleWeaponClass.values()));
         cmbWeaponClass.valueProperty().bindBidirectional(model.weaponClass);
-        cmbWeaponClass.converterProperty()
-            .setValue(StringConvertors.forMeleWeaponClass(translator));
+        cmbWeaponClass.converterProperty().setValue(
+            StringConvertors.forMeleWeaponClass(translator));
 
         FormUtils.initTextFormater(txtStrength, model.strength);
         FormUtils.initTextFormater(txtRampancy, model.rampancy);
@@ -177,8 +174,10 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         lblPrice.textProperty().bind(model.price.text);
         imageView.imageProperty().bindBidirectional(model.image);
 
-        btnFinish.disableProperty()
-            .bind(Bindings.or(model.name.isEmpty(), model.imageRaw.isNull()));
+        btnFinish.disableProperty().bind(
+            Bindings.or(
+                model.name.isEmpty(),
+                model.imageRaw.isNull()));
     }
 
     @Override

@@ -4,6 +4,8 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.hero.Hero;
+import cz.stechy.drd.model.entity.hero.Hero.Profession;
+import cz.stechy.drd.model.entity.hero.Hero.Race;
 import cz.stechy.drd.util.BitUtils;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
@@ -20,7 +22,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -47,9 +48,9 @@ public class HeroCreatorController1 extends BaseController implements Initializa
     @FXML
     private ComboBox<Conviction> cmbConviction;
     @FXML
-    private ComboBox<Hero.Race> cmbRace;
+    private ComboBox<Race> cmbRace;
     @FXML
-    private ComboBox<Hero.Profession> cmbProfession;
+    private ComboBox<Profession> cmbProfession;
     @FXML
     private TextArea txtDescription;
 
@@ -71,15 +72,12 @@ public class HeroCreatorController1 extends BaseController implements Initializa
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.GUIDE_NEW_HERO_1_TITLE);
 
-        cmbConviction.setItems(FXCollections.observableArrayList(Conviction.values()));
-        cmbRace.setItems(FXCollections.observableArrayList(Hero.Race.values()));
-        cmbProfession.setItems(FXCollections.observableArrayList(Hero.Profession.values()));
-
-        cmbConviction.converterProperty()
-            .setValue(StringConvertors.forConvictionConverter(translator));
-        cmbRace.converterProperty().setValue(StringConvertors.forRaceConverter(translator));
-        cmbProfession.converterProperty()
-            .setValue(StringConvertors.forProfessionConverter(translator));
+        cmbConviction.converterProperty().setValue(
+            StringConvertors.forConvictionConverter(translator));
+        cmbRace.converterProperty().setValue(
+            StringConvertors.forRaceConverter(translator));
+        cmbProfession.converterProperty().setValue(
+            StringConvertors.forProfessionConverter(translator));
 
         txtName.textProperty().bindBidirectional(model.name);
         txtDescription.textProperty().bindBidirectional(model.description);
@@ -97,8 +95,8 @@ public class HeroCreatorController1 extends BaseController implements Initializa
         model.conviction.setValue(
             Conviction.valueOf(bundle.getInt(HeroCreatorHelper.CONVICTION, -1)));
         model.race.setValue(Hero.Race.valueOf(bundle.getInt(HeroCreatorHelper.RACE, -1)));
-        model.profession
-            .setValue(Hero.Profession.valueOf(bundle.getInt(HeroCreatorHelper.PROFESSION, -1)));
+        model.profession.setValue(
+            Hero.Profession.valueOf(bundle.getInt(HeroCreatorHelper.PROFESSION, -1)));
         model.description.setValue(bundle.getString(HeroCreatorHelper.DESCRIPTION));
     }
 

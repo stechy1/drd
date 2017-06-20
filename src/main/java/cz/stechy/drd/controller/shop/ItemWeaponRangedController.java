@@ -24,7 +24,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -63,6 +62,9 @@ public class ItemWeaponRangedController extends BaseController implements Initia
     private static final String IMAGE = "image";
     private static final String UPLOADED = "uploaded";
     private static final String DOWNLOADED = "downloaded";
+
+    // endregion
+
     // region Variables
 
     // region FXML
@@ -90,8 +92,6 @@ public class ItemWeaponRangedController extends BaseController implements Initia
     private Hyperlink lblPrice;
     @FXML
     private ImageView imageView;
-    // endregion
-
     // endregion
 
     private final WeaponRangedModel model = new WeaponRangedModel();
@@ -161,7 +161,6 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         txtName.textProperty().bindBidirectional(model.name);
         txtDescription.textProperty().bindBidirectional(model.description);
 
-        cmbWeaponType.setItems(FXCollections.observableArrayList(RangedWeaponType.values()));
         cmbWeaponType.valueProperty().bindBidirectional(model.weaponType);
         cmbWeaponType.converterProperty()
             .setValue(StringConvertors.forRangedWeaponType(translator));
