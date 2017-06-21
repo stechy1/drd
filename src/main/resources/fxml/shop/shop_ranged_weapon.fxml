@@ -15,14 +15,19 @@
     <TableColumn fx:id="columnStrength" minWidth="50.0" text="%drd_item_weapon_strength"/>
     <TableColumn fx:id="columnRampancy" minWidth="75.0" text="%drd_item_weapon_rampancy"/>
     <TableColumn fx:id="columnType" minWidth="75.0" text="%drd_item_weapon_mele_ranged_type"/>
-    <TableColumn fx:id="columnRangeLow" minWidth="150.0" text="%drd_item_weapon_ranged_range_low"/>
-    <TableColumn fx:id="columnRangeMedium" minWidth="150.0"
-      text="%drd_item_weapon_ranged_range_medium"/>
-    <TableColumn fx:id="columnRangeLong" minWidth="150.0"
-      text="%drd_item_weapon_ranged_range_long"/>
+    <TableColumn text="%drd_item_weapon_ranged_range">
+      <columns>
+        <TableColumn fx:id="columnRangeLow" minWidth="50.0"
+          text="%drd_item_weapon_ranged_range_low"/>
+        <TableColumn fx:id="columnRangeMedium" minWidth="50.0"
+          text="%drd_item_weapon_ranged_range_medium"/>
+        <TableColumn fx:id="columnRangeLong" minWidth="50.0"
+          text="%drd_item_weapon_ranged_range_long"/>
+      </columns>
+    </TableColumn>
     <TableColumn fx:id="columnWeight" minWidth="50.0" text="%drd_item_weight"/>
-    <TableColumn fx:id="columnPrice" minWidth="50.0" text="%drd_item_price"/>
-    <TableColumn fx:id="columnAmmount" minWidth="75.0" text="%drd_item_ammount"/>
+    <TableColumn fx:id="columnPrice" minWidth="90.0" text="%drd_item_price"/>
+    <TableColumn fx:id="columnAmmount" minWidth="60.0" text="%drd_item_ammount"/>
     <TableColumn fx:id="columnAction" minWidth="135.0" text="%drd_shop_action"/>
   </columns>
 </TableView>
