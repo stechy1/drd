@@ -2,10 +2,10 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 
 /**
  * Třída představující zbraň pro boj na blízko
@@ -15,12 +15,12 @@ public class MeleWeapon extends WeaponBase {
     // region Variables
 
     // Obrana zbraně
-    protected final IntegerProperty defence = new SimpleIntegerProperty();
+    protected final ReadOnlyIntegerWrapper defence = new ReadOnlyIntegerWrapper();
     // Třída zbraně
-    protected final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(
+    protected final ReadOnlyObjectWrapper<MeleWeaponClass> weaponClass = new ReadOnlyObjectWrapper<>(
         MeleWeaponClass.LIGHT);
     // Typ zbraně
-    protected final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(
+    protected final ReadOnlyObjectWrapper<MeleWeaponType> weaponType = new ReadOnlyObjectWrapper<>(
         MeleWeaponType.ONE_HAND);
 
     // endregion
@@ -64,9 +64,9 @@ public class MeleWeapon extends WeaponBase {
         super(id, name, description, weight, price, strength, rampancy, author, image,
             downloaded, uploaded);
 
-        this.defence.setValue(defence);
-        this.weaponClass.setValue(weaponClass);
-        this.weaponType.setValue(weaponType);
+        setDefence(defence);
+        setWeaponClass(weaponClass);
+        setWeaponType(weaponType);
     }
 
     // endregion
@@ -77,8 +77,8 @@ public class MeleWeapon extends WeaponBase {
         return defence.get();
     }
 
-    public IntegerProperty defenceProperty() {
-        return defence;
+    public ReadOnlyIntegerProperty defenceProperty() {
+        return defence.getReadOnlyProperty();
     }
 
     public void setDefence(int defence) {
@@ -89,8 +89,8 @@ public class MeleWeapon extends WeaponBase {
         return weaponClass.get();
     }
 
-    public ObjectProperty<MeleWeaponClass> weaponClassProperty() {
-        return weaponClass;
+    public ReadOnlyObjectProperty<MeleWeaponClass> weaponClassProperty() {
+        return weaponClass.getReadOnlyProperty();
     }
 
     public void setWeaponClass(MeleWeaponClass weaponClass) {
@@ -101,8 +101,8 @@ public class MeleWeapon extends WeaponBase {
         return weaponType.get();
     }
 
-    public ObjectProperty<MeleWeaponType> weaponTypeProperty() {
-        return weaponType;
+    public ReadOnlyObjectProperty<MeleWeaponType> weaponTypeProperty() {
+        return weaponType.getReadOnlyProperty();
     }
 
     public void setWeaponType(MeleWeaponType weaponType) {
@@ -116,10 +116,11 @@ public class MeleWeapon extends WeaponBase {
     @Override
     public void update(DatabaseItem other) {
         super.update(other);
-        MeleWeapon otherWeapon = (MeleWeapon) other;
-        this.defence.setValue(otherWeapon.getDefence());
-        this.weaponClass.setValue(otherWeapon.getWeaponClass());
-        this.weaponType.setValue(otherWeapon.getWeaponType());
+
+        MeleWeapon weapon = (MeleWeapon) other;
+        setDefence(weapon.getDefence());
+        setWeaponClass(weapon.getWeaponClass());
+        setWeaponType(weapon.getWeaponType());
     }
 
     @Override

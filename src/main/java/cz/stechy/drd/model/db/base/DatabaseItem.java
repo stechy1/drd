@@ -1,8 +1,8 @@
 package cz.stechy.drd.model.db.base;
 
 import cz.stechy.drd.model.IClonable;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
 
 /**
  * Základní třída pro všecny itemy, které se budou ukládat do databáze
@@ -12,7 +12,8 @@ public abstract class DatabaseItem implements IClonable {
     // region Variables
 
     // Id
-    protected final StringProperty id = new SimpleStringProperty();
+    //protected final StringProperty id = new SimpleStringProperty();
+    protected final ReadOnlyStringWrapper id = new ReadOnlyStringWrapper();
 
     // endregion
 
@@ -24,9 +25,9 @@ public abstract class DatabaseItem implements IClonable {
      * @param id Id předmětu
      */
     protected DatabaseItem(String id) {
-        this.id.set(id);
+        setId(id);
     }
-
+;
     // endregion
 
     // region Getters & Setters
@@ -35,8 +36,8 @@ public abstract class DatabaseItem implements IClonable {
         return id.get();
     }
 
-    public StringProperty idProperty() {
-        return id;
+    public ReadOnlyStringProperty idProperty() {
+        return id.getReadOnlyProperty();
     }
 
     public void setId(String id) {

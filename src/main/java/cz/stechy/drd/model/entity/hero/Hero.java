@@ -12,10 +12,10 @@ import cz.stechy.drd.model.entity.SimpleEntityProperty;
 import cz.stechy.drd.util.HashGenerator;
 import java.util.regex.Pattern;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 
 /**
  * Základní třída definující atributy pro všechny hrdiny
@@ -44,11 +44,11 @@ public class Hero extends EntityBase {
     // region Variables
 
     // Rasa
-    private final ObjectProperty<Race> race = new SimpleObjectProperty<>();
+    private final ReadOnlyObjectWrapper<Race> race = new ReadOnlyObjectWrapper<>();
     // Profece
-    private final ObjectProperty<Profession> profession = new SimpleObjectProperty<>();
+    private final ReadOnlyObjectWrapper<Profession> profession = new ReadOnlyObjectWrapper<>();
     // Úroveň
-    private final IntegerProperty level = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper level = new ReadOnlyIntegerWrapper();
     // Peníze
     private final Money money = new Money();
     // Zkušenosti
@@ -64,9 +64,9 @@ public class Hero extends EntityBase {
     // Charisma
     private final EntityProperty charisma = new SimpleEntityProperty();
     // Obranné číslo
-    private final IntegerProperty defenceNumber = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper defenceNumber = new ReadOnlyIntegerWrapper();
     // Nosnost
-    private final IntegerProperty capacity = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper capacity = new ReadOnlyIntegerWrapper();
     // Pohyblivost
     private final EntityProperty agility = new SimpleEntityProperty();
     // Mírné naložení
@@ -146,9 +146,9 @@ public class Hero extends EntityBase {
 
         initBindings();
 
-        this.race.setValue(race);
-        this.profession.setValue(profession);
-        this.level.setValue(level);
+        setRace(race);
+        setProfession(profession);
+        setLevel(level);
         this.money.setRaw(money);
         this.experiences.setActValue(experiences);
         this.strength.setValue(strength);
@@ -157,6 +157,8 @@ public class Hero extends EntityBase {
         this.intelligence.setValue(intelligence);
         this.charisma.setValue(charisma);
         this.defenceNumber.setValue(defenceNumber);
+
+
     }
 
     // endregion
@@ -168,7 +170,7 @@ public class Hero extends EntityBase {
      */
     private void initBindings() {
         // Nastavení pohyblivosti
-        this.agility.valueProperty().bind(
+        this.agility.bindTo(
             Bindings
                 .add(race.get() == null ? 0 : AGILITY_BY_RACE[race.get().ordinal()], Bindings.add(
                     dexterity.repairProperty(), Bindings.multiply(
@@ -181,10 +183,9 @@ public class Hero extends EntityBase {
             setCapacity(CAPACITY_BY_STRENGTH[newValue.intValue() + 5]));
 
         // Nastavení postřehu na objekty
-        this.observationObjects.valueProperty().bind(intelligence.valueProperty());
+        this.observationObjects.bindTo(intelligence.valueProperty());
         // Nastavení postřehu na mechanismy
-        this.observationMechanics.valueProperty()
-            .bind(Bindings.divide(intelligence.valueProperty(), 2));
+        this.observationMechanics.bindTo(Bindings.divide(intelligence.valueProperty(), 2));
 
         this.agility.valueProperty().addListener((observable, oldValue, newValue) -> {
             final double value = newValue.doubleValue();
@@ -205,8 +206,8 @@ public class Hero extends EntityBase {
         return race.get();
     }
 
-    public ObjectProperty<Race> raceProperty() {
-        return race;
+    public ReadOnlyObjectProperty<Race> raceProperty() {
+        return race.getReadOnlyProperty();
     }
 
     public void setRace(Race race) {
@@ -217,8 +218,8 @@ public class Hero extends EntityBase {
         return profession.get();
     }
 
-    public ObjectProperty<Profession> professionProperty() {
-        return profession;
+    public ReadOnlyObjectProperty<Profession> professionProperty() {
+        return profession.getReadOnlyProperty();
     }
 
     public void setProfession(Profession profession) {
@@ -229,8 +230,8 @@ public class Hero extends EntityBase {
         return level.get();
     }
 
-    public IntegerProperty levelProperty() {
-        return level;
+    public ReadOnlyIntegerProperty levelProperty() {
+        return level.getReadOnlyProperty();
     }
 
     public void setLevel(int level) {
@@ -269,8 +270,8 @@ public class Hero extends EntityBase {
         return defenceNumber.get();
     }
 
-    public IntegerProperty defenceNumberProperty() {
-        return defenceNumber;
+    public ReadOnlyIntegerProperty defenceNumberProperty() {
+        return defenceNumber.getReadOnlyProperty();
     }
 
     public void setDefenceNumber(int defenceNumber) {
@@ -281,8 +282,8 @@ public class Hero extends EntityBase {
         return capacity.get();
     }
 
-    public IntegerProperty capacityProperty() {
-        return capacity;
+    public ReadOnlyIntegerProperty capacityProperty() {
+        return capacity.getReadOnlyProperty();
     }
 
     public void setCapacity(int capacity) {
@@ -320,10 +321,11 @@ public class Hero extends EntityBase {
     @Override
     public void update(DatabaseItem other) {
         super.update(other);
+
         Hero hero = (Hero) other;
-        this.race.setValue(hero.getRace());
-        this.profession.setValue(hero.getProfession());
-        this.level.setValue(hero.getLevel());
+        setRace(hero.getRace());
+        setProfession(hero.getProfession());
+        setLevel(hero.getLevel());
         this.money.setRaw(hero.getMoney().getRaw());
         this.experiences.update(hero.getExperiences());
         this.strength.setValue(hero.getStrength().getValue());

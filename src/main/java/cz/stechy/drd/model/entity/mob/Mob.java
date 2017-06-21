@@ -8,8 +8,10 @@ import cz.stechy.drd.model.entity.EntityProperty;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.SimpleEntityProperty;
 import cz.stechy.drd.model.entity.Vulnerability;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 
 /**
  * Třída představuje všechna zvířata a nestvůry žijící ve světě Dračího doupěte
@@ -21,32 +23,32 @@ public final class Mob extends EntityBase {
     // Útočné číslo
     private final EntityProperty attackNumber = new SimpleEntityProperty();
     // Obranné číslo
-    private final IntegerProperty defenceNumber = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper defenceNumber = new ReadOnlyIntegerWrapper();
     // Životaschpnost
-    private final IntegerProperty viability = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper viability = new ReadOnlyIntegerWrapper();
     // Odolnost
     private final EntityProperty immunity = new SimpleEntityProperty();
     // Bojovnost
-    private final IntegerProperty mettle = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper mettle = new ReadOnlyIntegerWrapper();
     // Zranitenost
-    private final Vulnerability vulnerability;
+    private final ReadOnlyObjectWrapper<Vulnerability> vulnerability = new ReadOnlyObjectWrapper<>();
     // Pohyblivost
-    private final IntegerProperty mobility = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper mobility = new ReadOnlyIntegerWrapper();
     // Vytrvalost
-    private final IntegerProperty perservance = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper perservance = new ReadOnlyIntegerWrapper();
     // Manévrovací schopnosti
-    private final IntegerProperty controlAbility = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper controlAbility = new ReadOnlyIntegerWrapper();
     // Inteligence
     private final EntityProperty intelligence = new SimpleEntityProperty();
     // Charisma
     private final EntityProperty charisma = new SimpleEntityProperty();
     // Základní síla mysli
-    private final IntegerProperty basicPowerOfMind = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper basicPowerOfMind = new ReadOnlyIntegerWrapper();
     // TODO vymyslet, jak implementovat poklad
     // Zkušenosti
-    private final IntegerProperty experience = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper experience = new ReadOnlyIntegerWrapper();
     // Ochočení
-    private final IntegerProperty domestication = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper domestication = new ReadOnlyIntegerWrapper();
 
     // endregion
 
@@ -108,31 +110,44 @@ public final class Mob extends EntityBase {
             downloaded, uploaded);
 
         this.attackNumber.setValue(attackNumber);
-        this.defenceNumber.setValue(defenceNumber);
-        this.viability.setValue(viability);
+        setDefenceNumber(defenceNumber);
+        setViability(viability);
         this.immunity.setValue(immunity);
-        this.mettle.setValue(mettle);
-        this.vulnerability = vulnerability;
-        this.mobility.setValue(mobility);
-        this.perservance.setValue(perservance);
-        this.controlAbility.setValue(controlAbility);
+        setMettle(mettle);
+        setVulnerability(vulnerability);
+        setMobility(mobility);
+        setPerservance(perservance);
+        setControlAbility(controlAbility);
         this.intelligence.setValue(intelligence);
         this.charisma.setValue(charisma);
-        this.basicPowerOfMind.setValue(basicPowerOfMind);
-        this.experience.setValue(experience);
-        this.domestication.setValue(domestication);
+        setBasicPowerOfMind(basicPowerOfMind);
+        setExperience(experience);
+        setDomestication(domestication);
     }
 
     // endregion
 
     // region Public methods
 
-
     @Override
     public void update(DatabaseItem other) {
         super.update(other);
-        Mob mob = (Mob) other;
 
+        Mob mob = (Mob) other;
+        this.attackNumber.update(mob.getAttackNumber());
+        setDefenceNumber(mob.getDefenceNumber());
+        setViability(mob.getViability());
+        this.immunity.update(mob.getImmunity());
+        setMettle(mob.getMettle());
+        setVulnerability(mob.getVulnerability());
+        setMobility(mob.getMobility());
+        setPerservance(mob.getPerservance());
+        setControlAbility(mob.getControlAbility());
+        this.intelligence.update(mob.getIntelligence());
+        this.charisma.update(mob.getCharisma());
+        setBasicPowerOfMind(mob.getBasicPowerOfMind());
+        setExperience(mob.getExperience());
+        setDomestication(mob.getDomestication());
     }
 
     @SuppressWarnings("unchecked")
@@ -153,8 +168,8 @@ public final class Mob extends EntityBase {
         return defenceNumber.get();
     }
 
-    public IntegerProperty defenceNumberProperty() {
-        return defenceNumber;
+    public ReadOnlyIntegerProperty defenceNumberProperty() {
+        return defenceNumber.getReadOnlyProperty();
     }
 
     public void setDefenceNumber(int defenceNumber) {
@@ -165,8 +180,8 @@ public final class Mob extends EntityBase {
         return viability.get();
     }
 
-    public IntegerProperty viabilityProperty() {
-        return viability;
+    public ReadOnlyIntegerProperty viabilityProperty() {
+        return viability.getReadOnlyProperty();
     }
 
     public void setViability(int viability) {
@@ -181,8 +196,8 @@ public final class Mob extends EntityBase {
         return mettle.get();
     }
 
-    public IntegerProperty mettleProperty() {
-        return mettle;
+    public ReadOnlyIntegerProperty mettleProperty() {
+        return mettle.getReadOnlyProperty();
     }
 
     public void setMettle(int mettle) {
@@ -190,15 +205,23 @@ public final class Mob extends EntityBase {
     }
 
     public Vulnerability getVulnerability() {
-        return vulnerability;
+        return vulnerability.get();
+    }
+
+    public ReadOnlyObjectProperty<Vulnerability> vulnerabilityProperty() {
+        return vulnerability.getReadOnlyProperty();
+    }
+
+    public void setVulnerability(Vulnerability vulnerability) {
+        this.vulnerability.set(vulnerability);
     }
 
     public int getMobility() {
         return mobility.get();
     }
 
-    public IntegerProperty mobilityProperty() {
-        return mobility;
+    public ReadOnlyIntegerProperty mobilityProperty() {
+        return mobility.getReadOnlyProperty();
     }
 
     public void setMobility(int mobility) {
@@ -209,8 +232,8 @@ public final class Mob extends EntityBase {
         return perservance.get();
     }
 
-    public IntegerProperty perservanceProperty() {
-        return perservance;
+    public ReadOnlyIntegerProperty perservanceProperty() {
+        return perservance.getReadOnlyProperty();
     }
 
     public void setPerservance(int perservance) {
@@ -221,8 +244,8 @@ public final class Mob extends EntityBase {
         return controlAbility.get();
     }
 
-    public IntegerProperty controlAbilityProperty() {
-        return controlAbility;
+    public ReadOnlyIntegerProperty controlAbilityProperty() {
+        return controlAbility.getReadOnlyProperty();
     }
 
     public void setControlAbility(int controlAbility) {
@@ -241,8 +264,8 @@ public final class Mob extends EntityBase {
         return basicPowerOfMind.get();
     }
 
-    public IntegerProperty basicPowerOfMindProperty() {
-        return basicPowerOfMind;
+    public ReadOnlyIntegerProperty basicPowerOfMindProperty() {
+        return basicPowerOfMind.getReadOnlyProperty();
     }
 
     public void setBasicPowerOfMind(int basicPowerOfMind) {
@@ -253,8 +276,8 @@ public final class Mob extends EntityBase {
         return experience.get();
     }
 
-    public IntegerProperty experienceProperty() {
-        return experience;
+    public ReadOnlyIntegerProperty experienceProperty() {
+        return experience.getReadOnlyProperty();
     }
 
     public void setExperience(int experience) {
@@ -265,8 +288,8 @@ public final class Mob extends EntityBase {
         return domestication.get();
     }
 
-    public IntegerProperty domesticationProperty() {
-        return domestication;
+    public ReadOnlyIntegerProperty domesticationProperty() {
+        return domestication.getReadOnlyProperty();
     }
 
     public void setDomestication(int domestication) {

@@ -4,8 +4,8 @@ import cz.stechy.drd.Money;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Height;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
 
 /**
  * Třída představující brnění
@@ -14,14 +14,14 @@ public class Armor extends ItemBase {
 
     // region Variables
 
-    private final IntegerProperty defenceNumber = new SimpleIntegerProperty();
-    private final IntegerProperty weightA = new SimpleIntegerProperty();
-    private final IntegerProperty weightB = new SimpleIntegerProperty();
-    private final IntegerProperty weightC = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper defenceNumber = new ReadOnlyIntegerWrapper();
+    private final ReadOnlyIntegerWrapper weightA = new ReadOnlyIntegerWrapper();
+    private final ReadOnlyIntegerWrapper weightB = new ReadOnlyIntegerWrapper();
+    private final ReadOnlyIntegerWrapper weightC = new ReadOnlyIntegerWrapper();
     private final Money priceA = new Money();
     private final Money priceB = new Money();
     private final Money priceC = new Money();
-    private final IntegerProperty minimumStrength = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper minimumStrength = new ReadOnlyIntegerWrapper();
 
     // endregion
 
@@ -63,14 +63,14 @@ public class Armor extends ItemBase {
         int minimumStrength, byte[] image, boolean downloaded, boolean uploaded) {
         super(id, author, name, description, weightB, priceB, image, downloaded, uploaded);
 
-        this.defenceNumber.setValue(defenceNumber);
-        this.weightA.setValue(weightA);
-        this.weightB.setValue(weightB);
-        this.weightC.setValue(weightC);
+        setDefenceNumber(defenceNumber);
+        setWeightA(weightA);
+        setWeightB(weightB);
+        setWeightC(weightC);
         this.priceA.setRaw(priceA);
         this.priceB.setRaw(priceB);
         this.priceC.setRaw(priceC);
-        this.minimumStrength.setValue(minimumStrength);
+        setMinimumStrength(minimumStrength);
     }
 
     // endregion
@@ -102,15 +102,16 @@ public class Armor extends ItemBase {
     @Override
     public void update(DatabaseItem other) {
         super.update(other);
+
         Armor armor = (Armor) other;
-        this.defenceNumber.setValue(armor.getDefenceNumber());
-        this.weightA.setValue(armor.getWeightA());
-        this.weightB.setValue(armor.getWeightB());
-        this.weightC.setValue(armor.getWeightC());
+        setDefenceNumber(armor.getDefenceNumber());
+        setWeightA(armor.getWeightA());
+        setWeightB(armor.getWeightB());
+        setWeightC(armor.getWeightC());
         this.priceA.setRaw(armor.getPriceA().getRaw());
         this.priceB.setRaw(armor.getPriceB().getRaw());
         this.priceC.setRaw(armor.getPriceC().getRaw());
-        this.minimumStrength.setValue(armor.getMinimumStrength());
+        setMinimumStrength(armor.getMinimumStrength());
     }
 
     @Override
@@ -132,8 +133,8 @@ public class Armor extends ItemBase {
         return defenceNumber.get();
     }
 
-    public IntegerProperty defenceNumberProperty() {
-        return defenceNumber;
+    public ReadOnlyIntegerProperty defenceNumberProperty() {
+        return defenceNumber.getReadOnlyProperty();
     }
 
     public void setDefenceNumber(int defenceNumber) {
@@ -144,8 +145,8 @@ public class Armor extends ItemBase {
         return weightA.get();
     }
 
-    public IntegerProperty weightAProperty() {
-        return weightA;
+    public ReadOnlyIntegerProperty weightAProperty() {
+        return weightA.getReadOnlyProperty();
     }
 
     public void setWeightA(int weightA) {
@@ -156,8 +157,8 @@ public class Armor extends ItemBase {
         return weightB.get();
     }
 
-    public IntegerProperty weightBProperty() {
-        return weightB;
+    public ReadOnlyIntegerProperty weightBProperty() {
+        return weightB.getReadOnlyProperty();
     }
 
     public void setWeightB(int weightB) {
@@ -168,24 +169,12 @@ public class Armor extends ItemBase {
         return weightC.get();
     }
 
-    public IntegerProperty weightCProperty() {
-        return weightC;
+    public ReadOnlyIntegerProperty weightCProperty() {
+        return weightC.getReadOnlyProperty();
     }
 
     public void setWeightC(int weightC) {
         this.weightC.set(weightC);
-    }
-
-    public int getMinimumStrength() {
-        return minimumStrength.get();
-    }
-
-    public IntegerProperty minimumStrengthProperty() {
-        return minimumStrength;
-    }
-
-    public void setMinimumStrength(int minimumStrength) {
-        this.minimumStrength.set(minimumStrength);
     }
 
     public Money getPriceA() {
@@ -198,6 +187,18 @@ public class Armor extends ItemBase {
 
     public Money getPriceC() {
         return priceC;
+    }
+
+    public int getMinimumStrength() {
+        return minimumStrength.get();
+    }
+
+    public ReadOnlyIntegerProperty minimumStrengthProperty() {
+        return minimumStrength.getReadOnlyProperty();
+    }
+
+    public void setMinimumStrength(int minimumStrength) {
+        this.minimumStrength.set(minimumStrength);
     }
 
     // endregion

@@ -2,10 +2,10 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 
 /**
  * Třída představující batoh
@@ -21,9 +21,9 @@ public class Backpack extends ItemBase {
     // region Variables
 
     // Maximální nosnost baťohu
-    private final IntegerProperty maxLoad = new SimpleIntegerProperty();
+    private final ReadOnlyIntegerWrapper maxLoad = new ReadOnlyIntegerWrapper();
     // Počet slotů v batohu
-    private final ObjectProperty<Size> size = new SimpleObjectProperty<>();
+    private final ReadOnlyObjectWrapper<Size> size = new ReadOnlyObjectWrapper<>();
 
     // endregion
 
@@ -60,36 +60,8 @@ public class Backpack extends ItemBase {
         boolean downloaded, boolean uploaded) {
         super(id, author, name, description, weight, price, image, downloaded, uploaded);
 
-        this.maxLoad.setValue(maxLoad);
-        this.size.setValue(size);
-    }
-
-    // endregion
-
-    // region Getters & Setters
-
-    public Integer getMaxLoad() {
-        return maxLoad.get();
-    }
-
-    public IntegerProperty maxLoadProperty() {
-        return maxLoad;
-    }
-
-    public void setMaxLoad(Integer max_load) {
-        this.maxLoad.set(max_load);
-    }
-
-    public Size getSize() {
-        return size.get();
-    }
-
-    public ObjectProperty<Size> sizeProperty() {
-        return size;
-    }
-
-    public void setSize(Size size) {
-        this.size.set(size);
+        setMaxLoad(maxLoad);
+        setSize(size);
     }
 
     // endregion
@@ -101,8 +73,8 @@ public class Backpack extends ItemBase {
         super.update(other);
 
         Backpack backpack = (Backpack) other;
-        this.maxLoad.set(backpack.getMaxLoad());
-        this.size.set(backpack.getSize());
+        setMaxLoad(backpack.getMaxLoad());
+        setSize(backpack.getSize());
     }
 
     @Override
@@ -114,6 +86,34 @@ public class Backpack extends ItemBase {
     @SuppressWarnings("unchecked")
     public <T extends IClonable> T duplicate() {
         return (T) new Backpack(this);
+    }
+
+    // endregion
+
+    // region Getters & Setters
+
+    public Integer getMaxLoad() {
+        return maxLoad.get();
+    }
+
+    public ReadOnlyIntegerProperty maxLoadProperty() {
+        return maxLoad.getReadOnlyProperty();
+    }
+
+    public void setMaxLoad(Integer max_load) {
+        this.maxLoad.set(max_load);
+    }
+
+    public Size getSize() {
+        return size.get();
+    }
+
+    public ReadOnlyObjectProperty<Size> sizeProperty() {
+        return size.getReadOnlyProperty();
+    }
+
+    public void setSize(Size size) {
+        this.size.set(size);
     }
 
     // endregion

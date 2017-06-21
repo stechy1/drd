@@ -3,12 +3,12 @@ package cz.stechy.drd.model.item;
 import cz.stechy.drd.Money;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.OnlineItem;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
 
 /**
  * Základní třída pro všechny itemy ve světě dračího doupěte
@@ -19,15 +19,15 @@ public abstract class ItemBase extends OnlineItem {
 
     // ID předmětu
     // Název předmětu
-    protected final StringProperty name = new SimpleStringProperty();
+    protected final ReadOnlyStringWrapper name = new ReadOnlyStringWrapper();
     // Popis předmětu
-    protected final StringProperty description = new SimpleStringProperty();
+    protected final ReadOnlyStringWrapper description = new ReadOnlyStringWrapper();
     // Váha předmětu
-    protected final IntegerProperty weight = new SimpleIntegerProperty();
+    protected final ReadOnlyIntegerWrapper weight = new ReadOnlyIntegerWrapper();
     // Cena předmětu
     protected final Money price = new Money();
     // Obrázek předmětu v Base64
-    protected final ObjectProperty<byte[]> image = new SimpleObjectProperty<>();
+    protected final ReadOnlyObjectWrapper<byte[]> image = new ReadOnlyObjectWrapper<>();
     // endregion
 
     // region Constructors
@@ -48,11 +48,12 @@ public abstract class ItemBase extends OnlineItem {
     ItemBase(String id, String author, String name, String description, int weight,
         int price, byte[] image, boolean downloaded, boolean uploaded) {
         super(id, author, downloaded, uploaded);
-        this.name.setValue(name);
-        this.description.setValue(description);
-        this.weight.setValue(weight);
+
+        setName(name);
+        setDescription(description);
+        setWeight(weight);
         this.price.setRaw(price);
-        this.image.set(image);
+        setImage(image);
     }
 
     // endregion
@@ -63,8 +64,8 @@ public abstract class ItemBase extends OnlineItem {
         return name.get();
     }
 
-    public StringProperty nameProperty() {
-        return name;
+    public ReadOnlyStringProperty nameProperty() {
+        return name.getReadOnlyProperty();
     }
 
     public void setName(String name) {
@@ -75,8 +76,8 @@ public abstract class ItemBase extends OnlineItem {
         return description.get();
     }
 
-    public StringProperty descriptionProperty() {
-        return description;
+    public ReadOnlyStringProperty descriptionProperty() {
+        return description.getReadOnlyProperty();
     }
 
     public void setDescription(String description) {
@@ -87,8 +88,8 @@ public abstract class ItemBase extends OnlineItem {
         return weight.get();
     }
 
-    public IntegerProperty weightProperty() {
-        return weight;
+    public ReadOnlyIntegerProperty weightProperty() {
+        return weight.getReadOnlyProperty();
     }
 
     public void setWeight(int weight) {
@@ -103,8 +104,8 @@ public abstract class ItemBase extends OnlineItem {
         return image.get();
     }
 
-    public ObjectProperty<byte[]> imageProperty() {
-        return image;
+    public ReadOnlyObjectProperty<byte[]> imageProperty() {
+        return image.getReadOnlyProperty();
     }
 
     public void setImage(byte[] image) {
@@ -122,14 +123,15 @@ public abstract class ItemBase extends OnlineItem {
      */
     public void update(DatabaseItem other) {
         super.update(other);
+
         ItemBase item = (ItemBase) other;
-        this.id.setValue(item.getId());
-        this.name.setValue(item.getName());
-        this.description.setValue(item.getDescription());
-        this.weight.setValue(item.getWeight());
-        this.price.setRaw(item.price.getRaw());
-        this.author.setValue(item.getAuthor());
-        this.image.setValue(item.getImage());
+        setId(item.getId());
+        setName(item.getName());
+        setDescription(item.getDescription());
+        setWeight(item.getWeight());
+        this.price.setRaw(price.getRaw());
+        setAuthor(item.getAuthor());
+        setImage(item.getImage());
     }
 
     /**

@@ -1,7 +1,8 @@
 package cz.stechy.drd.model.entity;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.value.ObservableValue;
 
 /**
  * Třída představující jednu vlastnost entity a její opravu
@@ -11,13 +12,13 @@ public abstract class EntityProperty {
     // region Variables
 
     // Samotná hodnota vlaastnosti
-    protected final IntegerProperty value = new SimpleIntegerProperty(0);
+    protected final ReadOnlyIntegerWrapper value = new ReadOnlyIntegerWrapper(0);
     // Oprava hodnoty vlastnosti
-    protected final IntegerProperty repair = new SimpleIntegerProperty(0);
+    protected final ReadOnlyIntegerWrapper repair = new ReadOnlyIntegerWrapper(0);
     // Spodní hranice intervalu hodnoty vlastnosti
-    protected final int minValue;
+    protected int minValue;
     // Horní hranice intervalu hodnoty valstnosti
-    protected final int maxValue;
+    protected int maxValue;
 
     // endregion
 
@@ -50,14 +51,38 @@ public abstract class EntityProperty {
 
     // endregion
 
+    // region Public methods
+
+    /**
+     * Aktualizuje všechny hodnoty
+     *
+     * @param entityProperty {@link EntityProperty}
+     */
+    public void update(EntityProperty entityProperty) {
+        this.minValue = entityProperty.minValue;
+        this.maxValue = entityProperty.maxValue;
+        setValue(entityProperty.getValue());
+    }
+
+    /**
+     * Nabinduje hodnotu
+     *
+     * @param binding
+     */
+    public void bindTo(ObservableValue<Number> binding) {
+        this.value.bind(binding);
+    }
+
+    // endregion
+
     // region Getters & Setters
 
     public int getValue() {
         return value.get();
     }
 
-    public IntegerProperty valueProperty() {
-        return value;
+    public ReadOnlyIntegerProperty valueProperty() {
+        return value.getReadOnlyProperty();
     }
 
     public void setValue(Number value) {
@@ -68,8 +93,8 @@ public abstract class EntityProperty {
         return repair.get();
     }
 
-    public IntegerProperty repairProperty() {
-        return repair;
+    public ReadOnlyIntegerProperty repairProperty() {
+        return repair.getReadOnlyProperty();
     }
 
     public void setRepair(int repair) {

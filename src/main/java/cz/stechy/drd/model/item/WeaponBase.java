@@ -1,8 +1,8 @@
 package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.model.db.base.DatabaseItem;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
 
 /**
  * Základní třída pro všechny zbraně
@@ -12,9 +12,9 @@ public abstract class WeaponBase extends ItemBase {
     // region Variables
 
     // Síla zbraně
-    protected final IntegerProperty strength = new SimpleIntegerProperty();
+    protected final ReadOnlyIntegerWrapper strength = new ReadOnlyIntegerWrapper();
     // Útočnost zbraně
-    protected final IntegerProperty rampancy = new SimpleIntegerProperty();
+    protected final ReadOnlyIntegerWrapper rampancy = new ReadOnlyIntegerWrapper();
 
     // endregion
 
@@ -40,8 +40,8 @@ public abstract class WeaponBase extends ItemBase {
         boolean uploaded) {
         super(id, author, name, description, weight, price, image, downloaded, uploaded);
 
-        this.strength.setValue(strength);
-        this.rampancy.setValue(rampancy);
+        setStrength(strength);
+        setRampancy(rampancy);
     }
 
     // endregion
@@ -51,9 +51,10 @@ public abstract class WeaponBase extends ItemBase {
     @Override
     public void update(DatabaseItem other) {
         super.update(other);
-        WeaponBase otherWeapon = (WeaponBase) other;
-        this.strength.setValue(otherWeapon.getStrength());
-        this.rampancy.setValue(otherWeapon.getRampancy());
+
+        WeaponBase weapon = (WeaponBase) other;
+        setStrength(weapon.getStrength());
+        setRampancy(weapon.getRampancy());
     }
 
     // endregion
@@ -64,8 +65,8 @@ public abstract class WeaponBase extends ItemBase {
         return strength.get();
     }
 
-    public IntegerProperty strengthProperty() {
-        return strength;
+    public ReadOnlyIntegerProperty strengthProperty() {
+        return strength.getReadOnlyProperty();
     }
 
     public void setStrength(int strength) {
@@ -76,8 +77,8 @@ public abstract class WeaponBase extends ItemBase {
         return rampancy.get();
     }
 
-    public IntegerProperty rampancyProperty() {
-        return rampancy;
+    public ReadOnlyIntegerProperty rampancyProperty() {
+        return rampancy.getReadOnlyProperty();
     }
 
     public void setRampancy(int rampancy) {

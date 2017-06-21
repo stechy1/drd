@@ -3,10 +3,10 @@ package cz.stechy.drd.model.entity;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.OnlineItem;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
 
 /**
  * Základní společná třída pro všechny entity ve světě Dračího doupěte
@@ -16,18 +16,18 @@ public abstract class EntityBase extends OnlineItem {
     // region Variales
 
     // Jméno
-    private final StringProperty name = new SimpleStringProperty();
+    protected final ReadOnlyStringWrapper name = new ReadOnlyStringWrapper();
     // Popis entity
-    private final StringProperty description = new SimpleStringProperty();
+    protected final ReadOnlyStringWrapper description = new ReadOnlyStringWrapper();
     // Aktuální počet životů
-    private final MaxActValue live = new MaxActValue();
+    protected final MaxActValue live = new MaxActValue();
     // Aktuální počet magů
-    private final MaxActValue mag = new MaxActValue();
+    protected final MaxActValue mag = new MaxActValue();
     // Přesvědčení
-    private final ObjectProperty<Conviction> conviction = new SimpleObjectProperty<>(
+    protected final ReadOnlyObjectWrapper<Conviction> conviction = new ReadOnlyObjectWrapper<>(
         Conviction.NEUTRAL);
     // Velikost
-    private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
+    protected final ReadOnlyObjectWrapper<Height> height = new ReadOnlyObjectWrapper<>(Height.B);
 
     // endregion
 
@@ -53,15 +53,16 @@ public abstract class EntityBase extends OnlineItem {
         int maxLive, int mag, int maxMag, Conviction conviction, Height height, boolean downloaded,
         boolean uploaded) {
         super(id, author, downloaded, uploaded);
-        this.id.setValue(id);
-        this.name.setValue(name);
-        this.description.setValue(description);
+
+        setId(id);
+        setName(name);
+        setDescription(description);
         this.live.setMaxValue(maxLive);
         this.live.setActValue(live);
         this.mag.setMaxValue(maxMag);
         this.mag.setActValue(mag);
-        this.conviction.setValue(conviction);
-        this.height.setValue(height);
+        setConviction(conviction);
+        setHeight(height);
     }
 
     // endregion
@@ -72,8 +73,8 @@ public abstract class EntityBase extends OnlineItem {
         return name.get();
     }
 
-    public StringProperty nameProperty() {
-        return name;
+    public ReadOnlyStringProperty nameProperty() {
+        return name.getReadOnlyProperty();
     }
 
     public void setName(String name) {
@@ -84,8 +85,8 @@ public abstract class EntityBase extends OnlineItem {
         return description.get();
     }
 
-    public StringProperty descriptionProperty() {
-        return description;
+    public ReadOnlyStringProperty descriptionProperty() {
+        return description.getReadOnlyProperty();
     }
 
     public void setDescription(String description) {
@@ -104,8 +105,8 @@ public abstract class EntityBase extends OnlineItem {
         return conviction.get();
     }
 
-    public ObjectProperty<Conviction> convictionProperty() {
-        return conviction;
+    public ReadOnlyObjectProperty<Conviction> convictionProperty() {
+        return conviction.getReadOnlyProperty();
     }
 
     public void setConviction(Conviction conviction) {
@@ -116,8 +117,8 @@ public abstract class EntityBase extends OnlineItem {
         return height.get();
     }
 
-    public ObjectProperty<Height> heightProperty() {
-        return height;
+    public ReadOnlyObjectProperty<Height> heightProperty() {
+        return height.getReadOnlyProperty();
     }
 
     public void setHeight(Height height) {
@@ -129,17 +130,17 @@ public abstract class EntityBase extends OnlineItem {
     @Override
     public void update(DatabaseItem other) {
         super.update(other);
+
         EntityBase entity = (EntityBase) other;
-        this.name.setValue(entity.getName());
-        this.description.setValue(entity.getDescription());
+
+        setName(entity.getName());
+        setDescription(entity.getDescription());
         this.live.setMaxValue(entity.live.getMaxValue());
-        this.live.setMinValue(entity.live.getMinValue());
         this.live.setActValue(entity.live.getActValue());
         this.mag.setMaxValue(entity.mag.getMaxValue());
-        this.mag.setMinValue(entity.mag.getMinValue());
         this.mag.setActValue(entity.mag.getActValue());
-        this.conviction.setValue(entity.getConviction());
-        this.height.setValue(entity.getHeight());
+        setConviction(entity.getConviction());
+        setHeight(entity.getHeight());
     }
 
     @Override

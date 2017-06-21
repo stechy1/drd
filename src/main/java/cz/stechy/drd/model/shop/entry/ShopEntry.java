@@ -29,7 +29,7 @@ public abstract class ShopEntry {
     protected final StringProperty author = new SimpleStringProperty();
     protected final StringProperty description = new SimpleStringProperty();
     protected final Money price;
-    protected final MaxActValue ammount = new MaxActValue(1000);
+    protected final MaxActValue ammount = new MaxActValue(Integer.MAX_VALUE);
     protected final IntegerProperty weight = new SimpleIntegerProperty();
     protected final BooleanProperty inShoppingCart = new SimpleBooleanProperty();
     protected final BooleanProperty downloaded = new SimpleBooleanProperty();
@@ -56,15 +56,15 @@ public abstract class ShopEntry {
         });
 
         this.itemBase = itemBase;
-        this.id.bind(itemBase.idProperty());
-        this.name.bind(itemBase.nameProperty());
-        this.description.bind(itemBase.descriptionProperty());
-        this.price = itemBase.getPrice();
-        this.weight.bind(itemBase.weightProperty());
-        this.author.bind(itemBase.authorProperty());
-        this.downloaded.bindBidirectional(itemBase.downloadedProperty());
-        this.uploaded.bindBidirectional(itemBase.uploadedProperty());
-        this.imageRaw.bind(itemBase.imageProperty());
+        this.id.setValue(itemBase.getId());
+        this.name.setValue(itemBase.getName());
+        this.description.setValue(itemBase.getDescription());
+        this.price = new Money(itemBase.getPrice());
+        this.weight.setValue(itemBase.getWeight());
+        this.author.setValue(itemBase.getAuthor());
+        this.downloaded.setValue(itemBase.isDownloaded());
+        this.uploaded.setValue(itemBase.isUploaded());
+        this.imageRaw.setValue(itemBase.getImage());
     }
 
     // endregion

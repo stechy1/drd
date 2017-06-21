@@ -53,6 +53,15 @@ public final class Money {
     }
 
     /**
+     * Kopy konstruktor
+     *
+     * @param money {@link Money}
+     */
+    public Money(Money money) {
+        this(money.raw.intValue());
+    }
+
+    /**
      * Vytvoří novou instanci peněz
      *
      * @param rawValue Inicializační hodnota
