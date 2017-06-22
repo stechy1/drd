@@ -12,6 +12,7 @@ import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -94,7 +95,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
 
         ItemRegistry.getINSTANCE().getRegistry().entrySet()
             .stream()
-            .map(databaseItemEntry -> databaseItemEntry.getValue())
+            .map(Entry::getValue)
             .collect(Collectors.toList());
 
         btnRemoveItem.disableProperty().bind(selectedItem.lessThan(0));
