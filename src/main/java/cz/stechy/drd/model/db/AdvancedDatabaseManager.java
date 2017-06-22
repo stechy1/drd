@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -112,6 +113,15 @@ public abstract class AdvancedDatabaseManager<T extends OnlineItem> extends
         return map;
     }
 
+    private ListChangeListener<T> makeChangeListener() {
+        return c -> {
+            while(c.next()) {
+                this.usedItems.addAll(c.getAddedSubList());
+                this.usedItems.removeAll(c.getRemoved());
+            }
+        };
+    }
+
     // endregion
 
     // region Public methods
@@ -205,11 +215,16 @@ public abstract class AdvancedDatabaseManager<T extends OnlineItem> extends
      */
     public void toggleDatabase(boolean showOnline) {
         this.showOnline = showOnline;
-        usedItems.setAll(showOnline ? onlineDatabase : items);
+        this.usedItems.clear();
+
         if (showOnline) {
-            usedItems.setAll(onlineDatabase);
+            super.items.removeListener(listChangeListener);
+            this.onlineDatabase.addListener(listChangeListener);
+            this.usedItems.setAll(this.onlineDatabase);
         } else {
-            usedItems.setAll(items);
+            this.onlineDatabase.removeListener(listChangeListener);
+            super.items.addListener(listChangeListener);
+            this.usedItems.setAll(super.items);
         }
     }
 
@@ -218,7 +233,7 @@ public abstract class AdvancedDatabaseManager<T extends OnlineItem> extends
             .stream()
             .filter(onlineItem -> Objects.equals(onlineItem.getAuthor(), author))
             .forEach(onlineItem -> {
-                final Optional<T> optional = this.items.stream()
+                final Optional<T> optional = super.items.stream()
                     .filter(item -> Objects.equals(item.getId(), onlineItem.getId()))
                     .findFirst();
                 if (optional.isPresent()) {
@@ -292,5 +307,8 @@ public abstract class AdvancedDatabaseManager<T extends OnlineItem> extends
 
         }
     };
+
+    private final ListChangeListener<T> listChangeListener = makeChangeListener();
+
 
 }
