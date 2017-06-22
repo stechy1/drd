@@ -228,4 +228,9 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
     public void onClose() {
         manager.toggleDatabase(false);
     }
+
+    @Override
+    public void synchronizeItems() {
+        manager.synchronize(this.user.getName());
+    }
 }

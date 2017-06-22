@@ -12,6 +12,7 @@ import cz.stechy.drd.util.Base64Util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
@@ -153,7 +154,7 @@ public abstract class AdvancedDatabaseManager<T extends OnlineItem> extends
             usedItems.stream()
                 .filter(item -> item.getId().equals(id))
                 .findFirst()
-                .ifPresent(items::remove);
+                .ifPresent(usedItems::remove);
         }
     }
 
@@ -210,6 +211,39 @@ public abstract class AdvancedDatabaseManager<T extends OnlineItem> extends
         } else {
             usedItems.setAll(items);
         }
+    }
+
+    public void synchronize(final String author) {
+        this.onlineDatabase
+            .stream()
+            .filter(onlineItem -> Objects.equals(onlineItem.getAuthor(), author))
+            .forEach(onlineItem -> {
+                final Optional<T> optional = this.items.stream()
+                    .filter(item -> Objects.equals(item.getId(), onlineItem.getId()))
+                    .findFirst();
+                if (optional.isPresent()) {
+                    final T item = optional.get();
+                    final T duplicate = item.duplicate();
+                    duplicate.setUploaded(true);
+                    duplicate.setDownloaded(false);
+                    try {
+                        update(duplicate);
+                    } catch (DatabaseException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    final T item = onlineItem;
+                    final T duplicate = item.duplicate();
+                    duplicate.setUploaded(true);
+                    duplicate.setDownloaded(false);
+                    try {
+                        insert(duplicate);
+                    } catch (DatabaseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
     }
 
     // endregion

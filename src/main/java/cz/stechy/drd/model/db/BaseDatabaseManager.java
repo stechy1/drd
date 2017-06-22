@@ -1,12 +1,12 @@
 package cz.stechy.drd.model.db;
 
+import cz.stechy.drd.model.db.base.Database;
+import cz.stechy.drd.model.db.base.DatabaseItem;
+import cz.stechy.drd.model.db.base.TransactionHandler;
 import cz.stechy.drd.model.db.base.TransactionOperation;
 import cz.stechy.drd.model.db.base.TransactionOperation.DeleteOperation;
 import cz.stechy.drd.model.db.base.TransactionOperation.InsertOperation;
 import cz.stechy.drd.model.db.base.TransactionOperation.UpdateOperation;
-import cz.stechy.drd.model.db.base.TransactionHandler;
-import cz.stechy.drd.model.db.base.Database;
-import cz.stechy.drd.model.db.base.DatabaseItem;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -263,8 +263,7 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
                 .filter(t -> t.equals(item))
                 .findFirst();
             assert result.isPresent();
-                //.ifPresent(t -> t.update(item));
-
+            //.ifPresent(t -> t.update(item));
 
 //            if (updateListener != null) {
 //                updateListener.onUpdate(item);
@@ -274,6 +273,9 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
                 operations.add(operation);
             } else {
                 operation.commit(items);
+                if (updateListener != null) {
+                    updateListener.onUpdate(item);
+                }
             }
 
         } catch (SQLException e) {
@@ -292,7 +294,7 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
             Optional<T> result = items.stream()
                 .filter(item -> item.getId().equals(id))
                 .findFirst();
-                //.ifPresent(items::remove);
+            //.ifPresent(items::remove);
             assert result.isPresent();
             TransactionOperation<T> operation = new DeleteOperation<>(result.get());
             if (db.isTransactional()) {

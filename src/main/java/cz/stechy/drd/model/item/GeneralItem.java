@@ -15,7 +15,7 @@ public class GeneralItem extends ItemBase {
      * @param item Kopírovaný item
      */
     private GeneralItem(GeneralItem item) {
-        this(item.getId(), item.getName(), item.getDescription(), item.getAuthor(),
+        this(item.getId(), item.getAuthor(), item.getName(), item.getDescription(),
             item.getWeight(), item.getPrice().getRaw(), item.getImage(), item.isDownloaded(),
             item.isUploaded());
     }
