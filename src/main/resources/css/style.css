@@ -1,7 +1,7 @@
 .toolbar-button {
     -fx-background-color: transparent;
     -fx-background-repeat: no-repeat;
-    -fx-background-size: 80%;
+    -fx-background-size: 65%;
     -fx-background-position: center;
     -fx-border-color: rgba(0, 0, 0, 0.2);
     -fx-border-radius: 5px;
