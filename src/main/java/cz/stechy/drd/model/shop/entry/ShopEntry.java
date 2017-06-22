@@ -56,15 +56,15 @@ public abstract class ShopEntry {
         });
 
         this.itemBase = itemBase;
-        this.id.setValue(itemBase.getId());
-        this.name.setValue(itemBase.getName());
-        this.description.setValue(itemBase.getDescription());
+        this.id.bind(itemBase.idProperty());
+        this.name.bind(itemBase.nameProperty());
+        this.description.bind(itemBase.descriptionProperty());
         this.price = new Money(itemBase.getPrice());
-        this.weight.setValue(itemBase.getWeight());
-        this.author.setValue(itemBase.getAuthor());
-        this.downloaded.setValue(itemBase.isDownloaded());
-        this.uploaded.setValue(itemBase.isUploaded());
-        this.imageRaw.setValue(itemBase.getImage());
+        this.weight.bind(itemBase.weightProperty());
+        this.author.bind(itemBase.authorProperty());
+        this.downloaded.bind(itemBase.downloadedProperty());
+        this.uploaded.bind(itemBase.uploadedProperty());
+        this.imageRaw.bind(itemBase.imageProperty());
     }
 
     // endregion
