@@ -16,6 +16,7 @@ import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -263,7 +264,7 @@ public class ShopController1 extends BaseController implements Initializable {
 
     @FXML
     private void handleSynchronize(ActionEvent actionEvent) {
-
+        Arrays.stream(controllers).forEach(ShopItemController::synchronizeItems);
     }
 
     // endregion

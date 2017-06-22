@@ -1,12 +1,12 @@
 package cz.stechy.drd.model.db;
 
+import cz.stechy.drd.model.db.base.Database;
+import cz.stechy.drd.model.db.base.DatabaseItem;
+import cz.stechy.drd.model.db.base.TransactionHandler;
 import cz.stechy.drd.model.db.base.TransactionOperation;
 import cz.stechy.drd.model.db.base.TransactionOperation.DeleteOperation;
 import cz.stechy.drd.model.db.base.TransactionOperation.InsertOperation;
 import cz.stechy.drd.model.db.base.TransactionOperation.UpdateOperation;
-import cz.stechy.drd.model.db.base.TransactionHandler;
-import cz.stechy.drd.model.db.base.Database;
-import cz.stechy.drd.model.db.base.DatabaseItem;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -238,7 +238,7 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
         try {
             logger.trace("Vkládám položku {} do databáze.", item.toString());
             db.query(query, itemToParams(item).toArray());
-            TransactionOperation<T> operation = new InsertOperation<>(item);
+            final TransactionOperation<T> operation = new InsertOperation<>(item);
             if (db.isTransactional()) {
                 operations.add(operation);
             } else {
@@ -259,17 +259,11 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
         try {
             logger.trace("Aktualizuji položku {} v databázi", item.toString());
             db.query(query, params.toArray());
-            Optional<T> result = items.stream()
+            final Optional<T> result = items.stream()
                 .filter(t -> t.equals(item))
                 .findFirst();
             assert result.isPresent();
-                //.ifPresent(t -> t.update(item));
-
-
-//            if (updateListener != null) {
-//                updateListener.onUpdate(item);
-//            }
-            TransactionOperation<T> operation = new UpdateOperation<>(result.get(), item);
+            final TransactionOperation<T> operation = new UpdateOperation<>(result.get(), item, updateListener);
             if (db.isTransactional()) {
                 operations.add(operation);
             } else {
@@ -289,12 +283,11 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
         try {
             logger.trace("Mažu položku {} z databáze.", id);
             db.query(query, id);
-            Optional<T> result = items.stream()
+            final Optional<T> result = items.stream()
                 .filter(item -> item.getId().equals(id))
                 .findFirst();
-                //.ifPresent(items::remove);
             assert result.isPresent();
-            TransactionOperation<T> operation = new DeleteOperation<>(result.get());
+            final TransactionOperation<T> operation = new DeleteOperation<>(result.get());
             if (db.isTransactional()) {
                 operations.add(operation);
             } else {

@@ -222,4 +222,9 @@ public class ShopArmorController implements Initializable, ShopItemController {
     public void onClose() {
         manager.toggleDatabase(false);
     }
+
+    @Override
+    public void synchronizeItems() {
+        manager.synchronize(this.user.getName());
+    }
 }

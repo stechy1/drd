@@ -201,4 +201,8 @@ public class ShopGeneralController implements Initializable, ShopItemController 
         manager.toggleDatabase(false);
     }
 
+    @Override
+    public void synchronizeItems() {
+        manager.synchronize(this.user.getName());
+    }
 }
