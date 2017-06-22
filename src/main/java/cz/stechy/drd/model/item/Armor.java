@@ -139,75 +139,75 @@ public class Armor extends ItemBase {
 
     // region Getters & Setters
 
-    public int getDefenceNumber() {
+    public final int getDefenceNumber() {
         return defenceNumber.get();
     }
 
-    public ReadOnlyIntegerProperty defenceNumberProperty() {
+    public final ReadOnlyIntegerProperty defenceNumberProperty() {
         return defenceNumber;
     }
 
-    public void setDefenceNumber(int defenceNumber) {
+    private void setDefenceNumber(int defenceNumber) {
         this.defenceNumber.set(defenceNumber);
     }
 
-    public int getWeightA() {
+    public final int getWeightA() {
         return weightA.get();
     }
 
-    public ReadOnlyIntegerProperty weightAProperty() {
+    public final ReadOnlyIntegerProperty weightAProperty() {
         return weightA;
     }
 
-    public void setWeightA(int weightA) {
+    private void setWeightA(int weightA) {
         this.weightA.set(weightA);
     }
 
-    public int getWeightB() {
+    public final int getWeightB() {
         return weightB.get();
     }
 
-    public ReadOnlyIntegerProperty weightBProperty() {
+    public final ReadOnlyIntegerProperty weightBProperty() {
         return weightB;
     }
 
-    public void setWeightB(int weightB) {
+    private void setWeightB(int weightB) {
         this.weightB.set(weightB);
     }
 
-    public int getWeightC() {
+    public final int getWeightC() {
         return weightC.get();
     }
 
-    public ReadOnlyIntegerProperty weightCProperty() {
+    public final ReadOnlyIntegerProperty weightCProperty() {
         return weightC;
     }
 
-    public void setWeightC(int weightC) {
+    private void setWeightC(int weightC) {
         this.weightC.set(weightC);
     }
 
-    public Money getPriceA() {
+    public final Money getPriceA() {
         return priceA;
     }
 
-    public Money getPriceB() {
+    public final Money getPriceB() {
         return priceB;
     }
 
-    public Money getPriceC() {
+    public final Money getPriceC() {
         return priceC;
     }
 
-    public int getMinimumStrength() {
+    public final int getMinimumStrength() {
         return minimumStrength.get();
     }
 
-    public ReadOnlyIntegerProperty minimumStrengthProperty() {
+    public final ReadOnlyIntegerProperty minimumStrengthProperty() {
         return minimumStrength;
     }
 
-    public void setMinimumStrength(int minimumStrength) {
+    private void setMinimumStrength(int minimumStrength) {
         this.minimumStrength.set(minimumStrength);
     }
 

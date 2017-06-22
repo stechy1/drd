@@ -94,27 +94,27 @@ public class Backpack extends ItemBase {
 
     // region Getters & Setters
 
-    public Integer getMaxLoad() {
+    public final Integer getMaxLoad() {
         return maxLoad.get();
     }
 
-    public ReadOnlyIntegerProperty maxLoadProperty() {
+    public final ReadOnlyIntegerProperty maxLoadProperty() {
         return maxLoad;
     }
 
-    public void setMaxLoad(Integer max_load) {
+    private void setMaxLoad(Integer max_load) {
         this.maxLoad.set(max_load);
     }
 
-    public Size getSize() {
+    public final Size getSize() {
         return size.get();
     }
 
-    public ReadOnlyObjectProperty<Size> sizeProperty() {
+    public final ReadOnlyObjectProperty<Size> sizeProperty() {
         return size;
     }
 
-    public void setSize(Size size) {
+    private void setSize(Size size) {
         this.size.set(size);
     }
 

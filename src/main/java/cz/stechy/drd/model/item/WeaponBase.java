@@ -62,27 +62,27 @@ public abstract class WeaponBase extends ItemBase {
 
     // region Getters & Setters
 
-    public int getStrength() {
+    public final int getStrength() {
         return strength.get();
     }
 
-    public ReadOnlyIntegerProperty strengthProperty() {
+    public final ReadOnlyIntegerProperty strengthProperty() {
         return strength;
     }
 
-    public void setStrength(int strength) {
+    private void setStrength(int strength) {
         this.strength.set(strength);
     }
 
-    public int getRampancy() {
+    public final int getRampancy() {
         return rampancy.get();
     }
 
-    public ReadOnlyIntegerProperty rampancyProperty() {
+    public final ReadOnlyIntegerProperty rampancyProperty() {
         return rampancy;
     }
 
-    public void setRampancy(int rampancy) {
+    private void setRampancy(int rampancy) {
         this.rampancy.set(rampancy);
     }
 

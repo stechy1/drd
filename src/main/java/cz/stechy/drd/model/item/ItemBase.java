@@ -63,55 +63,55 @@ public abstract class ItemBase extends OnlineItem {
 
     // region Getters & Setters
 
-    public String getName() {
+    public final String getName() {
         return name.get();
     }
 
-    public ReadOnlyStringProperty nameProperty() {
+    public final ReadOnlyStringProperty nameProperty() {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name.set(name);
     }
 
-    public String getDescription() {
+    public final String getDescription() {
         return description.get();
     }
 
-    public ReadOnlyStringProperty descriptionProperty() {
+    public final ReadOnlyStringProperty descriptionProperty() {
         return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description.set(description);
     }
 
-    public int getWeight() {
+    public final int getWeight() {
         return weight.get();
     }
 
-    public ReadOnlyIntegerProperty weightProperty() {
+    public final ReadOnlyIntegerProperty weightProperty() {
         return weight;
     }
 
-    public void setWeight(int weight) {
+    private void setWeight(int weight) {
         this.weight.set(weight);
     }
 
-    public Money getPrice() {
+    public final Money getPrice() {
         return price;
     }
 
-    public byte[] getImage() {
+    public final byte[] getImage() {
         return image.get();
     }
 
-    public ReadOnlyObjectProperty<byte[]> imageProperty() {
+    public final ReadOnlyObjectProperty<byte[]> imageProperty() {
         return image;
     }
 
-    public void setImage(byte[] image) {
+    private void setImage(byte[] image) {
         this.image.set(image);
     }
 

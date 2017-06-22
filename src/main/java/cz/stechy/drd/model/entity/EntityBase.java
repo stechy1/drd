@@ -71,59 +71,59 @@ public abstract class EntityBase extends OnlineItem {
 
     // region Getters & Setters
 
-    public String getName() {
+    public final String getName() {
         return name.get();
     }
 
-    public ReadOnlyStringProperty nameProperty() {
+    public final ReadOnlyStringProperty nameProperty() {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name.set(name);
     }
 
-    public String getDescription() {
+    public final String getDescription() {
         return description.get();
     }
 
-    public ReadOnlyStringProperty descriptionProperty() {
+    public final ReadOnlyStringProperty descriptionProperty() {
         return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description.set(description);
     }
 
-    public MaxActValue getLive() {
+    public final MaxActValue getLive() {
         return live;
     }
 
-    public MaxActValue getMag() {
+    public final MaxActValue getMag() {
         return mag;
     }
 
-    public Conviction getConviction() {
+    public final Conviction getConviction() {
         return conviction.get();
     }
 
-    public ReadOnlyObjectProperty<Conviction> convictionProperty() {
+    public final ReadOnlyObjectProperty<Conviction> convictionProperty() {
         return conviction;
     }
 
-    public void setConviction(Conviction conviction) {
+    private void setConviction(Conviction conviction) {
         this.conviction.set(conviction);
     }
 
-    public Height getHeight() {
+    public final Height getHeight() {
         return height.get();
     }
 
-    public ReadOnlyObjectProperty<Height> heightProperty() {
+    public final ReadOnlyObjectProperty<Height> heightProperty() {
         return height;
     }
 
-    public void setHeight(Height height) {
+    private void setHeight(Height height) {
         this.height.set(height);
     }
 

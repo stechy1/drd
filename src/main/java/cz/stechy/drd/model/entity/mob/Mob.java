@@ -170,139 +170,139 @@ public final class Mob extends EntityBase {
 
     // region Getters & Setters
 
-    public EntityProperty getAttackNumber() {
+    public final EntityProperty getAttackNumber() {
         return attackNumber;
     }
 
-    public int getDefenceNumber() {
+    public final int getDefenceNumber() {
         return defenceNumber.get();
     }
 
-    public ReadOnlyIntegerProperty defenceNumberProperty() {
+    public final ReadOnlyIntegerProperty defenceNumberProperty() {
         return defenceNumber;
     }
 
-    public void setDefenceNumber(int defenceNumber) {
+    private void setDefenceNumber(int defenceNumber) {
         this.defenceNumber.set(defenceNumber);
     }
 
-    public int getViability() {
+    public final int getViability() {
         return viability.get();
     }
 
-    public ReadOnlyIntegerProperty viabilityProperty() {
+    public final ReadOnlyIntegerProperty viabilityProperty() {
         return viability;
     }
 
-    public void setViability(int viability) {
+    private void setViability(int viability) {
         this.viability.set(viability);
     }
 
-    public EntityProperty getImmunity() {
+    public final EntityProperty getImmunity() {
         return immunity;
     }
 
-    public int getMettle() {
+    public final int getMettle() {
         return mettle.get();
     }
 
-    public ReadOnlyIntegerProperty mettleProperty() {
+    public final ReadOnlyIntegerProperty mettleProperty() {
         return mettle;
     }
 
-    public void setMettle(int mettle) {
+    private void setMettle(int mettle) {
         this.mettle.set(mettle);
     }
 
-    public Vulnerability getVulnerability() {
+    public final Vulnerability getVulnerability() {
         return vulnerability.get();
     }
 
-    public ReadOnlyObjectProperty<Vulnerability> vulnerabilityProperty() {
+    public final ReadOnlyObjectProperty<Vulnerability> vulnerabilityProperty() {
         return vulnerability;
     }
 
-    public void setVulnerability(Vulnerability vulnerability) {
+    private void setVulnerability(Vulnerability vulnerability) {
         this.vulnerability.set(vulnerability);
     }
 
-    public int getMobility() {
+    public final int getMobility() {
         return mobility.get();
     }
 
-    public ReadOnlyIntegerProperty mobilityProperty() {
+    public final ReadOnlyIntegerProperty mobilityProperty() {
         return mobility;
     }
 
-    public void setMobility(int mobility) {
+    private void setMobility(int mobility) {
         this.mobility.set(mobility);
     }
 
-    public int getPerservance() {
+    public final int getPerservance() {
         return perservance.get();
     }
 
-    public ReadOnlyIntegerProperty perservanceProperty() {
+    public final ReadOnlyIntegerProperty perservanceProperty() {
         return perservance;
     }
 
-    public void setPerservance(int perservance) {
+    private void setPerservance(int perservance) {
         this.perservance.set(perservance);
     }
 
-    public int getControlAbility() {
+    public final int getControlAbility() {
         return controlAbility.get();
     }
 
-    public ReadOnlyIntegerProperty controlAbilityProperty() {
+    public final ReadOnlyIntegerProperty controlAbilityProperty() {
         return controlAbility;
     }
 
-    public void setControlAbility(int controlAbility) {
+    private void setControlAbility(int controlAbility) {
         this.controlAbility.set(controlAbility);
     }
 
-    public EntityProperty getIntelligence() {
+    public final EntityProperty getIntelligence() {
         return intelligence;
     }
 
-    public EntityProperty getCharisma() {
+    public final EntityProperty getCharisma() {
         return charisma;
     }
 
-    public int getBasicPowerOfMind() {
+    public final int getBasicPowerOfMind() {
         return basicPowerOfMind.get();
     }
 
-    public ReadOnlyIntegerProperty basicPowerOfMindProperty() {
+    public final ReadOnlyIntegerProperty basicPowerOfMindProperty() {
         return basicPowerOfMind;
     }
 
-    public void setBasicPowerOfMind(int basicPowerOfMind) {
+    private void setBasicPowerOfMind(int basicPowerOfMind) {
         this.basicPowerOfMind.set(basicPowerOfMind);
     }
 
-    public int getExperience() {
+    public final int getExperience() {
         return experience.get();
     }
 
-    public ReadOnlyIntegerProperty experienceProperty() {
+    public final ReadOnlyIntegerProperty experienceProperty() {
         return experience;
     }
 
-    public void setExperience(int experience) {
+    private void setExperience(int experience) {
         this.experience.set(experience);
     }
 
-    public int getDomestication() {
+    public final int getDomestication() {
         return domestication.get();
     }
 
-    public ReadOnlyIntegerProperty domesticationProperty() {
+    public final ReadOnlyIntegerProperty domesticationProperty() {
         return domestication;
     }
 
-    public void setDomestication(int domestication) {
+    private void setDomestication(int domestication) {
         this.domestication.set(domestication);
     }
 

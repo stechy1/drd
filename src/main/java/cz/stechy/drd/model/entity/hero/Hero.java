@@ -205,115 +205,115 @@ public class Hero extends EntityBase {
 
     // region Getters & Setters
 
-    public Race getRace() {
+    public final Race getRace() {
         return race.get();
     }
 
-    public ReadOnlyObjectProperty<Race> raceProperty() {
+    public final ReadOnlyObjectProperty<Race> raceProperty() {
         return race;
     }
 
-    public void setRace(Race race) {
+    private void setRace(Race race) {
         this.race.set(race);
     }
 
-    public Profession getProfession() {
+    public final Profession getProfession() {
         return profession.get();
     }
 
-    public ReadOnlyObjectProperty<Profession> professionProperty() {
+    public final ReadOnlyObjectProperty<Profession> professionProperty() {
         return profession;
     }
 
-    public void setProfession(Profession profession) {
+    private void setProfession(Profession profession) {
         this.profession.set(profession);
     }
 
-    public int getLevel() {
+    public final int getLevel() {
         return level.get();
     }
 
-    public ReadOnlyIntegerProperty levelProperty() {
+    public final ReadOnlyIntegerProperty levelProperty() {
         return level;
     }
 
-    public void setLevel(int level) {
+    private void setLevel(int level) {
         this.level.set(level);
     }
 
-    public Money getMoney() {
+    public final Money getMoney() {
         return money;
     }
 
-    public MaxActValue getExperiences() {
+    public final MaxActValue getExperiences() {
         return experiences;
     }
 
-    public EntityProperty getStrength() {
+    public final EntityProperty getStrength() {
         return strength;
     }
 
-    public EntityProperty getDexterity() {
+    public final EntityProperty getDexterity() {
         return dexterity;
     }
 
-    public EntityProperty getImmunity() {
+    public final EntityProperty getImmunity() {
         return immunity;
     }
 
-    public EntityProperty getIntelligence() {
+    public final EntityProperty getIntelligence() {
         return intelligence;
     }
 
-    public EntityProperty getCharisma() {
+    public final EntityProperty getCharisma() {
         return charisma;
     }
 
-    public int getDefenceNumber() {
+    public final int getDefenceNumber() {
         return defenceNumber.get();
     }
 
-    public ReadOnlyIntegerProperty defenceNumberProperty() {
+    public final ReadOnlyIntegerProperty defenceNumberProperty() {
         return defenceNumber;
     }
 
-    public void setDefenceNumber(int defenceNumber) {
+    private void setDefenceNumber(int defenceNumber) {
         this.defenceNumber.set(defenceNumber);
     }
 
-    public int getCapacity() {
+    public final int getCapacity() {
         return capacity.get();
     }
 
-    public ReadOnlyIntegerProperty capacityProperty() {
+    public final ReadOnlyIntegerProperty capacityProperty() {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
+    private void setCapacity(int capacity) {
         this.capacity.set(capacity);
     }
 
-    public EntityProperty getAgility() {
+    public final EntityProperty getAgility() {
         return agility;
     }
 
-    public EntityProperty getLowLoad() {
+    public final EntityProperty getLowLoad() {
         return lowLoad;
     }
 
-    public EntityProperty getMediumLoad() {
+    public final EntityProperty getMediumLoad() {
         return mediumLoad;
     }
 
-    public EntityProperty getHighLoad() {
+    public final EntityProperty getHighLoad() {
         return highLoad;
     }
 
-    public EntityProperty getObservationObjects() {
+    public final EntityProperty getObservationObjects() {
         return observationObjects;
     }
 
-    public EntityProperty getObservationMechanics() {
+    public final EntityProperty getObservationMechanics() {
         return observationMechanics;
     }
 

@@ -75,39 +75,39 @@ public class MeleWeapon extends WeaponBase {
 
     // region Getters & Setters
 
-    public int getDefence() {
+    public final int getDefence() {
         return defence.get();
     }
 
-    public ReadOnlyIntegerProperty defenceProperty() {
+    public final ReadOnlyIntegerProperty defenceProperty() {
         return defence;
     }
 
-    public void setDefence(int defence) {
+    private void setDefence(int defence) {
         this.defence.set(defence);
     }
 
-    public MeleWeaponClass getWeaponClass() {
+    public final MeleWeaponClass getWeaponClass() {
         return weaponClass.get();
     }
 
-    public ReadOnlyObjectProperty<MeleWeaponClass> weaponClassProperty() {
+    public final ReadOnlyObjectProperty<MeleWeaponClass> weaponClassProperty() {
         return weaponClass;
     }
 
-    public void setWeaponClass(MeleWeaponClass weaponClass) {
+    private void setWeaponClass(MeleWeaponClass weaponClass) {
         this.weaponClass.set(weaponClass);
     }
 
-    public MeleWeaponType getWeaponType() {
+    public final MeleWeaponType getWeaponType() {
         return weaponType.get();
     }
 
-    public ReadOnlyObjectProperty<MeleWeaponType> weaponTypeProperty() {
+    public final ReadOnlyObjectProperty<MeleWeaponType> weaponTypeProperty() {
         return weaponType;
     }
 
-    public void setWeaponType(MeleWeaponType weaponType) {
+    private void setWeaponType(MeleWeaponType weaponType) {
         this.weaponType.set(weaponType);
     }
 

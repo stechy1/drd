@@ -106,51 +106,51 @@ public class RangedWeapon extends WeaponBase {
 
     // region Getters & Setters
 
-    public RangedWeaponType getWeaponType() {
+    public final RangedWeaponType getWeaponType() {
         return weaponType.get();
     }
 
-    public ReadOnlyObjectProperty<RangedWeaponType> weaponTypeProperty() {
+    public final ReadOnlyObjectProperty<RangedWeaponType> weaponTypeProperty() {
         return weaponType;
     }
 
-    public void setWeaponType(RangedWeaponType weaponType) {
+    private void setWeaponType(RangedWeaponType weaponType) {
         this.weaponType.set(weaponType);
     }
 
-    public int getRangeLow() {
+    public final int getRangeLow() {
         return rangeLow.get();
     }
 
-    public ReadOnlyIntegerProperty rangeLowProperty() {
+    public final ReadOnlyIntegerProperty rangeLowProperty() {
         return rangeLow;
     }
 
-    public void setRangeLow(int rangeLow) {
+    private void setRangeLow(int rangeLow) {
         this.rangeLow.set(rangeLow);
     }
 
-    public int getRangeMedium() {
+    public final int getRangeMedium() {
         return rangeMedium.get();
     }
 
-    public ReadOnlyIntegerProperty rangeMediumProperty() {
+    public final ReadOnlyIntegerProperty rangeMediumProperty() {
         return rangeMedium;
     }
 
-    public void setRangeMedium(int rangeMedium) {
+    private void setRangeMedium(int rangeMedium) {
         this.rangeMedium.set(rangeMedium);
     }
 
-    public int getRangeLong() {
+    public final int getRangeLong() {
         return rangeLong.get();
     }
 
-    public ReadOnlyIntegerProperty rangeLongProperty() {
+    public final ReadOnlyIntegerProperty rangeLongProperty() {
         return rangeLong;
     }
 
-    public void setRangeLong(int rangeLong) {
+    private void setRangeLong(int rangeLong) {
         this.rangeLong.set(rangeLong);
     }
 
