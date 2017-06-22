@@ -2,10 +2,12 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Třída představující střelné zbraně
@@ -15,14 +17,14 @@ public class RangedWeapon extends WeaponBase {
     // region Variables
 
     // Typ střelné zbraně
-    protected final ReadOnlyObjectWrapper<RangedWeaponType> weaponType = new ReadOnlyObjectWrapper<>(
-        RangedWeaponType.FIRE);
+    protected final ObjectProperty<RangedWeaponType> weaponType = new SimpleObjectProperty<>(this,
+        "weaponType", RangedWeaponType.FIRE);
     // Dostřel - malý
-    protected final ReadOnlyIntegerWrapper rangeLow = new ReadOnlyIntegerWrapper();
+    protected final IntegerProperty rangeLow = new SimpleIntegerProperty(this, "rangeLow");
     // Dostřel - střední
-    protected final ReadOnlyIntegerWrapper rangeMedium = new ReadOnlyIntegerWrapper();
+    protected final IntegerProperty rangeMedium = new SimpleIntegerProperty(this, "rangeMedium");
     // Dostřel - velký
-    protected final ReadOnlyIntegerWrapper rangeLong = new ReadOnlyIntegerWrapper();
+    protected final IntegerProperty rangeLong = new SimpleIntegerProperty(this, "rangeLong");
 
     // endregion
 
@@ -109,7 +111,7 @@ public class RangedWeapon extends WeaponBase {
     }
 
     public ReadOnlyObjectProperty<RangedWeaponType> weaponTypeProperty() {
-        return weaponType.getReadOnlyProperty();
+        return weaponType;
     }
 
     public void setWeaponType(RangedWeaponType weaponType) {
@@ -121,7 +123,7 @@ public class RangedWeapon extends WeaponBase {
     }
 
     public ReadOnlyIntegerProperty rangeLowProperty() {
-        return rangeLow.getReadOnlyProperty();
+        return rangeLow;
     }
 
     public void setRangeLow(int rangeLow) {
@@ -133,7 +135,7 @@ public class RangedWeapon extends WeaponBase {
     }
 
     public ReadOnlyIntegerProperty rangeMediumProperty() {
-        return rangeMedium.getReadOnlyProperty();
+        return rangeMedium;
     }
 
     public void setRangeMedium(int rangeMedium) {
@@ -145,7 +147,7 @@ public class RangedWeapon extends WeaponBase {
     }
 
     public ReadOnlyIntegerProperty rangeLongProperty() {
-        return rangeLong.getReadOnlyProperty();
+        return rangeLong;
     }
 
     public void setRangeLong(int rangeLong) {

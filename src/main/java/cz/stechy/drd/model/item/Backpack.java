@@ -2,10 +2,12 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Třída představující batoh
@@ -21,9 +23,9 @@ public class Backpack extends ItemBase {
     // region Variables
 
     // Maximální nosnost baťohu
-    private final ReadOnlyIntegerWrapper maxLoad = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty maxLoad = new SimpleIntegerProperty(this, "maxLoad");
     // Počet slotů v batohu
-    private final ReadOnlyObjectWrapper<Size> size = new ReadOnlyObjectWrapper<>();
+    private final ObjectProperty<Size> size = new SimpleObjectProperty<>(this, "size");
 
     // endregion
 
@@ -97,7 +99,7 @@ public class Backpack extends ItemBase {
     }
 
     public ReadOnlyIntegerProperty maxLoadProperty() {
-        return maxLoad.getReadOnlyProperty();
+        return maxLoad;
     }
 
     public void setMaxLoad(Integer max_load) {
@@ -109,7 +111,7 @@ public class Backpack extends ItemBase {
     }
 
     public ReadOnlyObjectProperty<Size> sizeProperty() {
-        return size.getReadOnlyProperty();
+        return size;
     }
 
     public void setSize(Size size) {

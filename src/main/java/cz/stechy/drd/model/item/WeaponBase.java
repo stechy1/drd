@@ -1,8 +1,9 @@
 package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.model.db.base.DatabaseItem;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * Základní třída pro všechny zbraně
@@ -12,9 +13,9 @@ public abstract class WeaponBase extends ItemBase {
     // region Variables
 
     // Síla zbraně
-    protected final ReadOnlyIntegerWrapper strength = new ReadOnlyIntegerWrapper();
+    protected final IntegerProperty strength = new SimpleIntegerProperty(this, "strength");
     // Útočnost zbraně
-    protected final ReadOnlyIntegerWrapper rampancy = new ReadOnlyIntegerWrapper();
+    protected final IntegerProperty rampancy = new SimpleIntegerProperty(this, "rampancy");
 
     // endregion
 
@@ -66,7 +67,7 @@ public abstract class WeaponBase extends ItemBase {
     }
 
     public ReadOnlyIntegerProperty strengthProperty() {
-        return strength.getReadOnlyProperty();
+        return strength;
     }
 
     public void setStrength(int strength) {
@@ -78,7 +79,7 @@ public abstract class WeaponBase extends ItemBase {
     }
 
     public ReadOnlyIntegerProperty rampancyProperty() {
-        return rampancy.getReadOnlyProperty();
+        return rampancy;
     }
 
     public void setRampancy(int rampancy) {

@@ -3,12 +3,15 @@ package cz.stechy.drd.model.item;
 import cz.stechy.drd.Money;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.OnlineItem;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * Základní třída pro všechny itemy ve světě dračího doupěte
@@ -19,15 +22,15 @@ public abstract class ItemBase extends OnlineItem {
 
     // ID předmětu
     // Název předmětu
-    protected final ReadOnlyStringWrapper name = new ReadOnlyStringWrapper();
+    protected final StringProperty  name = new SimpleStringProperty(this, "name");
     // Popis předmětu
-    protected final ReadOnlyStringWrapper description = new ReadOnlyStringWrapper();
+    protected final StringProperty description = new SimpleStringProperty(this, "description");
     // Váha předmětu
-    protected final ReadOnlyIntegerWrapper weight = new ReadOnlyIntegerWrapper();
+    protected final IntegerProperty weight = new SimpleIntegerProperty(this, "weight");
     // Cena předmětu
     protected final Money price = new Money();
     // Obrázek předmětu v Base64
-    protected final ReadOnlyObjectWrapper<byte[]> image = new ReadOnlyObjectWrapper<>();
+    protected final ObjectProperty<byte[]> image = new SimpleObjectProperty<>(this, "image");
     // endregion
 
     // region Constructors
@@ -65,7 +68,7 @@ public abstract class ItemBase extends OnlineItem {
     }
 
     public ReadOnlyStringProperty nameProperty() {
-        return name.getReadOnlyProperty();
+        return name;
     }
 
     public void setName(String name) {
@@ -77,7 +80,7 @@ public abstract class ItemBase extends OnlineItem {
     }
 
     public ReadOnlyStringProperty descriptionProperty() {
-        return description.getReadOnlyProperty();
+        return description;
     }
 
     public void setDescription(String description) {
@@ -89,7 +92,7 @@ public abstract class ItemBase extends OnlineItem {
     }
 
     public ReadOnlyIntegerProperty weightProperty() {
-        return weight.getReadOnlyProperty();
+        return weight;
     }
 
     public void setWeight(int weight) {
@@ -105,7 +108,7 @@ public abstract class ItemBase extends OnlineItem {
     }
 
     public ReadOnlyObjectProperty<byte[]> imageProperty() {
-        return image.getReadOnlyProperty();
+        return image;
     }
 
     public void setImage(byte[] image) {

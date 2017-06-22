@@ -1,7 +1,8 @@
 package cz.stechy.drd.model.entity;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ObservableValue;
 
 /**
@@ -12,9 +13,9 @@ public abstract class EntityProperty {
     // region Variables
 
     // Samotná hodnota vlaastnosti
-    protected final ReadOnlyIntegerWrapper value = new ReadOnlyIntegerWrapper(0);
+    protected final IntegerProperty value = new SimpleIntegerProperty(this, "value", 0);
     // Oprava hodnoty vlastnosti
-    protected final ReadOnlyIntegerWrapper repair = new ReadOnlyIntegerWrapper(0);
+    protected final IntegerProperty repair = new SimpleIntegerProperty(this, "value", 0);
     // Spodní hranice intervalu hodnoty vlastnosti
     protected int minValue;
     // Horní hranice intervalu hodnoty valstnosti
@@ -82,7 +83,7 @@ public abstract class EntityProperty {
     }
 
     public ReadOnlyIntegerProperty valueProperty() {
-        return value.getReadOnlyProperty();
+        return value;
     }
 
     public void setValue(Number value) {
@@ -94,7 +95,7 @@ public abstract class EntityProperty {
     }
 
     public ReadOnlyIntegerProperty repairProperty() {
-        return repair.getReadOnlyProperty();
+        return repair;
     }
 
     public void setRepair(int repair) {

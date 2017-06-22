@@ -8,10 +8,12 @@ import cz.stechy.drd.model.entity.EntityProperty;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.SimpleEntityProperty;
 import cz.stechy.drd.model.entity.Vulnerability;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Třída představuje všechna zvířata a nestvůry žijící ve světě Dračího doupěte
@@ -23,32 +25,40 @@ public final class Mob extends EntityBase {
     // Útočné číslo
     private final EntityProperty attackNumber = new SimpleEntityProperty();
     // Obranné číslo
-    private final ReadOnlyIntegerWrapper defenceNumber = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty defenceNumber = new SimpleIntegerProperty(this, 
+        "defenceNumber");
     // Životaschpnost
-    private final ReadOnlyIntegerWrapper viability = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty viability = new SimpleIntegerProperty(this, 
+        "viability");
     // Odolnost
     private final EntityProperty immunity = new SimpleEntityProperty();
     // Bojovnost
-    private final ReadOnlyIntegerWrapper mettle = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty mettle = new SimpleIntegerProperty(this, "mettle");
     // Zranitenost
-    private final ReadOnlyObjectWrapper<Vulnerability> vulnerability = new ReadOnlyObjectWrapper<>();
+    private final ObjectProperty<Vulnerability> vulnerability = new SimpleObjectProperty<>();
     // Pohyblivost
-    private final ReadOnlyIntegerWrapper mobility = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty mobility = new SimpleIntegerProperty(this, 
+        "mobility");
     // Vytrvalost
-    private final ReadOnlyIntegerWrapper perservance = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty perservance = new SimpleIntegerProperty(this, 
+        "perservance");
     // Manévrovací schopnosti
-    private final ReadOnlyIntegerWrapper controlAbility = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty controlAbility = new SimpleIntegerProperty(this, 
+        "controlAbility");
     // Inteligence
     private final EntityProperty intelligence = new SimpleEntityProperty();
     // Charisma
     private final EntityProperty charisma = new SimpleEntityProperty();
     // Základní síla mysli
-    private final ReadOnlyIntegerWrapper basicPowerOfMind = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty basicPowerOfMind = new SimpleIntegerProperty(this, 
+        "basicPowerOfMind");
     // TODO vymyslet, jak implementovat poklad
     // Zkušenosti
-    private final ReadOnlyIntegerWrapper experience = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty experience = new SimpleIntegerProperty(this, 
+        "experience");
     // Ochočení
-    private final ReadOnlyIntegerWrapper domestication = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty domestication = new SimpleIntegerProperty(this, 
+        "domestication");
 
     // endregion
 
@@ -169,7 +179,7 @@ public final class Mob extends EntityBase {
     }
 
     public ReadOnlyIntegerProperty defenceNumberProperty() {
-        return defenceNumber.getReadOnlyProperty();
+        return defenceNumber;
     }
 
     public void setDefenceNumber(int defenceNumber) {
@@ -181,7 +191,7 @@ public final class Mob extends EntityBase {
     }
 
     public ReadOnlyIntegerProperty viabilityProperty() {
-        return viability.getReadOnlyProperty();
+        return viability;
     }
 
     public void setViability(int viability) {
@@ -197,7 +207,7 @@ public final class Mob extends EntityBase {
     }
 
     public ReadOnlyIntegerProperty mettleProperty() {
-        return mettle.getReadOnlyProperty();
+        return mettle;
     }
 
     public void setMettle(int mettle) {
@@ -209,7 +219,7 @@ public final class Mob extends EntityBase {
     }
 
     public ReadOnlyObjectProperty<Vulnerability> vulnerabilityProperty() {
-        return vulnerability.getReadOnlyProperty();
+        return vulnerability;
     }
 
     public void setVulnerability(Vulnerability vulnerability) {
@@ -221,7 +231,7 @@ public final class Mob extends EntityBase {
     }
 
     public ReadOnlyIntegerProperty mobilityProperty() {
-        return mobility.getReadOnlyProperty();
+        return mobility;
     }
 
     public void setMobility(int mobility) {
@@ -233,7 +243,7 @@ public final class Mob extends EntityBase {
     }
 
     public ReadOnlyIntegerProperty perservanceProperty() {
-        return perservance.getReadOnlyProperty();
+        return perservance;
     }
 
     public void setPerservance(int perservance) {
@@ -245,7 +255,7 @@ public final class Mob extends EntityBase {
     }
 
     public ReadOnlyIntegerProperty controlAbilityProperty() {
-        return controlAbility.getReadOnlyProperty();
+        return controlAbility;
     }
 
     public void setControlAbility(int controlAbility) {
@@ -265,7 +275,7 @@ public final class Mob extends EntityBase {
     }
 
     public ReadOnlyIntegerProperty basicPowerOfMindProperty() {
-        return basicPowerOfMind.getReadOnlyProperty();
+        return basicPowerOfMind;
     }
 
     public void setBasicPowerOfMind(int basicPowerOfMind) {
@@ -277,7 +287,7 @@ public final class Mob extends EntityBase {
     }
 
     public ReadOnlyIntegerProperty experienceProperty() {
-        return experience.getReadOnlyProperty();
+        return experience;
     }
 
     public void setExperience(int experience) {
@@ -289,7 +299,7 @@ public final class Mob extends EntityBase {
     }
 
     public ReadOnlyIntegerProperty domesticationProperty() {
-        return domestication.getReadOnlyProperty();
+        return domestication;
     }
 
     public void setDomestication(int domestication) {

@@ -3,10 +3,12 @@ package cz.stechy.drd.model.entity;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.OnlineItem;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * Základní společná třída pro všechny entity ve světě Dračího doupěte
@@ -16,18 +18,18 @@ public abstract class EntityBase extends OnlineItem {
     // region Variales
 
     // Jméno
-    protected final ReadOnlyStringWrapper name = new ReadOnlyStringWrapper();
+    protected final StringProperty name = new SimpleStringProperty();
     // Popis entity
-    protected final ReadOnlyStringWrapper description = new ReadOnlyStringWrapper();
+    protected final StringProperty description = new SimpleStringProperty();
     // Aktuální počet životů
     protected final MaxActValue live = new MaxActValue();
     // Aktuální počet magů
     protected final MaxActValue mag = new MaxActValue();
     // Přesvědčení
-    protected final ReadOnlyObjectWrapper<Conviction> conviction = new ReadOnlyObjectWrapper<>(
+    protected final ObjectProperty<Conviction> conviction = new SimpleObjectProperty<>(
         Conviction.NEUTRAL);
     // Velikost
-    protected final ReadOnlyObjectWrapper<Height> height = new ReadOnlyObjectWrapper<>(Height.B);
+    protected final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
 
     // endregion
 
@@ -74,7 +76,7 @@ public abstract class EntityBase extends OnlineItem {
     }
 
     public ReadOnlyStringProperty nameProperty() {
-        return name.getReadOnlyProperty();
+        return name;
     }
 
     public void setName(String name) {
@@ -86,7 +88,7 @@ public abstract class EntityBase extends OnlineItem {
     }
 
     public ReadOnlyStringProperty descriptionProperty() {
-        return description.getReadOnlyProperty();
+        return description;
     }
 
     public void setDescription(String description) {
@@ -106,7 +108,7 @@ public abstract class EntityBase extends OnlineItem {
     }
 
     public ReadOnlyObjectProperty<Conviction> convictionProperty() {
-        return conviction.getReadOnlyProperty();
+        return conviction;
     }
 
     public void setConviction(Conviction conviction) {
@@ -118,7 +120,7 @@ public abstract class EntityBase extends OnlineItem {
     }
 
     public ReadOnlyObjectProperty<Height> heightProperty() {
-        return height.getReadOnlyProperty();
+        return height;
     }
 
     public void setHeight(Height height) {

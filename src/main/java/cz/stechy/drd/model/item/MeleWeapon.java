@@ -2,10 +2,12 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Třída představující zbraň pro boj na blízko
@@ -15,13 +17,13 @@ public class MeleWeapon extends WeaponBase {
     // region Variables
 
     // Obrana zbraně
-    protected final ReadOnlyIntegerWrapper defence = new ReadOnlyIntegerWrapper();
+    protected final IntegerProperty defence = new SimpleIntegerProperty(this, "defence");
     // Třída zbraně
-    protected final ReadOnlyObjectWrapper<MeleWeaponClass> weaponClass = new ReadOnlyObjectWrapper<>(
-        MeleWeaponClass.LIGHT);
+    protected final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(this,
+        "weaponClass", MeleWeaponClass.LIGHT);
     // Typ zbraně
-    protected final ReadOnlyObjectWrapper<MeleWeaponType> weaponType = new ReadOnlyObjectWrapper<>(
-        MeleWeaponType.ONE_HAND);
+    protected final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(this,
+        "weaponType", MeleWeaponType.ONE_HAND);
 
     // endregion
 
@@ -78,7 +80,7 @@ public class MeleWeapon extends WeaponBase {
     }
 
     public ReadOnlyIntegerProperty defenceProperty() {
-        return defence.getReadOnlyProperty();
+        return defence;
     }
 
     public void setDefence(int defence) {
@@ -90,7 +92,7 @@ public class MeleWeapon extends WeaponBase {
     }
 
     public ReadOnlyObjectProperty<MeleWeaponClass> weaponClassProperty() {
-        return weaponClass.getReadOnlyProperty();
+        return weaponClass;
     }
 
     public void setWeaponClass(MeleWeaponClass weaponClass) {
@@ -102,7 +104,7 @@ public class MeleWeapon extends WeaponBase {
     }
 
     public ReadOnlyObjectProperty<MeleWeaponType> weaponTypeProperty() {
-        return weaponType.getReadOnlyProperty();
+        return weaponType;
     }
 
     public void setWeaponType(MeleWeaponType weaponType) {

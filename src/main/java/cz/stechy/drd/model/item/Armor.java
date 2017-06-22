@@ -4,8 +4,9 @@ import cz.stechy.drd.Money;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Height;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * Třída představující brnění
@@ -14,14 +15,23 @@ public class Armor extends ItemBase {
 
     // region Variables
 
-    private final ReadOnlyIntegerWrapper defenceNumber = new ReadOnlyIntegerWrapper();
-    private final ReadOnlyIntegerWrapper weightA = new ReadOnlyIntegerWrapper();
-    private final ReadOnlyIntegerWrapper weightB = new ReadOnlyIntegerWrapper();
-    private final ReadOnlyIntegerWrapper weightC = new ReadOnlyIntegerWrapper();
+    // Obranné číslo zbroje
+    private final IntegerProperty defenceNumber = new SimpleIntegerProperty(this, "defenceNumber");
+    // Váha zbroje pro postavy velikosti A
+    private final IntegerProperty weightA = new SimpleIntegerProperty(this, "weightA");
+    // Váha zbroje pro postavy velikosti B
+    private final IntegerProperty weightB = new SimpleIntegerProperty(this, "weightB");
+    // Váha zbroje pro postavy velikosti C
+    private final IntegerProperty weightC = new SimpleIntegerProperty(this, "weightC");
+    // Cena zbroje pro ostavy velikosti A
     private final Money priceA = new Money();
+    // Cena zbroje pro ostavy velikosti B
     private final Money priceB = new Money();
+    // Cena zbroje pro ostavy velikosti C
     private final Money priceC = new Money();
-    private final ReadOnlyIntegerWrapper minimumStrength = new ReadOnlyIntegerWrapper();
+    // Minimální sila, kterou musí postava mít, aby zbroj unesla
+    private final IntegerProperty minimumStrength = new SimpleIntegerProperty(this,
+        "minimumStrength");
 
     // endregion
 
@@ -134,7 +144,7 @@ public class Armor extends ItemBase {
     }
 
     public ReadOnlyIntegerProperty defenceNumberProperty() {
-        return defenceNumber.getReadOnlyProperty();
+        return defenceNumber;
     }
 
     public void setDefenceNumber(int defenceNumber) {
@@ -146,7 +156,7 @@ public class Armor extends ItemBase {
     }
 
     public ReadOnlyIntegerProperty weightAProperty() {
-        return weightA.getReadOnlyProperty();
+        return weightA;
     }
 
     public void setWeightA(int weightA) {
@@ -158,7 +168,7 @@ public class Armor extends ItemBase {
     }
 
     public ReadOnlyIntegerProperty weightBProperty() {
-        return weightB.getReadOnlyProperty();
+        return weightB;
     }
 
     public void setWeightB(int weightB) {
@@ -170,7 +180,7 @@ public class Armor extends ItemBase {
     }
 
     public ReadOnlyIntegerProperty weightCProperty() {
-        return weightC.getReadOnlyProperty();
+        return weightC;
     }
 
     public void setWeightC(int weightC) {
@@ -194,7 +204,7 @@ public class Armor extends ItemBase {
     }
 
     public ReadOnlyIntegerProperty minimumStrengthProperty() {
-        return minimumStrength.getReadOnlyProperty();
+        return minimumStrength;
     }
 
     public void setMinimumStrength(int minimumStrength) {

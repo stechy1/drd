@@ -12,10 +12,12 @@ import cz.stechy.drd.model.entity.SimpleEntityProperty;
 import cz.stechy.drd.util.HashGenerator;
 import java.util.regex.Pattern;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
-import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Základní třída definující atributy pro všechny hrdiny
@@ -44,11 +46,11 @@ public class Hero extends EntityBase {
     // region Variables
 
     // Rasa
-    private final ReadOnlyObjectWrapper<Race> race = new ReadOnlyObjectWrapper<>();
+    private final ObjectProperty<Race> race = new SimpleObjectProperty<>(this, "race");
     // Profece
-    private final ReadOnlyObjectWrapper<Profession> profession = new ReadOnlyObjectWrapper<>();
+    private final ObjectProperty<Profession> profession = new SimpleObjectProperty<>(this, "profession");
     // Úroveň
-    private final ReadOnlyIntegerWrapper level = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty level = new SimpleIntegerProperty(this, "level");
     // Peníze
     private final Money money = new Money();
     // Zkušenosti
@@ -64,9 +66,10 @@ public class Hero extends EntityBase {
     // Charisma
     private final EntityProperty charisma = new SimpleEntityProperty();
     // Obranné číslo
-    private final ReadOnlyIntegerWrapper defenceNumber = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty defenceNumber = new SimpleIntegerProperty(this, 
+        "defenceNumber");
     // Nosnost
-    private final ReadOnlyIntegerWrapper capacity = new ReadOnlyIntegerWrapper();
+    private final IntegerProperty capacity = new SimpleIntegerProperty(this, "capacity");
     // Pohyblivost
     private final EntityProperty agility = new SimpleEntityProperty();
     // Mírné naložení
@@ -207,7 +210,7 @@ public class Hero extends EntityBase {
     }
 
     public ReadOnlyObjectProperty<Race> raceProperty() {
-        return race.getReadOnlyProperty();
+        return race;
     }
 
     public void setRace(Race race) {
@@ -219,7 +222,7 @@ public class Hero extends EntityBase {
     }
 
     public ReadOnlyObjectProperty<Profession> professionProperty() {
-        return profession.getReadOnlyProperty();
+        return profession;
     }
 
     public void setProfession(Profession profession) {
@@ -231,7 +234,7 @@ public class Hero extends EntityBase {
     }
 
     public ReadOnlyIntegerProperty levelProperty() {
-        return level.getReadOnlyProperty();
+        return level;
     }
 
     public void setLevel(int level) {
@@ -271,7 +274,7 @@ public class Hero extends EntityBase {
     }
 
     public ReadOnlyIntegerProperty defenceNumberProperty() {
-        return defenceNumber.getReadOnlyProperty();
+        return defenceNumber;
     }
 
     public void setDefenceNumber(int defenceNumber) {
@@ -283,7 +286,7 @@ public class Hero extends EntityBase {
     }
 
     public ReadOnlyIntegerProperty capacityProperty() {
-        return capacity.getReadOnlyProperty();
+        return capacity;
     }
 
     public void setCapacity(int capacity) {

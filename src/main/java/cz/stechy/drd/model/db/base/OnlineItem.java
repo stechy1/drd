@@ -1,9 +1,11 @@
 package cz.stechy.drd.model.db.base;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * Rozhraní pro všechny itemy, které můžou být nahrány do veřejné databáze
@@ -13,11 +15,11 @@ public abstract class OnlineItem extends DatabaseItem {
     // region Variables
 
     // Autor entity
-    protected final ReadOnlyStringWrapper author = new ReadOnlyStringWrapper();
+    protected final StringProperty author = new SimpleStringProperty(this, "author");
     // Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
-    protected final ReadOnlyBooleanWrapper downloaded = new ReadOnlyBooleanWrapper(false);
+    protected final BooleanProperty downloaded = new SimpleBooleanProperty(this, "downloaded", false);
     // Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
-    private final ReadOnlyBooleanWrapper uploaded = new ReadOnlyBooleanWrapper(false);
+    private final BooleanProperty uploaded = new SimpleBooleanProperty(this, "uploaded", false);
 
     // endregion
 
@@ -61,7 +63,7 @@ public abstract class OnlineItem extends DatabaseItem {
     }
 
     public ReadOnlyBooleanProperty downloadedProperty() {
-        return downloaded.getReadOnlyProperty();
+        return downloaded;
     }
 
     public void setDownloaded(boolean downloaded) {
@@ -73,7 +75,7 @@ public abstract class OnlineItem extends DatabaseItem {
     }
 
     public ReadOnlyBooleanProperty uploadedProperty() {
-        return uploaded.getReadOnlyProperty();
+        return uploaded;
     }
 
     public void setUploaded(boolean uploaded) {
@@ -85,7 +87,7 @@ public abstract class OnlineItem extends DatabaseItem {
     }
 
     public ReadOnlyStringProperty authorProperty() {
-        return author.getReadOnlyProperty();
+        return author;
     }
 
     public void setAuthor(String author) {
