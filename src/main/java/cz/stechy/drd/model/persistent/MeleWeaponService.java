@@ -37,12 +37,13 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
     private static final String COLUMN_CLASS = TABLE + "_class";
     private static final String COLUMN_TYPE = TABLE + "_type";
     private static final String COLUMN_IMAGE = TABLE + "_image";
+    private static final String COLUMN_STACK_SIZE = TABLE + "_stack_size";
     private static final String COLUMN_DOWNLOADED = TABLE + "_downloaded";
     private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY,
-        COLUMN_DEFENCE, COLUMN_CLASS, COLUMN_TYPE, COLUMN_IMAGE, COLUMN_DOWNLOADED,
-        COLUMN_UPLOADED};
+        COLUMN_DEFENCE, COLUMN_CLASS, COLUMN_TYPE, COLUMN_IMAGE, COLUMN_STACK_SIZE,
+        COLUMN_DOWNLOADED, COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -59,11 +60,12 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
             + "%s INT NOT NULL,"                                // class
             + "%s INT NOT NULL,"                                // type
             + "%s BLOB,"                                        // image
+            + "%s INT NOT NULL,"                                // stack size
             + "%s BOOLEAN NOT NULL,"                            // je položka stažená
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
             + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
         COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY, COLUMN_DEFENCE, COLUMN_CLASS, COLUMN_TYPE,
-        COLUMN_IMAGE, COLUMN_DOWNLOADED, COLUMN_UPLOADED);
+        COLUMN_IMAGE, COLUMN_STACK_SIZE, COLUMN_DOWNLOADED, COLUMN_UPLOADED);
 
     // endregion
 
@@ -105,6 +107,7 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
             .weaponClass(snapshot.child(COLUMN_CLASS).getValue(Integer.class))
             .weaponType(snapshot.child(COLUMN_TYPE).getValue(Integer.class))
             .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
+            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
             .build();
     }
 
@@ -123,6 +126,7 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
             .weaponClass(resultSet.getInt(COLUMN_CLASS))
             .weaponType(resultSet.getInt(COLUMN_TYPE))
             .image(readBlob(resultSet, COLUMN_IMAGE))
+            .stackSize(resultSet.getInt(COLUMN_STACK_SIZE))
             .downloaded(resultSet.getBoolean(COLUMN_DOWNLOADED))
             .uploaded(resultSet.getBoolean(COLUMN_UPLOADED))
             .build();
@@ -143,6 +147,7 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
             weapon.getWeaponClass().ordinal(),
             weapon.getWeaponType().ordinal(),
             weapon.getImage(),
+            weapon.getStackSize(),
             weapon.isDownloaded(),
             weapon.isUploaded()
         ));

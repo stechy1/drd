@@ -28,13 +28,14 @@ public final class GeneralItemService extends AdvancedDatabaseService<GeneralIte
     private static final String COLUMN_DESCRIPTION = TABLE + "_description";
     private static final String COLUMN_AUTHOR = TABLE + "_author";
     private static final String COLUMN_WEIGHT = TABLE + "_weight";
-    private static final String COLUMN_IMAGE = TABLE + "_image";
     private static final String COLUMN_PRICE = TABLE + "_price";
+    private static final String COLUMN_IMAGE = TABLE + "_image";
+    private static final String COLUMN_STACK_SIZE = TABLE + "_stack_size";
     private static final String COLUMN_DOWNLOADED = TABLE + "_downloaded";
     private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
-        COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_IMAGE, COLUMN_DOWNLOADED,
-        COLUMN_UPLOADED};
+        COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_IMAGE, COLUMN_STACK_SIZE,
+        COLUMN_DOWNLOADED, COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -46,10 +47,12 @@ public final class GeneralItemService extends AdvancedDatabaseService<GeneralIte
             + "%s INT NOT NULL,"                                // weight
             + "%s INT NOT NULL,"                                // price
             + "%s BLOB,"                                        // image
+            + "%s INT NOT NULL,"                                // stack size
             + "%s BOOLEAN NOT NULL,"                            // je položka stažená
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
             + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR,
-        COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_IMAGE, COLUMN_DOWNLOADED, COLUMN_UPLOADED);
+        COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_IMAGE, COLUMN_STACK_SIZE, COLUMN_DOWNLOADED,
+        COLUMN_UPLOADED);
 
     // endregion
 
@@ -86,6 +89,7 @@ public final class GeneralItemService extends AdvancedDatabaseService<GeneralIte
             .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
             .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
             .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
+            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
             .build();
     }
 
@@ -98,6 +102,7 @@ public final class GeneralItemService extends AdvancedDatabaseService<GeneralIte
             .description(resultSet.getString(COLUMN_DESCRIPTION))
             .weight(resultSet.getInt(COLUMN_WEIGHT))
             .image(readBlob(resultSet, COLUMN_IMAGE))
+            .stackSize(resultSet.getInt(COLUMN_STACK_SIZE))
             .downloaded(resultSet.getBoolean(COLUMN_DOWNLOADED))
             .uploaded(resultSet.getBoolean(COLUMN_UPLOADED))
             .build();
@@ -113,6 +118,7 @@ public final class GeneralItemService extends AdvancedDatabaseService<GeneralIte
             item.getWeight(),
             item.getPrice().getRaw(),
             item.getImage(),
+            item.getStackSize(),
             item.isDownloaded(),
             item.isUploaded()
         ));

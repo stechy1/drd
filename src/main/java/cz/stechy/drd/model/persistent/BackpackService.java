@@ -34,11 +34,12 @@ public final class BackpackService extends AdvancedDatabaseService<Backpack> {
     private static final String COLUMN_MAX_LOAD = TABLE + "_max_load";
     private static final String COLUMN_SIZE = TABLE + "_size";
     private static final String COLUMN_IMAGE = TABLE + "_image";
+    private static final String COLUMN_STACK_SIZE = TABLE + "_stack_size";
     private static final String COLUMN_DOWNLOADED = TABLE + "_downloaded";
     private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE,
-        COLUMN_DOWNLOADED, COLUMN_UPLOADED};
+        COLUMN_STACK_SIZE, COLUMN_DOWNLOADED, COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -52,11 +53,12 @@ public final class BackpackService extends AdvancedDatabaseService<Backpack> {
             + "%s INT NOT NULL,"                                // max load
             + "%s INT NOT NULL,"                                // size
             + "%s BLOB,"                                        // image
+            + "%s INT NOT NULL,"                                // stack size
             + "%s BOOLEAN NOT NULL,"                            // je položka stažená
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
             + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
-        COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE, COLUMN_DOWNLOADED,
-        COLUMN_UPLOADED);
+        COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE, COLUMN_STACK_SIZE,
+        COLUMN_DOWNLOADED, COLUMN_UPLOADED);
 
     // endregion
 
@@ -90,6 +92,7 @@ public final class BackpackService extends AdvancedDatabaseService<Backpack> {
             .maxLoad(snapshot.child(COLUMN_MAX_LOAD).getValue(Integer.class))
             .size(snapshot.child(COLUMN_SIZE).getValue(Integer.class))
             .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
+            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
             .build();
     }
 
@@ -105,25 +108,27 @@ public final class BackpackService extends AdvancedDatabaseService<Backpack> {
             .maxLoad(resultSet.getInt(COLUMN_MAX_LOAD))
             .size(resultSet.getInt(COLUMN_SIZE))
             .image(readBlob(resultSet, COLUMN_IMAGE))
+            .stackSize(resultSet.getInt(COLUMN_STACK_SIZE))
             .downloaded(resultSet.getBoolean(COLUMN_DOWNLOADED))
             .uploaded(resultSet.getBoolean(COLUMN_UPLOADED))
             .build();
     }
 
     @Override
-    protected List<Object> itemToParams(Backpack item) {
+    protected List<Object> itemToParams(Backpack backpack) {
         return new ArrayList<>(Arrays.asList(
-            item.getId(),
-            item.getName(),
-            item.getDescription(),
-            item.getAuthor(),
-            item.getWeight(),
-            item.getPrice().getRaw(),
-            item.getMaxLoad(),
-            item.getSize().ordinal(),
-            item.getImage(),
-            item.isDownloaded(),
-            item.isUploaded()
+            backpack.getId(),
+            backpack.getName(),
+            backpack.getDescription(),
+            backpack.getAuthor(),
+            backpack.getWeight(),
+            backpack.getPrice().getRaw(),
+            backpack.getMaxLoad(),
+            backpack.getSize().ordinal(),
+            backpack.getImage(),
+            backpack.getStackSize(),
+            backpack.isDownloaded(),
+            backpack.isUploaded()
         ));
     }
 
