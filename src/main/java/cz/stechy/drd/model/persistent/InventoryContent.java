@@ -27,7 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Třída představující obsah jednoho inventáře
+ * Služba spravující CRUD operace nad třídou {@link InventoryRecord}
  */
 public final class InventoryContent extends BaseDatabaseService<InventoryRecord> {
 

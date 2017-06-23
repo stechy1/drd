@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Správce užvatele
+ * Služba spravující CRUD operace nad třídou {@link User}
  */
 public final class UserService implements Firebase<User> {
 

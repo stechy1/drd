@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Správce standartních itemů
+ * Služba spravující CRUD operace nad třídou {@link GeneralItem}
  */
 public final class GeneralItemService extends AdvancedDatabaseService<GeneralItem> {
 

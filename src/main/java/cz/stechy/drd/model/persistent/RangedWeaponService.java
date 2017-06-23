@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Správce zbraní na dálku
+ * Služba spravující CRUD operace nad třídou {@link RangedWeapon}
  */
 public final class RangedWeaponService extends AdvancedDatabaseService<RangedWeapon> {
 

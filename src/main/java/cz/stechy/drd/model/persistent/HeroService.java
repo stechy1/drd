@@ -16,8 +16,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 
 /**
- * Správce postav
- * Umožňuje CRUD operace a mnohem víc
+ * Služba spravující CRUD operace nad třídou {@link Hero}
  */
 public final class HeroService extends BaseDatabaseService<Hero> {
 

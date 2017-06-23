@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Správce batohů a obecně předmětů, které obsahují inventář
+ * Služba spravující CRUD operace nad třídou {@link Backpack}
  */
 public final class BackpackService extends AdvancedDatabaseService<Backpack> {
 

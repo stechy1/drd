@@ -19,7 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Správce inventářů pro jednoho hrdinu
+ * Služba spravující CRUD operace nad třídou {@link Inventory}
+ *
  */
 public final class InventoryService extends BaseDatabaseService<Inventory> {
 

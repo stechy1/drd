@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Správce brnění
+ * Služba spravující CRUD operace nad třídou {@link Armor}
  */
 public final class ArmorService extends AdvancedDatabaseService<Armor> {
 

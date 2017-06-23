@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Správce zbraní na blízko
+ * Služba spravující CRUD operace nad třídou {@link MeleWeapon}
  */
 public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon> {
 
