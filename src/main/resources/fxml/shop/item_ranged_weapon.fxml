@@ -32,6 +32,7 @@
       <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
       <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
       <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+      <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
 
     <Label text="%drd_item_name"/>
@@ -43,6 +44,7 @@
     <Label text="%drd_item_weapon_mele_ranged_type" GridPane.rowIndex="6"/>
     <Label text="%drd_item_weight" GridPane.rowIndex="7"/>
     <Label text="%drd_item_price" GridPane.rowIndex="8"/>
+    <Label text="%drd_item_stack_size" GridPane.rowIndex="9"/>
     <TextField fx:id="txtName" GridPane.columnIndex="1"/>
     <TextField fx:id="txtStrength" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
     <TextField fx:id="txtRampancy" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
@@ -54,6 +56,7 @@
     <TextField fx:id="txtWeight" GridPane.columnIndex="1" GridPane.rowIndex="7"/>
     <Hyperlink fx:id="lblPrice" onAction="#handleShowMoneyPopup" GridPane.columnIndex="1"
       GridPane.rowIndex="8"/>
+    <TextField fx:id="txtStackSize" GridPane.columnIndex="1" GridPane.rowIndex="9"/>
   </GridPane>
   <VBox prefWidth="300.0">
     <Label text="%drd_item_image"/>

@@ -15,10 +15,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -62,6 +60,7 @@ public class ItemArmorController extends BaseController implements Initializable
     private static final String STACK_SIZE = "stack_size";
     private static final String UPLOADED = "uploaded";
     private static final String DOWNLOADED = "downloaded";
+
     // endregion
 
     // region Variables
@@ -89,6 +88,8 @@ public class ItemArmorController extends BaseController implements Initializable
     private Hyperlink lblPriceB;
     @FXML
     private Hyperlink lblPriceC;
+    @FXML
+    private TextField txtStackSize;
     @FXML
     private ImageView imageView;
 
@@ -167,6 +168,8 @@ public class ItemArmorController extends BaseController implements Initializable
         lblPriceB.textProperty().bind(model.priceB.text);
         lblPriceC.textProperty().bind(model.priceC.text);
 
+        FormUtils.initTextFormater(txtStackSize, model.stackSize);
+
         imageView.imageProperty().bindBidirectional(model.image);
     }
 
@@ -185,7 +188,7 @@ public class ItemArmorController extends BaseController implements Initializable
         model.priceC.setRaw(bundle.getInt(PRICE_C));
         model.author.setValue(bundle.getString(AUTHOR));
         model.imageRaw.setValue(bundle.getByteArray(IMAGE));
-        model.stackSize.setValue(bundle.getInt(STACK_SIZE));
+        model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
         model.uploaded.setValue(bundle.getBoolean(UPLOADED));
         model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
         action = bundle.getInt(ShopHelper.ITEM_ACTION);
@@ -244,7 +247,7 @@ public class ItemArmorController extends BaseController implements Initializable
         bundle.putInt(PRICE_C, model.priceC.getRaw());
         bundle.putString(AUTHOR, model.author.getValue());
         bundle.putByteArray(IMAGE, model.imageRaw.getValue());
-        bundle.putInt(STACK_SIZE, model.stackSize.getValue());
+        bundle.putInt(STACK_SIZE, model.stackSize.getActValue().intValue());
         bundle.putBoolean(UPLOADED, model.uploaded.getValue());
         bundle.putBoolean(DOWNLOADED, model.downloaded.getValue());
         finish(bundle);
@@ -305,7 +308,7 @@ public class ItemArmorController extends BaseController implements Initializable
         final StringProperty author = new SimpleStringProperty();
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
         final ObjectProperty<Image> image = new SimpleObjectProperty<>();
-        final IntegerProperty stackSize = new SimpleIntegerProperty();
+        final MaxActValue stackSize = new MaxActValue(Integer.MAX_VALUE);
         final BooleanProperty uploaded = new SimpleBooleanProperty();
         final BooleanProperty downloaded = new SimpleBooleanProperty();
 

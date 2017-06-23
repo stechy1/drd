@@ -16,10 +16,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -57,6 +55,7 @@ public class ItemGeneralController extends BaseController implements Initializab
     private static final String UPLOADED = "uploaded";
     private static final String DOWNLOADED = "downloaded";
 
+
     // endregion
 
     // region Variables
@@ -71,6 +70,8 @@ public class ItemGeneralController extends BaseController implements Initializab
     private TextField txtWeight;
     @FXML
     private Hyperlink lblPrice;
+    @FXML
+    private TextField txtStackSize;
     @FXML
     private Button btnFinish;
     @FXML
@@ -127,6 +128,9 @@ public class ItemGeneralController extends BaseController implements Initializab
         FormUtils.initTextFormater(txtWeight, model.weight);
 
         lblPrice.textProperty().bind(model.price.text);
+
+        FormUtils.initTextFormater(txtStackSize, model.stackSize);
+
         imageView.imageProperty().bindBidirectional(model.image);
 
         btnFinish.disableProperty()
@@ -142,7 +146,7 @@ public class ItemGeneralController extends BaseController implements Initializab
         model.weight.setActValue(bundle.getInt(WEIGHT));
         model.author.setValue(bundle.getString(AUTHOR));
         model.imageRaw.setValue(bundle.getByteArray(IMAGE));
-        model.stackSize.setValue(bundle.getInt(STACK_SIZE));
+        model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
         model.uploaded.setValue(bundle.getBoolean(UPLOADED));
         model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
         action = bundle.getInt(ShopHelper.ITEM_ACTION);
@@ -181,7 +185,7 @@ public class ItemGeneralController extends BaseController implements Initializab
         bundle.putInt(WEIGHT, model.weight.getActValue().intValue());
         bundle.putString(AUTHOR, model.author.getValue());
         bundle.putByteArray(IMAGE, model.imageRaw.getValue());
-        bundle.putInt(STACK_SIZE, model.stackSize.getValue());
+        bundle.putInt(STACK_SIZE, model.stackSize.getActValue().intValue());
         bundle.putBoolean(UPLOADED, model.uploaded.getValue());
         bundle.putBoolean(DOWNLOADED, model.downloaded.getValue());
         finish(bundle);
@@ -224,7 +228,7 @@ public class ItemGeneralController extends BaseController implements Initializab
         final StringProperty author = new SimpleStringProperty();
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
         final ObjectProperty<Image> image = new SimpleObjectProperty<>();
-        final IntegerProperty stackSize = new SimpleIntegerProperty();
+        final MaxActValue stackSize = new MaxActValue(Integer.MAX_VALUE);
         final BooleanProperty uploaded = new SimpleBooleanProperty();
         final BooleanProperty downloaded = new SimpleBooleanProperty();
 

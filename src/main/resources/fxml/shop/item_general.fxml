@@ -27,19 +27,17 @@
       <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
       <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
       <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-      <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-      <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-      <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-      <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
     </rowConstraints>
 
     <Label text="%drd_item_name"/>
     <Label text="%drd_item_weight" GridPane.rowIndex="1"/>
     <Label text="%drd_item_price" GridPane.rowIndex="2"/>
+    <Label text="%drd_item_stack_size" GridPane.rowIndex="3"/>
     <TextField fx:id="txtName" GridPane.columnIndex="1"/>
     <TextField fx:id="txtWeight" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
     <Hyperlink fx:id="lblPrice" onAction="#handleShowMoneyPopup" GridPane.columnIndex="1"
       GridPane.rowIndex="2"/>
+    <TextField fx:id="txtStackSize" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
   </GridPane>
   <VBox prefWidth="300.0">
     <Label text="%drd_item_image"/>
