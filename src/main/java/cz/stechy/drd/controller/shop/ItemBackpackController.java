@@ -22,8 +22,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -59,6 +61,7 @@ public class ItemBackpackController extends BaseController implements Initializa
     private static final String SIZE = "size";
     private static final String AUTHOR = "author";
     private static final String IMAGE = "image";
+    private static final String STACK_SIZE = "stack_size";
     private static final String UPLOADED = "uploaded";
     private static final String DOWNLOADED = "downloaded";
 
@@ -117,6 +120,7 @@ public class ItemBackpackController extends BaseController implements Initializa
             .size(bundle.getInt(SIZE))
             .author(bundle.getString(AUTHOR))
             .image(bundle.getByteArray(IMAGE))
+            .stackSize(bundle.getInt(STACK_SIZE))
             .uploaded(bundle.getBoolean(UPLOADED))
             .downloaded(bundle.getBoolean(DOWNLOADED))
             .build();
@@ -132,6 +136,7 @@ public class ItemBackpackController extends BaseController implements Initializa
         bundle.putInt(SIZE, backpack.getSize().size);
         bundle.putString(AUTHOR, backpack.getAuthor());
         bundle.putByteArray(IMAGE, backpack.getImage());
+        bundle.putInt(STACK_SIZE, backpack.getStackSize());
         bundle.putBoolean(UPLOADED, backpack.isUploaded());
         bundle.putBoolean(DOWNLOADED, backpack.isDownloaded());
     }
@@ -169,6 +174,7 @@ public class ItemBackpackController extends BaseController implements Initializa
         model.size.setValue(Size.values()[bundle.getInt(SIZE)]);
         model.author.setValue(bundle.getString(AUTHOR));
         model.imageRaw.setValue(bundle.getByteArray(IMAGE));
+        model.stackSize.setValue(bundle.getInt(STACK_SIZE));
         model.uploaded.setValue(bundle.getBoolean(UPLOADED));
         model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
         action = bundle.getInt(ShopHelper.ITEM_ACTION);
@@ -209,6 +215,7 @@ public class ItemBackpackController extends BaseController implements Initializa
         bundle.putInt(SIZE, model.size.getValue().ordinal());
         bundle.putString(AUTHOR, model.author.getValue());
         bundle.putByteArray(IMAGE, model.imageRaw.getValue());
+        bundle.putInt(STACK_SIZE, model.stackSize.getValue());
         bundle.putBoolean(UPLOADED, model.uploaded.getValue());
         bundle.putBoolean(DOWNLOADED, model.downloaded.getValue());
         finish(bundle);
@@ -252,6 +259,7 @@ public class ItemBackpackController extends BaseController implements Initializa
         final StringProperty author = new SimpleStringProperty();
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
         final ObjectProperty<Image> image = new SimpleObjectProperty<>();
+        final IntegerProperty stackSize = new SimpleIntegerProperty();
         final BooleanProperty uploaded = new SimpleBooleanProperty();
         final BooleanProperty downloaded = new SimpleBooleanProperty();
         final ObjectProperty<Size> size = new SimpleObjectProperty<>();

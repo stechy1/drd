@@ -16,8 +16,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -51,6 +53,7 @@ public class ItemGeneralController extends BaseController implements Initializab
     private static final String WEIGHT = "weight";
     private static final String AUTHOR = "author";
     private static final String IMAGE = "image";
+    private static final String STACK_SIZE = "stack_size";
     private static final String UPLOADED = "uploaded";
     private static final String DOWNLOADED = "downloaded";
 
@@ -93,21 +96,23 @@ public class ItemGeneralController extends BaseController implements Initializab
             .price(bundle.getInt(PRICE))
             .author(bundle.getString(AUTHOR))
             .image(bundle.getByteArray(IMAGE))
+            .stackSize(bundle.getInt(STACK_SIZE))
             .uploaded(bundle.getBoolean(UPLOADED))
             .downloaded(bundle.getBoolean(DOWNLOADED))
             .build();
     }
 
-    public static void toBundle(Bundle bundle, GeneralItem weapon) {
-        bundle.putString(ID, weapon.getId());
-        bundle.putString(NAME, weapon.getName());
-        bundle.putString(DESCRIPTION, weapon.getDescription());
-        bundle.putInt(WEIGHT, weapon.getWeight());
-        bundle.putInt(PRICE, weapon.getPrice().getRaw());
-        bundle.putString(AUTHOR, weapon.getAuthor());
-        bundle.putByteArray(IMAGE, weapon.getImage());
-        bundle.putBoolean(UPLOADED, weapon.isUploaded());
-        bundle.putBoolean(DOWNLOADED, weapon.isDownloaded());
+    public static void toBundle(Bundle bundle, GeneralItem generalItem) {
+        bundle.putString(ID, generalItem.getId());
+        bundle.putString(NAME, generalItem.getName());
+        bundle.putString(DESCRIPTION, generalItem.getDescription());
+        bundle.putInt(WEIGHT, generalItem.getWeight());
+        bundle.putInt(PRICE, generalItem.getPrice().getRaw());
+        bundle.putString(AUTHOR, generalItem.getAuthor());
+        bundle.putByteArray(IMAGE, generalItem.getImage());
+        bundle.putInt(STACK_SIZE, generalItem.getStackSize());
+        bundle.putBoolean(UPLOADED, generalItem.isUploaded());
+        bundle.putBoolean(DOWNLOADED, generalItem.isDownloaded());
     }
 
     // endregion
@@ -137,6 +142,7 @@ public class ItemGeneralController extends BaseController implements Initializab
         model.weight.setActValue(bundle.getInt(WEIGHT));
         model.author.setValue(bundle.getString(AUTHOR));
         model.imageRaw.setValue(bundle.getByteArray(IMAGE));
+        model.stackSize.setValue(bundle.getInt(STACK_SIZE));
         model.uploaded.setValue(bundle.getBoolean(UPLOADED));
         model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
         action = bundle.getInt(ShopHelper.ITEM_ACTION);
@@ -175,6 +181,7 @@ public class ItemGeneralController extends BaseController implements Initializab
         bundle.putInt(WEIGHT, model.weight.getActValue().intValue());
         bundle.putString(AUTHOR, model.author.getValue());
         bundle.putByteArray(IMAGE, model.imageRaw.getValue());
+        bundle.putInt(STACK_SIZE, model.stackSize.getValue());
         bundle.putBoolean(UPLOADED, model.uploaded.getValue());
         bundle.putBoolean(DOWNLOADED, model.downloaded.getValue());
         finish(bundle);
@@ -217,6 +224,7 @@ public class ItemGeneralController extends BaseController implements Initializab
         final StringProperty author = new SimpleStringProperty();
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
         final ObjectProperty<Image> image = new SimpleObjectProperty<>();
+        final IntegerProperty stackSize = new SimpleIntegerProperty();
         final BooleanProperty uploaded = new SimpleBooleanProperty();
         final BooleanProperty downloaded = new SimpleBooleanProperty();
 
