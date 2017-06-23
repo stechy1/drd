@@ -11,7 +11,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 /**
  * Třída představující brnění
  */
-public class Armor extends ItemBase {
+public final class Armor extends ItemBase {
 
     // region Variables
 

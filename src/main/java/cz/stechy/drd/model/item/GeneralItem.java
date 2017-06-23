@@ -5,7 +5,7 @@ import cz.stechy.drd.model.IClonable;
 /**
  * Třída reprezentující běžný předmět
  */
-public class GeneralItem extends ItemBase {
+public final class GeneralItem extends ItemBase {
 
     // region Constructors
 

@@ -12,7 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 /**
  * Třída představující zbraň pro boj na blízko
  */
-public class MeleWeapon extends WeaponBase {
+public final class MeleWeapon extends WeaponBase {
 
     // region Variables
 

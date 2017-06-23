@@ -10,6 +10,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -17,7 +19,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Třída představující jeden záznam o itemu v inventáři v daztabázi
  */
-public class InventoryRecord extends DatabaseItem {
+public final class InventoryRecord extends DatabaseItem {
 
     // region Variables
 
@@ -75,10 +77,10 @@ public class InventoryRecord extends DatabaseItem {
         super.update(other);
 
         InventoryRecord record = (InventoryRecord) other;
-        this.inventoryId.setValue(record.getInventoryId());
-        this.itemId.setValue(record.getItemId());
-        this.ammount.setValue(record.getAmmount());
-        this.slotId.setValue(record.getSlotId());
+        setInventoryId(record.getInventoryId());
+        setItemId(record.getItemId());
+        setAmmount(record.getAmmount());
+        setSlotId(record.getSlotId());
     }
 
     @Override
@@ -91,56 +93,69 @@ public class InventoryRecord extends DatabaseItem {
 
     // region Getters & Setters
 
-    public String getInventoryId() {
+    public final String getInventoryId() {
         return inventoryId.get();
     }
 
-    public StringProperty inventoryIdProperty() {
+    public final ReadOnlyStringProperty inventoryIdProperty() {
         return inventoryId;
     }
 
-    public void setInventoryId(String inventoryId) {
+    private void setInventoryId(String inventoryId) {
         this.inventoryId.set(inventoryId);
     }
 
-    public String getItemId() {
+    public final String getItemId() {
         return itemId.get();
     }
 
-    public StringProperty itemIdProperty() {
+    public final ReadOnlyStringProperty itemIdProperty() {
         return itemId;
     }
 
-    public void setItemId(String itemId) {
+    private void setItemId(String itemId) {
         this.itemId.set(itemId);
     }
 
-    public int getAmmount() {
+    public final int getAmmount() {
         return ammount.get();
     }
 
-    public IntegerProperty ammountProperty() {
+    public final ReadOnlyIntegerProperty ammountProperty() {
         return ammount;
     }
 
-    public void setAmmount(int ammount) {
+    private void setAmmount(int ammount) {
         this.ammount.set(ammount);
     }
 
-    public int getSlotId() {
+    public final int getSlotId() {
         return slotId.get();
     }
 
-    public IntegerProperty slotIdProperty() {
+    public final ReadOnlyIntegerProperty slotIdProperty() {
         return slotId;
     }
 
-    public void setSlotId(int slotId) {
+    private void setSlotId(int slotId) {
         this.slotId.set(slotId);
     }
 
-    public Metadata getMetadata() {
+    public final Metadata getMetadata() {
         return metadata;
+    }
+
+    // endregion
+
+    // region Public methods
+
+    /**
+     * Přidá/odebere požadované množství ze stacku
+     *
+     * @param ammount Množství, které se má přičíst/odečíst
+     */
+    public void addAmmount(int ammount) {
+        this.ammount.setValue(this.ammount.getValue() + ammount);
     }
 
     // endregion

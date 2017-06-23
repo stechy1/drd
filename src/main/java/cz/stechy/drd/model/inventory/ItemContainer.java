@@ -49,11 +49,7 @@ public abstract class ItemContainer {
 
     protected ItemContainer(int capacity) {
         this.capacity = capacity;
-    }
 
-    // endregion
-
-    {
         dragInformations.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 cancelSlotHighlight();
@@ -62,6 +58,8 @@ public abstract class ItemContainer {
             }
         });
     }
+
+    // endregion
 
     // region Private methods
 
@@ -123,11 +121,10 @@ public abstract class ItemContainer {
                     .select(record -> record.getSlotId() == destinationSlot.getId());
                 final InventoryRecord destinationInventoryRecordCopy = destinationInventoryRecord
                     .duplicate();
-                destinationInventoryRecordCopy
-                    .setAmmount(destinationInventoryRecord.getAmmount() + transferAmmount);
+                destinationInventoryRecordCopy.addAmmount(transferAmmount);
                 inventoryContent.update(destinationInventoryRecordCopy);
             } catch (DatabaseException e) {
-                InventoryRecord destinationInventoryRecord = new InventoryRecord.Builder()
+                final InventoryRecord destinationInventoryRecord = new InventoryRecord.Builder()
                     .inventoryId(inventoryContent.getInventory().getId())
                     .ammount(transferAmmount)
                     .itemId(sourceInventoryRecord.getItemId())
@@ -137,8 +134,8 @@ public abstract class ItemContainer {
             }
 
             if (sourceAmmountResult > 0) {
-                InventoryRecord recordCopy = sourceInventoryRecord.duplicate();
-                recordCopy.setAmmount(sourceAmmountResult);
+                final InventoryRecord recordCopy = sourceInventoryRecord.duplicate();
+                recordCopy.addAmmount(-transferAmmount);
                 sourceInventoryContent.update(recordCopy);
             } else {
                 sourceInventoryContent.delete(sourceInventoryRecord.getId());

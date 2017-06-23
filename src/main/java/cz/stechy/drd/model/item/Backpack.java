@@ -12,7 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 /**
  * Třída představující batoh
  */
-public class Backpack extends ItemBase {
+public final class Backpack extends ItemBase {
 
     // region Constants
 

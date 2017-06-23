@@ -12,7 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 /**
  * Třída představující střelné zbraně
  */
-public class RangedWeapon extends WeaponBase {
+public final class RangedWeapon extends WeaponBase {
 
     // region Variables
 
