@@ -4,7 +4,7 @@ import cz.stechy.drd.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.db.AdvancedDatabaseManager;
+import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.model.item.ItemBase;
@@ -69,7 +69,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
     // endregion
 
     private final ObservableList<GeneralEntry> generalItems = FXCollections.observableArrayList();
-    private final AdvancedDatabaseManager<GeneralItem> manager;
+    private final AdvancedDatabaseService<GeneralItem> manager;
     private final User user;
 
     private IntegerProperty selectedRowIndex;
@@ -81,7 +81,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
 
     public ShopGeneralController(Context context) {
         this.manager = context.getManager(Context.MANAGER_GENERAL);
-        this.user = context.getUserManager().getUser().get();
+        this.user = context.getUserService().getUser().get();
     }
 
     // endregion

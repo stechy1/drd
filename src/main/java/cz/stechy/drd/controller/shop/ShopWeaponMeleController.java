@@ -4,7 +4,7 @@ import cz.stechy.drd.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.db.AdvancedDatabaseManager;
+import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.MeleWeapon;
@@ -85,7 +85,7 @@ public class ShopWeaponMeleController implements Initializable, ShopItemControll
     // endregion
 
     private final ObservableList<MeleWeaponEntry> meleWeapons = FXCollections.observableArrayList();
-    private final AdvancedDatabaseManager<MeleWeapon> manager;
+    private final AdvancedDatabaseService<MeleWeapon> manager;
     private final Translator translator;
     private final User user;
 
@@ -100,7 +100,7 @@ public class ShopWeaponMeleController implements Initializable, ShopItemControll
         this.manager = context
             .getManager(Context.MANAGER_WEAPON_MELE);
         this.translator = context.getTranslator();
-        this.user = context.getUserManager().getUser().get();
+        this.user = context.getUserService().getUser().get();
     }
 
     // endregion

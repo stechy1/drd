@@ -1,6 +1,6 @@
 package cz.stechy.drd.model.persistent;
 
-import cz.stechy.drd.model.db.BaseDatabaseManager;
+import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.inventory.Inventory;
@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Třída představující obsah jednoho inventáře
  */
-public final class InventoryContent extends BaseDatabaseManager<InventoryRecord> {
+public final class InventoryContent extends BaseDatabaseService<InventoryRecord> {
 
     // region Constants
 

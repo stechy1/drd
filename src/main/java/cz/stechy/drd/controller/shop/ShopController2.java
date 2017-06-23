@@ -5,8 +5,8 @@ import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
-import cz.stechy.drd.model.persistent.HeroManager;
-import cz.stechy.drd.model.persistent.InventoryManager;
+import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.model.persistent.InventoryService;
 import cz.stechy.drd.model.shop.ShoppingCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.screens.BaseController;
@@ -55,7 +55,7 @@ public class ShopController2 extends BaseController implements Initializable {
     // endregion
 
     private final ObservableList<ItemResultEntry> items = FXCollections.observableArrayList();
-    private final HeroManager heroManager;
+    private final HeroService heroManager;
 
     private ShoppingCart shoppingCart;
 
@@ -102,7 +102,7 @@ public class ShopController2 extends BaseController implements Initializable {
             heroCopy.getMoney().subtract(shoppingCart.totalPrice);
             heroManager.update(heroCopy);
 
-            final InventoryManager inventoryManager = heroManager.getInventory();
+            final InventoryService inventoryManager = heroManager.getInventory();
             InventoryHelper.insertItemsToInventory(inventoryManager, items);
 
             heroManager.commit();

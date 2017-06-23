@@ -1,6 +1,6 @@
 package cz.stechy.drd.model.persistent;
 
-import cz.stechy.drd.model.db.BaseDatabaseManager;
+import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -21,12 +21,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Správce inventářů pro jednoho hrdinu
  */
-public final class InventoryManager extends BaseDatabaseManager<Inventory> {
+public final class InventoryService extends BaseDatabaseService<Inventory> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(InventoryManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(InventoryService.class);
 
     // Název tabulky
     private static final String TABLE = "inventory";
@@ -72,7 +72,7 @@ public final class InventoryManager extends BaseDatabaseManager<Inventory> {
      * @param db {@link Database}
      * @param hero {@link Hero} Hrdina, pro kterého se má vybrat inventář
      */
-    public InventoryManager(Database db, Hero hero) {
+    public InventoryService(Database db, Hero hero) {
         super(db);
 
         this.hero = hero;

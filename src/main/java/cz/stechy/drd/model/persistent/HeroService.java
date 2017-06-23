@@ -1,7 +1,7 @@
 package cz.stechy.drd.model.persistent;
 
 import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper;
-import cz.stechy.drd.model.db.BaseDatabaseManager;
+import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -19,7 +19,7 @@ import javafx.collections.ObservableList;
  * Správce postav
  * Umožňuje CRUD operace a mnohem víc
  */
-public final class HeroManager extends BaseDatabaseManager<Hero> {
+public final class HeroService extends BaseDatabaseService<Hero> {
 
     // region Constants
 
@@ -91,7 +91,7 @@ public final class HeroManager extends BaseDatabaseManager<Hero> {
     private final ObjectProperty<Hero> hero = new SimpleObjectProperty<>(
         new Hero.Builder().build());
     // Správce inventáře pro hrdinu
-    private InventoryManager inventoryManager;
+    private InventoryService inventoryManager;
 
     // endregion
 
@@ -102,7 +102,7 @@ public final class HeroManager extends BaseDatabaseManager<Hero> {
      *
      * @param db {@link Database} Databáze, která obsahuje data o hrdinech
      */
-    public HeroManager(Database db) {
+    public HeroService(Database db) {
         super(db);
     }
 
@@ -210,14 +210,14 @@ public final class HeroManager extends BaseDatabaseManager<Hero> {
         throws DatabaseException {
         insert(hero);
 
-        InventoryManager inventoryManager = getInventory(hero);
+        InventoryService inventoryManager = getInventory(hero);
         InventoryHelper.insertItemsToInventory(inventoryManager, items);
     }
 
     @Override
     public void insert(Hero hero) throws DatabaseException {
-        InventoryManager manager = getInventory();
-        manager.insert(InventoryManager.standartInventory(hero));
+        InventoryService manager = getInventory();
+        manager.insert(InventoryService.standartInventory(hero));
 
         super.insert(hero);
     }
@@ -231,9 +231,9 @@ public final class HeroManager extends BaseDatabaseManager<Hero> {
     /**
      * Vrátí inventář aktuálně otevřeného hrdiny
      *
-     * @return {@link InventoryManager}
+     * @return {@link InventoryService}
      */
-    public InventoryManager getInventory() {
+    public InventoryService getInventory() {
         return getInventory(hero.get());
     }
 
@@ -242,12 +242,12 @@ public final class HeroManager extends BaseDatabaseManager<Hero> {
      *
      * @return {@link InventoryContent}
      */
-    public InventoryManager getInventory(Hero hero) {
+    public InventoryService getInventory(Hero hero) {
         if (inventoryManager == null) {
-            inventoryManager = new InventoryManager(db, hero);
+            inventoryManager = new InventoryService(db, hero);
             inventoryManager.selectAll();
         } else if (inventoryManager.getHero() != hero) {
-            inventoryManager = new InventoryManager(db, hero);
+            inventoryManager = new InventoryService(db, hero);
             inventoryManager.selectAll();
         }
 

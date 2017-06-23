@@ -6,7 +6,7 @@ import javafx.collections.ObservableList;
 /**
  * Rozhraní pro všechny správce komunikující s databází
  */
-public interface DatabaseManager<T> {
+public interface DatabaseService<T> {
 
     void createTable() throws DatabaseException;
 

@@ -22,13 +22,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Vylepšený databázový manažer o možnost spojení s firebase
  */
-public abstract class AdvancedDatabaseManager<T extends OnlineItem> extends
-    BaseDatabaseManager<T> implements Firebase<T> {
+public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
+    BaseDatabaseService<T> implements Firebase<T> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(AdvancedDatabaseManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(AdvancedDatabaseService.class);
 
     // endregion
 
@@ -49,7 +49,7 @@ public abstract class AdvancedDatabaseManager<T extends OnlineItem> extends
      *
      * @param db {@link Database}
      */
-    protected AdvancedDatabaseManager(Database db) {
+    protected AdvancedDatabaseService(Database db) {
         super(db);
     }
 

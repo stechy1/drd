@@ -1,10 +1,10 @@
 package cz.stechy.drd.model.persistent;
 
 import com.google.firebase.database.DataSnapshot;
-import cz.stechy.drd.model.db.AdvancedDatabaseManager;
+import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
-import cz.stechy.drd.model.item.Armor;
+import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemRegistry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,33 +14,30 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Správce brnění
+ * Správce batohů a obecně předmětů, které obsahují inventář
  */
-public final class ArmorManager extends AdvancedDatabaseManager<Armor> {
+public final class BackpackService extends AdvancedDatabaseService<Backpack> {
 
     // region Constants
 
-    private static final String TABLE = "armor";
-    private static final String FIREBASE_CHILD_NAME = "items/armor";
+    // Název tabulky
+    private static final String TABLE = "backpack";
+    private static final String FIREBASE_CHILD_NAME = "items/backpack";
 
+    // Názvy sloupců v databázi
     private static final String COLUMN_ID = TABLE + "_id";
     private static final String COLUMN_NAME = TABLE + "_name";
     private static final String COLUMN_DESCRIPTION = TABLE + "_description";
     private static final String COLUMN_AUTHOR = TABLE + "_author";
-    private static final String COLUMN_DEFENCE = TABLE + "_defence";
-    private static final String COLUMN_MINIMUM_STRENGTH = TABLE + "_minimum_strength";
-    private static final String COLUMN_WEIGHT_A = TABLE + "_weight_a";
-    private static final String COLUMN_WEIGHT_B = TABLE + "_weight_b";
-    private static final String COLUMN_WEIGHT_C = TABLE + "_weight_c";
-    private static final String COLUMN_PRICE_A = TABLE + "_price_a";
-    private static final String COLUMN_PRICE_B = TABLE + "_price_b";
-    private static final String COLUMN_PRICE_C = TABLE + "_price_c";
+    private static final String COLUMN_WEIGHT = TABLE + "_weight";
+    private static final String COLUMN_PRICE = TABLE + "_price";
+    private static final String COLUMN_MAX_LOAD = TABLE + "_max_load";
+    private static final String COLUMN_SIZE = TABLE + "_size";
     private static final String COLUMN_IMAGE = TABLE + "_image";
     private static final String COLUMN_DOWNLOADED = TABLE + "_downloaded";
     private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
-        COLUMN_AUTHOR, COLUMN_DEFENCE, COLUMN_MINIMUM_STRENGTH, COLUMN_WEIGHT_A, COLUMN_WEIGHT_B,
-        COLUMN_WEIGHT_C, COLUMN_PRICE_A, COLUMN_PRICE_B, COLUMN_PRICE_C, COLUMN_IMAGE,
+        COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE,
         COLUMN_DOWNLOADED, COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
@@ -49,22 +46,18 @@ public final class ArmorManager extends AdvancedDatabaseManager<Armor> {
             + "%s VARCHAR(255) PRIMARY KEY NOT NULL UNIQUE,"    // id
             + "%s VARCHAR(255) NOT NULL,"                       // name
             + "%s VARCHAR(255),"                                // description
-            + "%s VARCHAR(255) NOT NULL,"                       // author
-            + "%s INT NOT NULL,"                                // defence number
-            + "%s INT NOT NULL,"                                // minimum strength
-            + "%s INT NOT NULL,"                                // weight A
-            + "%s INT NOT NULL,"                                // weight B
-            + "%s INT NOT NULL,"                                // weight C
-            + "%s INT NOT NULL,"                                // price A
-            + "%s INT NOT NULL,"                                // price B
-            + "%s INT NOT NULL,"                                // price C
+            + "%s VARCHAR(255) NOT NULL,"                       // autor
+            + "%s INT NOT NULL,"                                // weight
+            + "%s INT NOT NULL,"                                // price
+            + "%s INT NOT NULL,"                                // max load
+            + "%s INT NOT NULL,"                                // size
             + "%s BLOB,"                                        // image
             + "%s BOOLEAN NOT NULL,"                            // je položka stažená
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
-            + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR,
-        COLUMN_DEFENCE, COLUMN_MINIMUM_STRENGTH, COLUMN_WEIGHT_A, COLUMN_WEIGHT_B, COLUMN_WEIGHT_C,
-        COLUMN_PRICE_A, COLUMN_PRICE_B, COLUMN_PRICE_C, COLUMN_IMAGE, COLUMN_DOWNLOADED,
+            + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
+        COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE, COLUMN_DOWNLOADED,
         COLUMN_UPLOADED);
+
     // endregion
 
     // region Variables
@@ -75,12 +68,7 @@ public final class ArmorManager extends AdvancedDatabaseManager<Armor> {
 
     // region Constructors
 
-    /**
-     * Vytvoří nového správce brnění
-     *
-     * @param db {@link Database}
-     */
-    public ArmorManager(Database db) {
+    public BackpackService(Database db) {
         super(db);
 
         ItemRegistry.getINSTANCE().addColection(items);
@@ -91,39 +79,31 @@ public final class ArmorManager extends AdvancedDatabaseManager<Armor> {
     // region Private methods
 
     @Override
-    protected Armor parseDataSnapshot(DataSnapshot snapshot) {
-        return new Armor.Builder()
+    protected Backpack parseDataSnapshot(DataSnapshot snapshot) {
+        return new Backpack.Builder()
             .id(snapshot.child(COLUMN_ID).getValue(String.class))
             .name(snapshot.child(COLUMN_NAME).getValue(String.class))
             .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
             .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-            .defenceNumber(snapshot.child(COLUMN_DEFENCE).getValue(Integer.class))
-            .minimumStrength(snapshot.child(COLUMN_MINIMUM_STRENGTH).getValue(Integer.class))
-            .weightA(snapshot.child(COLUMN_WEIGHT_A).getValue(Integer.class))
-            .weightB(snapshot.child(COLUMN_WEIGHT_B).getValue(Integer.class))
-            .weightC(snapshot.child(COLUMN_WEIGHT_C).getValue(Integer.class))
-            .priceA(snapshot.child(COLUMN_PRICE_A).getValue(Integer.class))
-            .priceB(snapshot.child(COLUMN_PRICE_B).getValue(Integer.class))
-            .priceC(snapshot.child(COLUMN_PRICE_C).getValue(Integer.class))
+            .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
+            .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
+            .maxLoad(snapshot.child(COLUMN_MAX_LOAD).getValue(Integer.class))
+            .size(snapshot.child(COLUMN_SIZE).getValue(Integer.class))
             .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
             .build();
     }
 
     @Override
-    protected Armor parseResultSet(ResultSet resultSet) throws SQLException {
-        return new Armor.Builder()
+    protected Backpack parseResultSet(ResultSet resultSet) throws SQLException {
+        return new Backpack.Builder()
             .id(resultSet.getString(COLUMN_ID))
             .name(resultSet.getString(COLUMN_NAME))
             .description(resultSet.getString(COLUMN_DESCRIPTION))
             .author(resultSet.getString(COLUMN_AUTHOR))
-            .defenceNumber(resultSet.getInt(COLUMN_DEFENCE))
-            .minimumStrength(resultSet.getInt(COLUMN_MINIMUM_STRENGTH))
-            .weightA(resultSet.getInt(COLUMN_WEIGHT_A))
-            .weightB(resultSet.getInt(COLUMN_WEIGHT_B))
-            .weightC(resultSet.getInt(COLUMN_WEIGHT_C))
-            .priceA(resultSet.getInt(COLUMN_PRICE_A))
-            .priceB(resultSet.getInt(COLUMN_PRICE_B))
-            .priceC(resultSet.getInt(COLUMN_PRICE_C))
+            .weight(resultSet.getInt(COLUMN_WEIGHT))
+            .price(resultSet.getInt(COLUMN_PRICE))
+            .maxLoad(resultSet.getInt(COLUMN_MAX_LOAD))
+            .size(resultSet.getInt(COLUMN_SIZE))
             .image(readBlob(resultSet, COLUMN_IMAGE))
             .downloaded(resultSet.getBoolean(COLUMN_DOWNLOADED))
             .uploaded(resultSet.getBoolean(COLUMN_UPLOADED))
@@ -131,23 +111,19 @@ public final class ArmorManager extends AdvancedDatabaseManager<Armor> {
     }
 
     @Override
-    protected List<Object> itemToParams(Armor armor) {
+    protected List<Object> itemToParams(Backpack item) {
         return new ArrayList<>(Arrays.asList(
-            armor.getId(),
-            armor.getName(),
-            armor.getDescription(),
-            armor.getAuthor(),
-            armor.getDefenceNumber(),
-            armor.getMinimumStrength(),
-            armor.getWeightA(),
-            armor.getWeightB(),
-            armor.getWeightC(),
-            armor.getPriceA().getRaw(),
-            armor.getPriceB().getRaw(),
-            armor.getPriceC().getRaw(),
-            armor.getImage(),
-            armor.isDownloaded(),
-            armor.isUploaded()
+            item.getId(),
+            item.getName(),
+            item.getDescription(),
+            item.getAuthor(),
+            item.getWeight(),
+            item.getPrice().getRaw(),
+            item.getMaxLoad(),
+            item.getSize().ordinal(),
+            item.getImage(),
+            item.isDownloaded(),
+            item.isUploaded()
         ));
     }
 
@@ -187,7 +163,7 @@ public final class ArmorManager extends AdvancedDatabaseManager<Armor> {
     }
 
     @Override
-    protected Map<String, Object> toFirebaseMap(Armor item) {
+    protected Map<String, Object> toFirebaseMap(Backpack item) {
         final Map<String, Object> map = super.toFirebaseMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;

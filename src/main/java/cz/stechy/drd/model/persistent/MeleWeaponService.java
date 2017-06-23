@@ -1,11 +1,11 @@
 package cz.stechy.drd.model.persistent;
 
 import com.google.firebase.database.DataSnapshot;
-import cz.stechy.drd.model.db.AdvancedDatabaseManager;
+import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.item.ItemRegistry;
-import cz.stechy.drd.model.item.RangedWeapon;
+import cz.stechy.drd.model.item.MeleWeapon;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,15 +14,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Správce zbraní na dálku
+ * Správce zbraní na blízko
  */
-public final class RangedWeaponManager extends AdvancedDatabaseManager<RangedWeapon> {
+public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon> {
 
     // region Constants
 
     // Název tabulky
-    private static final String TABLE = "weapon_ranged";
-    private static final String FIREBASE_CHILD_NAME = "items/weapon/ranged";
+    private static final String TABLE = "weapon_mele";
+    private static final String FIREBASE_CHILD_NAME = "items/weapon/mele";
 
     // Názvy sloupců v databázi
     private static final String COLUMN_ID = TABLE + "_id";
@@ -33,17 +33,16 @@ public final class RangedWeaponManager extends AdvancedDatabaseManager<RangedWea
     private static final String COLUMN_PRICE = TABLE + "_price";
     private static final String COLUMN_STRENGTH = TABLE + "_strength";
     private static final String COLUMN_RAMPANCY = TABLE + "_rampancy";
+    private static final String COLUMN_DEFENCE = TABLE + "_defence";
+    private static final String COLUMN_CLASS = TABLE + "_class";
     private static final String COLUMN_TYPE = TABLE + "_type";
-    private static final String COLUMN_RANGE_LOW = TABLE + "_range_low";
-    private static final String COLUMN_RANGE_MEDIUM = TABLE + "_range_medium";
-    private static final String COLUMN_RANGE_LONG = TABLE + "_range_long";
     private static final String COLUMN_IMAGE = TABLE + "_image";
     private static final String COLUMN_DOWNLOADED = TABLE + "_downloaded";
     private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY,
-        COLUMN_TYPE, COLUMN_RANGE_LOW, COLUMN_RANGE_MEDIUM, COLUMN_RANGE_LONG, COLUMN_IMAGE,
-        COLUMN_DOWNLOADED, COLUMN_UPLOADED};
+        COLUMN_DEFENCE, COLUMN_CLASS, COLUMN_TYPE, COLUMN_IMAGE, COLUMN_DOWNLOADED,
+        COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -51,21 +50,20 @@ public final class RangedWeaponManager extends AdvancedDatabaseManager<RangedWea
             + "%s VARCHAR(255) PRIMARY KEY NOT NULL UNIQUE,"    // id
             + "%s VARCHAR(255) NOT NULL,"                       // name
             + "%s VARCHAR(255),"                                // description
-            + "%s VARCHAR(255) NOT NULL,"                       // author
+            + "%s VARCHAR(255) NOT NULL,"                       // autor
             + "%s INT NOT NULL,"                                // weight
             + "%s INT NOT NULL,"                                // price
             + "%s INT NOT NULL,"                                // strength
             + "%s INT NOT NULL,"                                // rampancy
+            + "%s INT NOT NULL,"                                // defence
+            + "%s INT NOT NULL,"                                // class
             + "%s INT NOT NULL,"                                // type
-            + "%s INT NOT NULL,"                                // range_low
-            + "%s INT NOT NULL,"                                // range_medium
-            + "%s INT NOT NULL,"                                // range_high
             + "%s BLOB,"                                        // image
             + "%s BOOLEAN NOT NULL,"                            // je položka stažená
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
-            + ");", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
-        COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY, COLUMN_TYPE, COLUMN_RANGE_LOW,
-        COLUMN_RANGE_MEDIUM, COLUMN_RANGE_LONG, COLUMN_IMAGE, COLUMN_DOWNLOADED, COLUMN_UPLOADED);
+            + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
+        COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY, COLUMN_DEFENCE, COLUMN_CLASS, COLUMN_TYPE,
+        COLUMN_IMAGE, COLUMN_DOWNLOADED, COLUMN_UPLOADED);
 
     // endregion
 
@@ -78,11 +76,11 @@ public final class RangedWeaponManager extends AdvancedDatabaseManager<RangedWea
     // region Constructors
 
     /**
-     * Vytvoří nového správce zbraní na dálku
+     * Vytvoří nového správce zbraní na blízko
      *
      * @param db {@link Database} Databáze, která obsahuje data o hrdinech
      */
-    public RangedWeaponManager(Database db) {
+    public MeleWeaponService(Database db) {
         super(db);
 
         ItemRegistry.getINSTANCE().addColection(items);
@@ -93,8 +91,8 @@ public final class RangedWeaponManager extends AdvancedDatabaseManager<RangedWea
     // region Private methods
 
     @Override
-    protected RangedWeapon parseDataSnapshot(DataSnapshot snapshot) {
-        return new RangedWeapon.Builder()
+    protected MeleWeapon parseDataSnapshot(DataSnapshot snapshot) {
+        return new MeleWeapon.Builder()
             .id(snapshot.child(COLUMN_ID).getValue(String.class))
             .name(snapshot.child(COLUMN_NAME).getValue(String.class))
             .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
@@ -103,17 +101,16 @@ public final class RangedWeaponManager extends AdvancedDatabaseManager<RangedWea
             .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
             .strength(snapshot.child(COLUMN_STRENGTH).getValue(Integer.class))
             .rampancy(snapshot.child(COLUMN_RAMPANCY).getValue(Integer.class))
+            .defence(snapshot.child(COLUMN_DEFENCE).getValue(Integer.class))
+            .weaponClass(snapshot.child(COLUMN_CLASS).getValue(Integer.class))
             .weaponType(snapshot.child(COLUMN_TYPE).getValue(Integer.class))
-            .rangeLow(snapshot.child(COLUMN_RANGE_LOW).getValue(Integer.class))
-            .rangeMedium(snapshot.child(COLUMN_RANGE_MEDIUM).getValue(Integer.class))
-            .rangeLong(snapshot.child(COLUMN_RANGE_LONG).getValue(Integer.class))
             .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
             .build();
     }
 
     @Override
-    protected RangedWeapon parseResultSet(ResultSet resultSet) throws SQLException {
-        return new RangedWeapon.Builder()
+    protected MeleWeapon parseResultSet(ResultSet resultSet) throws SQLException {
+        return new MeleWeapon.Builder()
             .id(resultSet.getString(COLUMN_ID))
             .name(resultSet.getString(COLUMN_NAME))
             .description(resultSet.getString(COLUMN_DESCRIPTION))
@@ -122,10 +119,9 @@ public final class RangedWeaponManager extends AdvancedDatabaseManager<RangedWea
             .price(resultSet.getInt(COLUMN_PRICE))
             .strength(resultSet.getInt(COLUMN_STRENGTH))
             .rampancy(resultSet.getInt(COLUMN_RAMPANCY))
+            .defence(resultSet.getInt(COLUMN_DEFENCE))
+            .weaponClass(resultSet.getInt(COLUMN_CLASS))
             .weaponType(resultSet.getInt(COLUMN_TYPE))
-            .rangeLow(resultSet.getInt(COLUMN_RANGE_LOW))
-            .rangeMedium(resultSet.getInt(COLUMN_RANGE_MEDIUM))
-            .rangeLong(resultSet.getInt(COLUMN_RANGE_LONG))
             .image(readBlob(resultSet, COLUMN_IMAGE))
             .downloaded(resultSet.getBoolean(COLUMN_DOWNLOADED))
             .uploaded(resultSet.getBoolean(COLUMN_UPLOADED))
@@ -133,7 +129,7 @@ public final class RangedWeaponManager extends AdvancedDatabaseManager<RangedWea
     }
 
     @Override
-    protected List<Object> itemToParams(RangedWeapon weapon) {
+    protected List<Object> itemToParams(MeleWeapon weapon) {
         return new ArrayList<>(Arrays.asList(
             weapon.getId(),
             weapon.getName(),
@@ -143,10 +139,9 @@ public final class RangedWeaponManager extends AdvancedDatabaseManager<RangedWea
             weapon.getPrice().getRaw(),
             weapon.getStrength(),
             weapon.getRampancy(),
+            weapon.getDefence(),
+            weapon.getWeaponClass().ordinal(),
             weapon.getWeaponType().ordinal(),
-            weapon.getRangeLow(),
-            weapon.getRangeMedium(),
-            weapon.getRangeLong(),
             weapon.getImage(),
             weapon.isDownloaded(),
             weapon.isUploaded()
@@ -189,7 +184,7 @@ public final class RangedWeaponManager extends AdvancedDatabaseManager<RangedWea
     }
 
     @Override
-    protected Map<String, Object> toFirebaseMap(RangedWeapon item) {
+    protected Map<String, Object> toFirebaseMap(MeleWeapon item) {
         final Map<String, Object> map = super.toFirebaseMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;

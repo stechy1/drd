@@ -8,7 +8,7 @@ import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
 import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.model.persistent.InventoryContent;
-import cz.stechy.drd.model.persistent.InventoryManager;
+import cz.stechy.drd.model.persistent.InventoryService;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -18,8 +18,8 @@ import java.util.Optional;
  */
 public class InventoryHelper {
 
-    public static void insertItemsToInventory(InventoryManager inventoryManager, List<? extends ItemRecord> itemsToInventory) throws DatabaseException {
-        final Inventory inventory = inventoryManager.select(InventoryManager.MAIN_INVENTORY_FILTER);
+    public static void insertItemsToInventory(InventoryService inventoryManager, List<? extends ItemRecord> itemsToInventory) throws DatabaseException {
+        final Inventory inventory = inventoryManager.select(InventoryService.MAIN_INVENTORY_FILTER);
         final InventoryContent inventoryContent = inventoryManager.getInventoryContent(inventory);
         itemsToInventory.stream()
             .filter(itemRecord -> itemRecord.getAmmount() > 0)

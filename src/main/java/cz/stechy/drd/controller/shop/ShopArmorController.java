@@ -4,7 +4,7 @@ import cz.stechy.drd.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.db.AdvancedDatabaseManager;
+import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.item.Armor;
@@ -78,7 +78,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
 
     private final ObservableList<ArmorEntry> armors = FXCollections.observableArrayList();
     private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
-    private final AdvancedDatabaseManager<Armor> manager;
+    private final AdvancedDatabaseService<Armor> manager;
     private final User user;
 
     private IntegerProperty selectedRowIndex;
@@ -90,7 +90,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
 
     public ShopArmorController(Context context) {
         this.manager = context.getManager(Context.MANAGER_ARMOR);
-        user = context.getUserManager().getUser().get();
+        user = context.getUserService().getUser().get();
     }
 
     // endregion

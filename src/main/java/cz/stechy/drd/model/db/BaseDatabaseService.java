@@ -26,12 +26,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Základní implementace správce
  */
-public abstract class BaseDatabaseManager<T extends DatabaseItem> implements DatabaseManager<T> {
+public abstract class BaseDatabaseService<T extends DatabaseItem> implements DatabaseService<T> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(BaseDatabaseManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(BaseDatabaseService.class);
 
     /**
      * Vygeneruje řetěžec obsahující názvy sloupců oddělené čárkou
@@ -89,7 +89,7 @@ public abstract class BaseDatabaseManager<T extends DatabaseItem> implements Dat
      *
      * @param db {@link Database}
      */
-    protected BaseDatabaseManager(Database db) {
+    protected BaseDatabaseService(Database db) {
         this.db = db;
         db.addCommitHandler(transactionHandler);
     }

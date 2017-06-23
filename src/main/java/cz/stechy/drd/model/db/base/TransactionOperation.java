@@ -1,6 +1,6 @@
 package cz.stechy.drd.model.db.base;
 
-import cz.stechy.drd.model.db.BaseDatabaseManager.UpdateListener;
+import cz.stechy.drd.model.db.BaseDatabaseService.UpdateListener;
 import javafx.collections.ObservableList;
 
 /**

@@ -6,7 +6,7 @@ import cz.stechy.drd.controller.dice.DiceHelper.DiceAddition;
 import cz.stechy.drd.controller.dice.DiceHelper.DiceType;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.model.persistent.HeroManager;
+import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
@@ -75,7 +75,7 @@ public class DiceController extends BaseController implements Initializable {
 
     public DiceController(Context context) {
         this.translator = context.getTranslator();
-        this.hero = ((HeroManager) context.getManager(Context.MANAGER_HERO)).getHero();
+        this.hero = ((HeroService) context.getManager(Context.MANAGER_HERO)).getHero();
     }
 
     // endregion

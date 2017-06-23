@@ -4,17 +4,17 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.FirebaseDatabase;
-import cz.stechy.drd.model.db.AdvancedDatabaseManager;
-import cz.stechy.drd.model.db.DatabaseManager;
+import cz.stechy.drd.model.db.AdvancedDatabaseService;
+import cz.stechy.drd.model.db.DatabaseService;
 import cz.stechy.drd.model.db.SQLite;
 import cz.stechy.drd.model.db.base.Database;
-import cz.stechy.drd.model.persistent.ArmorManager;
-import cz.stechy.drd.model.persistent.BackpackManager;
-import cz.stechy.drd.model.persistent.GeneralItemManager;
-import cz.stechy.drd.model.persistent.HeroManager;
-import cz.stechy.drd.model.persistent.MeleWeaponManager;
-import cz.stechy.drd.model.persistent.RangedWeaponManager;
-import cz.stechy.drd.model.persistent.UserManager;
+import cz.stechy.drd.model.persistent.ArmorService;
+import cz.stechy.drd.model.persistent.BackpackService;
+import cz.stechy.drd.model.persistent.GeneralItemService;
+import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.model.persistent.MeleWeaponService;
+import cz.stechy.drd.model.persistent.RangedWeaponService;
+import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -67,9 +67,9 @@ public class Context {
     // Pracovní adresář, kam můžu ukládat potřebné soubory
     private final File appDirectory;
     // Mapa obsahující všechny manažery
-    private final Map<String, DatabaseManager> managerMap = new HashMap<>(MANAGERS_COUNT);
+    private final Map<String, DatabaseService> managerMap = new HashMap<>(MANAGERS_COUNT);
     // Jediný manažer, který nebude v mapě
-    private final UserManager userManager;
+    private final UserService userService;
     private final ResourceBundle resources;
 
     // Překladač aplikace
@@ -96,7 +96,7 @@ public class Context {
         database = new SQLite(appDirectory.getPath() + SEPARATOR + databaseName);
 
         initFirebase();
-        userManager = new UserManager(FirebaseDatabase.getInstance());
+        userService = new UserService(FirebaseDatabase.getInstance());
         initManagers();
     }
 
@@ -126,12 +126,12 @@ public class Context {
      * Inicializace všech správců předmětů
      */
     private void initManagers() {
-        managerMap.put(MANAGER_HERO, initManager(HeroManager.class));
-        managerMap.put(MANAGER_WEAPON_MELE, initManager(MeleWeaponManager.class));
-        managerMap.put(MANAGER_WEAPON_RANGED, initManager(RangedWeaponManager.class));
-        managerMap.put(MANAGER_ARMOR, initManager(ArmorManager.class));
-        managerMap.put(MANAGER_GENERAL, initManager(GeneralItemManager.class));
-        managerMap.put(MANAGER_BACKPACK, initManager(BackpackManager.class));
+        managerMap.put(MANAGER_HERO, initManager(HeroService.class));
+        managerMap.put(MANAGER_WEAPON_MELE, initManager(MeleWeaponService.class));
+        managerMap.put(MANAGER_WEAPON_RANGED, initManager(RangedWeaponService.class));
+        managerMap.put(MANAGER_ARMOR, initManager(ArmorService.class));
+        managerMap.put(MANAGER_GENERAL, initManager(GeneralItemService.class));
+        managerMap.put(MANAGER_BACKPACK, initManager(BackpackService.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -140,12 +140,12 @@ public class Context {
     }
 
     @SuppressWarnings("unchecked")
-    private DatabaseManager initManager(Class clazz) {
+    private DatabaseService initManager(Class clazz) {
         try {
-            DatabaseManager manager = (DatabaseManager) clazz.getConstructor(Database.class)
+            DatabaseService manager = (DatabaseService) clazz.getConstructor(Database.class)
                 .newInstance(database);
-            if (manager instanceof AdvancedDatabaseManager) {
-                ((AdvancedDatabaseManager) manager)
+            if (manager instanceof AdvancedDatabaseService) {
+                ((AdvancedDatabaseService) manager)
                     .setFirebaseDatabase(FirebaseDatabase.getInstance());
             }
             manager.createTable();
@@ -171,7 +171,7 @@ public class Context {
         return translator;
     }
 
-    public UserManager getUserManager() {
-        return userManager;
+    public UserService getUserService() {
+        return userService;
     }
 }

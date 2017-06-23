@@ -21,12 +21,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Správce užvatele
  */
-public final class UserManager implements Firebase<User> {
+public final class UserService implements Firebase<User> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(UserManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     private static final String FIREBASE_CHILD_NAME = "users";
 
@@ -54,7 +54,7 @@ public final class UserManager implements Firebase<User> {
      *
      * @param firebase {@link FirebaseDatabase}
      */
-    public UserManager(FirebaseDatabase firebase) {
+    public UserService(FirebaseDatabase firebase) {
         firebaseReference = firebase.getReference(FIREBASE_CHILD_NAME);
         firebaseReference.addChildEventListener(childEventListener);
     }

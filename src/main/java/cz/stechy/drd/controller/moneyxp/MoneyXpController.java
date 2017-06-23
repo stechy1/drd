@@ -5,7 +5,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.model.persistent.HeroManager;
+import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.widget.LabeledProgressBar;
 import cz.stechy.drd.widget.MoneyLabel;
@@ -63,7 +63,7 @@ public class MoneyXpController extends BaseController implements Initializable {
     // region Constructors
 
     public MoneyXpController(Context context) {
-        this.hero = ((HeroManager)context.getManager(Context.MANAGER_HERO)).getHero().get();
+        this.hero = ((HeroService)context.getManager(Context.MANAGER_HERO)).getHero().get();
 
         goldValue.actValueProperty().bindBidirectional(moneyModel.gold);
         silverValue.actValueProperty().bindBidirectional(moneyModel.silver);

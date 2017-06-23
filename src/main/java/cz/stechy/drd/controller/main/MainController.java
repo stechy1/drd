@@ -8,8 +8,8 @@ import cz.stechy.drd.controller.moneyxp.MoneyXpController;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.model.persistent.HeroManager;
-import cz.stechy.drd.model.persistent.UserManager;
+import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -63,9 +63,9 @@ public class MainController extends BaseController implements Initializable {
     // endregion
 
     private final ObjectProperty<Hero> hero;
-    private final HeroManager heroManager;
+    private final HeroService heroManager;
     private final Translator translator;
-    private final UserManager userManager;
+    private final UserService userService;
 
     private MainScreen[] controllers;
     private String title;
@@ -76,7 +76,7 @@ public class MainController extends BaseController implements Initializable {
     public MainController(Context context) {
         heroManager = context.getManager(Context.MANAGER_HERO);
         translator = context.getTranslator();
-        userManager = context.getUserManager();
+        userService = context.getUserService();
         hero = heroManager.getHero();
     }
 
@@ -114,7 +114,7 @@ public class MainController extends BaseController implements Initializable {
                 }
                 closeChildScreens();
                 Hero hero = HeroCreatorHelper.fromBundle(bundle);
-                hero.setAuthor(userManager.getUser().getName());
+                hero.setAuthor(userService.getUser().getName());
                 ObservableList<HeroCreatorHelper.ItemEntry> itemsToInventory = bundle
                     .get(HeroCreatorHelper.INVENTORY);
                 try {

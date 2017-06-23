@@ -11,8 +11,8 @@ import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.inventory.container.FlowItemContainer;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.persistent.HeroManager;
-import cz.stechy.drd.model.persistent.InventoryManager;
+import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.model.persistent.InventoryService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import javafx.fxml.FXML;
@@ -51,7 +51,7 @@ public class BackpackController extends BaseController {
 
     // endregion
 
-    private final HeroManager heroManager;
+    private final HeroService heroManager;
     private ItemContainer itemContainer;
     // Velikost inventáře = počet slotů v inventáři
     private int backpackSize;
@@ -96,9 +96,9 @@ public class BackpackController extends BaseController {
         itemContainer.setItemClickListener(itemClickListener);
         setScreenSize(WIDTH, BackpackController.computeHeight(backpackSize));
 
-        final InventoryManager inventoryManager = heroManager.getInventory();
+        final InventoryService inventoryManager = heroManager.getInventory();
         try {
-            final Inventory backpackInventory = inventoryManager.select(InventoryManager.ID_FILTER(inventoryId));
+            final Inventory backpackInventory = inventoryManager.select(InventoryService.ID_FILTER(inventoryId));
             itemContainer.setInventoryManager(inventoryManager, backpackInventory);
         } catch (DatabaseException e) {
             itemContainer.clear();

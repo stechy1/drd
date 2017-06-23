@@ -1,6 +1,6 @@
 package cz.stechy.drd.model.inventory;
 
-import cz.stechy.drd.model.db.BaseDatabaseManager.UpdateListener;
+import cz.stechy.drd.model.db.BaseDatabaseService.UpdateListener;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.ItemSlot.ClickListener;
@@ -9,7 +9,7 @@ import cz.stechy.drd.model.inventory.ItemSlot.HighlightState;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
 import cz.stechy.drd.model.persistent.InventoryContent;
-import cz.stechy.drd.model.persistent.InventoryManager;
+import cz.stechy.drd.model.persistent.InventoryService;
 import java.util.Optional;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -35,7 +35,7 @@ public abstract class ItemContainer {
     // Globální informace obsahující přesouvaný item
     private static final ObjectProperty<DragInformations> dragInformations = new SimpleObjectProperty<>();
 
-    private InventoryManager inventoryManager;
+    private InventoryService inventoryManager;
     private InventoryContent inventoryContent;
     protected final int capacity;
     private ObservableList<InventoryRecord> oldRecords;
@@ -223,7 +223,7 @@ public abstract class ItemContainer {
 
     // region Getters & Setters
 
-    public void setInventoryManager(InventoryManager inventoryManager, Inventory inventory)
+    public void setInventoryManager(InventoryService inventoryManager, Inventory inventory)
         throws DatabaseException {
         this.inventoryManager = inventoryManager;
         initInventoryContent(inventoryManager.getInventoryContent(inventory));

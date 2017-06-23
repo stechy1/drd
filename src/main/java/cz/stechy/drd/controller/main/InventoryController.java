@@ -15,9 +15,9 @@ import cz.stechy.drd.model.inventory.container.EquipItemContainer;
 import cz.stechy.drd.model.inventory.container.GridItemContainer;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.persistent.HeroManager;
+import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.InventoryContent;
-import cz.stechy.drd.model.persistent.InventoryManager;
+import cz.stechy.drd.model.persistent.InventoryService;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -48,7 +48,7 @@ public class InventoryController implements Initializable, MainScreen {
     // Inventář s výbavou hrdiny
     private final ItemContainer equipItemContainer = new EquipItemContainer();
 
-    private HeroManager heroManager;
+    private HeroService heroManager;
     private ObjectProperty<Hero> hero;
     private IScreenSupport screenSupport;
 
@@ -90,16 +90,16 @@ public class InventoryController implements Initializable, MainScreen {
 
     private final ChangeListener<? super Hero> heroChangeListener = (observable, oldValue, newValue) -> {
         // Získám správce inventáře podle hrdiny
-        final InventoryManager inventoryManager = heroManager.getInventory();
+        final InventoryService inventoryManager = heroManager.getInventory();
         InventoryContent.clearWeight();
         try {
             // Získám záznam hlavního inventáře
-            final Inventory mainInventory = inventoryManager.select(InventoryManager.MAIN_INVENTORY_FILTER);
+            final Inventory mainInventory = inventoryManager.select(InventoryService.MAIN_INVENTORY_FILTER);
             mainItemContainer.setInventoryManager(inventoryManager, mainInventory);
             // Inicializace inventáře výbavy hrdiny
             Inventory equipInventory = null;
             try {
-                equipInventory = inventoryManager.select(InventoryManager.EQUIP_INVENTORY_FILTER);
+                equipInventory = inventoryManager.select(InventoryService.EQUIP_INVENTORY_FILTER);
             } catch (DatabaseException e) {
                 // Ještě nebyl vytvořen záznam o equip inventáři pro danou postavu
                 equipInventory = new Inventory.Builder()

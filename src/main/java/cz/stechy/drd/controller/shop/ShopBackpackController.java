@@ -4,7 +4,7 @@ import cz.stechy.drd.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.db.AdvancedDatabaseManager;
+import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
@@ -71,7 +71,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
     // endregion
 
     private final ObservableList<BackpackEntry> backpacks = FXCollections.observableArrayList();
-    private final AdvancedDatabaseManager<Backpack> manager;
+    private final AdvancedDatabaseService<Backpack> manager;
     private final User user;
 
     private IntegerProperty selectedRowIndex;
@@ -83,7 +83,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     public ShopBackpackController(Context context) {
         this.manager = context.getManager(Context.MANAGER_BACKPACK);
-        this.user = context.getUserManager().getUser().get();
+        this.user = context.getUserService().getUser().get();
     }
 
     // endregion

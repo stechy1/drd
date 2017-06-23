@@ -2,8 +2,8 @@ package cz.stechy.drd.controller.user;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
-import cz.stechy.drd.model.persistent.UserManager;
-import cz.stechy.drd.model.persistent.UserManager.UserException;
+import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.persistent.UserService.UserException;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Notification.Length;
 import java.net.URL;
@@ -42,7 +42,7 @@ public class RegisterController extends BaseController implements Initializable 
 
     // endregion
 
-    private final UserManager userManager;
+    private final UserService userService;
     private final LoginModel loginModel = new LoginModel();
 
     private String title;
@@ -53,7 +53,7 @@ public class RegisterController extends BaseController implements Initializable 
     // region Constructors
 
     public RegisterController(Context context) {
-        userManager = context.getUserManager();
+        userService = context.getUserService();
     }
 
     // endregion
@@ -78,7 +78,7 @@ public class RegisterController extends BaseController implements Initializable 
     @FXML
     private void handleRegister(ActionEvent actionEvent) {
         try {
-            userManager.register(loginModel.login.getValue(), loginModel.password.getValue());
+            userService.register(loginModel.login.getValue(), loginModel.password.getValue());
             setResult(RESULT_SUCCESS);
             finish();
         } catch (UserException e) {

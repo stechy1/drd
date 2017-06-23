@@ -4,7 +4,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.persistent.HeroManager;
+import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.shop.OnDeleteItem;
 import cz.stechy.drd.model.shop.OnDownloadItem;
 import cz.stechy.drd.model.shop.OnUploadItem;
@@ -115,8 +115,8 @@ public class ShopController1 extends BaseController implements Initializable {
     public ShopController1(Context context) {
         this.translator = context.getTranslator();
         this.translatedItemType.addAll(translator.getShopTypeList());
-        this.user = context.getUserManager().getUser();
-        this.hero = ((HeroManager) context.getManager(Context.MANAGER_HERO)).getHero();
+        this.user = context.getUserService().getUser();
+        this.hero = ((HeroService) context.getManager(Context.MANAGER_HERO)).getHero();
         this.shoppingCart = new ShoppingCart(hero.get());
     }
 

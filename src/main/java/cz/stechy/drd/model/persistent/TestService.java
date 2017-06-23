@@ -1,28 +1,23 @@
 package cz.stechy.drd.model.persistent;
 
-import com.google.firebase.database.DataSnapshot;
-import cz.stechy.drd.model.db.AdvancedDatabaseManager;
+import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
-import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.item.Test;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
-/**
- * Správce batohů a obecně předmětů, které obsahují inventář
- */
-public final class BackpackManager extends AdvancedDatabaseManager<Backpack> {
+
+public class TestService extends BaseDatabaseService<Test> {
 
     // region Constants
 
     // Název tabulky
-    private static final String TABLE = "backpack";
-    private static final String FIREBASE_CHILD_NAME = "items/backpack";
+    private static final String TABLE = "TestTable";
 
     // Názvy sloupců v databázi
     private static final String COLUMN_ID = TABLE + "_id";
@@ -31,14 +26,15 @@ public final class BackpackManager extends AdvancedDatabaseManager<Backpack> {
     private static final String COLUMN_AUTHOR = TABLE + "_author";
     private static final String COLUMN_WEIGHT = TABLE + "_weight";
     private static final String COLUMN_PRICE = TABLE + "_price";
-    private static final String COLUMN_MAX_LOAD = TABLE + "_max_load";
-    private static final String COLUMN_SIZE = TABLE + "_size";
+    private static final String COLUMN_ID2 = TABLE + "_id2";
+    private static final String COLUMN_NAME2 = TABLE + "_name2";
+    private static final String COLUMN_DOWNLOADED2 = TABLE + "_downloaded2";
+    private static final String COLUMN_BLOB_TYPE2 = TABLE + "_blob_type2";
+
     private static final String COLUMN_IMAGE = TABLE + "_image";
-    private static final String COLUMN_DOWNLOADED = TABLE + "_downloaded";
-    private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
-        COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE,
-        COLUMN_DOWNLOADED, COLUMN_UPLOADED};
+        COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_ID2, COLUMN_NAME2, COLUMN_DOWNLOADED2,
+        COLUMN_BLOB_TYPE2, COLUMN_IMAGE};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -49,14 +45,14 @@ public final class BackpackManager extends AdvancedDatabaseManager<Backpack> {
             + "%s VARCHAR(255) NOT NULL,"                       // autor
             + "%s INT NOT NULL,"                                // weight
             + "%s INT NOT NULL,"                                // price
-            + "%s INT NOT NULL,"                                // max load
-            + "%s INT NOT NULL,"                                // size
+            + "%s INT NOT NULL,"
+            + "%s VARCHAR(255) NOT NULL,"
+            + "%s BOOLEAN NOT NULL,"
+            + "%s BLOB,"
             + "%s BLOB,"                                        // image
-            + "%s BOOLEAN NOT NULL,"                            // je položka stažená
-            + "%s BOOLEAN NOT NULL"                             // je položka nahraná
             + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
-        COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE, COLUMN_DOWNLOADED,
-        COLUMN_UPLOADED);
+        COLUMN_PRICE, COLUMN_ID2, COLUMN_NAME2, COLUMN_DOWNLOADED2, COLUMN_BLOB_TYPE2,
+        COLUMN_IMAGE);
 
     // endregion
 
@@ -68,7 +64,7 @@ public final class BackpackManager extends AdvancedDatabaseManager<Backpack> {
 
     // region Constructors
 
-    public BackpackManager(Database db) {
+    public TestService(Database db) {
         super(db);
 
         ItemRegistry.getINSTANCE().addColection(items);
@@ -79,39 +75,25 @@ public final class BackpackManager extends AdvancedDatabaseManager<Backpack> {
     // region Private methods
 
     @Override
-    protected Backpack parseDataSnapshot(DataSnapshot snapshot) {
-        return new Backpack.Builder()
-            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-            .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
-            .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
-            .maxLoad(snapshot.child(COLUMN_MAX_LOAD).getValue(Integer.class))
-            .size(snapshot.child(COLUMN_SIZE).getValue(Integer.class))
-            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-            .build();
-    }
-
-    @Override
-    protected Backpack parseResultSet(ResultSet resultSet) throws SQLException {
-        return new Backpack.Builder()
+    protected Test parseResultSet(ResultSet resultSet) throws SQLException {
+        return new Test.Builder()
             .id(resultSet.getString(COLUMN_ID))
             .name(resultSet.getString(COLUMN_NAME))
             .description(resultSet.getString(COLUMN_DESCRIPTION))
             .author(resultSet.getString(COLUMN_AUTHOR))
             .weight(resultSet.getInt(COLUMN_WEIGHT))
             .price(resultSet.getInt(COLUMN_PRICE))
-            .maxLoad(resultSet.getInt(COLUMN_MAX_LOAD))
-            .size(resultSet.getInt(COLUMN_SIZE))
+            .id2(resultSet.getInt(COLUMN_ID2))
+            .name2(resultSet.getString(COLUMN_NAME2))
+            .downloaded2(resultSet.getBoolean(COLUMN_DOWNLOADED2))
+            .blob_type2(readBlob(resultSet, COLUMN_BLOB_TYPE2))
+
             .image(readBlob(resultSet, COLUMN_IMAGE))
-            .downloaded(resultSet.getBoolean(COLUMN_DOWNLOADED))
-            .uploaded(resultSet.getBoolean(COLUMN_UPLOADED))
             .build();
     }
 
     @Override
-    protected List<Object> itemToParams(Backpack item) {
+    protected List<Object> itemToParams(Test item) {
         return new ArrayList<>(Arrays.asList(
             item.getId(),
             item.getName(),
@@ -119,22 +101,18 @@ public final class BackpackManager extends AdvancedDatabaseManager<Backpack> {
             item.getAuthor(),
             item.getWeight(),
             item.getPrice().getRaw(),
-            item.getMaxLoad(),
-            item.getSize().ordinal(),
-            item.getImage(),
-            item.isDownloaded(),
-            item.isUploaded()
+            item.getId2(),
+            item.getName2(),
+            item.getDownloaded2(),
+            item.getBlob_Type2(),
+
+            item.getImage()
         ));
     }
 
     @Override
     protected String getTable() {
         return TABLE;
-    }
-
-    @Override
-    protected String getFirebaseChildName() {
-        return FIREBASE_CHILD_NAME;
     }
 
     @Override
@@ -160,13 +138,6 @@ public final class BackpackManager extends AdvancedDatabaseManager<Backpack> {
     @Override
     protected String getInitializationQuery() {
         return QUERY_CREATE;
-    }
-
-    @Override
-    protected Map<String, Object> toFirebaseMap(Backpack item) {
-        final Map<String, Object> map = super.toFirebaseMap(item);
-        map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
-        return map;
     }
 
     // endregion
