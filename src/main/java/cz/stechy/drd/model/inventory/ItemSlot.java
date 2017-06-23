@@ -32,6 +32,9 @@ public class ItemSlot {
     private static final int LABEL_SIZE = 10;
     private static final int LABEL_AMMOUNT_HEGHT = 15;
 
+    private static final String STYLE_CLASS_ACCEPTING = "accepting";
+    private static final String STYLE_CLASS_DECLINE = "decline";
+
     // endregion
 
     // region Variables
@@ -55,15 +58,6 @@ public class ItemSlot {
     // region Constructors
 
     /**
-     * Inicializuje nový slot, ve kterém nebudou fungovat drag&drop operace
-     *
-     * @param id Id slotu
-     */
-    public ItemSlot(int id) {
-        this(id, null);
-    }
-
-    /**
      * Inicializuje nový slot
      *
      * @param id Id slotu
@@ -72,6 +66,8 @@ public class ItemSlot {
     public ItemSlot(int id, DragDropHandlers dragDropHandlers) {
         this.id = id;
         this.dragDropHandlers = dragDropHandlers;
+
+        init();
     }
 
     // endregion
@@ -83,6 +79,7 @@ public class ItemSlot {
             event.consume();
             return;
         }
+
         final Dragboard db = imgItem.startDragAndDrop(TransferMode.ANY);
         final ClipboardContent content = new ClipboardContent();
         final DragItemContainer dragItemContainer = new DragItemContainer(
@@ -138,7 +135,9 @@ public class ItemSlot {
 
     // endregion
 
-    {
+    // region Private methods
+
+    private void init() {
         container.setPrefWidth(SLOT_SIZE);
         container.setPrefHeight(SLOT_SIZE);
 
@@ -166,8 +165,6 @@ public class ItemSlot {
         container.setOnDragOver(onDragOver);
         container.setOnDragDropped(onDragDropped);
     }
-
-    // region Private methods
 
     private void setImage(byte[] image) {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(image);
@@ -264,16 +261,16 @@ public class ItemSlot {
     public void highlight(HighlightState state) {
         switch (state) {
             case ACCEPT:
-                container.getStyleClass().add("accepting");
-                container.getStyleClass().remove("decline");
+                container.getStyleClass().add(STYLE_CLASS_ACCEPTING);
+                container.getStyleClass().remove(STYLE_CLASS_DECLINE);
                 break;
             case DECLINE:
-                container.getStyleClass().add("decline");
-                container.getStyleClass().remove("accepting");
+                container.getStyleClass().add(STYLE_CLASS_DECLINE);
+                container.getStyleClass().remove(STYLE_CLASS_ACCEPTING);
                 break;
             default:
-                container.getStyleClass().remove("accepting");
-                container.getStyleClass().remove("decline");
+                container.getStyleClass().remove(STYLE_CLASS_ACCEPTING);
+                container.getStyleClass().remove(STYLE_CLASS_DECLINE);
                 break;
         }
     }
