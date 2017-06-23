@@ -19,7 +19,7 @@ import javafx.collections.ObservableList;
  * Správce postav
  * Umožňuje CRUD operace a mnohem víc
  */
-public class HeroManager extends BaseDatabaseManager<Hero> {
+public final class HeroManager extends BaseDatabaseManager<Hero> {
 
     // region Constants
 

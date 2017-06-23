@@ -19,9 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Správce uivatele
+ * Správce užvatele
  */
-public class UserManager implements Firebase<User> {
+public final class UserManager implements Firebase<User> {
 
     // region Constants
 

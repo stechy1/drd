@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Správce brnění
  */
-public class ArmorManager extends AdvancedDatabaseManager<Armor> {
+public final class ArmorManager extends AdvancedDatabaseManager<Armor> {
 
     // region Constants
 

@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Správce zbraní na dálku
  */
-public class RangedWeaponManager extends AdvancedDatabaseManager<RangedWeapon> {
+public final class RangedWeaponManager extends AdvancedDatabaseManager<RangedWeapon> {
 
     // region Constants
 

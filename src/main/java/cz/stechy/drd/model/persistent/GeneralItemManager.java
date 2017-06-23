@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Správce standartních itemů
  */
-public class GeneralItemManager extends AdvancedDatabaseManager<GeneralItem> {
+public final class GeneralItemManager extends AdvancedDatabaseManager<GeneralItem> {
 
     // region Constants
 

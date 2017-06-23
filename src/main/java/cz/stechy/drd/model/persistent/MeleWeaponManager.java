@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Správce zbraní na blízko
  */
-public class MeleWeaponManager extends AdvancedDatabaseManager<MeleWeapon> {
+public final class MeleWeaponManager extends AdvancedDatabaseManager<MeleWeapon> {
 
     // region Constants
 

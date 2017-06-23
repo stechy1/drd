@@ -13,8 +13,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-
-public class BackpackManager extends AdvancedDatabaseManager<Backpack> {
+/**
+ * Správce batohů a obecně předmětů, které obsahují inventář
+ */
+public final class BackpackManager extends AdvancedDatabaseManager<Backpack> {
 
     // region Constants
 
