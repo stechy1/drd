@@ -2,6 +2,7 @@ package cz.stechy.drd.util;
 
 import java.util.Map.Entry;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
@@ -15,6 +16,14 @@ import javafx.collections.SetChangeListener;
 @SuppressWarnings("unused")
 public final class ObservableMergers {
 
+    /**
+     * Pomocná knihovní funkce pro automatickou úpravu výsledné kolekce, která pozoruje více
+     * zdrojových kolekcí.
+     *
+     * @param into Výsledná kolekce, která obsahuje prvky ze zdrojových kolekcí
+     * @param lists Pole zdrojových kolekcí
+     * @param <T> Typ, který používají jak zdrojové tak cílové kolekce
+     */
     @SafeVarargs
     public static <T> void mergeList(ObservableList<T> into, ObservableList<T>... lists) {
         final ObservableList<T> list = into;
@@ -22,17 +31,23 @@ public final class ObservableMergers {
             list.addAll(l);
             l.addListener((ListChangeListener<T>) c -> {
                 while (c.next()) {
-                    if (c.wasAdded()) {
-                        list.addAll(c.getAddedSubList());
-                    }
-                    if (c.wasRemoved()) {
-                        list.removeAll(c.getRemoved());
-                    }
+                    list.addAll(c.getAddedSubList());
+                    list.removeAll(c.getRemoved());
                 }
             });
         }
     }
 
+    /**
+     * Pomocná knihovní funkce pro automatickou úpravu výsledné kolekce, která pozoruje více
+     * zdrojových kolekcí.
+     *
+     * @param mapper Funkce, která dokáže přemapovat jeden datový typ na druhý
+     * @param into Výsledná kolekce, která obsahuje prvky ze zdrojových kolekcí
+     * @param lists Pole zdrojových kolekcí
+     * @param <T> Typ, který používá výsledná kolekce
+     * @param <E> Typ, který používají zdrojové kolekce
+     */
     @SafeVarargs
     public static <T, E> void mergeList(Function<? super E, ? extends T> mapper,
         ObservableList<T> into, ObservableList<E>... lists) {
@@ -43,22 +58,21 @@ public final class ObservableMergers {
             }
             l.addListener((ListChangeListener<E>) c -> {
                 while (c.next()) {
-                    if (c.wasAdded()) {
-                        for (E item : c.getAddedSubList()) {
-                            list.add(mapper.apply(item));
-                        }
-                    }
-
-                    if (c.wasRemoved()) {
-                        for (E item : c.getRemoved()) {
-                            list.remove(mapper.apply(item));
-                        }
-                    }
+                    list.addAll(c.getAddedSubList().stream().map(mapper).collect(Collectors.toList()));
+                    list.removeAll(c.getRemoved().stream().map(mapper).collect(Collectors.toList()));
                 }
             });
         }
     }
 
+    /**
+     * Pomocná knihovní funkce pro automatickou úpravu výsledné kolekce, která pozoruje více
+     * zdrojových kolekcí.
+     *
+     * @param into Výsledná kolekce, která obsahuje prvky ze zdrojových kolekcí
+     * @param sets Pole zdrojových kolekcí
+     * @param <T> Typ, který používají jak zdrojové tak cílové kolekce
+     */
     @SafeVarargs
     public static <T> void mergeSet(ObservableSet<T> into, ObservableSet<T>... sets) {
         final ObservableSet<T> set = into;
@@ -75,6 +89,16 @@ public final class ObservableMergers {
         }
     }
 
+    /**
+     * Pomocná knihovní funkce pro automatickou úpravu výsledné kolekce, která pozoruje více
+     * zdrojových kolekcí.
+     *
+     * @param mapper Funkce, která dokáže přemapovat jeden datový typ na druhý
+     * @param into Výsledná kolekce, která obsahuje prvky ze zdrojových kolekcí
+     * @param sets Pole zdrojových kolekcí
+     * @param <T> Typ, který používá výsledná kolekce
+     * @param <E> Typ, který používají zdrojové kolekce
+     */
     @SafeVarargs
     public static <T, E> void mergeSet(Function<? super E, ? extends T> mapper,
         ObservableSet<T> into, ObservableSet<E>... sets) {
@@ -94,6 +118,15 @@ public final class ObservableMergers {
         }
     }
 
+    /**
+     * Pomocná knihovní funkce pro automatickou úpravu výsledné mapy, která pozoruje více
+     * zdrojových map.
+     *
+     * @param into Výsledná mapa, která obsahuje prvky ze zdrojových map
+     * @param maps Pole zdrojových map
+     * @param <K> Typ klíče, který používají zdrojové i cílové mapy
+     * @param <V> Typ hodnoty, který používají jak zdrojové tak cílové mapy
+     */
     @SafeVarargs
     public static <K, V> void mergeMap(ObservableMap<K, V> into,
         ObservableMap<K, V>... maps) {
@@ -111,6 +144,17 @@ public final class ObservableMergers {
         }
     }
 
+    /**
+     * Pomocná knihovní funkce pro automatickou úpravu výsledné mapy, která pozoruje více
+     * zdrojových map.
+     *
+     * @param mapper Funkce, která dokáže přemapovat jeden datový typ na druhý
+     * @param into Výsledná mapa, která obsahuje prvky ze zdrojových map
+     * @param maps Pole zdrojových map
+     * @param <K> Typ klíče, který používají zdrojové i cílové mapy
+     * @param <V> Typ hodnoty, který používá cílová mapa
+     * @param <W> Typ hodnoty, který používají zdrojové mapy
+     */
     @SafeVarargs
     public static <K, V, W> void mergeMap(Function<? super W, ? extends V> mapper,
         ObservableMap<K, V> into, ObservableMap<K, W>... maps) {
