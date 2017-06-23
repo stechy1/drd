@@ -39,14 +39,13 @@ public final class Backpack extends ItemBase {
     private Backpack(Backpack backpack) {
         this(backpack.getId(), backpack.getName(), backpack.getDescription(), backpack.getAuthor(),
             backpack.getWeight(), backpack.getPrice().getRaw(), backpack.getMaxLoad(),
-            backpack.getSize(), backpack.getImage(), backpack.isDownloaded(),
-            backpack.isUploaded());
+            backpack.getSize(), backpack.getImage(), backpack.getStackSize(),
+            backpack.isDownloaded(), backpack.isUploaded());
     }
 
     /**
      * Konstruktor batohu
-     *
-     * @param id Id batohu
+     *  @param id Id batohu
      * @param author Autor batohu
      * @param name Název batohu
      * @param description Popis batohu
@@ -54,13 +53,14 @@ public final class Backpack extends ItemBase {
      * @param price Cena batohu
      * @param size Velikost batohu
      * @param image Obrázek batohu
+     * @param stackSize Maximální počet batohů, který může být v jednom stacku ve slotu inventáře
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
     private Backpack(String id, String author, String name, String description, int weight,
         int price, int maxLoad, Size size, byte[] image,
-        boolean downloaded, boolean uploaded) {
-        super(id, author, name, description, weight, price, image, downloaded, uploaded);
+        int stackSize, boolean downloaded, boolean uploaded) {
+        super(id, author, name, description, weight, price, image, stackSize, downloaded, uploaded);
 
         setMaxLoad(maxLoad);
         setSize(size);
@@ -129,8 +129,8 @@ public final class Backpack extends ItemBase {
         private int weight;
         private int price;
         private int maxLoad;
-
         private byte[] image;
+        private int stackSize;
         private boolean downloaded;
         private boolean uploaded;
         private Size size;
@@ -185,6 +185,11 @@ public final class Backpack extends ItemBase {
             return this;
         }
 
+        public Builder stackSize(int stackSize) {
+            this.stackSize = stackSize;
+            return this;
+        }
+
         public Builder downloaded(boolean downloaded) {
             this.downloaded = downloaded;
             return this;
@@ -197,7 +202,7 @@ public final class Backpack extends ItemBase {
 
         public Backpack build() {
             return new Backpack(id, author, name, description, weight, price, maxLoad, size,
-                image, downloaded, uploaded);
+                image, stackSize, downloaded, uploaded);
         }
     }
 

@@ -38,7 +38,7 @@ public final class MeleWeapon extends WeaponBase {
         this(weapon.getId(), weapon.getName(), weapon.getDescription(), weapon.getAuthor(),
             weapon.getWeight(), weapon.getPrice().getRaw(), weapon.getStrength(),
             weapon.getRampancy(), weapon.getDefence(), weapon.getWeaponClass(),
-            weapon.getWeaponType(), weapon.getImage(), weapon.isDownloaded(), weapon.isUploaded());
+            weapon.getWeaponType(), weapon.getImage(), weapon.getStackSize(), weapon.isDownloaded(), weapon.isUploaded());
     }
 
     /**
@@ -56,14 +56,15 @@ public final class MeleWeapon extends WeaponBase {
      * @param weaponClass Třída zbraně
      * @param weaponType Typ zbraně
      * @param image Obrázek zbraně
+     * @param stackSize Maximální počet zbraní, který může být v jednom stacku ve slotu inventáře
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      * @param downloaded Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
     private MeleWeapon(String id, String name, String description, String author, int weight,
         int price, int strength, int rampancy, int defence, MeleWeaponClass weaponClass,
-        MeleWeaponType weaponType, byte[] image, boolean uploaded,
+        MeleWeaponType weaponType, byte[] image, int stackSize, boolean uploaded,
         boolean downloaded) {
-        super(id, name, description, weight, price, strength, rampancy, author, image,
+        super(id, name, description, weight, price, strength, rampancy, author, image, stackSize,
             downloaded, uploaded);
 
         setDefence(defence);
@@ -171,6 +172,7 @@ public final class MeleWeapon extends WeaponBase {
         private MeleWeaponType weaponType = MeleWeaponType.ONE_HAND;
         private String author;
         private byte[] image;
+        private int stackSize;
         private boolean uploaded;
         private boolean downloaded;
 
@@ -234,6 +236,11 @@ public final class MeleWeapon extends WeaponBase {
             return this;
         }
 
+        public Builder stackSize(int stackSize) {
+            this.stackSize = stackSize;
+            return this;
+        }
+
         public Builder uploaded(boolean uploaded) {
             this.uploaded = uploaded;
             return this;
@@ -246,7 +253,7 @@ public final class MeleWeapon extends WeaponBase {
 
         public MeleWeapon build() {
             return new MeleWeapon(id, name, description, author, weight, price, strength, rampancy,
-                defence, weaponClass, weaponType, image, downloaded, uploaded);
+                defence, weaponClass, weaponType, image, stackSize, downloaded, uploaded);
         }
     }
 

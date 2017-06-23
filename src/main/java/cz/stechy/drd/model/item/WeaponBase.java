@@ -23,8 +23,7 @@ public abstract class WeaponBase extends ItemBase {
 
     /**
      * Konstruktor pro všechny zbraně
-     *
-     * @param id Id zbraně
+     *  @param id Id zbraně
      * @param name Název zbraně
      * @param description Popis zbraně
      * @param weight Váha zbraně
@@ -33,13 +32,14 @@ public abstract class WeaponBase extends ItemBase {
      * @param rampancy Útočnost zbraně
      * @param author Autor zbraně
      * @param image Obrázek zbraně
+     * @param stackSize Maximální počet zbraní, který může být v jednom stacku ve slotu inventáře
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
     protected WeaponBase(String id, String name, String description, int weight, int price,
-        int strength, int rampancy, String author, byte[] image, boolean downloaded,
+        int strength, int rampancy, String author, byte[] image, int stackSize, boolean downloaded,
         boolean uploaded) {
-        super(id, author, name, description, weight, price, image, downloaded, uploaded);
+        super(id, author, name, description, weight, price, image, stackSize, downloaded, uploaded);
 
         setStrength(strength);
         setRampancy(rampancy);

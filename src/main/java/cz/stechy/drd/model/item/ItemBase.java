@@ -31,25 +31,27 @@ public abstract class ItemBase extends OnlineItem {
     protected final Money price = new Money();
     // Obrázek předmětu v Base64
     protected final ObjectProperty<byte[]> image = new SimpleObjectProperty<>(this, "image");
+    // Maximální počet předmětů, který může být v jednom stacku ve slotu inventáře
+    protected final IntegerProperty stackSize = new SimpleIntegerProperty(this, "stackSize");
     // endregion
 
     // region Constructors
 
     /**
      * Konstruktor pro každý předmět
-     *
-     * @param id Id předmětu
+     *  @param id Id předmětu
      * @param author Autor předmětu
      * @param name Název předmětu
      * @param description Popis předmětu
      * @param weight Váha předmětu
      * @param price Cena předmětu
      * @param image Obrázek předmětu
+     * @param stackSize Maximální počet předmětů, který může být v jednom stacku ve slotu inventáře
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
     ItemBase(String id, String author, String name, String description, int weight,
-        int price, byte[] image, boolean downloaded, boolean uploaded) {
+        int price, byte[] image, int stackSize, boolean downloaded, boolean uploaded) {
         super(id, author, downloaded, uploaded);
 
         setName(name);
@@ -57,6 +59,7 @@ public abstract class ItemBase extends OnlineItem {
         setWeight(weight);
         this.price.setRaw(price);
         setImage(image);
+        setStackSize(stackSize);
     }
 
     // endregion
@@ -113,6 +116,18 @@ public abstract class ItemBase extends OnlineItem {
 
     private void setImage(byte[] image) {
         this.image.set(image);
+    }
+
+    public final int getStackSize() {
+        return stackSize.get();
+    }
+
+    public final ReadOnlyIntegerProperty stackSizeProperty() {
+        return stackSize;
+    }
+
+    private void setStackSize(int stackSize) {
+        this.stackSize.set(stackSize);
     }
 
     // endregion

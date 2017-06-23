@@ -33,7 +33,7 @@ public class Test extends ItemBase {
     public Test(String id, String author, String name, String description, int weight,
         int price, int id2, String name2, boolean downloaded2, byte[] blob_type2, byte[] image,
         boolean downloaded, boolean uploaded) {
-        super(id, author, name, description, weight, price, image, downloaded, uploaded);
+        super(id, author, name, description, weight, price, image, , downloaded, uploaded);
 
         this.id2.setValue(id2);
         this.name2.setValue(name2);

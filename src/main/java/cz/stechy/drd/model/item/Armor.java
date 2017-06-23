@@ -47,12 +47,11 @@ public final class Armor extends ItemBase {
             armor.getDefenceNumber(), armor.getMinimumStrength(), armor.getWeightA(),
             armor.getWeightB(), armor.getWeightC(), armor.getPriceA().getRaw(),
             armor.getPriceB().getRaw(), armor.getPriceC().getRaw(), armor.getImage(),
-            armor.isDownloaded(), armor.isUploaded());
+            armor.getStackSize(), armor.isDownloaded(), armor.isUploaded());
     }
 
     /**
      * Konstruktor zbroje
-     *
      * @param id Id zbroje
      * @param author Autor brnění
      * @param name Název zbroje
@@ -65,13 +64,14 @@ public final class Armor extends ItemBase {
      * @param priceB Cena pro bytosti velikosti B
      * @param priceC Cena pro bytosti velikosti C
      * @param image Obrázek zbroje
+     * @param stackSize Maximální počet předmětů, který může být v jednom stacku ve slotu inventáře
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
     private Armor(String id, String author, String name, String description, int defenceNumber,
         int weightA, int weightB, int weightC, int priceA, int priceB, int priceC,
-        int minimumStrength, byte[] image, boolean downloaded, boolean uploaded) {
-        super(id, author, name, description, weightB, priceB, image, downloaded, uploaded);
+        int minimumStrength, byte[] image, int stackSize, boolean downloaded, boolean uploaded) {
+        super(id, author, name, description, weightB, priceB, image, stackSize, downloaded, uploaded);
 
         setDefenceNumber(defenceNumber);
         setWeightA(weightA);
@@ -228,6 +228,7 @@ public final class Armor extends ItemBase {
         private int minimumStrength;
         private String author;
         private byte[] image;
+        private int stackSize;
         private boolean uploaded;
         private boolean downloaded;
 
@@ -296,6 +297,11 @@ public final class Armor extends ItemBase {
             return this;
         }
 
+        public Builder stackSize(int stackSize) {
+            this.stackSize = stackSize;
+            return this;
+        }
+
         public Builder uploaded(boolean uploaded) {
             this.uploaded = uploaded;
             return this;
@@ -309,7 +315,7 @@ public final class Armor extends ItemBase {
         public Armor build() {
             return new Armor(id, author, name, description, defenceNumber, weightA, weightB,
                 weightC,
-                priceA, priceB, priceC, minimumStrength, image, downloaded, uploaded);
+                priceA, priceB, priceC, minimumStrength, image, stackSize, downloaded, uploaded);
         }
     }
 }

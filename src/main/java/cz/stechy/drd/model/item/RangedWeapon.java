@@ -39,7 +39,7 @@ public final class RangedWeapon extends WeaponBase {
         this(weapon.getId(), weapon.getName(), weapon.getDescription(), weapon.getAuthor(),
             weapon.getWeight(), weapon.getPrice().getRaw(), weapon.getStrength(),
             weapon.getRampancy(), weapon.getWeaponType(), weapon.getRangeLow(),
-            weapon.getRangeMedium(), weapon.getRangeLong(), weapon.getImage(),
+            weapon.getRangeMedium(), weapon.getRangeLong(), weapon.getImage(), weapon.getStackSize(),
             weapon.isDownloaded(), weapon.isUploaded());
     }
 
@@ -63,10 +63,10 @@ public final class RangedWeapon extends WeaponBase {
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
     private RangedWeapon(String id, String name, String description, String author, int weight,
-        int price,
-        int strength, int rampancy, RangedWeaponType weaponType, int rangeLow, int rangeMedium,
-        int rangeLong, byte[] image, boolean downloaded, boolean uploaded) {
-        super(id, name, description, weight, price, strength, rampancy, author, image,
+        int price, int strength, int rampancy, RangedWeaponType weaponType, int rangeLow,
+        int rangeMedium, int rangeLong, byte[] image, int stackSize, boolean downloaded,
+        boolean uploaded) {
+        super(id, name, description, weight, price, strength, rampancy, author, image, stackSize,
             downloaded, uploaded);
 
         setWeaponType(weaponType);
@@ -180,6 +180,7 @@ public final class RangedWeapon extends WeaponBase {
         private int rangeHigh;
         private String author;
         private byte[] image;
+        private int stackSize;
         private boolean uploaded;
         private boolean downloaded;
 
@@ -248,6 +249,11 @@ public final class RangedWeapon extends WeaponBase {
             return this;
         }
 
+        public Builder stackSize(int stackSize) {
+            this.stackSize = stackSize;
+            return this;
+        }
+
         public Builder uploaded(boolean uploaded) {
             this.uploaded = uploaded;
             return this;
@@ -261,7 +267,7 @@ public final class RangedWeapon extends WeaponBase {
         public RangedWeapon build() {
             return new RangedWeapon(id, name, description, author, weight, price, strength,
                 rampancy,
-                weaponType, rangeLow, rangeMedium, rangeHigh, image, downloaded, uploaded);
+                weaponType, rangeLow, rangeMedium, rangeHigh, image, stackSize, downloaded, uploaded);
         }
     }
 }
