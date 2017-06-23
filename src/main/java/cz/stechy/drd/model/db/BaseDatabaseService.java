@@ -78,7 +78,6 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     private final List<TransactionOperation<T>> operations = new ArrayList<>();
 
     private boolean selectAllCalled = false;
-    private UpdateListener<T> updateListener;
 
     // endregion
 
@@ -263,7 +262,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
                 .filter(t -> t.equals(item))
                 .findFirst();
             assert result.isPresent();
-            final TransactionOperation<T> operation = new UpdateOperation<>(result.get(), item, updateListener);
+            final TransactionOperation<T> operation = new UpdateOperation<>(result.get(), item);
             if (db.isTransactional()) {
                 operations.add(operation);
             } else {
@@ -327,14 +326,6 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
     // endregion
 
-    // region Getters & Setters
-
-    public void setUpdateListener(UpdateListener<T> updateListener) {
-        this.updateListener = updateListener;
-    }
-
-    // endregion
-
     private final TransactionHandler transactionHandler = new TransactionHandler() {
         @Override
         public void onCommit() {
@@ -347,10 +338,5 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
             operations.clear();
         }
     };
-
-    public interface UpdateListener<T extends DatabaseItem> {
-
-        void onUpdate(T item);
-    }
 
 }

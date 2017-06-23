@@ -1,6 +1,5 @@
 package cz.stechy.drd.model.db.base;
 
-import cz.stechy.drd.model.db.BaseDatabaseService.UpdateListener;
 import javafx.collections.ObservableList;
 
 /**
@@ -32,20 +31,14 @@ public abstract class TransactionOperation<T extends DatabaseItem> {
 
     public static final class UpdateOperation<T extends DatabaseItem> extends TransactionOperation<T> {
 
-        private final UpdateListener<T> updater;
 
-        public UpdateOperation(T before, T after, UpdateListener<T> updater) {
+        public UpdateOperation(T before, T after) {
             super(before, after);
-
-            this.updater = updater;
         }
 
         @Override
         public void commit(ObservableList<T> items) {
             before.update(after);
-            if (this.updater != null) {
-                this.updater.onUpdate(before);
-            }
         }
     }
 

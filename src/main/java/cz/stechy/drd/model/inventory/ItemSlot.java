@@ -18,7 +18,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
-import javafx.util.converter.NumberStringConverter;
 
 /**
  * Třída představující jeden slot v inventáři
@@ -183,6 +182,7 @@ public class ItemSlot {
             itemStack.getItem().imageProperty().removeListener(imageChangeListener);
         }
         itemStack = null;
+        lblAmmount.textProperty().unbind();
         imgItem.setImage(null);
         lblAmmount.setText(null);
         clickListener = null;
@@ -200,8 +200,7 @@ public class ItemSlot {
         final int ammount = itemStack.getAmmount();
         if (this.itemStack == null) {
             this.itemStack = new ItemStack(itemStack);
-            lblAmmount.textProperty()
-                .bindBidirectional(this.itemStack.ammountProperty(), new NumberStringConverter());
+            lblAmmount.textProperty().bind(this.itemStack.ammountProperty().asString());
             setImage(item.getImage());
             this.itemStack.getItem().imageProperty().addListener(imageChangeListener);
             return;
@@ -244,13 +243,25 @@ public class ItemSlot {
     }
 
     /**
-     * Zjistí, zda-li tento slot přijme požadovan itemStack
+     * Zjistí, zda-li tento slot přijme požadovaný itemStack
+     * Záleží na dvou faktorech:
+     *      1. Jak je nastavený filtr cílového ItemStacku
+     *      2. Jestli je v cílovém ItemStacku dostatečné místo pro vložení požadovaného počtu
      *
      * @param itemStack {@link ItemStack} ItemStack, který chci vložit do slotu
      * @return True, pokud lze item vložit, jinak false
      */
     public boolean acceptItem(ItemStack itemStack) {
-        return filter.test(itemStack.getItem());
+        final boolean filterTest = filter.test(itemStack.getItem());
+        if (!filterTest) {
+            return false;
+        }
+
+        if (this.itemStack == null) {
+            return true;
+        } else {
+            return this.itemStack.canInsertAmmount(itemStack.getAmmount());
+        }
     }
 
     /**

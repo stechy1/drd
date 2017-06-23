@@ -150,12 +150,21 @@ public final class InventoryRecord extends DatabaseItem {
     // region Public methods
 
     /**
-     * Přidá/odebere požadované množství ze stacku
+     * Přidá požadované množství na stack
      *
-     * @param ammount Množství, které se má přičíst/odečíst
+     * @param ammount Množství, které se má přičíst
      */
     public void addAmmount(int ammount) {
-        this.ammount.setValue(this.ammount.getValue() + ammount);
+        setAmmount(getAmmount() + ammount);
+    }
+
+    /**
+     * Přidá požadované množství na stack
+     *
+     * @param ammount Množství, které se má odečíst
+     */
+    public void subtractAmmount(int ammount) {
+        setAmmount(getAmmount() - ammount);
     }
 
     // endregion

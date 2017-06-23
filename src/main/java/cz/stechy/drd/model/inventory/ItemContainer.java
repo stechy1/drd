@@ -1,6 +1,5 @@
 package cz.stechy.drd.model.inventory;
 
-import cz.stechy.drd.model.db.BaseDatabaseService.UpdateListener;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.ItemSlot.ClickListener;
@@ -104,16 +103,19 @@ public abstract class ItemContainer {
     /**
      * Zajištění přesunu itemu
      *
+     * @param sourceInventoryId
+     * @param sourceSlot
      * @param destinationSlot {@link ItemSlot} Cílový slot, do kterého se má vložit item
+     * @param transferAmmount
      */
-    private void handleDragEnd(final ItemSlot destinationSlot) {
+    private void handleDragEnd(final String sourceInventoryId, final ItemSlot sourceSlot,
+        final ItemSlot destinationSlot, final int transferAmmount) {
         try {
             final InventoryContent sourceInventoryContent = inventoryManager
-                .getInventoryContentById(dragInformations.get().sourceInventoryId);
+                .getInventoryContentById(sourceInventoryId);
             final InventoryRecord sourceInventoryRecord = sourceInventoryContent
-                .select(record -> record.getSlotId() == dragInformations.get().sourceSlot.getId());
-            final int sourceAmmount = dragInformations.get().sourceSlot.getItemStack().getAmmount();
-            final int transferAmmount = dragInformations.get().draggedStack.getAmmount();
+                .select(record -> record.getSlotId() == sourceSlot.getId());
+            final int sourceAmmount = sourceSlot.getItemStack().getAmmount();
             final int sourceAmmountResult = sourceAmmount - transferAmmount;
 
             try {
@@ -123,6 +125,7 @@ public abstract class ItemContainer {
                     .duplicate();
                 destinationInventoryRecordCopy.addAmmount(transferAmmount);
                 inventoryContent.update(destinationInventoryRecordCopy);
+                destinationSlot.getItemStack().addAmmount(transferAmmount);
             } catch (DatabaseException e) {
                 final InventoryRecord destinationInventoryRecord = new InventoryRecord.Builder()
                     .inventoryId(inventoryContent.getInventory().getId())
@@ -131,14 +134,17 @@ public abstract class ItemContainer {
                     .slotId(destinationSlot.getId())
                     .build();
                 inventoryContent.insert(destinationInventoryRecord);
+                // Zde nemusím volat insert nad destinationSlotem, protože se zavolá automaticky
             }
 
             if (sourceAmmountResult > 0) {
                 final InventoryRecord recordCopy = sourceInventoryRecord.duplicate();
-                recordCopy.addAmmount(-transferAmmount);
+                recordCopy.subtractAmmount(transferAmmount);
                 sourceInventoryContent.update(recordCopy);
+                sourceSlot.getItemStack().subtractAmmount(transferAmmount);
             } else {
                 sourceInventoryContent.delete(sourceInventoryRecord.getId());
+                // Zde nemusím volat delete nad sourceSlotem, protože se zavolá automaticky
             }
         } catch (DatabaseException e) {
             e.printStackTrace();
@@ -192,7 +198,6 @@ public abstract class ItemContainer {
     private void initInventoryContent(InventoryContent inventoryContent) {
         clear();
 
-        inventoryContent.setUpdateListener(inventoryUpdateListener);
         InventoryContent.getWeight().addListener(weightListener);
         final ObservableList<InventoryRecord> inventoryRecords = inventoryContent.selectAll();
         inventoryRecords.forEach(this::insert);
@@ -213,9 +218,6 @@ public abstract class ItemContainer {
         if (oldRecords != null) {
             oldRecords.removeListener(inventoryRecordListener);
             oldRecords = null;
-        }
-        if (inventoryContent != null) {
-            inventoryContent.setUpdateListener(null);
         }
     }
 
@@ -257,7 +259,9 @@ public abstract class ItemContainer {
 
         @Override
         public void onDragDrop(ItemSlot destinationSlot) {
-            handleDragEnd(destinationSlot);
+            final DragInformations dragInformations = ItemContainer.dragInformations.get();
+            handleDragEnd(dragInformations.sourceInventoryId, dragInformations.sourceSlot,
+                destinationSlot, dragInformations.draggedStack.getAmmount());
         }
 
         @Override
@@ -274,10 +278,6 @@ public abstract class ItemContainer {
             c.getRemoved().forEach(this::remove);
         }
     };
-
-    // Listener pro správnou vizualizaci počtu itemů ve slotu
-    private final UpdateListener<InventoryRecord> inventoryUpdateListener = item ->
-        itemSlots.get(item.getSlotId()).getItemStack().setAmmount(item.getAmmount());
 
     // Listener pro změnu váhy inventáře
     private final ChangeListener<? super Number> weightListener = (observable, oldValue, newValue) -> {
