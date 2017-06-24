@@ -13,8 +13,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -70,7 +72,7 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
     Normálně to nedělám, ale zde mi to příjde jako vhodné
     Statickou finální metodou získám globální hmotnost všech inventářů, které má postava
     u sebe */
-    private static final ReadOnlyIntegerWrapper WEIGHT = new ReadOnlyIntegerWrapper();
+    private static final ReadOnlyIntegerWrapper weight = new ReadOnlyIntegerWrapper();
 
     private static boolean tableInitialized = false;
     // Inventář
@@ -108,7 +110,7 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
      * Mělo by se volat před změnou hrdiny
      */
     public static void clearWeight() {
-        WEIGHT.set(0);
+        weight.set(0);
     }
 
     // endregion
@@ -211,8 +213,8 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
         }
 
         super.update(inventoryRecord);
-        final int w = WEIGHT.get();
-        WEIGHT.set(w - oldAmmount + inventoryRecord.getAmmount() * item.getWeight());
+        final int w = weight.get();
+        weight.set(w - oldAmmount + inventoryRecord.getAmmount() * item.getWeight());
     }
 
     /**
@@ -247,53 +249,52 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
     /**
      * Najde index volného slotu
      *
+     * @param item Předmět, pro který se hledá volná slot
+     * @param ammount
      * @return Index volného slotu
      * @throws InventoryException Pokud volný slot neexistuje
      */
-    public int getFreeSlot() throws InventoryException {
-        final int size = items.size();
-        // Pokud mám maximální počet itemů v inventáři, vyhodím vyjímku
-        if (size == inventory.getCapacity()) {
-            throw new InventoryException("No free slot");
-        }
-        // Pokud nemám žádné itemy v inventáři, vrátím první index
-        if (size == 0) {
-            return 0;
-        }
-        // Namapuji všechny sloty podle ID slotu a seřadím vzestupně
-        final List<Integer> ids = items.stream()
-            .sorted(Comparator.comparingInt(InventoryRecord::getSlotId))
-            .mapToInt(InventoryRecord::getSlotId).boxed().collect(Collectors.toList());
+    public synchronized Map<Integer, Integer> getFreeSlot(ItemBase item, int ammount) throws InventoryException {
+        final int[] occupiedSlots = new int[inventory.getCapacity()];
+        final Map<Integer, Integer> mapSlots = new HashMap<>();
+        final int stackSize = item.getStackSize();
+        items.stream().forEach(inventoryRecord -> occupiedSlots[inventoryRecord.getSlotId()] = 1);
+        final Map<Integer, Integer> map = items.stream()
+            .filter(inventoryRecord -> inventoryRecord.getItemId().equals(item.getId()))
+            .collect(Collectors.toMap(o -> o.getSlotId(), t -> stackSize - t.getAmmount()));
 
-        // Získám nejmenší index
-        final int min = ids.get(0);
-        // Pokud minimum není 0. index, tak vrátím 0
-        if (min > 0) {
-            return 0;
-        }
-
-        // Záskám nejvyšší index
-        final int max = ids.get(size - 1);
-        // Pokud je nejvyšší index menší než kapacita inventáře, vrátím index zvětšený o jedničku
-        if (max < inventory.getCapacity()) {
-            return max + 1;
-        }
-
-        // Kdyz jsou hraniční indexy obsazeny, budu hledat uvnitř otevřeného intervalu (min; max)
-        // Inicializuji výsledek jaku 0. index
-        int result = 0;
-        for (int i = 0; i < inventory.getCapacity(); i++) {
-            // Získám index podle I
-            int index = ids.get(i);
-            // Pokud index neodpovídá proměnné result, tak jsem nalezl odpověď a vracím I
-            if (result != index) {
-                return i;
+        int remaining = ammount;
+        for (Entry<Integer, Integer> entry : map.entrySet()) {
+            final int slotId = entry.getKey();
+            final int freeSpace = entry.getValue();
+            final int insertAmmount = Math.min(remaining, freeSpace);
+            mapSlots.put(slotId, insertAmmount);
+            remaining -= insertAmmount;
+            if (remaining <= 0) {
+                break;
             }
-            // Jinak inkrementují proměnnou result o jedničku
-            result++;
         }
 
-        return 0;
+        if (remaining - stackSize * (inventory.getCapacity() - items.size()) > 0) {
+            throw new InventoryException("Not enought space for insert");
+        }
+
+        final int capacity = inventory.getCapacity();
+        int index = 0;
+        while (remaining > 0) {
+            if (occupiedSlots[index] != 0) {
+                index++;
+                continue;
+            }
+
+            final int insertAmmount = Math.min(remaining, stackSize);
+            mapSlots.put(index, insertAmmount);
+            remaining -= insertAmmount;
+            index++;
+            assert index != capacity;
+        }
+
+        return mapSlots;
     }
 
     // endregion
@@ -305,7 +306,7 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
     }
 
     public static ReadOnlyIntegerProperty getWeight() {
-        return WEIGHT.getReadOnlyProperty();
+        return weight.getReadOnlyProperty();
     }
 
     // endregion
@@ -320,12 +321,12 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
     private final ListChangeListener<? super InventoryRecord> itemsListener = c -> {
         while (c.next()) {
             if (c.wasAdded()) {
-                final int w = WEIGHT.get();
-                WEIGHT.set(w + c.getAddedSubList().stream().mapToInt(mapper).sum());
+                final int w = weight.get();
+                weight.set(w + c.getAddedSubList().stream().mapToInt(mapper).sum());
             }
             if (c.wasRemoved()) {
-                final int w = WEIGHT.get();
-                WEIGHT.set(w - c.getRemoved().stream().mapToInt(mapper).sum());
+                final int w = weight.get();
+                weight.set(w - c.getRemoved().stream().mapToInt(mapper).sum());
             }
         }
     };
