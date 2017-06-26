@@ -297,6 +297,7 @@ public abstract class ItemContainer {
         final ItemSlot sourceSlot;
         final ItemStack draggedStack;
 
+
         private DragInformations(String sourceInventoryId, ItemSlot sourceSlot,
             ItemStack draggedStack) {
             this.sourceInventoryId = sourceInventoryId;

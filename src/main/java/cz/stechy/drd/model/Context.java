@@ -15,9 +15,9 @@ import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.MeleWeaponService;
 import cz.stechy.drd.model.persistent.RangedWeaponService;
 import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.service.KeyboardService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +25,8 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,7 +84,7 @@ public class Context {
      *
      * @param databaseName Název databáze
      */
-    public Context(String databaseName, ResourceBundle resources) throws FileNotFoundException {
+    public Context(String databaseName, ResourceBundle resources) throws Exception {
         this.resources = resources;
         this.appDirectory = new File(appDirs
             .getUserDataDir(CREDENTAILS_APP_NAME, CREDENTAILS_APP_VERSION, CREDENTILS_APP_AUTHOR));
@@ -98,6 +100,7 @@ public class Context {
         initFirebase();
         userService = new UserService(FirebaseDatabase.getInstance());
         initManagers();
+        initNativeHandlers();
     }
 
     /**
@@ -132,6 +135,23 @@ public class Context {
         managerMap.put(MANAGER_ARMOR, initManager(ArmorService.class));
         managerMap.put(MANAGER_GENERAL, initManager(GeneralItemService.class));
         managerMap.put(MANAGER_BACKPACK, initManager(BackpackService.class));
+    }
+
+    private void initNativeHandlers() throws Exception {
+        // Get the logger for "org.jnativehook" and set the level to warning.
+        java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GlobalScreen.class.getPackage().getName());
+        logger.setLevel(java.util.logging.Level.WARNING);
+
+        // Don't forget to disable the parent handlers.
+        logger.setUseParentHandlers(false);
+
+        try {
+            GlobalScreen.registerNativeHook();
+        } catch (NativeHookException e) {
+            throw new Exception(e);
+        }
+
+        GlobalScreen.addNativeKeyListener(new KeyboardService());
     }
 
     @SuppressWarnings("unchecked")

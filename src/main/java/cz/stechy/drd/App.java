@@ -8,7 +8,6 @@ import cz.stechy.screens.ScreenManager;
 import cz.stechy.screens.ScreenManagerConfiguration;
 import cz.stechy.screens.base.IMainScreen;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
@@ -17,6 +16,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
+import org.jnativehook.GlobalScreen;
+import org.jnativehook.NativeHookException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +51,7 @@ public class App extends Application {
 
     // region Constructors
 
-    public App() throws FileNotFoundException {
+    public App() throws Exception {
         super();
         initScreenManager();
         context = new Context(getDatabaseName(), manager.getResources());
@@ -109,6 +110,9 @@ public class App extends Application {
         primaryStage.setOnCloseRequest(event -> {
             logger.info("Ukončuji aplikaci");
             FirebaseDatabase.getInstance().goOffline();
+            try {
+                GlobalScreen.unregisterNativeHook();
+            } catch (NativeHookException e) {}
             //ThreadPool.getInstance().shutDown();
         });
     }

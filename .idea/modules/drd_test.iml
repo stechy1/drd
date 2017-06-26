@@ -17,6 +17,7 @@
     <orderEntry type="library" name="Gradle: com.google.firebase:firebase-admin:4.1.2" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-simple:1.7.25" level="project" />
+    <orderEntry type="library" name="Gradle: com.1stleg:jnativehook:2.1.0" level="project" />
     <orderEntry type="library" name="Gradle: junit:junit:4.11" level="project" />
     <orderEntry type="library" name="Gradle: net.java.dev.jna:jna:4.3.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.api-client:google-api-client-gson:1.21.0" level="project" />

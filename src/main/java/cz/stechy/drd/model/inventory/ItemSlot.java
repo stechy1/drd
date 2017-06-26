@@ -79,6 +79,7 @@ public class ItemSlot {
             return;
         }
 
+
         final Dragboard db = imgItem.startDragAndDrop(TransferMode.ANY);
         final ClipboardContent content = new ClipboardContent();
         final DragItemContainer dragItemContainer = new DragItemContainer(
