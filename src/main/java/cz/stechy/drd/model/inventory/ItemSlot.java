@@ -1,6 +1,7 @@
 package cz.stechy.drd.model.inventory;
 
 import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.model.service.KeyboardService;
 import java.io.ByteArrayInputStream;
 import java.util.function.Predicate;
 import javafx.beans.value.ChangeListener;
@@ -79,18 +80,24 @@ public class ItemSlot {
             return;
         }
 
-
+        final KeyboardService keyboardService = KeyboardService.getINSTANCE();
         final Dragboard db = imgItem.startDragAndDrop(TransferMode.ANY);
         final ClipboardContent content = new ClipboardContent();
+        int ammount = 1;
+        if (keyboardService.isShiftPressed()) {
+            ammount = itemStack.getAmmount();
+        } else if (keyboardService.isCtrlPressed()) {
+            ammount = itemStack.getAmmount() / 2;
+        }
         final DragItemContainer dragItemContainer = new DragItemContainer(
-            itemStack.getItem().getId(), itemStack.getAmmount());
+            itemStack.getItem().getId(), ammount);
 
         content.put(DragItemContainer.MOVE_ITEM, dragItemContainer);
 
         db.setDragView(imgItem.getImage());
         db.setContent(content);
-        // TODO přidat moznosti přesunu různého množství itemů
-        dragDropHandlers.onDragStart(this, itemStack);
+        dragDropHandlers.onDragStart(this, new ItemStack(itemStack.getItem(), ammount,
+            itemStack.getMetadata()));
         event.consume();
     };
     private final EventHandler<? super DragEvent> onDragDone = event -> {

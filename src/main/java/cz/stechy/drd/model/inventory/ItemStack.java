@@ -68,10 +68,7 @@ public class ItemStack {
      * @param ammount Počet itemů, který se má odebrat
      */
     public void subtractAmmount(int ammount) {
-        final int tmpAmmount = this.ammount.get();
-        final int resAmmount = ammount - tmpAmmount;
-        assert resAmmount > 0;
-        setAmmount(resAmmount);
+        setAmmount(getAmmount() - ammount);
     }
 
     /**

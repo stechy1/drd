@@ -151,7 +151,7 @@ public class Context {
             throw new Exception(e);
         }
 
-        GlobalScreen.addNativeKeyListener(new KeyboardService());
+        GlobalScreen.addNativeKeyListener(KeyboardService.getINSTANCE());
     }
 
     @SuppressWarnings("unchecked")

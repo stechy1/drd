@@ -8,7 +8,27 @@ import org.jnativehook.keyboard.NativeKeyListener;
  */
 public final class KeyboardService implements NativeKeyListener {
 
+    private static KeyboardService INSTANCE;
+
     private int modifiers = 0;
+
+    // region Constructors
+
+    private KeyboardService() {}
+
+    // endregion
+
+    // region Public static methods
+
+    public static KeyboardService getINSTANCE() {
+        if (INSTANCE == null) {
+            INSTANCE = new KeyboardService();
+        }
+
+        return INSTANCE;
+    }
+
+    // endregion
 
     // region Public methods
     
