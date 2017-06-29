@@ -1,6 +1,7 @@
 package cz.stechy.drd.model.entity.mob;
 
 import cz.stechy.drd.model.IClonable;
+import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.EntityBase;
@@ -22,6 +23,11 @@ public final class Mob extends EntityBase {
 
     // region Variables
 
+    private final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
+    // Třída nestvůry
+    private final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>();
+    // Typ pravidel, do kterých nestvůra patří
+    private final ObjectProperty<Rule> rulesType = new SimpleObjectProperty<>();
     // Útočné číslo
     private final EntityProperty attackNumber = new SimpleEntityProperty();
     // Obranné číslo
@@ -70,12 +76,15 @@ public final class Mob extends EntityBase {
      * @param mob Mob, který se má zkopírovat
      */
     private Mob(Mob mob) {
-        this(mob.getId(), mob.getAuthor(), mob.getName(), mob.getDescription(),
-            mob.getLive().getActValue().intValue(), mob.getLive().getMaxValue().intValue(),
-            mob.getMag().getActValue().intValue(), mob.getMag().getMaxValue().intValue(),
+        this(mob.getId(), mob.getName(), mob.getDescription(), mob.getAuthor(), mob.getImageRaw(),
+            mob.getMobClass(), mob.getRulesType(),
+            mob.getLive().getActValue().intValue(),
+            mob.getLive().getMaxValue().intValue(), mob.getMag().getActValue().intValue(),
+            mob.getMag().getMaxValue().intValue(),
             mob.getConviction(), mob.getHeight(), mob.getAttackNumber().getValue(),
             mob.getDefenceNumber(), mob.getViability(), mob.getImmunity().getValue(),
-            mob.getMettle(), mob.getVulnerability(), mob.getMobility(), mob.getPerservance(),
+            mob.getMettle(),
+            mob.getVulnerability().value, mob.getMobility(), mob.getPerservance(),
             mob.getControlAbility(), mob.getIntelligence().getValue(), mob.getCharisma().getValue(),
             mob.getBasicPowerOfMind(), mob.getExperience(), mob.getDomestication(),
             mob.isDownloaded(), mob.isUploaded());
@@ -83,10 +92,12 @@ public final class Mob extends EntityBase {
 
     /**
      * Vytvoří novou nestvůru
-     *
      * @param id Id nestvůry
-     * @param author Autor nestvůry
      * @param name Název nestvůry
+     * @param author Autor nestvůry
+     * @param image
+     * @param mobClass
+     * @param rulesType
      * @param live Aktuální pčet životů
      * @param maxLive Maximální počet životů
      * @param mag Aktuální počet magů
@@ -110,21 +121,26 @@ public final class Mob extends EntityBase {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    private Mob(String id, String author, String name, String description, int live, int maxLive,
+    private Mob(String id, String name, String description, String author,
+        byte[] image, MobClass mobClass, Rule rulesType, int live,
+        int maxLive,
         int mag, int maxMag, Conviction conviction, Height height, int attackNumber,
-        int defenceNumber, int viability, int immunity, int mettle, Vulnerability vulnerability,
+        int defenceNumber, int viability, int immunity, int mettle, int vulnerability,
         int mobility, int perservance, int controlAbility, int intelligence, int charisma,
         int basicPowerOfMind, int experience, int domestication, boolean downloaded,
         boolean uploaded) {
         super(id, author, name, description, live, maxLive, mag, maxMag, conviction, height,
             downloaded, uploaded);
 
+        setImageRaw(image);
+        setMobClass(mobClass);
+        setRulesType(rulesType);
         this.attackNumber.setValue(attackNumber);
         setDefenceNumber(defenceNumber);
         setViability(viability);
         this.immunity.setValue(immunity);
         setMettle(mettle);
-        setVulnerability(vulnerability);
+        setVulnerability(new Vulnerability(vulnerability));
         setMobility(mobility);
         setPerservance(perservance);
         setControlAbility(controlAbility);
@@ -144,6 +160,9 @@ public final class Mob extends EntityBase {
         super.update(other);
 
         Mob mob = (Mob) other;
+        setImageRaw(mob.getImageRaw());
+        setMobClass(mob.getMobClass());
+        setRulesType(mob.getRulesType());
         this.attackNumber.update(mob.getAttackNumber());
         setDefenceNumber(mob.getDefenceNumber());
         setViability(mob.getViability());
@@ -169,6 +188,43 @@ public final class Mob extends EntityBase {
     // endregion
 
     // region Getters & Setters
+
+
+    public final byte[] getImageRaw() {
+        return imageRaw.get();
+    }
+
+    public final ReadOnlyObjectProperty<byte[]> imageRawProperty() {
+        return imageRaw;
+    }
+
+    private void setImageRaw(byte[] imageRaw) {
+        this.imageRaw.set(imageRaw);
+    }
+
+    public final MobClass getMobClass() {
+        return mobClass.get();
+    }
+
+    public final ReadOnlyObjectProperty<MobClass> mobClassProperty() {
+        return mobClass;
+    }
+
+    private void setMobClass(MobClass mobClass) {
+        this.mobClass.set(mobClass);
+    }
+
+    public final Rule getRulesType() {
+        return rulesType.get();
+    }
+
+    public final ReadOnlyObjectProperty<Rule> rulesTypeProperty() {
+        return rulesType;
+    }
+
+    private void setRulesType(Rule rulesType) {
+        this.rulesType.set(rulesType);
+    }
 
     public final EntityProperty getAttackNumber() {
         return attackNumber;
@@ -307,4 +363,215 @@ public final class Mob extends EntityBase {
     }
 
     // endregion
+
+    public enum MobClass {
+
+    }
+
+    public static class Builder {
+
+        private String id;
+        private String author;
+        private String name;
+        private String description;
+        private byte[] image;
+        private MobClass mobClass;
+        private Rule rulesType;
+        private int live;
+        private int maxLive;
+        private int mag;
+        private int maxMag;
+        private Conviction conviction;
+        private Height height;
+        private int attackNumber;
+        private int defenceNumber;
+        private int viability;
+        private int immunity;
+        private int mettle;
+        private int vulnerability;
+        private int mobility;
+        private int perservance;
+        private int controlAbility;
+        private int intelligence;
+        private int charisma;
+        private int basicPowerOfMind;
+        private int experience;
+        private int domestication;
+        private boolean downloaded;
+        private boolean uploaded;
+
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder author(String author) {
+            this.author = author;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder image(byte[] image) {
+            this.image = image;
+            return this;
+        }
+
+        public Builder mobClass(int mobClass) {
+            this.mobClass = MobClass.values()[mobClass];
+            return this;
+        }
+
+        public Builder mobClass(MobClass mobClass) {
+            this.mobClass = mobClass;
+            return this;
+        }
+
+        public Builder rulesType(int rulesType) {
+            this.rulesType = Rule.values()[rulesType];
+            return this;
+        }
+
+        public Builder rulesType(Rule rulesType) {
+            this.rulesType = rulesType;
+            return this;
+        }
+
+        public Builder live(int live) {
+            this.live = live;
+            return this;
+        }
+
+        public Builder maxLive(int maxLive) {
+            this.maxLive = maxLive;
+            return this;
+        }
+
+        public Builder mag(int mag) {
+            this.mag = mag;
+            return this;
+        }
+
+        public Builder maxMag(int maxMag) {
+            this.maxMag = maxMag;
+            return this;
+        }
+
+        public Builder conviction(int conviction) {
+            this.conviction = Conviction.values()[conviction];
+            return this;
+        }
+
+        public Builder conviction(Conviction conviction) {
+            this.conviction = conviction;
+            return this;
+        }
+
+        public Builder height(int height) {
+            this.height = Height.values()[height];
+            return this;
+        }
+
+        public Builder height(Height height) {
+            this.height = height;
+            return this;
+        }
+
+        public Builder attackNumber(int attackNumber) {
+            this.attackNumber = attackNumber;
+            return this;
+        }
+
+        public Builder defenceNumber(int defenceNumber) {
+            this.defenceNumber = defenceNumber;
+            return this;
+        }
+
+        public Builder viability(int viability) {
+            this.viability = viability;
+            return this;
+        }
+
+        public Builder immunity(int immunity) {
+            this.immunity = immunity;
+            return this;
+        }
+
+        public Builder mettle(int mettle) {
+            this.mettle = mettle;
+            return this;
+        }
+
+        public Builder vulnerability(int vulnerability) {
+            this.vulnerability = vulnerability;
+            return this;
+        }
+
+        public Builder mobility(int mobility) {
+            this.mobility = mobility;
+            return this;
+        }
+
+        public Builder perservance(int perservance) {
+            this.perservance = perservance;
+            return this;
+        }
+
+        public Builder controlAbility(int controlAbility) {
+            this.controlAbility = controlAbility;
+            return this;
+        }
+
+        public Builder intelligence(int intelligence) {
+            this.intelligence = intelligence;
+            return this;
+        }
+
+        public Builder charisma(int charisma) {
+            this.charisma = charisma;
+            return this;
+        }
+
+        public Builder basicPowerOfMind(int basicPowerOfMind) {
+            this.basicPowerOfMind = basicPowerOfMind;
+            return this;
+        }
+
+        public Builder experience(int experience) {
+            this.experience = experience;
+            return this;
+        }
+
+        public Builder domestication(int domestication) {
+            this.domestication = domestication;
+            return this;
+        }
+
+        public Builder downloaded(boolean downloaded) {
+            this.downloaded = downloaded;
+            return this;
+        }
+
+        public Builder uploaded(boolean uploaded) {
+            this.uploaded = uploaded;
+            return this;
+        }
+
+        public Mob build() {
+            return new Mob(id, name, description, author, image, mobClass, rulesType, live, maxLive,
+                mag, maxMag, conviction, height, attackNumber, defenceNumber, viability,
+                immunity, mettle, vulnerability, mobility, perservance, controlAbility,
+                intelligence, charisma, basicPowerOfMind, experience, domestication, downloaded,
+                uploaded);
+        }
+    }
+
 }
