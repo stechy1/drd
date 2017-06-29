@@ -64,7 +64,7 @@ public class ShopController2 extends BaseController implements Initializable {
     // region Constructors
 
     public ShopController2(Context context) {
-        this.heroManager = context.getManager(Context.MANAGER_HERO);
+        this.heroManager = context.getService(Context.SERVICE_HERO);
     }
 
     // endregion

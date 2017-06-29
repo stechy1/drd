@@ -57,7 +57,7 @@ public class InventoryController implements Initializable, MainScreen {
     // region Constructors
 
     public InventoryController(Context context) {
-        this.heroManager = context.getManager(Context.MANAGER_HERO);
+        this.heroManager = context.getService(Context.SERVICE_HERO);
 
         mainItemContainer.setItemClickListener(itemClickListener);
         equipItemContainer.setItemClickListener(itemClickListener);

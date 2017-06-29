@@ -74,7 +74,7 @@ public class MainController extends BaseController implements Initializable {
     // endregion
 
     public MainController(Context context) {
-        heroManager = context.getManager(Context.MANAGER_HERO);
+        heroManager = context.getService(Context.SERVICE_HERO);
         translator = context.getTranslator();
         userService = context.getUserService();
         hero = heroManager.getHero();

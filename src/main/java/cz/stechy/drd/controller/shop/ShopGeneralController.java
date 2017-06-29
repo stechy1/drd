@@ -80,7 +80,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
     // region Constrollers
 
     public ShopGeneralController(Context context) {
-        this.manager = context.getManager(Context.MANAGER_GENERAL);
+        this.manager = context.getService(Context.SERVICE_GENERAL);
         this.user = context.getUserService().getUser().get();
     }
 

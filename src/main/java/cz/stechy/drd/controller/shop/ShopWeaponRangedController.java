@@ -101,7 +101,7 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
     @SuppressWarnings("unchecked")
     public ShopWeaponRangedController(Context context) {
         this.manager = context
-            .getManager(Context.MANAGER_WEAPON_RANGED);
+            .getService(Context.SERVICE_WEAPON_RANGED);
         this.translator = context.getTranslator();
         this.user = context.getUserService().getUser().get();
     }

@@ -82,7 +82,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
     // region Constrollers
 
     public ShopBackpackController(Context context) {
-        this.manager = context.getManager(Context.MANAGER_BACKPACK);
+        this.manager = context.getService(Context.SERVICE_BACKPACK);
         this.user = context.getUserService().getUser().get();
     }
 

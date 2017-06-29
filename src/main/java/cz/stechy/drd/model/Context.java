@@ -47,20 +47,20 @@ public class Context {
     private static final String CREDENTAILS_APP_VERSION = "1.0";
     private static final String CREDENTILS_APP_AUTHOR = "stechy1";
     private static final char SEPARATOR = File.separatorChar;
-    private static final int MANAGERS_COUNT = 4;
+    private static final int SERVICES_COUNT = 7;
     private static final int EXECUTORS_COUNT = 4;
 
-    // Databáze
+    // Pomocná reference pro žískání uživatelských složek v různých systémech
     private static final AppDirs appDirs = AppDirsFactory.getInstance();
 
-    // Názvy jednotlivých manažerů
-    public static final String MANAGER_HERO = "hero";
-    public static final String MANAGER_WEAPON_MELE = "mele";
-    public static final String MANAGER_WEAPON_RANGED = "ranged";
-    public static final String MANAGER_ARMOR = "armor";
-    public static final String MANAGER_GENERAL = "general";
-    public static final String MANAGER_BACKPACK = "backpack";
-    public static final String MANAGER_BESTIARY = "bestiary";
+    // Názvy jednotlivých služeb
+    public static final String SERVICE_HERO = "hero";
+    public static final String SERVICE_WEAPON_MELE = "mele";
+    public static final String SERVICE_WEAPON_RANGED = "ranged";
+    public static final String SERVICE_ARMOR = "armor";
+    public static final String SERVICE_GENERAL = "general";
+    public static final String SERVICE_BACKPACK = "backpack";
+    public static final String SERVICE_BESTIARY = "bestiary";
 
     // endregion
 
@@ -70,9 +70,9 @@ public class Context {
     private final Database database;
     // Pracovní adresář, kam můžu ukládat potřebné soubory
     private final File appDirectory;
-    // Mapa obsahující všechny manažery
-    private final Map<String, DatabaseService> managerMap = new HashMap<>(MANAGERS_COUNT);
-    // Jediný manažer, který nebude v mapě
+    // Mapa obsahující všechny služby
+    private final Map<String, DatabaseService> serviceMap = new HashMap<>(SERVICES_COUNT);
+    // Služba obsluhující uživatele
     private final UserService userService;
 
     private final ResourceBundle resources;
@@ -101,7 +101,7 @@ public class Context {
 
         initFirebase();
         userService = new UserService(FirebaseDatabase.getInstance());
-        initManagers();
+        initServices();
         initNativeHandlers();
     }
 
@@ -130,14 +130,14 @@ public class Context {
     /**
      * Inicializace všech správců předmětů
      */
-    private void initManagers() {
-        managerMap.put(MANAGER_HERO, initManager(HeroService.class));
-        managerMap.put(MANAGER_WEAPON_MELE, initManager(MeleWeaponService.class));
-        managerMap.put(MANAGER_WEAPON_RANGED, initManager(RangedWeaponService.class));
-        managerMap.put(MANAGER_ARMOR, initManager(ArmorService.class));
-        managerMap.put(MANAGER_GENERAL, initManager(GeneralItemService.class));
-        managerMap.put(MANAGER_BACKPACK, initManager(BackpackService.class));
-        managerMap.put(MANAGER_BESTIARY, initManager(BestiaryService.class));
+    private void initServices() {
+        serviceMap.put(SERVICE_HERO, initService(HeroService.class));
+        serviceMap.put(SERVICE_WEAPON_MELE, initService(MeleWeaponService.class));
+        serviceMap.put(SERVICE_WEAPON_RANGED, initService(RangedWeaponService.class));
+        serviceMap.put(SERVICE_ARMOR, initService(ArmorService.class));
+        serviceMap.put(SERVICE_GENERAL, initService(GeneralItemService.class));
+        serviceMap.put(SERVICE_BACKPACK, initService(BackpackService.class));
+        serviceMap.put(SERVICE_BESTIARY, initService(BestiaryService.class));
     }
 
     private void initNativeHandlers() throws Exception {
@@ -158,26 +158,26 @@ public class Context {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getManager(String name) {
-        return (T) managerMap.get(name);
+    public <T> T getService(String name) {
+        return (T) serviceMap.get(name);
     }
 
     @SuppressWarnings("unchecked")
-    private DatabaseService initManager(Class clazz) {
+    private DatabaseService initService(Class clazz) {
         try {
-            DatabaseService manager = (DatabaseService) clazz.getConstructor(Database.class)
+            DatabaseService service = (DatabaseService) clazz.getConstructor(Database.class)
                 .newInstance(database);
-            if (manager instanceof AdvancedDatabaseService) {
-                ((AdvancedDatabaseService) manager)
+            if (service instanceof AdvancedDatabaseService) {
+                ((AdvancedDatabaseService) service)
                     .setFirebaseDatabase(FirebaseDatabase.getInstance());
             }
-            manager.createTable();
-            manager.selectAll();
-            return manager;
+            service.createTable();
+            service.selectAll();
+            return service;
         } catch (Exception e) {
             // nikdy by se nemělo stát
             // pokud se ale tak stane, tak aplikace není schopná běhu
-            logger.error("Chyba při inicializaci manažeru", e);
+            logger.error("Chyba při inicializaci služby", e);
             Platform.exit();
             return null;
         }

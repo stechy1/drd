@@ -116,7 +116,7 @@ public class ShopController1 extends BaseController implements Initializable {
         this.translator = context.getTranslator();
         this.translatedItemType.addAll(translator.getShopTypeList());
         this.user = context.getUserService().getUser();
-        this.hero = ((HeroService) context.getManager(Context.MANAGER_HERO)).getHero();
+        this.hero = ((HeroService) context.getService(Context.SERVICE_HERO)).getHero();
         this.shoppingCart = new ShoppingCart(hero.get());
     }
 

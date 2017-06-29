@@ -98,7 +98,7 @@ public class ShopWeaponMeleController implements Initializable, ShopItemControll
 
     public ShopWeaponMeleController(Context context) {
         this.manager = context
-            .getManager(Context.MANAGER_WEAPON_MELE);
+            .getService(Context.SERVICE_WEAPON_MELE);
         this.translator = context.getTranslator();
         this.user = context.getUserService().getUser().get();
     }

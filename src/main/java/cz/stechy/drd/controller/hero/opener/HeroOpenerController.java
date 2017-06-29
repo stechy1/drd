@@ -69,7 +69,7 @@ public class HeroOpenerController extends BaseController implements Initializabl
     // region Constructors
 
     public HeroOpenerController(Context context) {
-        heroManager = context.getManager(Context.MANAGER_HERO);
+        heroManager = context.getService(Context.SERVICE_HERO);
         translator = context.getTranslator();
     }
 

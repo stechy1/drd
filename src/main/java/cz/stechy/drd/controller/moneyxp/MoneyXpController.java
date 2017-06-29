@@ -63,7 +63,7 @@ public class MoneyXpController extends BaseController implements Initializable {
     // region Constructors
 
     public MoneyXpController(Context context) {
-        this.hero = ((HeroService)context.getManager(Context.MANAGER_HERO)).getHero().get();
+        this.hero = ((HeroService)context.getService(Context.SERVICE_HERO)).getHero().get();
 
         goldValue.actValueProperty().bindBidirectional(moneyModel.gold);
         silverValue.actValueProperty().bindBidirectional(moneyModel.silver);

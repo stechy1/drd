@@ -89,7 +89,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
     // region Constructors
 
     public ShopArmorController(Context context) {
-        this.manager = context.getManager(Context.MANAGER_ARMOR);
+        this.manager = context.getService(Context.SERVICE_ARMOR);
         user = context.getUserService().getUser().get();
     }
 
