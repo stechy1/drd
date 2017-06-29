@@ -71,7 +71,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
     // endregion
 
     private final ObservableList<BackpackEntry> backpacks = FXCollections.observableArrayList();
-    private final AdvancedDatabaseService<Backpack> manager;
+    private final AdvancedDatabaseService<Backpack> service;
     private final User user;
 
     private IntegerProperty selectedRowIndex;
@@ -82,7 +82,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
     // region Constrollers
 
     public ShopBackpackController(Context context) {
-        this.manager = context.getService(Context.SERVICE_BACKPACK);
+        this.service = context.getService(Context.SERVICE_BACKPACK);
         this.user = context.getUserService().getUser().get();
     }
 
@@ -106,7 +106,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
 
-        ObservableMergers.mergeList(BackpackEntry::new, backpacks, manager.selectAll());
+        ObservableMergers.mergeList(BackpackEntry::new, backpacks, service.selectAll());
     }
 
     @Override
@@ -129,7 +129,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
                 return;
             }
 
-            manager.toggleDatabase(newValue);
+            service.toggleDatabase(newValue);
         });
     }
 
@@ -141,7 +141,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            manager.insert((Backpack) item);
+            service.insert((Backpack) item);
             if (remote) {
                 backpacks.get(
                     backpacks.indexOf(
@@ -157,7 +157,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
     @Override
     public void onUpdateItem(ItemBase item) {
         try {
-            manager.update((Backpack) item);
+            service.update((Backpack) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se napodařilo aktualizovat", item.toString());
         }
@@ -178,7 +178,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
         final BackpackEntry entry = backpacks.get(index);
         final String name = entry.getName();
         try {
-            manager.delete(entry.getId());
+            service.delete(entry.getId());
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo odebrat z databáze", name);
         }
@@ -186,12 +186,12 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     @Override
     public void requestRemoveItem(ShopEntry item, boolean remote) {
-        manager.deleteRemote((Backpack) item.getItemBase(), remote);
+        service.deleteRemote((Backpack) item.getItemBase(), remote);
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        manager.upload((Backpack) item);
+        service.upload((Backpack) item);
     }
 
     @Override
@@ -201,11 +201,11 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     @Override
     public void onClose() {
-        manager.toggleDatabase(false);
+        service.toggleDatabase(false);
     }
 
     @Override
     public void synchronizeItems() {
-        manager.synchronize(this.user.getName());
+        service.synchronize(this.user.getName());
     }
 }

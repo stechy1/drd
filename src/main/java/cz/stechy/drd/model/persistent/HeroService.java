@@ -215,8 +215,8 @@ public final class HeroService extends BaseDatabaseService<Hero> {
 
     @Override
     public void insert(Hero hero) throws DatabaseException {
-        InventoryService manager = getInventory();
-        manager.insert(InventoryService.standartInventory(hero));
+        InventoryService service = getInventory();
+        service.insert(InventoryService.standartInventory(hero));
 
         super.insert(hero);
     }

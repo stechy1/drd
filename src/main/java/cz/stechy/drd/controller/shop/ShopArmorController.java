@@ -78,7 +78,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
 
     private final ObservableList<ArmorEntry> armors = FXCollections.observableArrayList();
     private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
-    private final AdvancedDatabaseService<Armor> manager;
+    private final AdvancedDatabaseService<Armor> service;
     private final User user;
 
     private IntegerProperty selectedRowIndex;
@@ -89,7 +89,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
     // region Constructors
 
     public ShopArmorController(Context context) {
-        this.manager = context.getService(Context.SERVICE_ARMOR);
+        this.service = context.getService(Context.SERVICE_ARMOR);
         user = context.getUserService().getUser().get();
     }
 
@@ -128,7 +128,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
 
         ObservableMergers.mergeList(armor -> new ArmorEntry(armor, height),
-            armors, manager.selectAll());
+            armors, service.selectAll());
     }
 
     @Override
@@ -151,7 +151,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
                 return;
             }
 
-            manager.toggleDatabase(newValue);
+            service.toggleDatabase(newValue);
         });
     }
 
@@ -163,7 +163,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            manager.insert((Armor) item);
+            service.insert((Armor) item);
             armors.get(
                 armors.indexOf(
                     new ArmorEntry((Armor) item, height)))
@@ -176,7 +176,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
     @Override
     public void onUpdateItem(ItemBase item) {
         try {
-            manager.update((Armor) item);
+            service.update((Armor) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se napodařilo aktualizovat", item.toString());
         }
@@ -197,7 +197,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
         final ArmorEntry entry = armors.get(index);
         final String name = entry.getName();
         try {
-            manager.delete(entry.getId());
+            service.delete(entry.getId());
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo odebrat z databáze", name);
         }
@@ -205,12 +205,12 @@ public class ShopArmorController implements Initializable, ShopItemController {
 
     @Override
     public void requestRemoveItem(ShopEntry item, boolean remote) {
-        manager.deleteRemote((Armor) item.getItemBase(), remote);
+        service.deleteRemote((Armor) item.getItemBase(), remote);
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        manager.upload((Armor) item);
+        service.upload((Armor) item);
     }
 
     @Override
@@ -220,11 +220,11 @@ public class ShopArmorController implements Initializable, ShopItemController {
 
     @Override
     public void onClose() {
-        manager.toggleDatabase(false);
+        service.toggleDatabase(false);
     }
 
     @Override
     public void synchronizeItems() {
-        manager.synchronize(this.user.getName());
+        service.synchronize(this.user.getName());
     }
 }

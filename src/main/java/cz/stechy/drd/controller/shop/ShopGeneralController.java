@@ -69,7 +69,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
     // endregion
 
     private final ObservableList<GeneralEntry> generalItems = FXCollections.observableArrayList();
-    private final AdvancedDatabaseService<GeneralItem> manager;
+    private final AdvancedDatabaseService<GeneralItem> service;
     private final User user;
 
     private IntegerProperty selectedRowIndex;
@@ -80,7 +80,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
     // region Constrollers
 
     public ShopGeneralController(Context context) {
-        this.manager = context.getService(Context.SERVICE_GENERAL);
+        this.service = context.getService(Context.SERVICE_GENERAL);
         this.user = context.getUserService().getUser().get();
     }
 
@@ -103,7 +103,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
 
-        ObservableMergers.mergeList(GeneralEntry::new, generalItems, manager.selectAll());
+        ObservableMergers.mergeList(GeneralEntry::new, generalItems, service.selectAll());
     }
 
     @Override
@@ -126,7 +126,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
                 return;
             }
 
-            manager.toggleDatabase(newValue);
+            service.toggleDatabase(newValue);
         });
     }
 
@@ -138,7 +138,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            manager.insert((GeneralItem) item);
+            service.insert((GeneralItem) item);
             if (remote) {
                 generalItems.get(
                     generalItems.indexOf(
@@ -154,7 +154,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
     @Override
     public void onUpdateItem(ItemBase item) {
         try {
-            manager.update((GeneralItem) item);
+            service.update((GeneralItem) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se napodařilo aktualizovat", item.toString());
         }
@@ -175,7 +175,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
         final GeneralEntry entry = generalItems.get(index);
         final String name = entry.getName();
         try {
-            manager.delete(entry.getId());
+            service.delete(entry.getId());
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo odebrat z databáze", name);
         }
@@ -183,12 +183,12 @@ public class ShopGeneralController implements Initializable, ShopItemController 
 
     @Override
     public void requestRemoveItem(ShopEntry item, boolean remote) {
-        manager.deleteRemote((GeneralItem) item.getItemBase(), remote);
+        service.deleteRemote((GeneralItem) item.getItemBase(), remote);
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        manager.upload((GeneralItem) item);
+        service.upload((GeneralItem) item);
     }
 
     @Override
@@ -198,11 +198,11 @@ public class ShopGeneralController implements Initializable, ShopItemController 
 
     @Override
     public void onClose() {
-        manager.toggleDatabase(false);
+        service.toggleDatabase(false);
     }
 
     @Override
     public void synchronizeItems() {
-        manager.synchronize(this.user.getName());
+        service.synchronize(this.user.getName());
     }
 }
