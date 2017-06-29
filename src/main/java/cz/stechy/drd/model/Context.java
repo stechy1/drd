@@ -10,6 +10,7 @@ import cz.stechy.drd.model.db.SQLite;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.persistent.ArmorService;
 import cz.stechy.drd.model.persistent.BackpackService;
+import cz.stechy.drd.model.persistent.BestiaryService;
 import cz.stechy.drd.model.persistent.GeneralItemService;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.MeleWeaponService;
@@ -59,6 +60,7 @@ public class Context {
     public static final String MANAGER_ARMOR = "armor";
     public static final String MANAGER_GENERAL = "general";
     public static final String MANAGER_BACKPACK = "backpack";
+    public static final String MANAGER_BESTIARY = "bestiary";
 
     // endregion
 
@@ -72,8 +74,8 @@ public class Context {
     private final Map<String, DatabaseService> managerMap = new HashMap<>(MANAGERS_COUNT);
     // Jediný manažer, který nebude v mapě
     private final UserService userService;
-    private final ResourceBundle resources;
 
+    private final ResourceBundle resources;
     // Překladač aplikace
     private Translator translator;
 
@@ -135,6 +137,7 @@ public class Context {
         managerMap.put(MANAGER_ARMOR, initManager(ArmorService.class));
         managerMap.put(MANAGER_GENERAL, initManager(GeneralItemService.class));
         managerMap.put(MANAGER_BACKPACK, initManager(BackpackService.class));
+        managerMap.put(MANAGER_BESTIARY, initManager(BestiaryService.class));
     }
 
     private void initNativeHandlers() throws Exception {
