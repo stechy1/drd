@@ -2,10 +2,12 @@ package cz.stechy.drd.util;
 
 import cz.stechy.drd.controller.dice.DiceHelper;
 import cz.stechy.drd.controller.dice.DiceHelper.AdditionType;
+import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
 import cz.stechy.drd.model.entity.hero.Hero.Race;
+import cz.stechy.drd.model.entity.mob.Mob.MobClass;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.Backpack.Size;
 import cz.stechy.drd.model.item.MeleWeapon;
@@ -185,6 +187,42 @@ public final class StringConvertors {
             @Override
             public Size fromString(String string) {
                 return Size.valueOf(string);
+            }
+        };
+    }
+    
+    public static StringConverter<Rule> forRulesType(Translator translator) {
+        return new StringConverter<Rule>() {
+            @Override
+            public String toString(Rule object) {
+                if (object == null) {
+                    return "";
+                }
+
+                return translator.getRulesList().get(object.ordinal());
+            }
+
+            @Override
+            public Rule fromString(String string) {
+                return Rule.valueOf(string);
+            }
+        };
+    }
+    
+    public static StringConverter<MobClass> forMobClass(Translator translator) {
+        return new StringConverter<MobClass>() {
+            @Override
+            public String toString(MobClass object) {
+                if (object == null) {
+                    return "";
+                }
+
+                return translator.getMobClassList().get(object.ordinal());
+            }
+
+            @Override
+            public MobClass fromString(String string) {
+                return MobClass.valueOf(string);
             }
         };
     }

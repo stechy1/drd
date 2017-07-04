@@ -199,7 +199,7 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuBestiary(ActionEvent actionEvent) {
-
+        startNewDialog(R.FXML.BESTIARY);
     }
 
     @FXML

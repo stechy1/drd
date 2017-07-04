@@ -7,6 +7,7 @@ public final class R {
 
         public static final String DICE = "dice";
         public static final String MONEY = "money";
+        public static final String BESTIARY = "bestiary";
         public static final String NEW_HERO_1 = "new_hero_1";
         public static final String NEW_HERO_2 = "new_hero_2";
         public static final String NEW_HERO_3 = "new_hero_3";
@@ -150,6 +151,7 @@ public final class R {
         public static final String ITEM_WEIGHT = "drd_item_weight";
         public static final String ITEM_PRICE = "drd_item_price";
         public static final String ITEM_AMMOUNT = "drd_item_ammount";
+        public static final String ITEM_STACK_SIZE = "drd_item_stack_size";
         public static final String ITEM_IMAGE = "drd_item_image";
         public static final String ITEM_IMAGE_CHOOSE_DIALOG = "drd_item_image_choose_dialog";
         public static final String ITEM_WEAPON_STRENGTH = "drd_item_weapon_strength";
@@ -168,6 +170,10 @@ public final class R {
         public static final String MONEY_ADD = "drd_money_add";
         public static final String MONEY_SUBTRACT = "drd_money_subtract";
         public static final String XP_ADD = "drd_xp_add";
+        public static final String BESTIARY_TITLE = "drd_bestiary_title";
+        public static final String RULES_PPZ = "drd_rules_ppz";
+        public static final String RULES_PPP = "drd_rules_ppp";
+        public static final String RULES_PPE = "drd_rules_ppe";
         public static final String USER_LOGIN_TITLE = "drd_user_login_title";
         public static final String USER_USERNAME = "drd_user_username";
         public static final String USER_PASSWORD = "drd_user_password";
@@ -180,5 +186,13 @@ public final class R {
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";
         public static final String NOTIFY_REGISTER_FAIL = "drd_notify_register_fail";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
+        public static final String SHOP_ITEM_SYNCHRONIZE = "drd_shop_item_synchronize";
+        public static final String ITEM_WEAPON_RANGED_RANGE = "drd_item_weapon_ranged_range";
+        public static final String BESTIARY_NAME = "drd_bestiary_name";
+        public static final String BESTIARY_AUTHOR = "drd_bestiary_author";
+        public static final String BESTIARY_MOB_CLASS = "drd_bestiary_mob_class";
+        public static final String BESTIARY_RULES_TYPE = "drd_bestiary_rules_type";
+        public static final String BESTIARY_ACTION = "drd_bestiary_action";
+        public static final String BESTIARY_VIABILITY = "drd_bestiary_viability";
     }
 }

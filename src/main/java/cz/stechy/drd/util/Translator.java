@@ -22,6 +22,8 @@ public final class Translator {
     private static final String[] DICE_ADDITION_PROPERTIES;
     private static final String[] SHOP_ITEMS;
     private static final String[] BACKPACK_SIZES;
+    private static final String[] RULES;
+    private static final String[] MOB_CLASSES;
 
     // endregion
 
@@ -85,6 +87,14 @@ public final class Translator {
             R.Translate.ITEM_BACKPACK_SIZE_MEDIUM,
             R.Translate.ITEM_BACKPACK_SIZE_LARGE
         };
+        RULES = new String[] {
+            R.Translate.RULES_PPZ,
+            R.Translate.RULES_PPP,
+            R.Translate.RULES_PPE
+        };
+        MOB_CLASSES = new String[] {
+
+        };
     }
 
     // region Variables
@@ -99,6 +109,8 @@ public final class Translator {
     private List<String> diceAdditionProertyList;
     private List<String> shopItemList;
     private List<String> backpackSizeList;
+    private List<String> rulesList;
+    private List<String> mobClassList;
 
     // endregion
 
@@ -220,6 +232,24 @@ public final class Translator {
         }
 
         return backpackSizeList;
+    }
+
+    public List<String> getRulesList() {
+        if (rulesList == null) {
+            rulesList = Arrays.stream(RULES).map(resources::getString)
+                .collect(Collectors.toList());
+        }
+
+        return rulesList;
+    }
+
+    public List<String> getMobClassList() {
+        if (mobClassList == null) {
+            mobClassList = Arrays.stream(MOB_CLASSES).map(resources::getString)
+                .collect(Collectors.toList());
+        }
+
+        return mobClassList;
     }
 
     // endregion
