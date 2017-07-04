@@ -4,6 +4,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
+import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
 import cz.stechy.drd.util.StringConvertors;
@@ -109,7 +110,14 @@ public class BestiaryController extends BaseController implements Initializable 
     }
 
     public void handleRemoveItem(ActionEvent actionEvent) {
-
+        final int rowIndex = selectedRowIndex.get();
+        final Mob mob = mobs.get(rowIndex);
+        final String name = mob.getName();
+        try {
+            service.delete(mob.getId());
+        } catch (DatabaseException e) {
+            logger.warn("Příšeru {} se nepodařilo odebrat z databáze", name);
+        }
     }
 
     public void handleEditItem(ActionEvent actionEvent) {
