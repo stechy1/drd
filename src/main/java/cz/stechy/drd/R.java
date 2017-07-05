@@ -8,6 +8,7 @@ public final class R {
         public static final String DICE = "dice";
         public static final String MONEY = "money";
         public static final String BESTIARY = "bestiary";
+        public static final String BESTIARY_EDIT = "bestiary_edit";
         public static final String NEW_HERO_1 = "new_hero_1";
         public static final String NEW_HERO_2 = "new_hero_2";
         public static final String NEW_HERO_3 = "new_hero_3";
