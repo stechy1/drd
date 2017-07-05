@@ -15,21 +15,21 @@
       <padding>
         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
       </padding>
-      <Button mnemonicParsing="false" text="Button"/>
+      <Button onAction="#handleCancel" text="%drd_cancel"/>
       <Region HBox.hgrow="ALWAYS"/>
-      <Button mnemonicParsing="false" text="Button"/>
+      <Button onAction="#handleFinish" text="%drd_finish"/>
     </HBox>
   </bottom>
   <center>
     <TabPane BorderPane.alignment="CENTER" tabClosingPolicy="UNAVAILABLE">
       <Tab text="Obecné">
-        <fx:include source="bestiary_edit_general.fxml" fx:id="bestiaryGeneral"/>
+        <fx:include source="bestiary_edit_general.fxml" fx:id="tabBestiaryGeneral"/>
       </Tab>
       <Tab text="Vlastnosti">
-        <fx:include source="bestiary_edit_properties.fxml" fx:id="bestiaryProperties"/>
+        <fx:include source="bestiary_edit_properties.fxml" fx:id="tabBestiaryProperties"/>
       </Tab>
       <Tab text="Ostatní">
-        <fx:include source="bestiary_edit_other.fxml" fx:id="bestiaryOther"/>
+        <fx:include source="bestiary_edit_other.fxml" fx:id="tabBestiaryOther"/>
       </Tab>
     </TabPane>
   </center>
