@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<GridPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
+  xmlns="http://javafx.com/javafx/8.0.112"
+  fx:controller="cz.stechy.drd.controller.bestiary.edit.BestiaryEditOtherController">
+  <columnConstraints>
+    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+  </rowConstraints>
+  <Label text="%drd_bestiary_vulnerability"/>
+  <Label GridPane.rowIndex="1" text="%drd_bestiary_mobility"/>
+  <Label GridPane.rowIndex="2" text="%drd_bestiary_perservance"/>
+  <Label GridPane.rowIndex="3" text="%drd_bestiary_control_ability"/>
+  <Label GridPane.rowIndex="4" text="%drd_bestiary_basic_power_of_mind"/>
+  <Label GridPane.rowIndex="5" text="%drd_bestiary_domestication"/>
+  <Hyperlink GridPane.columnIndex="1" text="Hyperlink" fx:id="linkVulnerability"/>
+  <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="150.0" fx:id="txtMobility"/>
+  <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" layoutX="385.0" layoutY="82.0"
+    maxWidth="150.0"
+    fx:id="txtPerservance"/>
+  <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" layoutX="385.0" layoutY="139.0"
+    maxWidth="150.0"
+    fx:id="txtControlAbility"/>
+  <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" layoutX="385.0" layoutY="196.0"
+    maxWidth="150.0"
+    fx:id="txtBasicPowerOfMind"/>
+  <TextField GridPane.columnIndex="1" GridPane.rowIndex="5" layoutX="385.0" layoutY="253.0"
+    maxWidth="150.0"
+    fx:id="txtDomestication"/>
+</GridPane>
