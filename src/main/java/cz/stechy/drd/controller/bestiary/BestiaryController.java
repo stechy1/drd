@@ -10,6 +10,7 @@ import cz.stechy.drd.model.entity.mob.Mob.MobClass;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
+import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.IntegerProperty;
@@ -106,7 +107,9 @@ public class BestiaryController extends BaseController implements Initializable 
     }
 
     public void handleAddItem(ActionEvent actionEvent) {
-
+        Bundle bundle = new Bundle();
+        bundle.putInt(BestiaryHelper.MOB_ACTION, BestiaryHelper.MOB_ACTION_ADD);
+        startNewDialogForResult(R.FXML.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_ADD, bundle);
     }
 
     public void handleRemoveItem(ActionEvent actionEvent) {
