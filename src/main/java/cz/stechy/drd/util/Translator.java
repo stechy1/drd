@@ -93,7 +93,14 @@ public final class Translator {
             R.Translate.RULES_PPE
         };
         MOB_CLASSES = new String[] {
-
+            R.Translate.BESTIARY_TYPE_DRAGON,
+            R.Translate.BESTIARY_TYPE_SNAKE,
+            R.Translate.BESTIARY_TYPE_LYCANTROP,
+            R.Translate.BESTIARY_TYPE_UNDEATH,
+            R.Translate.BESTIARY_TYPE_INVISIBLE,
+            R.Translate.BESTIARY_TYPE_STATUE,
+            R.Translate.BESTIARY_TYPE_SPIDER,
+            R.Translate.BESTIARY_TYPE_OTHER,
         };
     }
 

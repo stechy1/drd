@@ -199,6 +199,14 @@ public final class R {
         public static final String RULES_PPZ = "drd_rules_ppz";
         public static final String RULES_PPP = "drd_rules_ppp";
         public static final String RULES_PPE = "drd_rules_ppe";
+        public static final String BESTIARY_TYPE_DRAGON = "drd_bestiary_type_dragon";
+        public static final String BESTIARY_TYPE_SNAKE = "drd_bestiary_type_snake";
+        public static final String BESTIARY_TYPE_LYCANTROP = "drd_bestiary_type_lycantrop";
+        public static final String BESTIARY_TYPE_UNDEATH = "drd_bestiary_type_undeath";
+        public static final String BESTIARY_TYPE_INVISIBLE = "drd_bestiary_type_invisible";
+        public static final String BESTIARY_TYPE_STATUE = "drd_bestiary_type_statue";
+        public static final String BESTIARY_TYPE_SPIDER = "drd_bestiary_type_spider";
+        public static final String BESTIARY_TYPE_OTHER = "drd_bestiary_type_other";
         public static final String USER_LOGIN_TITLE = "drd_user_login_title";
         public static final String USER_USERNAME = "drd_user_username";
         public static final String USER_PASSWORD = "drd_user_password";

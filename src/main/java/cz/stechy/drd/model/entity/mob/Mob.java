@@ -365,7 +365,7 @@ public final class Mob extends EntityBase {
     // endregion
 
     public enum MobClass {
-
+        DRAGON, SNAKE, LYCANTROP, UNDEATH, INVISIBLE, STATUE, SPIDER, OTHER
     }
 
     public static class Builder {

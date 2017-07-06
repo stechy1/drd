@@ -84,7 +84,7 @@ public final class StringConvertors {
             }
         };
     }
-
+    
     public static StringConverter<DiceHelper.AdditionType> forAdditionType(Translator translator) {
         return new StringConverter<AdditionType>() {
             @Override
