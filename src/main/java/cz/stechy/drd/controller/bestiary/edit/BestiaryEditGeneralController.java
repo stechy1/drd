@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.bestiary.edit;
 
+import cz.stechy.drd.controller.bestiary.BestiaryHelper;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.entity.Conviction;
@@ -23,16 +24,6 @@ import javafx.scene.control.TextField;
  * Kontroler pro editaci základních vlastností nestvůry
  */
 public class BestiaryEditGeneralController implements Initializable, IEditController {
-
-    // region Constants
-
-    private static final String NAME = "name";
-    private static final String RULE = "rule";
-    private static final String MOB_CLASS = "mob_class";
-    private static final String CONVICTION = "conviction";
-    private static final String HEIGHT = "height";
-
-    // endregion
 
     // region Variables
 
@@ -73,20 +64,20 @@ public class BestiaryEditGeneralController implements Initializable, IEditContro
 
     @Override
     public void loadMobPropertiesFromBundle(Bundle bundle) {
-        model.name.setValue(bundle.getString(NAME));
-        model.rule.setValue(Rule.values()[bundle.getInt(RULE)]);
-        model.mobClass.setValue(MobClass.values()[bundle.getInt(MOB_CLASS)]);
-        model.conviction.setValue(Conviction.values()[bundle.getInt(CONVICTION)]);
-        model.height.setValue(Height.values()[bundle.getInt(HEIGHT)]);
+        model.name.setValue(bundle.getString(BestiaryHelper.NAME));
+        model.rule.setValue(Rule.values()[bundle.getInt(BestiaryHelper.RULES_TYPE)]);
+        model.mobClass.setValue(MobClass.values()[bundle.getInt(BestiaryHelper.MOB_CLASS)]);
+        model.conviction.setValue(Conviction.values()[bundle.getInt(BestiaryHelper.CONVICTION)]);
+        model.height.setValue(Height.values()[bundle.getInt(BestiaryHelper.HEIGHT)]);
     }
 
     @Override
     public void saveMobPropertiesToBundle(Bundle bundle) {
-        bundle.putString(NAME, model.name.getValue());
-        bundle.putInt(RULE, model.rule.getValue().ordinal());
-        bundle.putInt(MOB_CLASS, model.mobClass.getValue().ordinal());
-        bundle.putInt(CONVICTION, model.conviction.getValue().ordinal());
-        bundle.putInt(HEIGHT, model.height.getValue().ordinal());
+        bundle.putString(BestiaryHelper.NAME, model.name.getValue());
+        bundle.putInt(BestiaryHelper.RULES_TYPE, model.rule.getValue().ordinal());
+        bundle.putInt(BestiaryHelper.MOB_CLASS, model.mobClass.getValue().ordinal());
+        bundle.putInt(BestiaryHelper.CONVICTION, model.conviction.getValue().ordinal());
+        bundle.putInt(BestiaryHelper.HEIGHT, model.height.getValue().ordinal());
     }
 
     private static final class Model {
