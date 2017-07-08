@@ -22,6 +22,9 @@
   </bottom>
   <center>
     <TabPane BorderPane.alignment="CENTER" tabClosingPolicy="UNAVAILABLE">
+      <Tab text="Obrázek">
+        <fx:include source="bestiary_edit_image.fxml" fx:id="tabBestiaryImage" />
+      </Tab>
       <Tab text="Obecné">
         <fx:include source="bestiary_edit_general.fxml" fx:id="tabBestiaryGeneral"/>
       </Tab>

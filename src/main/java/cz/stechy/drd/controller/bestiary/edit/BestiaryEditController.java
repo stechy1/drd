@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 
 /**
  * Kontroler pro řížení kontrolerů pro editaci vlastností nestvůry
@@ -28,12 +29,16 @@ public class BestiaryEditController extends BaseController implements Initializa
     // region FXML
 
     @FXML
+    private BestiaryEditImageController tabBestiaryImageController;
+    @FXML
     private BestiaryEditGeneralController tabBestiaryGeneralController;
     @FXML
     private BestiaryEditPropertiesController tabBestiaryPropertiesController;
     @FXML
     private BestiaryEditOtherController tabBestiaryOtherController;
 
+    @FXML
+    private Pane tabBestiaryImage;
     @FXML
     private GridPane tabBestiaryGeneral;
     @FXML
@@ -54,6 +59,7 @@ public class BestiaryEditController extends BaseController implements Initializa
         title = resources.getString(R.Translate.BESTIARY_EDIT_TITLE);
 
         controllers = new IEditController[] {
+            tabBestiaryImageController,
             tabBestiaryGeneralController,
             tabBestiaryPropertiesController,
             tabBestiaryOtherController
