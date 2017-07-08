@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
@@ -36,6 +37,8 @@ public class BestiaryEditController extends BaseController implements Initializa
     private BestiaryEditPropertiesController tabBestiaryPropertiesController;
     @FXML
     private BestiaryEditOtherController tabBestiaryOtherController;
+    @FXML
+    private BestiaryEditDescriptionController tabBestiaryDescriptionController;
 
     @FXML
     private Pane tabBestiaryImage;
@@ -45,6 +48,8 @@ public class BestiaryEditController extends BaseController implements Initializa
     private GridPane tabBestiaryProperties;
     @FXML
     private GridPane tabBestiaryOther;
+    @FXML
+    private TextArea tabBestiaryDescription;
 
     // endregion
 
@@ -62,7 +67,8 @@ public class BestiaryEditController extends BaseController implements Initializa
             tabBestiaryImageController,
             tabBestiaryGeneralController,
             tabBestiaryPropertiesController,
-            tabBestiaryOtherController
+            tabBestiaryOtherController,
+            tabBestiaryDescriptionController
         };
     }
 

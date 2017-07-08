@@ -34,6 +34,9 @@
       <Tab text="Ostatní">
         <fx:include source="bestiary_edit_other.fxml" fx:id="tabBestiaryOther"/>
       </Tab>
+      <Tab text="Popis">
+        <fx:include source="bestiary_edit_description.fxml" fx:id="tabBestiaryDescription"/>
+      </Tab>
     </TabPane>
   </center>
 </BorderPane>
