@@ -7,6 +7,8 @@ import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
+import cz.stechy.drd.model.user.User;
+import cz.stechy.drd.util.HashGenerator;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
@@ -63,6 +65,7 @@ public class BestiaryController extends BaseController implements Initializable 
         this, "selectedRowIndex");
     private final ObservableList<Mob> mobs;
     private final AdvancedDatabaseService<Mob> service;
+    private final User user;
 
     private final Translator translator;
     private String title;
@@ -74,6 +77,7 @@ public class BestiaryController extends BaseController implements Initializable 
 
     public BestiaryController(Context context) {
         this.service = context.getService(Context.SERVICE_BESTIARY);
+        this.user = context.getUserService().getUser().get();
         this.translator = context.getTranslator();
         this.mobs = service.selectAll();
     }
@@ -106,6 +110,40 @@ public class BestiaryController extends BaseController implements Initializable 
         setTitle(title);
     }
 
+    @Override
+    protected void onScreenResult(int statusCode, int actionId, Bundle bundle) {
+        Mob mob;
+        switch (actionId) {
+            case BestiaryHelper.MOB_ACTION_ADD:
+                if (statusCode != RESULT_SUCCESS) {
+                    return;
+                }
+                mob = BestiaryHelper.mobFromBundle(bundle);
+                try {
+                    mob.setAuthor(user.getName());
+                    mob.setId(HashGenerator.createHash());
+                    service.insert(mob);
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                    logger.warn("Nestvůru {} se nepodařilo vložit do databáze", mob.toString());
+                }
+                break;
+
+            case BestiaryHelper.MOB_ACTION_UPDATE:
+                if (statusCode != RESULT_SUCCESS) {
+                    return;
+                }
+
+                mob = BestiaryHelper.mobFromBundle(bundle);
+                try {
+                    service.update(mob);
+                } catch (DatabaseException e) {
+                    logger.warn("Nestvůru {} se napodařilo aktualizovat", mob.toString());
+                }
+                break;
+        }
+    }
+
     public void handleAddItem(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
         bundle.putInt(BestiaryHelper.MOB_ACTION, BestiaryHelper.MOB_ACTION_ADD);
@@ -124,6 +162,10 @@ public class BestiaryController extends BaseController implements Initializable 
     }
 
     public void handleEditItem(ActionEvent actionEvent) {
+        final Mob mob = mobs.get(selectedRowIndex.get());
+        final Bundle bundle = BestiaryHelper.mobToBundle(mob);
+        bundle.putInt(BestiaryHelper.MOB_ACTION, BestiaryHelper.MOB_ACTION_UPDATE);
+        startNewDialogForResult(R.FXML.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_UPDATE, bundle);
     }
 
     public void handleSynchronize(ActionEvent actionEvent) {

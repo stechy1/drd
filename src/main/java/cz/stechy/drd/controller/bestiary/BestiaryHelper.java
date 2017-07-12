@@ -33,6 +33,8 @@ public final class BestiaryHelper {
     public static final String BASIC_BOWER_OF_MIND = "basic_power_of_mind";
     public static final String EXPERIENCE = "experience";
     public static final String DOMESTICATION = "domestication";
+    public static final String DOWNLOADED = "downloaded";
+    public static final String UPLOADED = "uploaded";
 
     public static final String MOB_ACTION = "action_type";
     public static final int MOB_ACTION_ADD = 1;
@@ -72,6 +74,8 @@ public final class BestiaryHelper {
             bundle.putInt(BASIC_BOWER_OF_MIND, mob.getBasicPowerOfMind());
             bundle.putInt(EXPERIENCE, mob.getExperience());
             bundle.putInt(DOMESTICATION, mob.getDomestication());
+            bundle.putBoolean(DOWNLOADED, mob.isDownloaded());
+            bundle.putBoolean(UPLOADED, mob.isUploaded());
 
         return bundle;
     }
@@ -101,6 +105,8 @@ public final class BestiaryHelper {
             .basicPowerOfMind(bundle.getInt(BASIC_BOWER_OF_MIND))
             .experience(bundle.getInt(EXPERIENCE))
             .domestication(bundle.getInt(DOMESTICATION))
+            .downloaded(bundle.getBoolean(DOWNLOADED))
+            .uploaded(bundle.getBoolean(UPLOADED))
             .build();
     }
 

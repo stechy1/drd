@@ -60,6 +60,12 @@ public class BestiaryEditGeneralController implements Initializable, IEditContro
         cmbRule.setConverter(StringConvertors.forRulesType(translator));
         cmbMobClass.setConverter(StringConvertors.forMobClass(translator));
         cmbConviction.setConverter(StringConvertors.forConvictionConverter(translator));
+
+        txtName.textProperty().bindBidirectional(model.name);
+        cmbRule.valueProperty().bindBidirectional(model.rule);
+        cmbMobClass.valueProperty().bindBidirectional(model.mobClass);
+        cmbConviction.valueProperty().bindBidirectional(model.conviction);
+        cmbHeight.valueProperty().bindBidirectional(model.height);
     }
 
     @Override

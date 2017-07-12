@@ -8,6 +8,7 @@ import cz.stechy.drd.model.entity.mob.Mob.Builder;
 import cz.stechy.drd.model.item.Backpack;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -151,12 +152,14 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
             .basicPowerOfMind(resultSet.getInt(COLUMN_BACIS_BOWER_OF_MIND))
             .experience(resultSet.getInt(COLUMN_EXPERIENCE))
             .domestication(resultSet.getInt(COLUMN_DOMESTICATION))
+            .downloaded(resultSet.getBoolean(COLUMN_DOWNLOADED))
+            .uploaded(resultSet.getBoolean(COLUMN_UPLOADED))
             .build();
     }
 
     @Override
     protected List<Object> itemToParams(Mob mob) {
-        return Arrays.asList(
+        return new ArrayList<>(Arrays.asList(
             mob.getId(),
             mob.getName(),
             mob.getDescription(),
@@ -179,8 +182,10 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
             mob.getCharisma().getValue(),
             mob.getBasicPowerOfMind(),
             mob.getExperience(),
-            mob.getDomestication()
-        );
+            mob.getDomestication(),
+            mob.isDownloaded(),
+            mob.isUploaded()
+        ));
     }
 
     @Override

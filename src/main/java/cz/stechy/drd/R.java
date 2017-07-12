@@ -7,9 +7,12 @@ public final class R {
 
         public static final String DICE = "dice";
         public static final String MONEY = "money";
+        public static final String VULNERABILITY = "vulnerability";
         public static final String BESTIARY = "bestiary";
         public static final String BESTIARY_EDIT = "bestiary_edit";
+        public static final String BESTIARY_EDIT_DESCRIPTION = "bestiary_edit_description";
         public static final String BESTIARY_EDIT_GENERAL = "bestiary_edit_general";
+        public static final String BESTIARY_EDIT_IMAGE = "bestiary_edit_image";
         public static final String BESTIARY_EDIT_OTHER = "bestiary_edit_other";
         public static final String BESTIARY_EDIT_PROPERTIES = "bestiary_edit_properties";
         public static final String NEW_HERO_1 = "new_hero_1";

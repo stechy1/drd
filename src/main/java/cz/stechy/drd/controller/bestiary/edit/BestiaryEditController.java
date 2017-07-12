@@ -1,6 +1,7 @@
 package cz.stechy.drd.controller.bestiary.edit;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -55,7 +56,11 @@ public class BestiaryEditController extends BaseController implements Initializa
 
     private IEditController[] controllers;
     private String title;
+
     private int action;
+    private String id;
+    private boolean downloaded;
+    private boolean uploaded;
 
     // endregion
 
@@ -70,11 +75,19 @@ public class BestiaryEditController extends BaseController implements Initializa
             tabBestiaryOtherController,
             tabBestiaryDescriptionController
         };
+        Arrays.stream(controllers).forEach(controller -> {
+            if (controller instanceof InjectableChild) {
+                ((InjectableChild) controller).injectParent(this);
+            }
+        });
     }
 
     @Override
     protected void onCreate(Bundle bundle) {
         action = bundle.getInt(BestiaryHelper.MOB_ACTION);
+        id = bundle.getString(BestiaryHelper.ID);
+        downloaded =bundle.getBoolean(BestiaryHelper.DOWNLOADED);
+        uploaded = bundle.getBoolean(BestiaryHelper.UPLOADED);
         Arrays.stream(controllers).forEach(controller -> controller.loadMobPropertiesFromBundle(bundle));
     }
 
@@ -84,6 +97,15 @@ public class BestiaryEditController extends BaseController implements Initializa
         setScreenSize(400, 370);
     }
 
+    @Override
+    protected void onScreenResult(int statusCode, int actionId, Bundle bundle) {
+        Arrays.stream(controllers).forEach(controller -> {
+            if (controller instanceof InjectableChild) {
+                ((InjectableChild) controller).onScreenResult(statusCode, actionId, bundle);
+            }
+        });
+    }
+
     // region Button handlers
 
     public void handleCancel(ActionEvent actionEvent) {
@@ -91,8 +113,12 @@ public class BestiaryEditController extends BaseController implements Initializa
     }
 
     public void handleFinish(ActionEvent actionEvent) {
+        setResult(RESULT_SUCCESS);
         final Bundle bundle = new Bundle();
         bundle.putInt(BestiaryHelper.MOB_ACTION, action);
+        bundle.putString(BestiaryHelper.ID, id);
+        bundle.putBoolean(BestiaryHelper.DOWNLOADED, downloaded);
+        bundle.putBoolean(BestiaryHelper.UPLOADED, uploaded);
         Arrays.stream(controllers).forEach(controllers -> controllers.saveMobPropertiesToBundle(bundle));
         finish(bundle);
     }
