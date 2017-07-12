@@ -30,7 +30,7 @@ public final class BestiaryHelper {
     public static final String CONTROL_ABILITY = "control_ability";
     public static final String INTELLIGENCE = "intelligence";
     public static final String CHARISMA = "charisma";
-    public static final String BACIS_BOWER_OF_MIND = "basic_power_of_mind";
+    public static final String BASIC_BOWER_OF_MIND = "basic_power_of_mind";
     public static final String EXPERIENCE = "experience";
     public static final String DOMESTICATION = "domestication";
 
@@ -69,7 +69,7 @@ public final class BestiaryHelper {
             bundle.putInt(CONTROL_ABILITY, mob.getControlAbility());
             bundle.putInt(INTELLIGENCE, mob.getIntelligence().getValue());
             bundle.putInt(CHARISMA, mob.getCharisma().getValue());
-            bundle.putInt(BACIS_BOWER_OF_MIND, mob.getBasicPowerOfMind());
+            bundle.putInt(BASIC_BOWER_OF_MIND, mob.getBasicPowerOfMind());
             bundle.putInt(EXPERIENCE, mob.getExperience());
             bundle.putInt(DOMESTICATION, mob.getDomestication());
 
@@ -98,7 +98,7 @@ public final class BestiaryHelper {
             .controlAbility(bundle.getInt(CONTROL_ABILITY))
             .intelligence(bundle.getInt(INTELLIGENCE))
             .charisma(bundle.getInt(CHARISMA))
-            .basicPowerOfMind(bundle.getInt(BACIS_BOWER_OF_MIND))
+            .basicPowerOfMind(bundle.getInt(BASIC_BOWER_OF_MIND))
             .experience(bundle.getInt(EXPERIENCE))
             .domestication(bundle.getInt(DOMESTICATION))
             .build();
