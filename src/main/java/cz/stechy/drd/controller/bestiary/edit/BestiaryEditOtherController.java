@@ -1,14 +1,17 @@
 package cz.stechy.drd.controller.bestiary.edit;
 
+import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.Vulnerability;
 import cz.stechy.drd.util.FormUtils;
+import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Hyperlink;
@@ -17,7 +20,7 @@ import javafx.scene.control.TextField;
 /**
  * Kontroler pro editaci ostatních vlastností nestvůry
  */
-public class BestiaryEditOtherController implements IEditController, Initializable {
+public class BestiaryEditOtherController implements InjectableChild, IEditController, Initializable {
 
     // region Variables
 
@@ -39,6 +42,7 @@ public class BestiaryEditOtherController implements IEditController, Initializab
     // endregion
 
     private final Model model = new Model();
+    private BaseController baseController;
 
     // endregion
 
@@ -49,6 +53,11 @@ public class BestiaryEditOtherController implements IEditController, Initializab
         FormUtils.initTextFormater(txtControlAbility, model.controlAbility);
         FormUtils.initTextFormater(txtBasicPowerOfMind, model.basicPowerOfMind);
         FormUtils.initTextFormater(txtDomestication, model.domestication);
+    }
+
+    @Override
+    public void injectParent(BaseController baseController) {
+        this.baseController = baseController;
     }
 
     @Override
@@ -69,6 +78,10 @@ public class BestiaryEditOtherController implements IEditController, Initializab
         bundle.putInt(BestiaryHelper.CONTROL_ABILITY, model.controlAbility.getActValue().intValue());
         bundle.putInt(BestiaryHelper.BASIC_BOWER_OF_MIND, model.basicPowerOfMind.getActValue().intValue());
         bundle.putInt(BestiaryHelper.DOMESTICATION, model.domestication.getActValue().intValue());
+    }
+
+    public void handleShowVulnerabilityPopup(ActionEvent actionEvent) {
+
     }
 
     private static final class Model {

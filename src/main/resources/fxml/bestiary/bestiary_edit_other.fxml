@@ -27,7 +27,7 @@
   <Label GridPane.rowIndex="3" text="%drd_bestiary_control_ability"/>
   <Label GridPane.rowIndex="4" text="%drd_bestiary_basic_power_of_mind"/>
   <Label GridPane.rowIndex="5" text="%drd_bestiary_domestication"/>
-  <Hyperlink GridPane.columnIndex="1" text="Hyperlink" fx:id="linkVulnerability"/>
+  <Hyperlink GridPane.columnIndex="1" text="Hyperlink" fx:id="linkVulnerability" onAction="#handleShowVulnerabilityPopup"/>
   <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" maxWidth="150.0" fx:id="txtMobility"/>
   <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" layoutX="385.0" layoutY="82.0"
     maxWidth="150.0"
