@@ -15,14 +15,20 @@ import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import org.slf4j.Logger;
@@ -37,6 +43,8 @@ public class BestiaryController extends BaseController implements Initializable 
 
     @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(BestiaryController.class);
+
+    private static final int NO_SELECTED_INDEX = -1;
 
     // endregion
 
@@ -59,10 +67,23 @@ public class BestiaryController extends BaseController implements Initializable 
     @FXML
     private TableColumn<Mob, ?> columnAction;
 
+    @FXML
+    private Button btnAddItem;
+    @FXML
+    private Button btnRemoveItem;
+    @FXML
+    private Button btnEditItem;
+    @FXML
+    private Button btnSynchronize;
+    @FXML
+    private ToggleButton btnToggleOnline;
+
     // endregion
 
     private final IntegerProperty selectedRowIndex = new SimpleIntegerProperty(
         this, "selectedRowIndex");
+    private final BooleanProperty showOnlineDatabase = new SimpleBooleanProperty(this,
+        "showOnlineDatabase, false");
     private final ObservableList<Mob> mobs;
     private final AdvancedDatabaseService<Mob> service;
     private final User user;
@@ -90,7 +111,15 @@ public class BestiaryController extends BaseController implements Initializable 
         this.title = resources.getString(R.Translate.BESTIARY_TITLE);
 
         tableBestiary.setItems(mobs);
+
+        final BooleanBinding selectedRowBinding = selectedRowIndex.isEqualTo(NO_SELECTED_INDEX);
         selectedRowIndex.bind(tableBestiary.getSelectionModel().selectedIndexProperty());
+        btnAddItem.disableProperty().bind(showOnlineDatabase);
+        btnRemoveItem.disableProperty().bind(Bindings.or(
+            selectedRowBinding, showOnlineDatabase));
+        btnEditItem.disableProperty().bind(Bindings.or(
+            selectedRowBinding, showOnlineDatabase));
+        showOnlineDatabase.bindBidirectional(btnToggleOnline.selectedProperty());
 
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
