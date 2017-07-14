@@ -116,9 +116,11 @@ public class BestiaryController extends BaseController implements Initializable 
         selectedRowIndex.bind(tableBestiary.getSelectionModel().selectedIndexProperty());
         btnAddItem.disableProperty().bind(showOnlineDatabase);
         btnRemoveItem.disableProperty().bind(Bindings.or(
-            selectedRowBinding, showOnlineDatabase));
+            selectedRowBinding,
+            showOnlineDatabase));
         btnEditItem.disableProperty().bind(Bindings.or(
-            selectedRowBinding, showOnlineDatabase));
+            selectedRowBinding,
+            showOnlineDatabase));
         showOnlineDatabase.bindBidirectional(btnToggleOnline.selectedProperty());
 
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));

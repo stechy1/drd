@@ -145,17 +145,17 @@ public class ShopController1 extends BaseController implements Initializable {
                 selectedAccordionPaneIndex.setValue(translatedItemType.indexOf(newValue.getText()));
             });
 
-        final BooleanBinding selectedRowBinding = selectedRowIndex.isNotEqualTo(NO_SELECTED_INDEX);
+        final BooleanBinding selectedRowBinding = selectedRowIndex.isEqualTo(NO_SELECTED_INDEX);
         btnAddItem.disableProperty().bind(Bindings.or(
             selectedAccordionPaneIndex.isNotEqualTo(NO_SELECTED_INDEX).not(),
             showOnlineDatabase));
         btnRemoveItem.disableProperty().bind(Bindings.or(
-            selectedRowBinding.not(),
+            selectedRowBinding,
             Bindings.or(
                 selectedAccordionPaneIndex.isNotEqualTo(NO_SELECTED_INDEX).not(),
                 showOnlineDatabase)));
         btnEditItem.disableProperty().bind(Bindings.or(
-            selectedRowBinding.not(),
+            selectedRowBinding,
             Bindings.or(
                 selectedAccordionPaneIndex.isNotEqualTo(NO_SELECTED_INDEX).not(),
                 showOnlineDatabase)));
