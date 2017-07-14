@@ -175,6 +175,8 @@ public class BestiaryController extends BaseController implements Initializable 
         }
     }
 
+    // region Button handlers
+
     public void handleAddItem(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
         bundle.putInt(BestiaryHelper.MOB_ACTION, BestiaryHelper.MOB_ACTION_ADD);
@@ -200,6 +202,8 @@ public class BestiaryController extends BaseController implements Initializable 
     }
 
     public void handleSynchronize(ActionEvent actionEvent) {
-
+        service.synchronize(user.getName());
     }
+
+    // endregion
 }
