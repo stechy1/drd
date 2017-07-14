@@ -114,6 +114,7 @@ public class BestiaryController extends BaseController implements Initializable 
 
         final BooleanBinding selectedRowBinding = selectedRowIndex.isEqualTo(NO_SELECTED_INDEX);
         selectedRowIndex.bind(tableBestiary.getSelectionModel().selectedIndexProperty());
+        showOnlineDatabase.bindBidirectional(btnToggleOnline.selectedProperty());
         btnAddItem.disableProperty().bind(showOnlineDatabase);
         btnRemoveItem.disableProperty().bind(Bindings.or(
             selectedRowBinding,
@@ -121,7 +122,14 @@ public class BestiaryController extends BaseController implements Initializable 
         btnEditItem.disableProperty().bind(Bindings.or(
             selectedRowBinding,
             showOnlineDatabase));
-        showOnlineDatabase.bindBidirectional(btnToggleOnline.selectedProperty());
+
+        showOnlineDatabase.addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                return;
+            }
+
+            service.toggleDatabase(newValue);
+        });
 
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
