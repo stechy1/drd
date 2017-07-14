@@ -139,7 +139,7 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
     @Override
     public void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem uploadHandler,
         OnDownloadItem downloadHandler, OnDeleteItem deleteHandler) {
-        columnAction.setCellFactory(param -> CellUtils
+        columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources));
     }
