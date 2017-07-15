@@ -6,13 +6,13 @@ import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
+import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
+import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
 import cz.stechy.drd.model.shop.IShoppingCart;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.RangedWeaponEntry;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
@@ -41,7 +41,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Pomocný kontroler pro obchod se zbraněmi na dálku
  */
-public class ShopWeaponRangedController implements Initializable, ShopItemController {
+public class ShopWeaponRangedController implements Initializable,
+    ShopItemController<RangedWeaponEntry> {
 
     // region Constants
 
@@ -137,8 +138,10 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem uploadHandler,
-        OnDownloadItem downloadHandler, OnDeleteItem deleteHandler) {
+    public void setShoppingCart(IShoppingCart shoppingCart,
+        OnUploadItem<RangedWeaponEntry> uploadHandler,
+        OnDownloadItem<RangedWeaponEntry> downloadHandler,
+        OnDeleteItem<RangedWeaponEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources));

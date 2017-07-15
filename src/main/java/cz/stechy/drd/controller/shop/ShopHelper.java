@@ -1,10 +1,10 @@
 package cz.stechy.drd.controller.shop;
 
+import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
+import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
+import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.shop.OnAddItemToCart;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
 import cz.stechy.drd.model.shop.OnRemoveItemFromCart;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
 import java.util.ResourceBundle;
@@ -45,8 +45,8 @@ final class ShopHelper {
 
     public static <S extends ShopEntry, T> TableCell<S, T> forActionButtons(
         final OnAddItemToCart<S> addHandler, final OnRemoveItemFromCart<S> removeHandler,
-        final OnUploadItem uploadHandler, final OnDownloadItem downloadHandler,
-        final OnDeleteItem deleteHandler, User user, ResourceBundle resources) {
+        final OnUploadItem<S> uploadHandler, final OnDownloadItem<S> downloadHandler,
+        final OnDeleteItem<S> deleteHandler, User user, ResourceBundle resources) {
         final String resourceAdd = resources.getString("drd_shop_item_cart_add");
         final String resourceRemove = resources.getString("drd_firebase_entry_remove");
         final String resourceUpload = resources.getString("drd_firebase_entry_upload");

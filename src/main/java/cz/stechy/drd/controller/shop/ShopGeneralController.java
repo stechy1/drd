@@ -6,12 +6,12 @@ import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
+import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
+import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.shop.IShoppingCart;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Pomocný kontroler pro obchod se obecnými předměty
  */
-public class ShopGeneralController implements Initializable, ShopItemController {
+public class ShopGeneralController implements Initializable, ShopItemController<GeneralEntry> {
 
     // region Constants
 
@@ -107,8 +107,10 @@ public class ShopGeneralController implements Initializable, ShopItemController 
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem uploadHandler,
-        OnDownloadItem downloadHandler, OnDeleteItem deleteHandler) {
+    public void setShoppingCart(IShoppingCart shoppingCart,
+        OnUploadItem<GeneralEntry> uploadHandler,
+        OnDownloadItem<GeneralEntry> downloadHandler,
+        OnDeleteItem<GeneralEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources));

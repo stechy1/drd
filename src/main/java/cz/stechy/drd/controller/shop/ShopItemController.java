@@ -1,10 +1,10 @@
 package cz.stechy.drd.controller.shop;
 
+import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
+import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
+import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.shop.IShoppingCart;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.screens.Bundle;
 import javafx.beans.property.BooleanProperty;
@@ -13,7 +13,7 @@ import javafx.beans.property.IntegerProperty;
 /**
  * Rozhraní pro definici kontroleru, který zprostředkovává nakupování
  */
-interface ShopItemController {
+interface ShopItemController<T> {
 
     /**
      * Nastaví referenci na nákupní košík
@@ -22,8 +22,8 @@ interface ShopItemController {
      * @param uploadHandler {@link OnUploadItem}
      * @param downloadHandler {@link OnDownloadItem}
      */
-    void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem uploadHandler,
-        OnDownloadItem downloadHandler, OnDeleteItem deleteHandler);
+    void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem<T> uploadHandler,
+        OnDownloadItem<T> downloadHandler, OnDeleteItem<T> deleteHandler);
 
     /**
      * Předá referenci na {@link IntegerProperty} představující vybraný index řádku v tabulce

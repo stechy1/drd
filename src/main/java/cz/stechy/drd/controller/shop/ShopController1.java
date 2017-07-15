@@ -2,13 +2,14 @@ package cz.stechy.drd.controller.shop;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
+import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
+import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
+import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.persistent.HeroService;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.ShoppingCart;
+import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.HashGenerator;
 import cz.stechy.drd.util.Translator;
@@ -106,7 +107,6 @@ public class ShopController1 extends BaseController implements Initializable {
 
     private ShopItemController[] controllers;
     private String title;
-    //private Hero hero;
 
     // endregion
 
@@ -269,15 +269,15 @@ public class ShopController1 extends BaseController implements Initializable {
 
     // endregion
 
-    private final OnUploadItem uploadHandler = item -> {
+    private final OnUploadItem<ShopEntry> uploadHandler = item -> {
         ShopItemController controller = controllers[selectedAccordionPaneIndex.get()];
         controller.uploadRequest(item.getItemBase());
     };
-    private final OnDownloadItem downloadHandler = item -> {
+    private final OnDownloadItem<ShopEntry> downloadHandler = item -> {
         ShopItemController controller = controllers[selectedAccordionPaneIndex.get()];
         controller.onAddItem(item.getItemBase(), true);
     };
-    private final OnDeleteItem deleteHandler = (item, remote) -> {
+    private final OnDeleteItem<ShopEntry> deleteHandler = (item, remote) -> {
         ShopItemController controller = controllers[selectedAccordionPaneIndex.get()];
         controller.requestRemoveItem(item, remote);
     };

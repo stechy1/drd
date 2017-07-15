@@ -6,14 +6,14 @@ import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
+import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
+import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponType;
 import cz.stechy.drd.model.shop.IShoppingCart;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.MeleWeaponEntry;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
@@ -42,7 +42,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Pomocný kontroler pro obchod se zbraněmi na blízko
  */
-public class ShopWeaponMeleController implements Initializable, ShopItemController {
+public class ShopWeaponMeleController implements Initializable,
+    ShopItemController<MeleWeaponEntry> {
 
     // region Constants
 
@@ -135,8 +136,10 @@ public class ShopWeaponMeleController implements Initializable, ShopItemControll
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem uploadHandler,
-        OnDownloadItem downloadHandler, OnDeleteItem deleteHandler) {
+    public void setShoppingCart(IShoppingCart shoppingCart,
+        OnUploadItem<MeleWeaponEntry> uploadHandler,
+        OnDownloadItem<MeleWeaponEntry> downloadHandler,
+        OnDeleteItem<MeleWeaponEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources));
