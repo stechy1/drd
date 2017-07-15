@@ -148,10 +148,10 @@ public final class R {
         public static final String SHOP_ITEM_REMOVE = "drd_shop_item_remove";
         public static final String SHOP_ITEM_EDIT = "drd_shop_item_edit";
         public static final String SHOP_ITEM_CART_ADD = "drd_shop_item_cart_add";
-        public static final String SHOP_ITEM_CART_REMOVE = "drd_shop_item_cart_remove";
-        public static final String SHOP_ITEM_UPLOAD = "drd_shop_item_upload";
-        public static final String SHOP_ITEM_DOWNLOAD = "drd_shop_item_download";
-        public static final String SHOP_TOGGLE_ONLINE_DATABASE = "drd_shop_toggle_online_database";
+        public static final String FIREBASE_ENTRY_REMOVE = "drd_firebase_entry_remove";
+        public static final String FIREBASE_ENTRY_UPLOAD = "drd_firebase_entry_upload";
+        public static final String FIREBASE_ENTRY_DOWNLOAD = "drd_firebase_entry_download";
+        public static final String FIREBASE_TOGGLE_ONLINE_DATABASE = "drd_firebase_toggle_online_database";
         public static final String ITEM_NAME = "drd_item_name";
         public static final String ITEM_AUTHOR = "drd_item_author";
         public static final String ITEM_DESCRIPTION = "drd_item_description";

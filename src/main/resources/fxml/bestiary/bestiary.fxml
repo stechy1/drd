@@ -68,7 +68,7 @@
       </Button>
       <ToggleButton fx:id="btnToggleOnline">
         <tooltip>
-          <Tooltip text="%drd_shop_toggle_online_database"/>
+          <Tooltip text="%drd_firebase_toggle_online_database"/>
         </tooltip>
         <styleClass>
           <String fx:value="sidebar-button" />

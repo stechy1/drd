@@ -130,9 +130,9 @@ public final class BestiaryHelper {
         final OnDownloadItem<Mob> downloadHandler, final OnDeleteItem<Mob> deleteHandler,
         User user, final ResourceBundle resources) {
         return new TableCell<Mob, T>() {
-            final String resourceRemove = resources.getString("drd_shop_item_cart_remove");
-            final String resourceUpload = resources.getString("drd_shop_item_upload");
-            final String resourceDownload = resources.getString("drd_shop_item_download");
+            final String resourceRemove = resources.getString("drd_firebase_entry_remove");
+            final String resourceUpload = resources.getString("drd_firebase_entry_upload");
+            final String resourceDownload = resources.getString("drd_firebase_entry_download");
 
             final Button btnRemote = new Button();
             final HBox container = new HBox(btnRemote);
