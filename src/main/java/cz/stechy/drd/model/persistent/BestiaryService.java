@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Služba spravující CRUD operace nad třídou {@link Backpack}
@@ -93,9 +94,15 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
 
     // endregion
 
+    // region Constructors
+
     public BestiaryService(Database db) {
         super(db);
     }
+
+    // endregion
+
+    // region Private methods
 
     @Override
     protected Mob parseDataSnapshot(DataSnapshot snapshot) {
@@ -164,7 +171,7 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
             mob.getName(),
             mob.getDescription(),
             mob.getAuthor(),
-            mob.getImageRaw(),
+            mob.getImage(),
             mob.getMobClass().ordinal(),
             mob.getRulesType().ordinal(),
             mob.getConviction().ordinal(),
@@ -222,4 +229,13 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
     protected String getInitializationQuery() {
         return QUERY_CREATE;
     }
+
+    @Override
+    protected Map<String, Object> toFirebaseMap(Mob mob) {
+        final Map<String, Object> map = super.toFirebaseMap(mob);
+        map.put(COLUMN_IMAGE, blobToBase64(mob.getImage()));
+        return map;
+    }
+
+    // endregion
 }

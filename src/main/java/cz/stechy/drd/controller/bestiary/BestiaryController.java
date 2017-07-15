@@ -5,6 +5,9 @@ import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
+import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
+import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
 import cz.stechy.drd.model.user.User;
@@ -84,11 +87,11 @@ public class BestiaryController extends BaseController implements Initializable 
         this, "selectedRowIndex");
     private final BooleanProperty showOnlineDatabase = new SimpleBooleanProperty(this,
         "showOnlineDatabase, false");
-    private final ObservableList<Mob> mobs;
-    private final AdvancedDatabaseService<Mob> service;
     private final User user;
-
     private final Translator translator;
+
+    private AdvancedDatabaseService<Mob> service;
+    private ObservableList<Mob> mobs;
     private String title;
     private ResourceBundle resources;
 
@@ -140,7 +143,8 @@ public class BestiaryController extends BaseController implements Initializable 
         columnRulesType.setCellFactory(
             TextFieldTableCell.forTableColumn(StringConvertors.forRulesType(translator)));
         columnViability.setCellValueFactory(new PropertyValueFactory<>("viability"));
-
+        columnAction.setCellFactory(param -> BestiaryHelper
+            .forActionButtons(uploadHandler, downloadHandler, deleteHandler, user, resources));
     }
 
     @Override
@@ -214,4 +218,14 @@ public class BestiaryController extends BaseController implements Initializable 
     }
 
     // endregion
+
+    private final OnUploadItem<Mob> uploadHandler = mob -> service.upload(mob);
+    private final OnDownloadItem<Mob> downloadHandler = mob -> {
+        try {
+            service.insert(mob);
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+    };
+    private final OnDeleteItem<Mob> deleteHandler = (mob, remote) -> service.deleteRemote(mob, true);
 }

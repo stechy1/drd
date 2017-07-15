@@ -24,7 +24,7 @@
         <TableColumn fx:id="columnMobClass" prefWidth="75.0" text="%drd_bestiary_mob_class"/>
         <TableColumn fx:id="columnRulesType" prefWidth="75.0" text="%drd_bestiary_rules_type"/>
         <TableColumn fx:id="columnViability" prefWidth="75.0" text="%drd_bestiary_viability"/>
-        <TableColumn fx:id="columnAction" minWidth="135.0" text="%drd_bestiary_action"/>
+        <TableColumn fx:id="columnAction" minWidth="135.0" text="%drd_bestiary_action" />
       </columns>
     </TableView>
   </center>

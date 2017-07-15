@@ -23,7 +23,7 @@ public final class Mob extends EntityBase {
 
     // region Variables
 
-    private final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
+    private final ObjectProperty<byte[]> image = new SimpleObjectProperty<>();
     // Třída nestvůry
     private final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>();
     // Typ pravidel, do kterých nestvůra patří
@@ -76,7 +76,7 @@ public final class Mob extends EntityBase {
      * @param mob Mob, který se má zkopírovat
      */
     private Mob(Mob mob) {
-        this(mob.getId(), mob.getName(), mob.getDescription(), mob.getAuthor(), mob.getImageRaw(),
+        this(mob.getId(), mob.getName(), mob.getDescription(), mob.getAuthor(), mob.getImage(),
             mob.getMobClass(), mob.getRulesType(),
             mob.getLive().getActValue().intValue(),
             mob.getLive().getMaxValue().intValue(), mob.getMag().getActValue().intValue(),
@@ -132,7 +132,7 @@ public final class Mob extends EntityBase {
         super(id, author, name, description, live, maxLive, mag, maxMag, conviction, height,
             downloaded, uploaded);
 
-        setImageRaw(image);
+        setImage(image);
         setMobClass(mobClass);
         setRulesType(rulesType);
         this.attackNumber.setValue(attackNumber);
@@ -160,7 +160,7 @@ public final class Mob extends EntityBase {
         super.update(other);
 
         Mob mob = (Mob) other;
-        setImageRaw(mob.getImageRaw());
+        setImage(mob.getImage());
         setMobClass(mob.getMobClass());
         setRulesType(mob.getRulesType());
         this.attackNumber.update(mob.getAttackNumber());
@@ -190,16 +190,16 @@ public final class Mob extends EntityBase {
     // region Getters & Setters
 
 
-    public final byte[] getImageRaw() {
-        return imageRaw.get();
+    public final byte[] getImage() {
+        return image.get();
     }
 
-    public final ReadOnlyObjectProperty<byte[]> imageRawProperty() {
-        return imageRaw;
+    public final ReadOnlyObjectProperty<byte[]> imageProperty() {
+        return image;
     }
 
-    private void setImageRaw(byte[] imageRaw) {
-        this.imageRaw.set(imageRaw);
+    private void setImage(byte[] image) {
+        this.image.set(image);
     }
 
     public final MobClass getMobClass() {
