@@ -6,12 +6,12 @@ import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
+import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
+import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.shop.IShoppingCart;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Pomocný kontroler pro obchod se obecnými předměty
  */
-public class ShopGeneralController implements Initializable, ShopItemController {
+public class ShopGeneralController implements Initializable, ShopItemController<GeneralEntry> {
 
     // region Constants
 
@@ -69,7 +69,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
     // endregion
 
     private final ObservableList<GeneralEntry> generalItems = FXCollections.observableArrayList();
-    private final AdvancedDatabaseService<GeneralItem> manager;
+    private final AdvancedDatabaseService<GeneralItem> service;
     private final User user;
 
     private IntegerProperty selectedRowIndex;
@@ -80,7 +80,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
     // region Constrollers
 
     public ShopGeneralController(Context context) {
-        this.manager = context.getManager(Context.MANAGER_GENERAL);
+        this.service = context.getService(Context.SERVICE_GENERAL);
         this.user = context.getUserService().getUser().get();
     }
 
@@ -103,13 +103,15 @@ public class ShopGeneralController implements Initializable, ShopItemController 
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
 
-        ObservableMergers.mergeList(GeneralEntry::new, generalItems, manager.selectAll());
+        ObservableMergers.mergeList(GeneralEntry::new, generalItems, service.selectAll());
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem uploadHandler,
-        OnDownloadItem downloadHandler, OnDeleteItem deleteHandler) {
-        columnAction.setCellFactory(param -> CellUtils
+    public void setShoppingCart(IShoppingCart shoppingCart,
+        OnUploadItem<GeneralEntry> uploadHandler,
+        OnDownloadItem<GeneralEntry> downloadHandler,
+        OnDeleteItem<GeneralEntry> deleteHandler) {
+        columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources));
     }
@@ -126,7 +128,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
                 return;
             }
 
-            manager.toggleDatabase(newValue);
+            service.toggleDatabase(newValue);
         });
     }
 
@@ -138,7 +140,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            manager.insert((GeneralItem) item);
+            service.insert((GeneralItem) item);
             if (remote) {
                 generalItems.get(
                     generalItems.indexOf(
@@ -154,7 +156,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
     @Override
     public void onUpdateItem(ItemBase item) {
         try {
-            manager.update((GeneralItem) item);
+            service.update((GeneralItem) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se napodařilo aktualizovat", item.toString());
         }
@@ -175,7 +177,7 @@ public class ShopGeneralController implements Initializable, ShopItemController 
         final GeneralEntry entry = generalItems.get(index);
         final String name = entry.getName();
         try {
-            manager.delete(entry.getId());
+            service.delete(entry.getId());
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo odebrat z databáze", name);
         }
@@ -183,12 +185,12 @@ public class ShopGeneralController implements Initializable, ShopItemController 
 
     @Override
     public void requestRemoveItem(ShopEntry item, boolean remote) {
-        manager.deleteRemote((GeneralItem) item.getItemBase(), remote);
+        service.deleteRemote((GeneralItem) item.getItemBase(), remote);
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        manager.upload((GeneralItem) item);
+        service.upload((GeneralItem) item);
     }
 
     @Override
@@ -198,11 +200,11 @@ public class ShopGeneralController implements Initializable, ShopItemController 
 
     @Override
     public void onClose() {
-        manager.toggleDatabase(false);
+        service.toggleDatabase(false);
     }
 
     @Override
     public void synchronizeItems() {
-        manager.synchronize(this.user.getName());
+        service.synchronize(this.user.getName());
     }
 }

@@ -62,7 +62,7 @@ public class BackpackController extends BaseController {
     // region Constructors
 
     public BackpackController(Context context) {
-        this.heroManager = context.getManager(Context.MANAGER_HERO);
+        this.heroManager = context.getService(Context.SERVICE_HERO);
     }
 
     // endregion

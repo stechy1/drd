@@ -75,7 +75,7 @@ public class DiceController extends BaseController implements Initializable {
 
     public DiceController(Context context) {
         this.translator = context.getTranslator();
-        this.hero = ((HeroService) context.getManager(Context.MANAGER_HERO)).getHero();
+        this.hero = ((HeroService) context.getService(Context.SERVICE_HERO)).getHero();
     }
 
     // endregion

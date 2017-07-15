@@ -259,7 +259,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
             logger.trace("Aktualizuji položku {} v databázi", item.toString());
             db.query(query, params.toArray());
             final Optional<T> result = items.stream()
-                .filter(t -> t.equals(item))
+                .filter(t -> item.getId().equals(t.getId()))
                 .findFirst();
             assert result.isPresent();
             final TransactionOperation<T> operation = new UpdateOperation<>(result.get(), item);

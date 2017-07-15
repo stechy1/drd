@@ -6,13 +6,13 @@ import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
+import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
+import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
 import cz.stechy.drd.model.shop.IShoppingCart;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.RangedWeaponEntry;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
@@ -41,7 +41,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Pomocný kontroler pro obchod se zbraněmi na dálku
  */
-public class ShopWeaponRangedController implements Initializable, ShopItemController {
+public class ShopWeaponRangedController implements Initializable,
+    ShopItemController<RangedWeaponEntry> {
 
     // region Constants
 
@@ -87,7 +88,7 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
 
     private final ObservableList<RangedWeaponEntry> rangedWeapons = FXCollections
         .observableArrayList();
-    private final AdvancedDatabaseService<RangedWeapon> manager;
+    private final AdvancedDatabaseService<RangedWeapon> service;
     private final Translator translator;
     private final User user;
 
@@ -100,8 +101,8 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
 
     @SuppressWarnings("unchecked")
     public ShopWeaponRangedController(Context context) {
-        this.manager = context
-            .getManager(Context.MANAGER_WEAPON_RANGED);
+        this.service = context
+            .getService(Context.SERVICE_WEAPON_RANGED);
         this.translator = context.getTranslator();
         this.user = context.getUserService().getUser().get();
     }
@@ -133,13 +134,15 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
 
-        ObservableMergers.mergeList(RangedWeaponEntry::new, rangedWeapons, manager.selectAll());
+        ObservableMergers.mergeList(RangedWeaponEntry::new, rangedWeapons, service.selectAll());
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem uploadHandler,
-        OnDownloadItem downloadHandler, OnDeleteItem deleteHandler) {
-        columnAction.setCellFactory(param -> CellUtils
+    public void setShoppingCart(IShoppingCart shoppingCart,
+        OnUploadItem<RangedWeaponEntry> uploadHandler,
+        OnDownloadItem<RangedWeaponEntry> downloadHandler,
+        OnDeleteItem<RangedWeaponEntry> deleteHandler) {
+        columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources));
     }
@@ -156,7 +159,7 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
                 return;
             }
 
-            manager.toggleDatabase(newValue);
+            service.toggleDatabase(newValue);
         });
     }
 
@@ -168,7 +171,7 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            manager.insert((RangedWeapon) item);
+            service.insert((RangedWeapon) item);
             rangedWeapons.get(
                 rangedWeapons.indexOf(
                     new RangedWeaponEntry((RangedWeapon) item)))
@@ -181,7 +184,7 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
     @Override
     public void onUpdateItem(ItemBase item) {
         try {
-            manager.update((RangedWeapon) item);
+            service.update((RangedWeapon) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se napodařilo aktualizovat", item.toString());
         }
@@ -203,7 +206,7 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
         final RangedWeaponEntry entry = rangedWeapons.get(index);
         final String name = entry.getName();
         try {
-            manager.delete(entry.getId());
+            service.delete(entry.getId());
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo odebrat z databáze", name);
         }
@@ -211,12 +214,12 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
 
     @Override
     public void requestRemoveItem(ShopEntry item, boolean remote) {
-        manager.deleteRemote((RangedWeapon) item.getItemBase(), remote);
+        service.deleteRemote((RangedWeapon) item.getItemBase(), remote);
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        manager.upload((RangedWeapon) item);
+        service.upload((RangedWeapon) item);
     }
 
     @Override
@@ -226,11 +229,11 @@ public class ShopWeaponRangedController implements Initializable, ShopItemContro
 
     @Override
     public void onClose() {
-        manager.toggleDatabase(false);
+        service.toggleDatabase(false);
     }
 
     @Override
     public void synchronizeItems() {
-        manager.synchronize(this.user.getName());
+        service.synchronize(this.user.getName());
     }
 }

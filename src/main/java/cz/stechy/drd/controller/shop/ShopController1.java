@@ -2,13 +2,14 @@ package cz.stechy.drd.controller.shop;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Context;
+import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
+import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
+import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.persistent.HeroService;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.ShoppingCart;
+import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.HashGenerator;
 import cz.stechy.drd.util.Translator;
@@ -106,7 +107,6 @@ public class ShopController1 extends BaseController implements Initializable {
 
     private ShopItemController[] controllers;
     private String title;
-    //private Hero hero;
 
     // endregion
 
@@ -116,7 +116,7 @@ public class ShopController1 extends BaseController implements Initializable {
         this.translator = context.getTranslator();
         this.translatedItemType.addAll(translator.getShopTypeList());
         this.user = context.getUserService().getUser();
-        this.hero = ((HeroService) context.getManager(Context.MANAGER_HERO)).getHero();
+        this.hero = ((HeroService) context.getService(Context.SERVICE_HERO)).getHero();
         this.shoppingCart = new ShoppingCart(hero.get());
     }
 
@@ -145,17 +145,17 @@ public class ShopController1 extends BaseController implements Initializable {
                 selectedAccordionPaneIndex.setValue(translatedItemType.indexOf(newValue.getText()));
             });
 
-        final BooleanBinding selectedRowBinding = selectedRowIndex.isNotEqualTo(NO_SELECTED_INDEX);
+        final BooleanBinding selectedRowBinding = selectedRowIndex.isEqualTo(NO_SELECTED_INDEX);
         btnAddItem.disableProperty().bind(Bindings.or(
             selectedAccordionPaneIndex.isNotEqualTo(NO_SELECTED_INDEX).not(),
             showOnlineDatabase));
         btnRemoveItem.disableProperty().bind(Bindings.or(
-            selectedRowBinding.not(),
+            selectedRowBinding,
             Bindings.or(
                 selectedAccordionPaneIndex.isNotEqualTo(NO_SELECTED_INDEX).not(),
                 showOnlineDatabase)));
         btnEditItem.disableProperty().bind(Bindings.or(
-            selectedRowBinding.not(),
+            selectedRowBinding,
             Bindings.or(
                 selectedAccordionPaneIndex.isNotEqualTo(NO_SELECTED_INDEX).not(),
                 showOnlineDatabase)));
@@ -269,15 +269,15 @@ public class ShopController1 extends BaseController implements Initializable {
 
     // endregion
 
-    private final OnUploadItem uploadHandler = item -> {
+    private final OnUploadItem<ShopEntry> uploadHandler = item -> {
         ShopItemController controller = controllers[selectedAccordionPaneIndex.get()];
         controller.uploadRequest(item.getItemBase());
     };
-    private final OnDownloadItem downloadHandler = item -> {
+    private final OnDownloadItem<ShopEntry> downloadHandler = item -> {
         ShopItemController controller = controllers[selectedAccordionPaneIndex.get()];
         controller.onAddItem(item.getItemBase(), true);
     };
-    private final OnDeleteItem deleteHandler = (item, remote) -> {
+    private final OnDeleteItem<ShopEntry> deleteHandler = (item, remote) -> {
         ShopItemController controller = controllers[selectedAccordionPaneIndex.get()];
         controller.requestRemoveItem(item, remote);
     };

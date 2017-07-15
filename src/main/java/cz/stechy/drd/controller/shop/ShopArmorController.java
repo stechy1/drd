@@ -6,13 +6,13 @@ import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
+import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
+import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.shop.IShoppingCart;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.entry.ArmorEntry;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Pomocný kontroler pro obchod se zbrojí
  */
-public class ShopArmorController implements Initializable, ShopItemController {
+public class ShopArmorController implements Initializable, ShopItemController<ArmorEntry> {
 
     // region Constants
 
@@ -78,7 +78,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
 
     private final ObservableList<ArmorEntry> armors = FXCollections.observableArrayList();
     private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
-    private final AdvancedDatabaseService<Armor> manager;
+    private final AdvancedDatabaseService<Armor> service;
     private final User user;
 
     private IntegerProperty selectedRowIndex;
@@ -89,7 +89,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
     // region Constructors
 
     public ShopArmorController(Context context) {
-        this.manager = context.getManager(Context.MANAGER_ARMOR);
+        this.service = context.getService(Context.SERVICE_ARMOR);
         user = context.getUserService().getUser().get();
     }
 
@@ -128,13 +128,15 @@ public class ShopArmorController implements Initializable, ShopItemController {
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
 
         ObservableMergers.mergeList(armor -> new ArmorEntry(armor, height),
-            armors, manager.selectAll());
+            armors, service.selectAll());
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem uploadHandler,
-        OnDownloadItem downloadHandler, OnDeleteItem deleteHandler) {
-        columnAction.setCellFactory(param -> CellUtils
+    public void setShoppingCart(IShoppingCart shoppingCart,
+        OnUploadItem<ArmorEntry> uploadHandler,
+        OnDownloadItem<ArmorEntry> downloadHandler,
+        OnDeleteItem<ArmorEntry> deleteHandler) {
+        columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources));
     }
@@ -151,7 +153,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
                 return;
             }
 
-            manager.toggleDatabase(newValue);
+            service.toggleDatabase(newValue);
         });
     }
 
@@ -163,7 +165,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            manager.insert((Armor) item);
+            service.insert((Armor) item);
             armors.get(
                 armors.indexOf(
                     new ArmorEntry((Armor) item, height)))
@@ -176,7 +178,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
     @Override
     public void onUpdateItem(ItemBase item) {
         try {
-            manager.update((Armor) item);
+            service.update((Armor) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se napodařilo aktualizovat", item.toString());
         }
@@ -197,7 +199,7 @@ public class ShopArmorController implements Initializable, ShopItemController {
         final ArmorEntry entry = armors.get(index);
         final String name = entry.getName();
         try {
-            manager.delete(entry.getId());
+            service.delete(entry.getId());
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo odebrat z databáze", name);
         }
@@ -205,12 +207,12 @@ public class ShopArmorController implements Initializable, ShopItemController {
 
     @Override
     public void requestRemoveItem(ShopEntry item, boolean remote) {
-        manager.deleteRemote((Armor) item.getItemBase(), remote);
+        service.deleteRemote((Armor) item.getItemBase(), remote);
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        manager.upload((Armor) item);
+        service.upload((Armor) item);
     }
 
     @Override
@@ -220,11 +222,11 @@ public class ShopArmorController implements Initializable, ShopItemController {
 
     @Override
     public void onClose() {
-        manager.toggleDatabase(false);
+        service.toggleDatabase(false);
     }
 
     @Override
     public void synchronizeItems() {
-        manager.synchronize(this.user.getName());
+        service.synchronize(this.user.getName());
     }
 }
