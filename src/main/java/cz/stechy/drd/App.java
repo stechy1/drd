@@ -43,9 +43,9 @@ public class App extends Application {
 
     // region Variables
 
-    private Context context;
+    protected Context context;
 
-    private ScreenManager manager;
+    protected ScreenManager manager;
 
     // endregion
 
