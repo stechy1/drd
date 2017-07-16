@@ -2,6 +2,7 @@ package cz.stechy.drd.pages;
 
 import cz.stechy.drd.APage;
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.pages.shop.ShopPage;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,6 +21,7 @@ public final class MainPage extends APage {
 
     static {
         Map<String, Class<? extends APage>> map = new HashMap<>();
+        map.put("#btnShop", ShopPage.class);
         MAP = Collections.unmodifiableMap(map);
     }
 
@@ -61,7 +63,9 @@ public final class MainPage extends APage {
 
     // region Public methods
 
-
+    public APage showShop() throws Exception {
+        return showPage("#btnShop");
+    }
 
     // endregion
 
