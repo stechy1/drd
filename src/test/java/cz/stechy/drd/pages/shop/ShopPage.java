@@ -21,6 +21,7 @@ public final class ShopPage extends APage {
 
     static {
         Map<String, Class<? extends APage>> map = new HashMap<>();
+        map.put("drd_item_type_general", GeneralShopPage.class);
         MAP = Collections.unmodifiableMap(map);
     }
 
@@ -59,7 +60,9 @@ public final class ShopPage extends APage {
 
     // region Public methods
 
-
+    public APage showGeneralPage() throws Exception {
+        return showPage("drd_item_type_general");
+    }
 
     // endregion
 }
