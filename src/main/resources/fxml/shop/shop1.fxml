@@ -42,6 +42,9 @@
         <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
       </padding>
       <Button fx:id="btnAddItem" onAction="#handleAddItem">
+        <tooltip>
+          <Tooltip text="%drd_shop_item_add"/>
+        </tooltip>
         <styleClass>
           <String fx:value="sidebar-button" />
           <String fx:value="icon-add" />
