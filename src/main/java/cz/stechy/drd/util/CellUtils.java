@@ -3,30 +3,12 @@ package cz.stechy.drd.util;
 import cz.stechy.drd.Money;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.inventory.ItemSlot;
-import cz.stechy.drd.model.shop.OnAddItemToCart;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnRemoveItemFromCart;
-import cz.stechy.drd.model.shop.OnUploadItem;
-import cz.stechy.drd.model.shop.entry.ShopEntry;
-import cz.stechy.drd.model.user.User;
-import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.text.Font;
 
 /**
  * Pomocná knihovní třída pro generování různých buněk
