@@ -5,7 +5,6 @@ import cz.stechy.drd.R.Translate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import javafx.scene.control.TitledPane;
 import org.testfx.api.FxRobot;
 
 /**
@@ -21,7 +20,7 @@ public final class ShopPage extends APage {
 
     static {
         Map<String, Class<? extends APage>> map = new HashMap<>();
-        map.put("drd_item_type_general", GeneralShopPage.class);
+        map.put("paneGeneral", GeneralShopPage.class);
         MAP = Collections.unmodifiableMap(map);
     }
 
@@ -42,8 +41,7 @@ public final class ShopPage extends APage {
 
     @Override
     protected void navigateTo(String identifier) {
-        robot.clickOn(node -> node instanceof TitledPane && ((TitledPane) node).getText()
-            .equals(super.getTitleFromBundle(identifier)));
+        robot.clickOn(identifier);
     }
 
     @Override
@@ -61,7 +59,7 @@ public final class ShopPage extends APage {
     // region Public methods
 
     public APage showGeneralPage() throws Exception {
-        return showPage("drd_item_type_general");
+        return showPage("#paneGeneral");
     }
 
     // endregion
