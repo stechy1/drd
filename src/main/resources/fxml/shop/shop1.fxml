@@ -18,19 +18,19 @@
   <center>
     <Accordion fx:id="accodionShopContainer" BorderPane.alignment="CENTER">
       <panes>
-        <TitledPane text="%drd_item_type_weapon_mele">
+        <TitledPane text="%drd_item_type_weapon_mele" fx:id="paneWeaponMele">
           <fx:include fx:id="tableMeleWeapon" source="shop_mele_weapon.fxml"/>
         </TitledPane>
-        <TitledPane text="%drd_item_type_weapon_ranged">
+        <TitledPane text="%drd_item_type_weapon_ranged" fx:id="paneWeaponRanged">
           <fx:include fx:id="tableRangedWeapon" source="shop_ranged_weapon.fxml"/>
         </TitledPane>
-        <TitledPane text="%drd_item_type_armor">
+        <TitledPane text="%drd_item_type_armor" fx:id="paneArmor">
           <fx:include fx:id="tableArmor" source="shop_armor.fxml"/>
         </TitledPane>
-        <TitledPane text="%drd_item_type_general">
+        <TitledPane text="%drd_item_type_general" fx:id="paneGeneral">
           <fx:include fx:id="tableGeneral" source="shop_general.fxml"/>
         </TitledPane>
-        <TitledPane text="%drd_item_type_backpack">
+        <TitledPane text="%drd_item_type_backpack" fx:id="paneBackpack">
           <fx:include fx:id="tableBackpack" source="shop_backpack.fxml"/>
         </TitledPane>
       </panes>
