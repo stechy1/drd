@@ -129,7 +129,7 @@
     </Menu>
   </MenuBar>
   <ToolBar minHeight="50.0" prefHeight="50.0">
-    <Button onAction="#handleMenuNewHero">
+    <Button onAction="#handleMenuNewHero" fx:id="btnNewHero">
       <styleClass>
         <String fx:value="toolbar-button"/>
         <String fx:value="icon-new"/>
@@ -138,7 +138,7 @@
         <Tooltip text="%drd_main_menu_file_new_hero"/>
       </tooltip>
     </Button>
-    <Button onAction="#handleMenuLoadHero">
+    <Button onAction="#handleMenuLoadHero" fx:id="btnLoadHero">
       <styleClass>
         <String fx:value="toolbar-button"/>
         <String fx:value="icon-open"/>
@@ -147,7 +147,7 @@
         <Tooltip text="%drd_main_menu_file_load_hero"/>
       </tooltip>
     </Button>
-    <Button onAction="#handleMenuCloseHero">
+    <Button onAction="#handleMenuCloseHero" fx:id="btnCloseHero">
       <styleClass>
         <String fx:value="toolbar-button"/>
         <String fx:value="icon-close-hero"/>
@@ -157,7 +157,7 @@
       </tooltip>
     </Button>
     <Separator/>
-    <Button onAction="#handleMenuDice">
+    <Button onAction="#handleMenuDice" fx:id="btnDice">
       <styleClass>
         <String fx:value="toolbar-button"/>
         <String fx:value="icon-dice"/>
@@ -166,7 +166,7 @@
         <Tooltip text="%drd_main_menu_tools_dice"/>
       </tooltip>
     </Button>
-    <Button onAction="#handleMenuBestiary">
+    <Button onAction="#handleMenuBestiary" fx:id="btnBestiary">
       <styleClass>
         <String fx:value="toolbar-button"/>
         <String fx:value="icon-bestiary"/>
@@ -175,7 +175,7 @@
         <Tooltip text="%drd_main_menu_tools_bestiary"/>
       </tooltip>
     </Button>
-    <Button onAction="#handleMenuShop">
+    <Button onAction="#handleMenuShop" fx:id="btnShop">
       <styleClass>
         <String fx:value="toolbar-button"/>
         <String fx:value="icon-shop"/>
@@ -187,10 +187,10 @@
   </ToolBar>
   <TabPane side="BOTTOM" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER"
     HBox.hgrow="ALWAYS">
-    <Tab text="%drd_main_tab_defaults">
+    <Tab text="%drd_main_tab_defaults" fx:id="tabDefaults">
       <fx:include fx:id="defaultStaff" source="default_staff.fxml"/>
     </Tab>
-    <Tab text="%drd_main_tab_inventory">
+    <Tab text="%drd_main_tab_inventory" fx:id="tabInventory">
       <fx:include fx:id="inventory" source="inventory.fxml"/>
     </Tab>
     <padding>
