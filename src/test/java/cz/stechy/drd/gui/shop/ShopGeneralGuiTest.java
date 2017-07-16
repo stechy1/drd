@@ -9,7 +9,9 @@ import org.junit.Test;
 /**
  * Třída obsahující Gui testy pro screen {@link cz.stechy.drd.controller.shop.ItemGeneralController}
  */
-public class ShopGeneralGuiTest extends GUITestBase {
+public final class ShopGeneralGuiTest extends GUITestBase {
+
+    // region Variables
 
     private GeneralShopPage generalShopPage;
 
@@ -19,6 +21,8 @@ public class ShopGeneralGuiTest extends GUITestBase {
         ShopPage shopPage = (ShopPage) super.mainPage.showShop();
         this.generalShopPage = (GeneralShopPage) shopPage.showGeneralPage();
     }
+
+    // endregion
 
     @Test
     public void test() throws Exception {

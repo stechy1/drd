@@ -20,7 +20,7 @@ public final class ShopPage extends APage {
 
     static {
         Map<String, Class<? extends APage>> map = new HashMap<>();
-        map.put("paneGeneral", GeneralShopPage.class);
+        map.put("#paneGeneral", GeneralShopPage.class);
         MAP = Collections.unmodifiableMap(map);
     }
 

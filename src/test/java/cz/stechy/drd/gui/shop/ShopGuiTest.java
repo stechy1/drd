@@ -9,11 +9,19 @@ import org.junit.Before;
  */
 public final class ShopGuiTest extends GUITestBase {
 
+    // region Variables
+
     private ShopPage shopPage;
+
+    // endregion
+
+    // region Private methods
 
     @Before
     public void beforeEachTest() throws Exception {
         super.beforeEachTest();
         this.shopPage = (ShopPage) super.mainPage.showShop();
     }
+
+    // endregion
 }
