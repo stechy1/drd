@@ -50,6 +50,7 @@ dependencies {
     // TestFX dependencies
     testCompile group: 'org.testfx', name: 'testfx-core', version: '4.0.6-alpha'
     testCompile group: 'org.testfx', name: 'testfx-junit', version: '4.0.6-alpha'
-    testCompile group: 'org.testfx', name:'openjfx-monocle', version: '8u76-b04'
+    testCompile group: 'org.testfx', name: 'openjfx-monocle', version: '8u76-b04'
+    testCompile group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.0'
 
 }
