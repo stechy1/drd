@@ -46,6 +46,7 @@ public final class MainGuiTest extends GUITestBase {
     @Parameters(method = "parametersForToolbarsButtonTooltip")
     public void testToolbarsButtonTooltip(String identifier, String tag) throws Exception {
         final String translated = mainPage.getTitleFromBundle(tag);
-        verifyThat(identifier, (Button button) -> translated.equals(button.getTooltip().getText()));
+        verifyThat(identifier, (Button button) ->
+            translated.equals(button.getTooltip().getText()));
     }
 }

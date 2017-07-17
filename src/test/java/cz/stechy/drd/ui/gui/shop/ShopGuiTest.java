@@ -74,18 +74,18 @@ public final class ShopGuiTest extends GUITestBase {
 
     @Test
     @Parameters(method = "parametersForButtonTooltip")
-    public void testButtonTooltip(String identifier, String tooltip) throws Exception {
-        verifyThat(identifier, (ButtonBase button) -> {
-            return button.getTooltip().getText().equals(shopPage.getTitleFromBundle(tooltip));
-        });
+    public void testButtonTooltip(String identifier, String tag) throws Exception {
+        final String translated = mainPage.getTitleFromBundle(tag);
+        verifyThat(identifier, (ButtonBase button) ->
+            translated.equals(button.getTooltip().getText()));
     }
 
     @Test
     @Parameters(method = "parametersForPaneTranslation")
-    public void testPaneTranslation(String identifier, String translate) throws Exception {
-        verifyThat(identifier, (TitledPane pane) -> {
-            return pane.getText().equals(shopPage.getTitleFromBundle(translate));
-        });
+    public void testPaneTranslation(String identifier, String tag) throws Exception {
+        final String translated = mainPage.getTitleFromBundle(tag);
+        verifyThat(identifier, (TitledPane pane) ->
+            translated.equals(pane.getText()));
     }
 
 
