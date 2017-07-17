@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.main;
 
-import cz.stechy.drd.controller.IScreenSupport;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.util.StringConvertors;
@@ -72,8 +71,4 @@ public class DefaultStaffController implements MainScreen {
         });
     }
 
-    @Override
-    public void setScreenSupport(IScreenSupport screenSupport) {
-
-    }
 }

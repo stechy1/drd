@@ -1,7 +1,7 @@
 package cz.stechy.drd.controller.main;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.controller.IScreenSupport;
+import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.inventory.BackpackController;
 import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -18,6 +18,7 @@ import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.InventoryContent;
 import cz.stechy.drd.model.persistent.InventoryService;
+import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -31,7 +32,7 @@ import javafx.scene.layout.BorderPane;
 /**
  * Kontroler pro inventář hrdiny
  */
-public class InventoryController implements Initializable, MainScreen {
+public class InventoryController implements Initializable, MainScreen, InjectableChild {
 
     // region Variables
 
@@ -50,7 +51,7 @@ public class InventoryController implements Initializable, MainScreen {
 
     private HeroService heroManager;
     private ObjectProperty<Hero> hero;
-    private IScreenSupport screenSupport;
+    private BaseController parent;
 
     // endregion
 
@@ -76,16 +77,16 @@ public class InventoryController implements Initializable, MainScreen {
     }
 
     @Override
-    public void setScreenSupport(IScreenSupport screenSupport) {
-        this.screenSupport = screenSupport;
-    }
-
-    @Override
     public void initialize(URL location, ResourceBundle resources) {
         container.setLeft(equipItemContainer.getGraphics());
         container.setCenter(mainItemContainer.getGraphics());
 
         lblWeight.textProperty().bind(InventoryContent.getWeight().asString());
+    }
+
+    @Override
+    public void injectParent(BaseController parent) {
+        this.parent = parent;
     }
 
     private final ChangeListener<? super Hero> heroChangeListener = (observable, oldValue, newValue) -> {
@@ -130,7 +131,7 @@ public class InventoryController implements Initializable, MainScreen {
                 bundle.putInt(BackpackController.BACKPACK_SIZE, backpack.getSize().size);
                 bundle.putString(BackpackController.INVENTORY_ID, childInventoryId);
                 bundle.putString(BackpackController.ITEM_NAME, itemName);
-                screenSupport.startNewDialog(R.FXML.BACKPACK, bundle);
+                parent.startNewDialog(R.FXML.BACKPACK, bundle);
                 break;
         }
     };

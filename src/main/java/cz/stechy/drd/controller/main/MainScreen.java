@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.main;
 
-import cz.stechy.drd.controller.IScreenSupport;
 import cz.stechy.drd.model.entity.hero.Hero;
 import javafx.beans.property.ObjectProperty;
 
@@ -15,7 +14,5 @@ interface MainScreen {
      * @param hero {@link Hero}
      */
     void setHero(ObjectProperty<Hero> hero);
-
-    void setScreenSupport(IScreenSupport screenSupport);
 
 }

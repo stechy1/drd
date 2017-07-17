@@ -12,10 +12,10 @@ public interface InjectableChild {
     /**
      * Injectuje rodičovský kontroler
      *
-     * @param baseController {@link BaseController}
+     * @param parent {@link BaseController}
      */
-    void injectParent(BaseController baseController);
+    void injectParent(BaseController parent);
 
-    void onScreenResult(int statusCode, int actionId, Bundle bundle);
+    default void onScreenResult(int statusCode, int actionId, Bundle bundle) {}
 
 }

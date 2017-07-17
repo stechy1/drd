@@ -80,8 +80,8 @@ public class BestiaryEditOtherController implements InjectableChild, IEditContro
     }
 
     @Override
-    public void injectParent(BaseController baseController) {
-        this.baseController = baseController;
+    public void injectParent(BaseController parent) {
+        this.baseController = parent;
     }
 
     @Override

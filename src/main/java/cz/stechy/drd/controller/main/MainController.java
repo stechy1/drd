@@ -2,6 +2,7 @@ package cz.stechy.drd.controller.main;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.IScreenSupport;
+import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper;
 import cz.stechy.drd.controller.hero.opener.HeroOpenerHelper;
 import cz.stechy.drd.controller.moneyxp.MoneyXpController;
@@ -10,7 +11,6 @@ import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.UserService;
-import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification.Length;
@@ -64,7 +64,6 @@ public class MainController extends BaseController implements Initializable {
 
     private final ObjectProperty<Hero> hero;
     private final HeroService heroManager;
-    private final Translator translator;
     private final UserService userService;
 
     private MainScreen[] controllers;
@@ -75,7 +74,6 @@ public class MainController extends BaseController implements Initializable {
 
     public MainController(Context context) {
         heroManager = context.getService(Context.SERVICE_HERO);
-        translator = context.getTranslator();
         userService = context.getUserService();
         hero = heroManager.getHero();
     }
@@ -92,7 +90,9 @@ public class MainController extends BaseController implements Initializable {
 
         for (MainScreen controller : controllers) {
             controller.setHero(hero);
-            controller.setScreenSupport(screenSupport);
+            if (controller instanceof InjectableChild) {
+                ((InjectableChild) controller).injectParent(this);
+            }
         }
 
         hero.setValue(new Hero.Builder().build());
