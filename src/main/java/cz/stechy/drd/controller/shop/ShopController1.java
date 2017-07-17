@@ -24,7 +24,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
@@ -102,8 +101,8 @@ public class ShopController1 extends BaseController implements Initializable {
         NO_SELECTED_INDEX);
     private final IntegerProperty selectedRowIndex = new SimpleIntegerProperty(NO_SELECTED_INDEX);
     private final BooleanProperty showOnlineDatabase = new SimpleBooleanProperty(false);
-    private final ObjectProperty<User> user;
-    private final ObjectProperty<Hero> hero;
+    private final User user;
+    private final Hero hero;
 
     private ShopItemController[] controllers;
     private String title;
@@ -115,9 +114,9 @@ public class ShopController1 extends BaseController implements Initializable {
     public ShopController1(Context context) {
         this.translator = context.getTranslator();
         this.translatedItemType.addAll(translator.getShopTypeList());
-        this.user = context.getUserService().getUser();
-        this.hero = ((HeroService) context.getService(Context.SERVICE_HERO)).getHero();
-        this.shoppingCart = new ShoppingCart(hero.get());
+        this.user = context.getUserService().getUser().get();
+        this.hero = ((HeroService) context.getService(Context.SERVICE_HERO)).getHero().get();
+        this.shoppingCart = new ShoppingCart(hero);
     }
 
     // endregion
@@ -162,7 +161,7 @@ public class ShopController1 extends BaseController implements Initializable {
         btnContinueShopping.disableProperty().bind(
             Bindings.or(
                 Bindings.equal(
-                    "", hero.get().nameProperty()
+                    "", hero.nameProperty()
                 ), shoppingCart.enoughtMoneyProperty().not()));
 
         selectedAccordionPaneIndex.addListener((observable, oldValue, newValue) -> {
@@ -189,7 +188,7 @@ public class ShopController1 extends BaseController implements Initializable {
 
     @Override
     protected void onCreate(Bundle bundle) {
-        tableArmorController.setHeroHeight(hero.get().getHeight());
+        tableArmorController.setHeroHeight(hero.getHeight());
     }
 
     @Override
@@ -215,7 +214,7 @@ public class ShopController1 extends BaseController implements Initializable {
                     return;
                 }
                 item = controller.fromBundle(bundle);
-                item.setAuthor(user.get().getName());
+                item.setAuthor(user.getName());
                 item.setId(HashGenerator.createHash());
                 controller.onAddItem(item, false);
                 break;
@@ -257,7 +256,7 @@ public class ShopController1 extends BaseController implements Initializable {
     @FXML
     private void handleContinueShopping(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
-        bundle.put(ShopController2.HERO_ID, hero.get().getId());
+        bundle.put(ShopController2.HERO_ID, hero.getId());
         bundle.put(ShopController2.SHOPPING_CART, shoppingCart);
         startScreen(R.FXML.SHOP2, bundle);
     }
