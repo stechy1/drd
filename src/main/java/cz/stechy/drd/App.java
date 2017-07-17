@@ -43,9 +43,9 @@ public class App extends Application {
 
     // region Variables
 
-    private Context context;
+    protected Context context;
 
-    private ScreenManager manager;
+    protected ScreenManager manager;
 
     // endregion
 
@@ -81,6 +81,10 @@ public class App extends Application {
     }
 
     private String getDatabaseName() {
+        if (Boolean.getBoolean("testing")) {
+            return "db-testing.sqlite";
+        }
+
         Properties properties = new Properties();
         try {
             properties.load(new FileInputStream(

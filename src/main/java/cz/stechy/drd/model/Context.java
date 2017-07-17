@@ -81,6 +81,8 @@ public class Context {
 
     // endregion
 
+    // region Constructors
+
     /**
      * Vytvoří nový kontext apliakce
      *
@@ -104,6 +106,10 @@ public class Context {
         initServices();
         initNativeHandlers();
     }
+
+    // endregion
+
+    // region Private methods
 
     /**
      * Inicializace firebase služby
@@ -158,11 +164,6 @@ public class Context {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getService(String name) {
-        return (T) serviceMap.get(name);
-    }
-
-    @SuppressWarnings("unchecked")
     private DatabaseService initService(Class clazz) {
         try {
             DatabaseService service = (DatabaseService) clazz.getConstructor(Database.class)
@@ -183,6 +184,15 @@ public class Context {
         }
     }
 
+    // endregion
+
+    // region Getters & Setters
+
+    @SuppressWarnings("unchecked")
+    public <T> T getService(String name) {
+        return (T) serviceMap.get(name);
+    }
+
     /**
      * @return {@link Translator}
      */
@@ -197,4 +207,6 @@ public class Context {
     public UserService getUserService() {
         return userService;
     }
+
+    // endregion
 }
