@@ -1,10 +1,10 @@
-package cz.stechy.drd.gui.shop;
+package cz.stechy.drd.ui.gui.shop;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
-import cz.stechy.drd.GUITestBase;
+import cz.stechy.drd.ui.GUITestBase;
 import cz.stechy.drd.R.Translate;
-import cz.stechy.drd.pages.shop.ShopPage;
+import cz.stechy.drd.ui.pages.shop.ShopPage;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.TitledPane;
 import junitparams.JUnitParamsRunner;

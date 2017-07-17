@@ -1,8 +1,8 @@
-package cz.stechy.drd.pages;
+package cz.stechy.drd.ui.pages;
 
-import cz.stechy.drd.APage;
+import cz.stechy.drd.ui.APage;
 import cz.stechy.drd.R.Translate;
-import cz.stechy.drd.pages.shop.ShopPage;
+import cz.stechy.drd.ui.pages.shop.ShopPage;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

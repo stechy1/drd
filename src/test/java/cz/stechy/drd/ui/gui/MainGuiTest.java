@@ -1,6 +1,6 @@
-package cz.stechy.drd.gui;
+package cz.stechy.drd.ui.gui;
 
-import cz.stechy.drd.GUITestBase;
+import cz.stechy.drd.ui.GUITestBase;
 
 /**
  * Třída obsahující Gui testy pro screen {@link cz.stechy.drd.controller.main.MainController}

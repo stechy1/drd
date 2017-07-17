@@ -1,6 +1,6 @@
-package cz.stechy.drd.pages.shop;
+package cz.stechy.drd.ui.pages.shop;
 
-import cz.stechy.drd.APage;
+import cz.stechy.drd.ui.APage;
 import cz.stechy.drd.R.Translate;
 import java.util.Map;
 import org.testfx.api.FxRobot;

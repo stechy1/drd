@@ -1,6 +1,7 @@
-package cz.stechy.drd;
+package cz.stechy.drd.ui;
 
-import cz.stechy.drd.pages.MainPage;
+import cz.stechy.drd.TestApp;
+import cz.stechy.drd.ui.pages.MainPage;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;

@@ -1,8 +1,8 @@
-package cz.stechy.drd.gui.shop;
+package cz.stechy.drd.ui.gui.shop;
 
-import cz.stechy.drd.GUITestBase;
-import cz.stechy.drd.pages.shop.GeneralShopPage;
-import cz.stechy.drd.pages.shop.ShopPage;
+import cz.stechy.drd.ui.GUITestBase;
+import cz.stechy.drd.ui.pages.shop.GeneralShopPage;
+import cz.stechy.drd.ui.pages.shop.ShopPage;
 import org.junit.Before;
 import org.junit.Test;
 

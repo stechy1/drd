@@ -1,4 +1,4 @@
-package cz.stechy.drd;
+package cz.stechy.drd.ui;
 
 import java.lang.reflect.Constructor;
 import java.util.Collections;
