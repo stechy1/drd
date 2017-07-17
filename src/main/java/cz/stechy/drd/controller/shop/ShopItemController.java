@@ -21,6 +21,7 @@ interface ShopItemController<T> {
      * @param shoppingCart {@link IShoppingCart}
      * @param uploadHandler {@link OnUploadItem}
      * @param downloadHandler {@link OnDownloadItem}
+     * @param deleteHandler  {@link OnDeleteItem}
      */
     void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem<T> uploadHandler,
         OnDownloadItem<T> downloadHandler, OnDeleteItem<T> deleteHandler);

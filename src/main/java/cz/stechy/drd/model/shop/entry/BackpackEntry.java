@@ -15,6 +15,8 @@ public class BackpackEntry extends ShopEntry {
 
     /**
      * Vytvoří batoh jako nákupní položku
+     *
+     * @param backpack {@link Backpack}
      */
     public BackpackEntry(Backpack backpack) {
         super(backpack);

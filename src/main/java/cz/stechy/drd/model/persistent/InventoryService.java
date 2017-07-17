@@ -212,6 +212,7 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
      * @param inventory {@link Inventory} Inventář pro který se hledá obsah
      * @param filter Filter, podle kterého probíhá hledání
      * @return {@link InventoryContent}
+     * @throws DatabaseException Pokud obsah inventáře není nalezen
      */
     public InventoryContent getInventoryContent(final Inventory inventory,
         final Predicate<? super Inventory> filter) throws DatabaseException {

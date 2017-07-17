@@ -82,7 +82,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     // region Private methods
 
     /**
-     * Konvertuje {@link DataSnapshot]} na instanci třídy {@link T}
+     * Konvertuje {@link DataSnapshot} na instanci třídy {@link T}
      *
      * @param snapshot Snapshot itemu
      * @return Instanci třídy {@link T}

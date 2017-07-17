@@ -339,9 +339,10 @@ public class ItemSlot {
         void onDragStart(ItemSlot sourceSlot, ItemStack itemStack);
 
         /**
-         * Rozhodne, zda-li je možné vloit item na cílový slot
+         * Rozhodne, zda-li je možné vložit item na cílový slot
          *
          * @param destinationSlot {@link ItemSlot} Cílový slot
+         * @return True, pokud je možné vložit item na cílový slot, jinak False
          */
         boolean acceptDrop(ItemSlot destinationSlot);
 

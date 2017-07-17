@@ -27,6 +27,8 @@ public class SQLite implements Database {
 
     /**
      * Vytvoří novou instanci databází pro SQLite
+     *
+     * @param path Cesta kde se má nacházet soubor s databází
      */
     public SQLite(String path) {
         dataSource.setUrl(CONNECTION_PREFIX + path);

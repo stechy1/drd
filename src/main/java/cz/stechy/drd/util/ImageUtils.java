@@ -16,6 +16,7 @@ public final class ImageUtils {
      *
      * @param file Soubor s obrázkem
      * @return bytová reprezentace obrázku
+     * @throws IOException Pokud se obrázek nepodaří zpracovat
      */
     public static byte[] readImage(File file) throws IOException {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

@@ -68,7 +68,7 @@ public abstract class EntityProperty {
     /**
      * Nabinduje hodnotu
      *
-     * @param binding
+     * @param binding {@link ObservableValue}
      */
     public void bindTo(ObservableValue<Number> binding) {
         this.value.bind(binding);

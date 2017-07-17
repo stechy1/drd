@@ -250,7 +250,7 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
      * Najde index volného slotu
      *
      * @param item Předmět, pro který se hledá volná slot
-     * @param ammount
+     * @param ammount Množství předmětů které se má vložit do inventáře
      * @return Index volného slotu
      * @throws InventoryException Pokud volný slot neexistuje
      */

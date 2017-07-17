@@ -34,6 +34,9 @@ jfx {
 //    copyAdditionalAppResourcesToJar = true
 }
 
+javadoc {
+    options.charSet = 'UTF-8'
+}
 
 dependencies {
 

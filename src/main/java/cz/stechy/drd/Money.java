@@ -151,6 +151,7 @@ public final class Money {
      * Přičte peníze z jiné instance
      *
      * @param other Druhá instance peněz, která se přičte k aktuální hodnotě
+     * @return {@link Money}
      */
     public Money add(Money other) {
         final int rawValue = getRaw();
@@ -163,6 +164,7 @@ public final class Money {
      * Odečte peníze z jiné instance
      *
      * @param other Druhá instance peněz, která se bude odčítat
+     * @return {@link Money}
      */
     public Money subtract(Money other) {
         final int rawValue = getRaw();
@@ -175,6 +177,7 @@ public final class Money {
      * Nastaví počet zlaťáků
      *
      * @param gold Počet zlaťáků
+     * @return {@link Money}
      */
     public Money setGold(int gold) {
         if (gold < 0) {
@@ -191,6 +194,7 @@ public final class Money {
      * Přidá zlaťáky
      *
      * @param gold Počet zlaťáků
+     * @return {@link Money}
      */
     public Money addGold(int gold) {
         if (gold < 0) {
@@ -207,6 +211,7 @@ public final class Money {
      * Odebere zlaťáky
      *
      * @param gold Počet zlaťáků
+     * @return {@link Money}
      */
     public Money subtractGold(int gold) {
         if (gold < 0) {
@@ -220,9 +225,10 @@ public final class Money {
     }
 
     /**
-     * Nastaí počet stříbrňáků
+     * Nastaví počet stříbrňáků
      *
      * @param silver Počet stříbrňáků
+     * @return {@link Money}
      */
     public Money setSilver(int silver) {
         if ((silver / 100) != 0) {
@@ -239,6 +245,7 @@ public final class Money {
      * Přidá stříbrňáky
      *
      * @param silver Počet stříbrňáků
+     * @return {@link Money}
      */
     public Money addSilver(int silver) {
         if (silver <= 0) {
@@ -257,6 +264,7 @@ public final class Money {
      * Odebere stříbrňáky
      *
      * @param silver Počet stříbrňáků
+     * @return {@link Money}
      */
     public Money subtractSilver(int silver) {
         if (silver <= 0) {
@@ -280,6 +288,7 @@ public final class Money {
      * Nastaví počet měďáků
      *
      * @param copper Počet měďáků
+     * @return {@link Money}
      */
     public Money setCopper(int copper) {
         if ((copper / 100) != 0) {
@@ -296,6 +305,7 @@ public final class Money {
      * Přidá měďáky
      *
      * @param copper Počet měďáků
+     * @return {@link Money}
      */
     public Money addCopper(int copper) {
         if (copper <= 0) {
@@ -314,6 +324,7 @@ public final class Money {
      * Odebere měďáky
      *
      * @param copper Počet měďáků
+     * @return {@link Money}
      */
     public Money subtractCopper(int copper) {
         if (copper <= 0) {
@@ -337,22 +348,47 @@ public final class Money {
 
     // region Getters & Setters
 
+    /**
+     * Nastaví peníze z interně uloženého stavu
+     *
+     * @param value Interní reprezentace peněz
+     */
     public void setRaw(int value) {
         this.raw.setValue(value);
     }
 
+    /**
+     * Vrátí interní reprezentaci peněz
+     *
+     * @return Interní reprezentaci penět
+     */
     public int getRaw() {
         return this.raw.intValue();
     }
 
+    /**
+     * Vrátí počet zlaťáků
+     *
+     * @return Počet zlaťáků
+     */
     public int getGold() {
         return this.gold.getValue().intValue();
     }
 
+    /**
+     * Vrátí počet stříbrňáků
+     *
+     * @return Počet stříbrňáků
+     */
     public int getSilver() {
         return this.silver.getValue().intValue();
     }
 
+    /**
+     * Vrátí počet měďáků
+     *
+     * @return Počet měďáků
+     */
     public int getCopper() {
         return this.copper.getValue().intValue();
     }

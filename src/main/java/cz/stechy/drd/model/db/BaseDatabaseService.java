@@ -62,6 +62,9 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
      * otazník a budou oddělené čárkou
      *
      * col1=?,col2=?,col3=?
+     *
+     * @param columns Názvy sloupců
+     * @return Názvy sloupců s otazníky: col1=?,col2=?,col3=?
      */
     protected static String GENERATE_COLUMNS_UPDATE(String[] columns) {
         return Arrays.stream(columns).map(s -> s + "=?").collect(Collectors.joining(","));
@@ -132,6 +135,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
      *
      * @param resultSet Result set z databáze
      * @return Instanci třídy {@link T}
+     * @throws SQLException Pokud se nepodaří {@link ResultSet} správně naparsovat
      */
     protected abstract T parseResultSet(ResultSet resultSet) throws SQLException;
 

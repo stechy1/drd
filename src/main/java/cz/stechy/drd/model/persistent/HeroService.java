@@ -239,6 +239,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
     /**
      * Vytvoří novou instanci správce itemů pro zadaného hrdinu
      *
+     * @param hero {@link Hero}
      * @return {@link InventoryContent}
      */
     public InventoryService getInventory(Hero hero) {

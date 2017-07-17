@@ -4,7 +4,7 @@ import java.io.Serializable;
 import javafx.scene.input.DataFormat;
 
 /**
- * Kontainer pro Drag & Drop
+ * Kontainer pro Drag &amp; Drop
  */
 public class DragItemContainer implements Serializable {
 

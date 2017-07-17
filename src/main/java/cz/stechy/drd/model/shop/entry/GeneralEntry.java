@@ -9,6 +9,8 @@ public class GeneralEntry extends ShopEntry {
 
     /**
      * Vytvoří novou standartní nákupní položku
+     *
+     * @param itemBase {@link GeneralItem}
      */
     public GeneralEntry(GeneralItem itemBase) {
         super(itemBase);

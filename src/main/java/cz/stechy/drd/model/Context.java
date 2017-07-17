@@ -87,6 +87,8 @@ public class Context {
      * Vytvoří nový kontext apliakce
      *
      * @param databaseName Název databáze
+     * @param resources {@link ResourceBundle}
+     * @throws Exception Pokud se inicializace kontextu nezdaří
      */
     public Context(String databaseName, ResourceBundle resources) throws Exception {
         this.resources = resources;
