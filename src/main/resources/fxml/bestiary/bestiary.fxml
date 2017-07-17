@@ -41,7 +41,7 @@
       </Button>
       <Button fx:id="btnRemoveItem" onAction="#handleRemoveItem">
         <tooltip>
-          <Tooltip text="%drd_shop_item_remove"/>
+          <Tooltip text="%drd_repository_item_remove"/>
         </tooltip>
         <styleClass>
           <String fx:value="sidebar-button" />
@@ -50,7 +50,7 @@
       </Button>
       <Button fx:id="btnEditItem" onAction="#handleEditItem">
         <tooltip>
-          <Tooltip text="%drd_shop_item_edit"/>
+          <Tooltip text="%drd_repository_item_edit"/>
         </tooltip>
         <styleClass>
           <String fx:value="sidebar-button" />
@@ -59,7 +59,7 @@
       </Button>
       <Button fx:id="btnSynchronize" onAction="#handleSynchronize">
         <tooltip>
-          <Tooltip text="%drd_shop_item_synchronize"/>
+          <Tooltip text="%drd_repository_item_synchronize"/>
         </tooltip>
         <styleClass>
           <String fx:value="sidebar-button" />
@@ -68,7 +68,7 @@
       </Button>
       <ToggleButton fx:id="btnToggleOnline">
         <tooltip>
-          <Tooltip text="%drd_firebase_toggle_online_database"/>
+          <Tooltip text="%drd_repository_toggle_online_database"/>
         </tooltip>
         <styleClass>
           <String fx:value="sidebar-button" />

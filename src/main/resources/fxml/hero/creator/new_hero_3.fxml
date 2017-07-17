@@ -36,7 +36,7 @@
       </padding>
       <Button fx:id="btnAddItem" onAction="#handleAddItem">
         <tooltip>
-          <Tooltip text="%drd_shop_item_add"/>
+          <Tooltip text="%drd_repository_item_add"/>
         </tooltip>
         <styleClass>
           <String fx:value="sidebar-button" />
@@ -45,7 +45,7 @@
       </Button>
       <Button fx:id="btnRemoveItem" onAction="#handleRemoveItem">
         <tooltip>
-          <Tooltip text="%drd_shop_item_remove"/>
+          <Tooltip text="%drd_repository_item_remove"/>
         </tooltip>
         <styleClass>
           <String fx:value="sidebar-button" />
