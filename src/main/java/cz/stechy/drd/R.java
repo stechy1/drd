@@ -128,6 +128,11 @@ public final class R {
         public static final String ITEM_BACKPACK_SIZE_SMALL = "drd_item_backpack_size_small";
         public static final String ITEM_BACKPACK_SIZE_MEDIUM = "drd_item_backpack_size_medium";
         public static final String ITEM_BACKPACK_SIZE_LARGE = "drd_item_backpack_size_large";
+        public static final String ITEM_ARMOR_TYPE_HELM = "drd_item_armor_type_helm";
+        public static final String ITEM_ARMOR_TYPE_BODY = "drd_item_armor_type_body";
+        public static final String ITEM_ARMOR_TYPE_LEGS = "drd_item_armor_type_legs";
+        public static final String ITEM_ARMOR_TYPE_BOOTS = "drd_item_armor_type_boots";
+        public static final String ITEM_ARMOR_TYPE_GLASES = "drd_item_armor_type_glases";
         public static final String OPENER_TITLE = "drd_opener_title";
         public static final String DICE_TITLE = "drd_dice_title";
         public static final String DICE_PROPERTY = "drd_dice_property";
