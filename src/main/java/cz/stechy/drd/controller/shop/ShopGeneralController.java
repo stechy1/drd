@@ -18,8 +18,6 @@ import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.Bundle;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.collections.FXCollections;
@@ -32,6 +30,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * Pomocný kontroler pro obchod se obecnými předměty
@@ -140,14 +141,10 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            service.insert((GeneralItem) item);
             if (remote) {
-                generalItems.get(
-                    generalItems.indexOf(
-                        new GeneralEntry((GeneralItem) item)))
-                    .setDownloaded(true);
+                item.setDownloaded(true);
             }
-
+            service.insert((GeneralItem) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
         }
