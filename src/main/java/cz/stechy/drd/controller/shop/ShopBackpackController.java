@@ -143,14 +143,11 @@ public class ShopBackpackController implements Initializable, ShopItemController
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            service.insert((Backpack) item);
             if (remote) {
-                backpacks.get(
-                    backpacks.indexOf(
-                        new BackpackEntry((Backpack) item)))
-                    .setDownloaded(true);
+                item.setDownloaded(true);
             }
 
+            service.insert((Backpack) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
         }

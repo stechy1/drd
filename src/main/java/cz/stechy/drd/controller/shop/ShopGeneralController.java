@@ -144,6 +144,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
             if (remote) {
                 item.setDownloaded(true);
             }
+
             service.insert((GeneralItem) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
