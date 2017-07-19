@@ -5,8 +5,11 @@ import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Height;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Třída představující brnění
@@ -32,6 +35,8 @@ public final class Armor extends ItemBase {
     // Minimální sila, kterou musí postava mít, aby zbroj unesla
     private final IntegerProperty minimumStrength = new SimpleIntegerProperty(this,
         "minimumStrength");
+    private final ObjectProperty<ArmorType> type = new SimpleObjectProperty<>(this,
+        "type");
 
     // endregion
 
@@ -46,12 +51,13 @@ public final class Armor extends ItemBase {
         this(armor.getId(), armor.getName(), armor.getDescription(), armor.getAuthor(),
             armor.getDefenceNumber(), armor.getMinimumStrength(), armor.getWeightA(),
             armor.getWeightB(), armor.getWeightC(), armor.getPriceA().getRaw(),
-            armor.getPriceB().getRaw(), armor.getPriceC().getRaw(), armor.getImage(),
-            armor.getStackSize(), armor.isDownloaded(), armor.isUploaded());
+            armor.getPriceB().getRaw(), armor.getPriceC().getRaw(), armor.getType(),
+            armor.getImage(), armor.getStackSize(), armor.isDownloaded(), armor.isUploaded());
     }
 
     /**
      * Konstruktor zbroje
+     *
      * @param id Id zbroje
      * @param author Autor brnění
      * @param name Název zbroje
@@ -63,6 +69,8 @@ public final class Armor extends ItemBase {
      * @param priceA Cena pro bytosti velikosti A
      * @param priceB Cena pro bytosti velikosti B
      * @param priceC Cena pro bytosti velikosti C
+     * @param minimumStrength Minimální potřebná síla k nošení brnění
+     * @param type Typ části brnění
      * @param image Obrázek zbroje
      * @param stackSize Maximální počet předmětů, který může být v jednom stacku ve slotu inventáře
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
@@ -70,8 +78,10 @@ public final class Armor extends ItemBase {
      */
     private Armor(String id, String author, String name, String description, int defenceNumber,
         int weightA, int weightB, int weightC, int priceA, int priceB, int priceC,
-        int minimumStrength, byte[] image, int stackSize, boolean downloaded, boolean uploaded) {
-        super(id, author, name, description, weightB, priceB, image, stackSize, downloaded, uploaded);
+        int minimumStrength, ArmorType type, byte[] image,
+        int stackSize, boolean downloaded, boolean uploaded) {
+        super(id, author, name, description, weightB, priceB, image, stackSize, downloaded,
+            uploaded);
 
         setDefenceNumber(defenceNumber);
         setWeightA(weightA);
@@ -81,6 +91,7 @@ public final class Armor extends ItemBase {
         this.priceB.setRaw(priceB);
         this.priceC.setRaw(priceC);
         setMinimumStrength(minimumStrength);
+        setType(type);
     }
 
     // endregion
@@ -211,11 +222,29 @@ public final class Armor extends ItemBase {
         this.minimumStrength.set(minimumStrength);
     }
 
+    public final ArmorType getType() {
+        return type.get();
+    }
+
+    public final ReadOnlyObjectProperty<ArmorType> typeProperty() {
+        return type;
+    }
+
+    private void setType(ArmorType type) {
+        this.type.set(type);
+    }
+
     // endregion
+
+    // Typ části brnění
+    public enum ArmorType {
+        HELM, BODY, LEGS, BOTS, GLOVES
+    }
 
     public static class Builder {
 
         private String id;
+        private String author;
         private String name;
         private String description;
         private int defenceNumber;
@@ -226,7 +255,7 @@ public final class Armor extends ItemBase {
         private int priceB;
         private int priceC;
         private int minimumStrength;
-        private String author;
+        private ArmorType type;
         private byte[] image;
         private int stackSize;
         private boolean uploaded;
@@ -287,6 +316,16 @@ public final class Armor extends ItemBase {
             return this;
         }
 
+        public Builder type(ArmorType type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder type(int type) {
+            this.type = ArmorType.values()[type];
+            return this;
+        }
+
         public Builder author(String author) {
             this.author = author;
             return this;
@@ -314,8 +353,8 @@ public final class Armor extends ItemBase {
 
         public Armor build() {
             return new Armor(id, author, name, description, defenceNumber, weightA, weightB,
-                weightC,
-                priceA, priceB, priceC, minimumStrength, image, stackSize, downloaded, uploaded);
+                weightC, priceA, priceB, priceC, minimumStrength, type, image, stackSize,
+                downloaded, uploaded);
         }
     }
 }
