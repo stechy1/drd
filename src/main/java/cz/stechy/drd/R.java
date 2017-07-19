@@ -128,6 +128,7 @@ public final class R {
         public static final String ITEM_BACKPACK_SIZE_SMALL = "drd_item_backpack_size_small";
         public static final String ITEM_BACKPACK_SIZE_MEDIUM = "drd_item_backpack_size_medium";
         public static final String ITEM_BACKPACK_SIZE_LARGE = "drd_item_backpack_size_large";
+        public static final String TEM_ARMOR_TYPE = "drditem_armor_type";
         public static final String ITEM_ARMOR_TYPE_HELM = "drd_item_armor_type_helm";
         public static final String ITEM_ARMOR_TYPE_BODY = "drd_item_armor_type_body";
         public static final String ITEM_ARMOR_TYPE_LEGS = "drd_item_armor_type_legs";
@@ -172,6 +173,7 @@ public final class R {
         public static final String ITEM_WEAPON_MELE_CLASS = "drd_item_weapon_mele_class";
         public static final String ITEM_WEAPON_MELE_ARMOR_DEFENCE_NUMBER = "drd_item_weapon_mele_armor_defence_number";
         public static final String ITEM_WEAPON_MELE_RANGED_TYPE = "drd_item_weapon_mele_ranged_type";
+        public static final String ITEM_WEAPON_RANGED_RANGE = "drd_item_weapon_ranged_range";
         public static final String ITEM_WEAPON_RANGED_RANGE_LOW = "drd_item_weapon_ranged_range_low";
         public static final String ITEM_WEAPON_RANGED_RANGE_MEDIUM = "drd_item_weapon_ranged_range_medium";
         public static final String ITEM_WEAPON_RANGED_RANGE_LONG = "drd_item_weapon_ranged_range_long";
@@ -228,6 +230,5 @@ public final class R {
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";
         public static final String NOTIFY_REGISTER_FAIL = "drd_notify_register_fail";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
-        public static final String ITEM_WEAPON_RANGED_RANGE = "drd_item_weapon_ranged_range";
     }
 }

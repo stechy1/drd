@@ -3,10 +3,14 @@ package cz.stechy.drd.controller.shop;
 import cz.stechy.drd.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.MoneyController;
+import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.item.Armor;
+import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ImageUtils;
+import cz.stechy.drd.util.StringConvertors;
+import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.io.ByteArrayInputStream;
@@ -24,6 +28,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -49,6 +54,7 @@ public class ItemArmorController extends BaseController implements Initializable
     private static final String DESCRIPTION = "description";
     private static final String DEFENCE = "defence";
     private static final String MINIMUM_STRENGTH = "minimum_strength";
+    private static final String TYPE = "type";
     private static final String WEIGHT_A = "weight_a";
     private static final String WEIGHT_B = "weight_b";
     private static final String WEIGHT_C = "weight_c";
@@ -77,6 +83,8 @@ public class ItemArmorController extends BaseController implements Initializable
     @FXML
     private TextField txtMiniumStrength;
     @FXML
+    private ComboBox<ArmorType> cmbType;
+    @FXML
     private TextField txtWeightA;
     @FXML
     private TextField txtWeightB;
@@ -96,6 +104,7 @@ public class ItemArmorController extends BaseController implements Initializable
     // endregion
 
     private final ArmorModel model = new ArmorModel();
+    private final Translator translator;
     private String title;
     private int action;
     private String imageChooserTitle;
@@ -103,6 +112,10 @@ public class ItemArmorController extends BaseController implements Initializable
     // endregion
 
     // region Constructors
+
+    public ItemArmorController(Context context) {
+        this.translator = context.getTranslator();
+    }
 
     // endregion
 
@@ -115,6 +128,7 @@ public class ItemArmorController extends BaseController implements Initializable
             .description(bundle.getString(DESCRIPTION))
             .defenceNumber(bundle.getInt(DEFENCE))
             .minimumStrength(bundle.getInt(MINIMUM_STRENGTH))
+            .type(bundle.getInt(TYPE))
             .weightA(bundle.getInt(WEIGHT_A))
             .weightB(bundle.getInt(WEIGHT_B))
             .weightC(bundle.getInt(WEIGHT_C))
@@ -135,6 +149,7 @@ public class ItemArmorController extends BaseController implements Initializable
         bundle.putString(DESCRIPTION, armor.getDescription());
         bundle.putInt(DEFENCE, armor.getDefenceNumber());
         bundle.putInt(MINIMUM_STRENGTH, armor.getMinimumStrength());
+        bundle.putInt(TYPE, armor.getType().ordinal());
         bundle.putInt(WEIGHT_A, armor.getWeightA());
         bundle.putInt(WEIGHT_B, armor.getWeightB());
         bundle.putInt(WEIGHT_C, armor.getWeightC());
@@ -155,6 +170,8 @@ public class ItemArmorController extends BaseController implements Initializable
         this.title = resources.getString(R.Translate.ITEM_TYPE_ARMOR);
         this.imageChooserTitle = resources.getString(R.Translate.ITEM_IMAGE_CHOOSE_DIALOG);
 
+        cmbType.converterProperty().setValue(StringConvertors.forArmorType(translator));
+
         txtName.textProperty().bindBidirectional(model.name);
         txtDescription.textProperty().bindBidirectional(model.description);
 
@@ -163,6 +180,8 @@ public class ItemArmorController extends BaseController implements Initializable
         FormUtils.initTextFormater(txtWeightA, model.weightA);
         FormUtils.initTextFormater(txtWeightB, model.weightB);
         FormUtils.initTextFormater(txtWeightC, model.weightC);
+
+        cmbType.valueProperty().bindBidirectional(model.type);
 
         lblPriceA.textProperty().bind(model.priceA.text);
         lblPriceB.textProperty().bind(model.priceB.text);
@@ -239,6 +258,7 @@ public class ItemArmorController extends BaseController implements Initializable
         bundle.putString(DESCRIPTION, model.description.getValue());
         bundle.putInt(DEFENCE, model.defence.getActValue().intValue());
         bundle.putInt(MINIMUM_STRENGTH, model.minimumStrength.getActValue().intValue());
+        bundle.putInt(TYPE, model.type.getValue().ordinal());
         bundle.putInt(WEIGHT_A, model.weightA.getActValue().intValue());
         bundle.putInt(WEIGHT_B, model.weightB.getActValue().intValue());
         bundle.putInt(WEIGHT_C, model.weightC.getActValue().intValue());
@@ -299,6 +319,7 @@ public class ItemArmorController extends BaseController implements Initializable
         final StringProperty description = new SimpleStringProperty();
         final MaxActValue defence = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue minimumStrength = new MaxActValue(Integer.MAX_VALUE);
+        final ObjectProperty<ArmorType> type = new SimpleObjectProperty<>();
         final MaxActValue weightA = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue weightB = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue weightC = new MaxActValue(Integer.MAX_VALUE);
