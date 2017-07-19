@@ -8,6 +8,7 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
 import cz.stechy.drd.model.entity.hero.Hero.Race;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
+import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.Backpack.Size;
 import cz.stechy.drd.model.item.MeleWeapon;
@@ -137,6 +138,25 @@ public final class StringConvertors {
             @Override
             public MeleWeaponClass fromString(String string) {
                 return MeleWeaponClass.valueOf(string);
+            }
+        };
+    }
+
+    public static StringConverter<ArmorType> forArmorType(
+        Translator translator) {
+        return new StringConverter<ArmorType>() {
+            @Override
+            public String toString(ArmorType object) {
+                if (object == null) {
+                    return "";
+                }
+
+                return translator.getArmorTypeList().get(object.ordinal());
+            }
+
+            @Override
+            public ArmorType fromString(String string) {
+                return ArmorType.valueOf(string);
             }
         };
     }
