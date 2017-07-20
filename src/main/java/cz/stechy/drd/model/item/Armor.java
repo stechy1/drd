@@ -57,11 +57,10 @@ public final class Armor extends ItemBase {
 
     /**
      * Konstruktor zbroje
-     *
-     * @param id Id zbroje
-     * @param author Autor brnění
+     *  @param id Id zbroje
      * @param name Název zbroje
      * @param description Popis zbroje
+     * @param author Autor brnění
      * @param defenceNumber Obranné číslo brnění
      * @param weightA Váha pro bytosti velikosti A
      * @param weightB Váha pro bytosti velikosti B
@@ -76,7 +75,7 @@ public final class Armor extends ItemBase {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    private Armor(String id, String author, String name, String description, int defenceNumber,
+    private Armor(String id, String name, String description, String author, int defenceNumber,
         int weightA, int weightB, int weightC, int priceA, int priceB, int priceC,
         int minimumStrength, ArmorType type, byte[] image,
         int stackSize, boolean downloaded, boolean uploaded) {
@@ -352,7 +351,7 @@ public final class Armor extends ItemBase {
         }
 
         public Armor build() {
-            return new Armor(id, author, name, description, defenceNumber, weightA, weightB,
+            return new Armor(id, name, description, author, defenceNumber, weightA, weightB,
                 weightC, priceA, priceB, priceC, minimumStrength, type, image, stackSize,
                 downloaded, uploaded);
         }

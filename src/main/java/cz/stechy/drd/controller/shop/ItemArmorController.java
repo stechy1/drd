@@ -147,6 +147,7 @@ public class ItemArmorController extends BaseController implements Initializable
         bundle.getString(ID, armor.getId());
         bundle.putString(NAME, armor.getName());
         bundle.putString(DESCRIPTION, armor.getDescription());
+        bundle.putString(AUTHOR, armor.getAuthor());
         bundle.putInt(DEFENCE, armor.getDefenceNumber());
         bundle.putInt(MINIMUM_STRENGTH, armor.getMinimumStrength());
         bundle.putInt(TYPE, armor.getType().ordinal());
@@ -156,7 +157,6 @@ public class ItemArmorController extends BaseController implements Initializable
         bundle.putInt(PRICE_A, armor.getPriceA().getRaw());
         bundle.putInt(PRICE_B, armor.getPriceB().getRaw());
         bundle.putInt(PRICE_C, armor.getPriceC().getRaw());
-        bundle.putString(AUTHOR, armor.getAuthor());
         bundle.putByteArray(IMAGE, armor.getImage());
         bundle.putInt(STACK_SIZE, armor.getStackSize());
         bundle.putBoolean(UPLOADED, armor.isUploaded());
