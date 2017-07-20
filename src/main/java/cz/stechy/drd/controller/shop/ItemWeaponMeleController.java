@@ -294,7 +294,7 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         final StringProperty author = new SimpleStringProperty();
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
         final ObjectProperty<Image> image = new SimpleObjectProperty<>();
-        final MaxActValue stackSize = new MaxActValue(Integer.MAX_VALUE);
+        final MaxActValue stackSize = new MaxActValue(1, Integer.MAX_VALUE, 1);
         final BooleanProperty uploaded = new SimpleBooleanProperty();
         final BooleanProperty downloaded = new SimpleBooleanProperty();
 
