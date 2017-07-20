@@ -27,16 +27,17 @@ public abstract class ItemContainer {
 
     public static final int SLOT_SPACING = 1;
 
+    // Globální informace obsahující přesouvaný item
+    private static final ObjectProperty<DragInformations> dragInformations = new SimpleObjectProperty<>();
     // endregion
 
     // region Variables
 
-    // Globální informace obsahující přesouvaný item
-    private static final ObjectProperty<DragInformations> dragInformations = new SimpleObjectProperty<>();
+    protected final int capacity;
+    private final TooltipTranslator tooltipTranslator;
 
     private InventoryService inventoryManager;
     private InventoryContent inventoryContent;
-    protected final int capacity;
     private ObservableList<InventoryRecord> oldRecords;
     private ItemClickListener itemClickListener;
     // Kolekce slotů pro itemy v inventáři
@@ -46,8 +47,9 @@ public abstract class ItemContainer {
 
     // region Constructors
 
-    protected ItemContainer(int capacity) {
+    protected ItemContainer(TooltipTranslator tooltipTranslator, int capacity) {
         this.capacity = capacity;
+        this.tooltipTranslator = tooltipTranslator;
 
         dragInformations.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -78,6 +80,7 @@ public abstract class ItemContainer {
             final ItemSlot itemSlot = itemSlots.get(slotIndex);
             if (itemSlot.isEmpty()) {
                 itemSlot.setClickListener(clickListener);
+                itemSlot.setTooltipTranslator(tooltipTranslator);
             }
 
             itemSlot.addItem(new ItemStack(item, ammount, metadata));

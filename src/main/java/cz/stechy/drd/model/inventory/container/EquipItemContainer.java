@@ -3,6 +3,7 @@ package cz.stechy.drd.model.inventory.container;
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.inventory.ItemSlotHelper;
+import cz.stechy.drd.model.inventory.TooltipTranslator;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
@@ -31,10 +32,12 @@ public class EquipItemContainer extends ItemContainer {
     // region Constructors
 
     /**
-     * Inicializuje kontainer pro výbavu postavy
+     * Inicializuje kontainer pro výbavu postavy.
+     *
+     * @param tooltipTranslator {@link TooltipTranslator}
      */
-    public EquipItemContainer() {
-        super(CAPACITY);
+    public EquipItemContainer(TooltipTranslator tooltipTranslator) {
+        super(tooltipTranslator, CAPACITY);
 
         init();
     }
