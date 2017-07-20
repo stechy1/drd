@@ -29,6 +29,7 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
     private static final String COLUMN_AUTHOR = TABLE + "_author";
     private static final String COLUMN_DEFENCE = TABLE + "_defence";
     private static final String COLUMN_MINIMUM_STRENGTH = TABLE + "_minimum_strength";
+    private static final String COLUMN_ARMOR_TYPE = TABLE + "_type";
     private static final String COLUMN_WEIGHT_A = TABLE + "_weight_a";
     private static final String COLUMN_WEIGHT_B = TABLE + "_weight_b";
     private static final String COLUMN_WEIGHT_C = TABLE + "_weight_c";
@@ -40,9 +41,9 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
     private static final String COLUMN_DOWNLOADED = TABLE + "_downloaded";
     private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
-        COLUMN_AUTHOR, COLUMN_DEFENCE, COLUMN_MINIMUM_STRENGTH, COLUMN_WEIGHT_A, COLUMN_WEIGHT_B,
-        COLUMN_WEIGHT_C, COLUMN_PRICE_A, COLUMN_PRICE_B, COLUMN_PRICE_C, COLUMN_IMAGE,
-        COLUMN_STACK_SIZE, COLUMN_DOWNLOADED, COLUMN_UPLOADED};
+        COLUMN_AUTHOR, COLUMN_DEFENCE, COLUMN_MINIMUM_STRENGTH, COLUMN_ARMOR_TYPE, COLUMN_WEIGHT_A,
+        COLUMN_WEIGHT_B, COLUMN_WEIGHT_C, COLUMN_PRICE_A, COLUMN_PRICE_B, COLUMN_PRICE_C,
+        COLUMN_IMAGE, COLUMN_STACK_SIZE, COLUMN_DOWNLOADED, COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -53,6 +54,7 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
             + "%s VARCHAR(255) NOT NULL,"                       // author
             + "%s INT NOT NULL,"                                // defence number
             + "%s INT NOT NULL,"                                // minimum strength
+            + "%s INT NOT NULL,"                                // armor type
             + "%s INT NOT NULL,"                                // weight A
             + "%s INT NOT NULL,"                                // weight B
             + "%s INT NOT NULL,"                                // weight C
@@ -64,9 +66,9 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
             + "%s BOOLEAN NOT NULL,"                            // je položka stažená
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
             + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR,
-        COLUMN_DEFENCE, COLUMN_MINIMUM_STRENGTH, COLUMN_WEIGHT_A, COLUMN_WEIGHT_B, COLUMN_WEIGHT_C,
-        COLUMN_PRICE_A, COLUMN_PRICE_B, COLUMN_PRICE_C, COLUMN_IMAGE, COLUMN_STACK_SIZE,
-        COLUMN_DOWNLOADED, COLUMN_UPLOADED);
+        COLUMN_DEFENCE, COLUMN_MINIMUM_STRENGTH, COLUMN_ARMOR_TYPE, COLUMN_WEIGHT_A, COLUMN_WEIGHT_B,
+        COLUMN_WEIGHT_C, COLUMN_PRICE_A, COLUMN_PRICE_B, COLUMN_PRICE_C, COLUMN_IMAGE,
+        COLUMN_STACK_SIZE, COLUMN_DOWNLOADED, COLUMN_UPLOADED);
     // endregion
 
     // region Variables
@@ -101,6 +103,7 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
             .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
             .defenceNumber(snapshot.child(COLUMN_DEFENCE).getValue(Integer.class))
             .minimumStrength(snapshot.child(COLUMN_MINIMUM_STRENGTH).getValue(Integer.class))
+            .type(snapshot.child(COLUMN_ARMOR_TYPE).getValue(Integer.class))
             .weightA(snapshot.child(COLUMN_WEIGHT_A).getValue(Integer.class))
             .weightB(snapshot.child(COLUMN_WEIGHT_B).getValue(Integer.class))
             .weightC(snapshot.child(COLUMN_WEIGHT_C).getValue(Integer.class))
@@ -121,6 +124,7 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
             .author(resultSet.getString(COLUMN_AUTHOR))
             .defenceNumber(resultSet.getInt(COLUMN_DEFENCE))
             .minimumStrength(resultSet.getInt(COLUMN_MINIMUM_STRENGTH))
+            .type(resultSet.getInt(COLUMN_ARMOR_TYPE))
             .weightA(resultSet.getInt(COLUMN_WEIGHT_A))
             .weightB(resultSet.getInt(COLUMN_WEIGHT_B))
             .weightC(resultSet.getInt(COLUMN_WEIGHT_C))
@@ -143,6 +147,7 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
             armor.getAuthor(),
             armor.getDefenceNumber(),
             armor.getMinimumStrength(),
+            armor.getType().ordinal(),
             armor.getWeightA(),
             armor.getWeightB(),
             armor.getWeightC(),

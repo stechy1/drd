@@ -19,6 +19,7 @@ public final class Translator {
     private static final String[] WEAPON_MELE_CLASSES;
     private static final String[] WEAPON_MELE_TYPES;
     private static final String[] WEAPON_RANGED_TYPES;
+    private static final String[] ARMOR_TYPES;
     private static final String[] DICE_ADDITION_PROPERTIES;
     private static final String[] SHOP_ITEMS;
     private static final String[] BACKPACK_SIZES;
@@ -102,6 +103,13 @@ public final class Translator {
             R.Translate.BESTIARY_TYPE_SPIDER,
             R.Translate.BESTIARY_TYPE_OTHER,
         };
+        ARMOR_TYPES = new String[] {
+            R.Translate.ITEM_ARMOR_TYPE_HELM,
+            R.Translate.ITEM_ARMOR_TYPE_BODY,
+            R.Translate.ITEM_ARMOR_TYPE_LEGS,
+            R.Translate.ITEM_ARMOR_TYPE_BOOTS,
+            R.Translate.ITEM_ARMOR_TYPE_GLASES
+        };
     }
 
     // region Variables
@@ -113,6 +121,7 @@ public final class Translator {
     private List<String> weaponMeleClassList;
     private List<String> weaponMeleTypeList;
     private List<String> weaponRangedTypeList;
+    private List<String> armorTypeList;
     private List<String> diceAdditionProertyList;
     private List<String> shopItemList;
     private List<String> backpackSizeList;
@@ -257,6 +266,15 @@ public final class Translator {
         }
 
         return mobClassList;
+    }
+
+    public List<String> getArmorTypeList() {
+        if (armorTypeList == null) {
+            armorTypeList = Arrays.stream(ARMOR_TYPES).map(resources::getString)
+                .collect(Collectors.toList());
+        }
+
+        return armorTypeList;
     }
 
     // endregion
