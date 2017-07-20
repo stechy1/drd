@@ -1,6 +1,7 @@
 package cz.stechy.drd.util;
 
 import cz.stechy.drd.R;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -174,6 +175,19 @@ public final class Translator {
         }
 
         return stringList;
+    }
+
+    /**
+     * Přeloží názvy atributů podle konstant
+     *
+     * @param tooltipMap Mapa obsahující hodnoty pro tooltip
+     */
+    public void translateTooltipKeys(Map<String, String> tooltipMap) {
+        final Map<String, String> dummy = tooltipMap.entrySet().stream()
+            .map(entry -> new SimpleEntry<>(resources.getString(entry.getKey()), entry.getValue()))
+            .collect(Collectors.toMap(o -> o.getKey(), o -> o.getValue()));
+        tooltipMap.clear();
+        tooltipMap.putAll(dummy);
     }
 
     // endregion
