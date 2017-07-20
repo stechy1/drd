@@ -3,6 +3,7 @@ package cz.stechy.drd.model.inventory;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.service.KeyboardService;
 import java.io.ByteArrayInputStream;
+import java.util.Map;
 import java.util.function.Predicate;
 import javafx.beans.value.ChangeListener;
 import javafx.event.EventHandler;
@@ -10,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -17,8 +19,13 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.stage.WindowEvent;
 
 /**
  * Třída představující jeden slot v inventáři
@@ -38,20 +45,25 @@ public class ItemSlot {
     // endregion
 
     // region Variables
-    // Kontainer s obrázkem
+    // Kontejner s obrázkem
     private final StackPane container = new StackPane();
     // Obrázek itemu
     private final ImageView imgItem = new ImageView();
     // Text zobrazující počet itemů
     private final Label lblAmmount = new Label();
+    // Tooltip, který se zobrazí při najetí myši nad slot s itemem
+    private final Tooltip tooltip = new Tooltip();
 
     // Id slotu
     private int id;
     private DragDropHandlers dragDropHandlers;
     private ClickListener clickListener;
+    private TooltipTranslator tooltipTranslator;
     private ItemStack itemStack;
     // Výchozí item filster, který přijímá vše
     private Predicate<ItemBase> filter = itemBase -> true;
+    // Kontejner pro tooltip
+    private GridPane tooltipContainer;
 
     // endregion
 
@@ -140,6 +152,19 @@ public class ItemSlot {
         }
     };
 
+    // Handler na změnu viditelnosti tooltipu
+    private final EventHandler<WindowEvent> tooltipShowing = event -> {
+        System.out.println("entered");
+        if (tooltipContainer == null) {
+            final Map<String, String> tooltipMap = itemStack.getItem().getMapDescription();
+            if (tooltipTranslator != null) {
+                tooltipTranslator.onTooltipTranslateRequest(tooltipMap);
+            }
+            initTooltipContainer(tooltipMap);
+        }
+        tooltip.setGraphic(tooltipContainer);
+    };
+
     // endregion
 
     // region Private methods
@@ -162,6 +187,9 @@ public class ItemSlot {
         imgItem.setFitHeight(SLOT_SIZE);
         imgItem.setCursor(Cursor.HAND);
 
+        Tooltip.install(imgItem, tooltip);
+        tooltip.setOnShowing(tooltipShowing);
+
         lblAmmount.setMaxSize(SLOT_SIZE, LABEL_AMMOUNT_HEGHT);
         lblAmmount.setTranslateY(LABEL_TRANSLATE_Y);
         lblAmmount.setAlignment(Pos.BASELINE_RIGHT);
@@ -176,6 +204,24 @@ public class ItemSlot {
     private void setImage(byte[] image) {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(image);
         imgItem.setImage(new Image(inputStream));
+    }
+
+    private void initTooltipContainer(Map<String, String> tooltipMap) {
+        tooltipContainer = new GridPane();
+        tooltipContainer.getColumnConstraints().setAll(
+            new ColumnConstraints(70),
+            new ColumnConstraints(50)
+        );
+        final int[] rowIndex = {0};
+        tooltipMap.entrySet().forEach(entry -> {
+            final Text key = new Text(entry.getKey());
+            final Text value = new Text(entry.getValue());
+            key.setFill(Color.WHITE);
+            value.setFill(Color.WHITE);
+            tooltipContainer.add(key, 0, rowIndex[0]);
+            tooltipContainer.add(value, 1, rowIndex[0]);
+            rowIndex[0]++;
+        });
     }
 
     // endregion
@@ -321,6 +367,17 @@ public class ItemSlot {
 
     public void setClickListener(ClickListener clickListener) {
         this.clickListener = clickListener;
+    }
+
+    /**
+     * Nastaví překladač klíčů pro tooltip
+     *
+     * @param tooltipTranslator {@link TooltipTranslator}
+     */
+    public void setTooltipTranslator(TooltipTranslator tooltipTranslator) {
+        if (this.tooltipTranslator == null) {
+            this.tooltipTranslator = tooltipTranslator;
+        }
     }
 
     // endregion
