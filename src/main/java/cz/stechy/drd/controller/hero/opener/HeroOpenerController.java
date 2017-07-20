@@ -5,6 +5,7 @@ import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.LabeledHeroProperty;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -82,11 +83,11 @@ public class HeroOpenerController extends BaseController implements Initializabl
         selectedHero.addListener((observable, oldValue, newValue) -> {
             lblName.textProperty().setValue(newValue.getName());
             lblConviction.textProperty()
-                .setValue(translator.getConvictionList().get(newValue.getConviction().ordinal()));
+                .setValue(translator.getTranslationFor(Key.CONVICTIONS).get(newValue.getConviction().ordinal()));
             lblRace.textProperty()
-                .setValue(translator.getRaceList().get(newValue.getRace().ordinal()));
+                .setValue(translator.getTranslationFor(Key.RACES).get(newValue.getRace().ordinal()));
             lblProfession.textProperty()
-                .setValue(translator.getProfessionList().get(newValue.getProfession().ordinal()));
+                .setValue(translator.getTranslationFor(Key.PROFESSIONS).get(newValue.getProfession().ordinal()));
             lblStrength.setHeroProperty(newValue.getStrength());
             lblDexterity.setHeroProperty(newValue.getDexterity());
             lblImmunity.setHeroProperty(newValue.getImmunity());

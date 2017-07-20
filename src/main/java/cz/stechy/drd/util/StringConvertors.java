@@ -16,6 +16,7 @@ import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponType;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
+import cz.stechy.drd.util.Translator.Key;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
 import javafx.util.StringConverter;
@@ -40,7 +41,7 @@ public final class StringConvertors {
                     return "";
                 }
 
-                return translator.getConvictionList().get(object.ordinal());
+                return translator.getTranslationFor(Key.CONVICTIONS).get(object.ordinal());
             }
 
             @Override
@@ -58,7 +59,7 @@ public final class StringConvertors {
                     return "";
                 }
 
-                return translator.getRaceList().get(object.ordinal());
+                return translator.getTranslationFor(Key.RACES).get(object.ordinal());
             }
 
             @Override
@@ -76,7 +77,7 @@ public final class StringConvertors {
                     return "";
                 }
 
-                return translator.getProfessionList().get(object.ordinal());
+                return translator.getTranslationFor(Key.PROFESSIONS).get(object.ordinal());
             }
 
             @Override
@@ -94,7 +95,7 @@ public final class StringConvertors {
                     return "";
                 }
 
-                return translator.getDiceAdditionProertyList().get(object.ordinal());
+                return translator.getTranslationFor(Key.DICE_ADDITION_PROPERTIES).get(object.ordinal());
             }
 
             @Override
@@ -113,7 +114,7 @@ public final class StringConvertors {
                     return "";
                 }
 
-                return translator.getWeaponMeleTypeList().get(object.ordinal());
+                return translator.getTranslationFor(Key.WEAPON_MELE_TYPES).get(object.ordinal());
             }
 
             @Override
@@ -132,7 +133,7 @@ public final class StringConvertors {
                     return "";
                 }
 
-                return translator.getWeaponMeleClassList().get(object.ordinal());
+                return translator.getTranslationFor(Key.WEAPON_MELE_CLASSES).get(object.ordinal());
             }
 
             @Override
@@ -151,7 +152,7 @@ public final class StringConvertors {
                     return "";
                 }
 
-                return translator.getArmorTypeList().get(object.ordinal());
+                return translator.getTranslationFor(Key.ARMOR_TYPES).get(object.ordinal());
             }
 
             @Override
@@ -170,7 +171,7 @@ public final class StringConvertors {
                     return "";
                 }
 
-                return translator.getWeaponRangedTypeList().get(object.ordinal());
+                return translator.getTranslationFor(Key.WEAPON_RANGED_TYPES).get(object.ordinal());
             }
 
             @Override
@@ -187,8 +188,8 @@ public final class StringConvertors {
             return Bindings.concat();
         }
 
-        String translatedRace = translator.getRaceList().get(hero.getRace().ordinal());
-        String translatedProfession = translator.getProfessionList()
+        String translatedRace = translator.getTranslationFor(Key.RACES).get(hero.getRace().ordinal());
+        String translatedProfession = translator.getTranslationFor(Key.PROFESSIONS)
             .get(hero.getProfession().ordinal());
         return Bindings.concat(translatedRace, " ", translatedProfession);
     }
@@ -201,7 +202,7 @@ public final class StringConvertors {
                     return "";
                 }
 
-                return translator.getBackpackSizeList().get(object.ordinal());
+                return translator.getTranslationFor(Key.BACKPACK_SIZES).get(object.ordinal());
             }
 
             @Override
@@ -219,7 +220,7 @@ public final class StringConvertors {
                     return "";
                 }
 
-                return translator.getRulesList().get(object.ordinal());
+                return translator.getTranslationFor(Key.RULES).get(object.ordinal());
             }
 
             @Override
@@ -237,7 +238,7 @@ public final class StringConvertors {
                     return "";
                 }
 
-                return translator.getMobClassList().get(object.ordinal());
+                return translator.getTranslationFor(Key.MOB_CLASSES).get(object.ordinal());
             }
 
             @Override

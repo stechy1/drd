@@ -2,7 +2,9 @@ package cz.stechy.drd.util;
 
 import cz.stechy.drd.R;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
@@ -13,30 +15,51 @@ public final class Translator {
 
     // region Constants
 
-    private static final String[] CONVICTIONS;
-    private static final String[] RACES;
-    private static final String[] PROFESSIONS;
-    private static final String[] WEAPON_MELE_CLASSES;
-    private static final String[] WEAPON_MELE_TYPES;
-    private static final String[] WEAPON_RANGED_TYPES;
-    private static final String[] ARMOR_TYPES;
-    private static final String[] DICE_ADDITION_PROPERTIES;
-    private static final String[] SHOP_ITEMS;
-    private static final String[] BACKPACK_SIZES;
-    private static final String[] RULES;
-    private static final String[] MOB_CLASSES;
+    private static final String[] CONVICTIONS_VALUES;
+    private static final String[] RACES_VALUES;
+    private static final String[] PROFESSIONS_VALUES;
+    private static final String[] WEAPON_MELE_CLASSES_VALUES;
+    private static final String[] WEAPON_MELE_TYPES_VALUES;
+    private static final String[] WEAPON_RANGED_TYPES_VALUES;
+    private static final String[] ARMOR_TYPES_VALUES;
+    private static final String[] DICE_ADDITION_PROPERTIES_VALUES;
+    private static final String[] SHOP_ITEMS_VALUES;
+    private static final String[] BACKPACK_SIZES_VALUES;
+    private static final String[] RULES_VALUES;
+    private static final String[] MOB_CLASSES_VALUES;
+
+    public enum Key {
+        CONVICTIONS(CONVICTIONS_VALUES),
+        RACES(RACES_VALUES),
+        PROFESSIONS(PROFESSIONS_VALUES),
+        WEAPON_MELE_CLASSES(WEAPON_MELE_CLASSES_VALUES),
+        WEAPON_MELE_TYPES(WEAPON_MELE_TYPES_VALUES),
+        WEAPON_RANGED_TYPES(WEAPON_RANGED_TYPES_VALUES),
+        ARMOR_TYPES(ARMOR_TYPES_VALUES),
+        DICE_ADDITION_PROPERTIES(DICE_ADDITION_PROPERTIES_VALUES),
+        SHOP_ITEMS(SHOP_ITEMS_VALUES),
+        BACKPACK_SIZES(BACKPACK_SIZES_VALUES),
+        RULES(RULES_VALUES),
+        MOB_CLASSES(MOB_CLASSES_VALUES);
+
+        private final String[] values;
+
+        Key(String[] values) {
+            this.values = values;
+        }
+    }
 
     // endregion
 
     static {
-        CONVICTIONS = new String[]{
+        CONVICTIONS_VALUES = new String[]{
             R.Translate.CONVICTION_LAWFUL_GOOD,
             R.Translate.CONVICTION_CONFUSED_GOODNESS,
             R.Translate.CONVICTION_NEUTRAL,
             R.Translate.CONVICTION_CONFUSED_EVIL,
             R.Translate.CONVICTION_LAWFUL_EVIL
         };
-        RACES = new String[]{
+        RACES_VALUES = new String[]{
             R.Translate.RACE_HOBIT,
             R.Translate.RACE_KUDUK,
             R.Translate.RACE_DWARF,
@@ -45,7 +68,7 @@ public final class Translator {
             R.Translate.RACE_BARBAR,
             R.Translate.RACE_KROLL
         };
-        PROFESSIONS = new String[]{
+        PROFESSIONS_VALUES = new String[]{
             R.Translate.PROFESSION_WARIOR,
             R.Translate.PROFESSION_RANGER,
             R.Translate.PROFESSION_ALCHEMIST,
@@ -53,21 +76,21 @@ public final class Translator {
             R.Translate.PROFESSION_THIEF
         };
 
-        WEAPON_MELE_CLASSES = new String[]{
+        WEAPON_MELE_CLASSES_VALUES = new String[]{
             R.Translate.ITEM_WEAPON_MELE_CLASS_LIGHT,
             R.Translate.ITEM_WEAPON_MELE_CLASS_MEDIUM,
             R.Translate.ITEM_WEAPON_MELE_CLASS_HEAVY
         };
-        WEAPON_MELE_TYPES = new String[]{
+        WEAPON_MELE_TYPES_VALUES = new String[]{
             R.Translate.ITEM_WEAPON_MELE_TYPE_ONE_HAND,
             R.Translate.ITEM_WEAPON_MELE_TYPE_DOUBLE_HAND
         };
-        WEAPON_RANGED_TYPES = new String[]{
+        WEAPON_RANGED_TYPES_VALUES = new String[]{
             R.Translate.ITEM_WEAPON_RANGED_TYPE_FIRE,
             R.Translate.ITEM_WEAPON_RANGED_TYPE_PROJECTILE
         };
 
-        DICE_ADDITION_PROPERTIES = new String[]{
+        DICE_ADDITION_PROPERTIES_VALUES = new String[]{
             R.Translate.HERO_STRENGTH,
             R.Translate.HERO_DEXTERITY,
             R.Translate.HERO_IMMUNITY,
@@ -75,7 +98,7 @@ public final class Translator {
             R.Translate.HERO_CHARISMA
         };
 
-        SHOP_ITEMS = new String[]{
+        SHOP_ITEMS_VALUES = new String[]{
             R.Translate.ITEM_TYPE_WEAPON_MELE,
             R.Translate.ITEM_TYPE_WEAPON_RANGED,
             R.Translate.ITEM_TYPE_ARMOR,
@@ -83,17 +106,17 @@ public final class Translator {
             R.Translate.ITEM_TYPE_BACKPACK
         };
 
-        BACKPACK_SIZES = new String[]{
+        BACKPACK_SIZES_VALUES = new String[]{
             R.Translate.ITEM_BACKPACK_SIZE_SMALL,
             R.Translate.ITEM_BACKPACK_SIZE_MEDIUM,
             R.Translate.ITEM_BACKPACK_SIZE_LARGE
         };
-        RULES = new String[] {
+        RULES_VALUES = new String[]{
             R.Translate.RULES_PPZ,
             R.Translate.RULES_PPP,
             R.Translate.RULES_PPE
         };
-        MOB_CLASSES = new String[] {
+        MOB_CLASSES_VALUES = new String[]{
             R.Translate.BESTIARY_TYPE_DRAGON,
             R.Translate.BESTIARY_TYPE_SNAKE,
             R.Translate.BESTIARY_TYPE_LYCANTROP,
@@ -103,7 +126,7 @@ public final class Translator {
             R.Translate.BESTIARY_TYPE_SPIDER,
             R.Translate.BESTIARY_TYPE_OTHER,
         };
-        ARMOR_TYPES = new String[] {
+        ARMOR_TYPES_VALUES = new String[]{
             R.Translate.ITEM_ARMOR_TYPE_HELM,
             R.Translate.ITEM_ARMOR_TYPE_BODY,
             R.Translate.ITEM_ARMOR_TYPE_LEGS,
@@ -115,18 +138,7 @@ public final class Translator {
     // region Variables
 
     private final ResourceBundle resources;
-    private List<String> raceList;
-    private List<String> convictionList;
-    private List<String> professionList;
-    private List<String> weaponMeleClassList;
-    private List<String> weaponMeleTypeList;
-    private List<String> weaponRangedTypeList;
-    private List<String> armorTypeList;
-    private List<String> diceAdditionProertyList;
-    private List<String> shopItemList;
-    private List<String> backpackSizeList;
-    private List<String> rulesList;
-    private List<String> mobClassList;
+    private final Map<Key, List<String>> translateMap;
 
     // endregion
 
@@ -139,6 +151,7 @@ public final class Translator {
      */
     public Translator(ResourceBundle resources) {
         this.resources = resources;
+        this.translateMap = new HashMap<>();
     }
 
     // endregion
@@ -146,135 +159,21 @@ public final class Translator {
     // region Public methods
 
     /**
-     * @return Přeloženou kolekci pro přesvědčení
-     */
-    public List<String> getConvictionList() {
-        if (convictionList == null) {
-            convictionList = Arrays.stream(CONVICTIONS).map(resources::getString)
-                .collect(Collectors.toList());
-        }
-
-        return convictionList;
-    }
-
-    /**
-     * @return Přeloženou kolekci pro rasy
-     */
-    public List<String> getRaceList() {
-        if (raceList == null) {
-            raceList = Arrays.stream(RACES).map(resources::getString).collect(Collectors.toList());
-        }
-
-        return raceList;
-    }
-
-    /**
-     * @return Přeloženou kolekci pro profese
-     */
-    public List<String> getProfessionList() {
-        if (professionList == null) {
-            professionList = Arrays.stream(PROFESSIONS).map(resources::getString)
-                .collect(Collectors.toList());
-        }
-
-        return professionList;
-    }
-
-    /**
-     * @return Přeloženou kolekci pro třídy zbraní pro boj z blízka
-     */
-    public List<String> getWeaponMeleClassList() {
-        if (weaponMeleClassList == null) {
-            weaponMeleClassList = Arrays.stream(WEAPON_MELE_CLASSES).map(resources::getString)
-                .collect(Collectors.toList());
-        }
-
-        return weaponMeleClassList;
-    }
-
-    /**
-     * @return Přeloženou kolekci pro typy zbraní pro boj z blízka
-     */
-    public List<String> getWeaponMeleTypeList() {
-        if (weaponMeleTypeList == null) {
-            weaponMeleTypeList = Arrays.stream(WEAPON_MELE_TYPES).map(resources::getString)
-                .collect(Collectors.toList());
-        }
-
-        return weaponMeleTypeList;
-    }
-
-    /**
-     * @return Přeloženou kolekci pro typy zbraní pro boj na dálku
-     */
-    public List<String> getWeaponRangedTypeList() {
-        if (weaponRangedTypeList == null) {
-            weaponRangedTypeList = Arrays.stream(WEAPON_RANGED_TYPES).map(resources::getString)
-                .collect(Collectors.toList());
-        }
-
-        return weaponRangedTypeList;
-    }
-
-    /**
+     * Získá kolekci s přeloženými konstantami podle zvoleného klíče
+     *
+     * @param key {@link Key}
      * @return Přeloženou kolekci
      */
-    public List<String> getDiceAdditionProertyList() {
-        if (diceAdditionProertyList == null) {
-            diceAdditionProertyList = Arrays.stream(DICE_ADDITION_PROPERTIES)
-                .map(resources::getString)
+    public List<String> getTranslationFor(Key key) {
+        final List<String> stringList;
+        if (!translateMap.containsKey(key)) {
+            stringList = Arrays.stream(key.values).map(resources::getString)
                 .collect(Collectors.toList());
+        } else {
+            stringList = translateMap.get(key);
         }
 
-        return diceAdditionProertyList;
-    }
-
-    /**
-     * @return Přeloženou kolekci s typy předmětů v obchodu
-     */
-    public List<String> getShopTypeList() {
-        if (shopItemList == null) {
-            shopItemList = Arrays.stream(SHOP_ITEMS).map(resources::getString)
-                .collect(Collectors.toList());
-        }
-
-        return shopItemList;
-    }
-
-    public List<String> getBackpackSizeList() {
-        if (backpackSizeList == null) {
-            backpackSizeList = Arrays.stream(BACKPACK_SIZES).map(resources::getString)
-                .collect(Collectors.toList());
-        }
-
-        return backpackSizeList;
-    }
-
-    public List<String> getRulesList() {
-        if (rulesList == null) {
-            rulesList = Arrays.stream(RULES).map(resources::getString)
-                .collect(Collectors.toList());
-        }
-
-        return rulesList;
-    }
-
-    public List<String> getMobClassList() {
-        if (mobClassList == null) {
-            mobClassList = Arrays.stream(MOB_CLASSES).map(resources::getString)
-                .collect(Collectors.toList());
-        }
-
-        return mobClassList;
-    }
-
-    public List<String> getArmorTypeList() {
-        if (armorTypeList == null) {
-            armorTypeList = Arrays.stream(ARMOR_TYPES).map(resources::getString)
-                .collect(Collectors.toList());
-        }
-
-        return armorTypeList;
+        return stringList;
     }
 
     // endregion
