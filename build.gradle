@@ -40,7 +40,7 @@ javadoc {
 
 dependencies {
 
-    compile group: 'com.github.stechy1', name: 'screens', version: 'v1.5.3'
+    compile group: 'com.github.stechy1', name: 'screens', version: 'v1.5.4'
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.16.1'
     compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.3.0'
     compile group: 'com.github.harawata', name: 'appdirs', version: '1.0.0-SNAPSHOT'
