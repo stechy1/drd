@@ -240,6 +240,7 @@ public class ItemSlot {
         imgItem.setImage(null);
         lblAmmount.setText(null);
         clickListener = null;
+        filter = null;
     }
 
     /**
@@ -257,6 +258,7 @@ public class ItemSlot {
             lblAmmount.textProperty().bind(this.itemStack.ammountProperty().asString());
             setImage(item.getImage());
             this.itemStack.getItem().imageProperty().addListener(imageChangeListener);
+            this.filter = itemBase -> itemBase.getItemType() == item.getItemType();
             return;
         }
 
@@ -306,16 +308,18 @@ public class ItemSlot {
      * @return True, pokud lze item vložit, jinak false
      */
     public boolean acceptItem(ItemStack itemStack) {
+        // Není přítomný žádný předmět -> true
+        if (filter == null || itemStack == null) {
+            return true;
+        }
+
+        // Nějaký předmět je přítomný, tak ho otestujeme
         final boolean filterTest = filter.test(itemStack.getItem());
         if (!filterTest) {
             return false;
         }
 
-        if (this.itemStack == null) {
-            return true;
-        } else {
-            return this.itemStack.canInsertAmmount(itemStack.getAmmount());
-        }
+        return this.itemStack.canInsertAmmount(itemStack.getAmmount());
     }
 
     /**
@@ -362,6 +366,10 @@ public class ItemSlot {
      * @param filter Filtr pro příjem itemů
      */
     public void setFilter(Predicate<ItemBase> filter) {
+        if (this.filter != null) {
+            return;
+        }
+
         this.filter = filter;
     }
 
