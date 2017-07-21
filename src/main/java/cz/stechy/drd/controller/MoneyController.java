@@ -1,6 +1,7 @@
 package cz.stechy.drd.controller;
 
 import cz.stechy.drd.Money;
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.screens.BaseController;
@@ -58,6 +59,7 @@ public class MoneyController extends BaseController {
 
     @Override
     protected void onResume() {
+        setTitle(R.Translate.MONEY_TITLE);
         setScreenSize(250, 150);
     }
 

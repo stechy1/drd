@@ -2,8 +2,9 @@ package cz.stechy.drd.ui.gui.shop;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
-import cz.stechy.drd.ui.GUITestBase;
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.ui.GUITestBase;
+import cz.stechy.drd.ui.pages.shop.GeneralShopPage;
 import cz.stechy.drd.ui.pages.shop.ShopPage;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.TitledPane;
@@ -88,5 +89,9 @@ public final class ShopGuiTest extends GUITestBase {
             translated.equals(pane.getText()));
     }
 
-
+    @Test
+    public void testGeneralItem() throws Exception {
+        final GeneralShopPage generalPage = (GeneralShopPage) shopPage.showGeneralPage();
+        generalPage.fillValues(GeneralShopPage.ITEM_1).confirm();
+    }
 }

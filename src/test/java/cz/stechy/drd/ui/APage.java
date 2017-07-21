@@ -3,6 +3,7 @@ package cz.stechy.drd.ui;
 import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Map;
+import javafx.scene.Node;
 import javafx.stage.Stage;
 import org.testfx.api.FxRobot;
 
@@ -20,6 +21,8 @@ public abstract class APage {
     // region Constructors
 
     public APage(FxRobot parentRobot) {
+        System.out.println("Nove okno:");
+        System.out.println(parentRobot.listWindows());
         this.robot = parentRobot.targetWindow(getTitleFromBundle(getTag()));
         if (!((Stage) robot.targetWindow()).getTitle().equals(getTitleFromBundle(getTag()))) {
             throw new IllegalArgumentException("Nejsem na správném screenu");
@@ -55,6 +58,11 @@ public abstract class APage {
         final Class<? extends APage> aClass = map.get(identifier);
         final Constructor<? extends APage> constructor = aClass.getConstructor(FxRobot.class);
         return constructor.newInstance(robot);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Node> T find(final String query) {
+        return (T) robot.lookup(query).queryAll().iterator().next();
     }
 
     // endregion

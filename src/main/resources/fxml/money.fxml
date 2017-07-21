@@ -27,6 +27,6 @@
   <TextField fx:id="txtGold" GridPane.columnIndex="1" />
   <TextField fx:id="txtSilver" GridPane.rowIndex="1" GridPane.columnIndex="1" />
   <TextField fx:id="txtCopper" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-  <Button onAction="#handleFinish" text="%drd_finish" GridPane.columnIndex="1"
+  <Button fx:id="btnFinish" onAction="#handleFinish" text="%drd_finish" GridPane.columnIndex="1"
     GridPane.rowIndex="3"/>
 </GridPane>

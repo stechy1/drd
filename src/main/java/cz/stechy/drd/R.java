@@ -178,7 +178,7 @@ public final class R {
         public static final String ITEM_WEAPON_RANGED_RANGE_MEDIUM = "drd_item_weapon_ranged_range_medium";
         public static final String ITEM_WEAPON_RANGED_RANGE_LONG = "drd_item_weapon_ranged_range_long";
         public static final String ITEM_ARMOR_MINIMUM_STRENGTH = "drd_item_armor_minimum_strength";
-        public static final String MONEY_TITLE = "drd_money_title";
+        public static final String MONEY_XP_TITLE = "drd_money_xp_title";
         public static final String MONEY_GOLD = "drd_money_gold";
         public static final String MONEY_SILVER = "drd_money_silver";
         public static final String MONEY_COPPER = "drd_money_copper";
@@ -218,6 +218,7 @@ public final class R {
         public static final String BESTIARY_TYPE_STATUE = "drd_bestiary_type_statue";
         public static final String BESTIARY_TYPE_SPIDER = "drd_bestiary_type_spider";
         public static final String BESTIARY_TYPE_OTHER = "drd_bestiary_type_other";
+        public static final String MONEY_TITLE = "drd_money_title";
         public static final String USER_LOGIN_TITLE = "drd_user_login_title";
         public static final String USER_USERNAME = "drd_user_username";
         public static final String USER_PASSWORD = "drd_user_password";

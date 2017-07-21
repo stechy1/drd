@@ -76,7 +76,7 @@ public class MoneyXpController extends BaseController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        title = resources.getString(R.Translate.MONEY_TITLE);
+        title = resources.getString(R.Translate.MONEY_XP_TITLE);
 
         lblMoney.forMoney(hero.getMoney());
         lblExperience.setMaxActValue(hero.getExperiences());

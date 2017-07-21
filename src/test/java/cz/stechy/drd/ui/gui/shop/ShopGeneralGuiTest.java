@@ -24,8 +24,14 @@ public final class ShopGeneralGuiTest extends GUITestBase {
 
     // endregion
 
+    // region Public methods
+
+    // endregion
+
     @Test
     public void test() throws Exception {
+        generalShopPage.fillValues(GeneralShopPage.ITEM_1).confirm();
+
 
     }
 }
