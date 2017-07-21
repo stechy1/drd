@@ -158,7 +158,7 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuNewHero(ActionEvent actionEvent) {
-        startNewDialogForResult(R.FXML.NEW_HERO_1, ACTION_NEW_HERO);
+        startNewDialogForResult(R.FXML.HERO_CREATOR_1, ACTION_NEW_HERO);
     }
 
     @FXML

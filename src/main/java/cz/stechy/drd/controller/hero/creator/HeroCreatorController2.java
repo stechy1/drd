@@ -126,7 +126,7 @@ public class HeroCreatorController2 extends BaseController implements Initializa
         bundle.putInt(HeroCreatorHelper.IMMUNITY, model.immunity.getValue());
         bundle.putInt(HeroCreatorHelper.INTELLIGENCE, model.intelligence.getValue());
         bundle.putInt(HeroCreatorHelper.CHARISMA, model.charisma.getValue());
-        startScreen(R.FXML.NEW_HERO_3, bundle);
+        startScreen(R.FXML.HERO_CREATOR_3, bundle);
     }
 
     // endregion
