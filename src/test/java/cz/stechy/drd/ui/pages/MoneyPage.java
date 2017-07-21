@@ -37,6 +37,7 @@ public class MoneyPage extends APage {
     // region Public methods
 
     public MoneyPage setMoney(Money money) {
+        System.out.println("Set money");
         setCopper(money.getCopper());
         setSilver(money.getSilver());
         setGold(money.getGold());
@@ -45,18 +46,21 @@ public class MoneyPage extends APage {
     }
 
     public MoneyPage setCopper(int copper) {
+        System.out.println("Set copper");
         robot.doubleClickOn(TXT_COPPER).write(String.valueOf(copper));
 
         return this;
     }
 
     public MoneyPage setSilver(int silver) {
+        System.out.println("Set silver");
         robot.doubleClickOn(TXT_SILVER).write(String.valueOf(silver));
 
         return this;
     }
 
     public MoneyPage setGold(int gold) {
+        System.out.println("Set gold");
         robot.doubleClickOn(TXT_GOLD).write(String.valueOf(gold));
 
         return this;

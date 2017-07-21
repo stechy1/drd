@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -132,9 +131,6 @@ public class ItemGeneralController extends BaseController implements Initializab
         FormUtils.initTextFormater(txtStackSize, model.stackSize);
 
         imageView.imageProperty().bindBidirectional(model.image);
-
-        btnFinish.disableProperty()
-            .bind(Bindings.or(model.name.isEmpty(), model.imageRaw.isNull()));
     }
 
     @Override
@@ -226,7 +222,7 @@ public class ItemGeneralController extends BaseController implements Initializab
         final Money price = new Money();
         final MaxActValue weight = new MaxActValue(Integer.MAX_VALUE);
         final StringProperty author = new SimpleStringProperty();
-        final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
+        final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(new byte[1]);
         final ObjectProperty<Image> image = new SimpleObjectProperty<>();
         final MaxActValue stackSize = new MaxActValue(1, Integer.MAX_VALUE, 1);
         final BooleanProperty uploaded = new SimpleBooleanProperty();
