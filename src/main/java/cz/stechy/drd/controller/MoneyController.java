@@ -6,14 +6,17 @@ import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 
 /**
  * Kontroler pro popup okno obsahující nastavení peněz
  */
-public class MoneyController extends BaseController {
+public class MoneyController extends BaseController implements Initializable {
 
     // region Constants
 
@@ -40,6 +43,8 @@ public class MoneyController extends BaseController {
     private final MaxActValue silverValue = new MaxActValue(0, Money.MAX_SILVER, money.getSilver());
     private final MaxActValue copperValue = new MaxActValue(0, Money.MAX_COPPER, money.getCopper());
 
+    private String title;
+
     {
         goldValue.actValueProperty().bindBidirectional(money.gold);
         silverValue.actValueProperty().bindBidirectional(money.silver);
@@ -47,6 +52,11 @@ public class MoneyController extends BaseController {
     }
 
     // endregion
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.title = resources.getString(R.Translate.MONEY_TITLE);
+    }
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -59,7 +69,7 @@ public class MoneyController extends BaseController {
 
     @Override
     protected void onResume() {
-        setTitle(R.Translate.MONEY_TITLE);
+        setTitle(title);
         setScreenSize(250, 150);
     }
 

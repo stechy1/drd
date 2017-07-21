@@ -45,19 +45,19 @@ public class MoneyPage extends APage {
     }
 
     public MoneyPage setCopper(int copper) {
-        robot.clickOn(TXT_COPPER).write(String.valueOf(copper));
+        robot.doubleClickOn(TXT_COPPER).write(String.valueOf(copper));
 
         return this;
     }
 
     public MoneyPage setSilver(int silver) {
-        robot.clickOn(TXT_SILVER).write(String.valueOf(silver));
+        robot.doubleClickOn(TXT_SILVER).write(String.valueOf(silver));
 
         return this;
     }
 
     public MoneyPage setGold(int gold) {
-        robot.clickOn(TXT_GOLD).write(String.valueOf(gold));
+        robot.doubleClickOn(TXT_GOLD).write(String.valueOf(gold));
 
         return this;
     }

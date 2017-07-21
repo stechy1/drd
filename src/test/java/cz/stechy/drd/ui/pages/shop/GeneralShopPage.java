@@ -63,7 +63,7 @@ public class GeneralShopPage extends APage {
     // region Public methods
 
     public MoneyPage showMoneyPage() {
-        clickOn(LBL_PRICE);
+        robot.clickOn(LBL_PRICE);
         return new MoneyPage(robot);
     }
 

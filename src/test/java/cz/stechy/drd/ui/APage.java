@@ -21,8 +21,6 @@ public abstract class APage {
     // region Constructors
 
     public APage(FxRobot parentRobot) {
-        System.out.println("Nove okno:");
-        System.out.println(parentRobot.listWindows());
         this.robot = parentRobot.targetWindow(getTitleFromBundle(getTag()));
         if (!((Stage) robot.targetWindow()).getTitle().equals(getTitleFromBundle(getTag()))) {
             throw new IllegalArgumentException("Nejsem na správném screenu");
