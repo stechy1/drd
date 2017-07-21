@@ -102,7 +102,7 @@ public class HeroCreatorController1 extends BaseController implements Initializa
 
     @Override
     protected void onResume() {
-        setScreenSize(400, 250);
+        setScreenSize(600, 400);
         setTitle(title);
     }
 

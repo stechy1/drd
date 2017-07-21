@@ -4,7 +4,6 @@
 }
 
 /* Burgers Demo */
-
 .jfx-hamburger {
     -fx-spacing: 5;
     -fx-cursor: hand;
@@ -18,7 +17,6 @@
 }
 
 /* Input Demo */
-
 .text-field {
     -fx-max-width: 300;
 }
@@ -66,7 +64,6 @@
 }
 
 /* Progress Bar Demo */
-
 .progress-bar > .bar {
     -fx-min-width: 500;
 }
@@ -320,10 +317,7 @@
     -fx-rippler-fill: #5264AE;
 }
 
-/*
- * TREE TABLE CSS
- */
-
+/* TREE TABLE CSS */
 .tree-table-view {
     -fx-tree-table-color: rgba(255, 0, 0, 0.2);
     -fx-tree-table-rippler-color: rgba(255, 0, 0, 0.4);
@@ -435,4 +429,9 @@
     -fx-padding: 5 0 5 0;
 }
 
-
+.title-label {
+    -fx-font-size: 16.0px;
+    -fx-padding: 14.0px;
+    -fx-text-fill: rgba(0.0, 0.0, 0.0, 0.87);
+    -fx-background-color: #777;
+}
