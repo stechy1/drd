@@ -5,6 +5,10 @@ import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.ui.APage;
 import cz.stechy.drd.ui.pages.MoneyPage;
+import cz.stechy.drd.util.ImageUtils;
+import java.io.ByteArrayInputStream;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import org.testfx.api.FxRobot;
 
 /**
@@ -22,12 +26,7 @@ public class GeneralShopPage extends APage {
     private static final String TXT_DESCRIPTION = "#txtDescription";
     private static final String BTN_FINISH = "#btnFinish";
 
-    public static final GeneralItem ITEM_1 = new GeneralItem.Builder()
-        .name("Item1")
-        .description("Item created by testFX framework")
-        .stackSize(1)
-        .price(new Money().setCopper(20).getRaw())
-        .build();
+    public static final GeneralItem ITEM_1;
     public static final GeneralItem ITEM_2 = new GeneralItem.Builder()
         .name("Item2")
         .description("Item created by testFX framework")
@@ -40,6 +39,23 @@ public class GeneralShopPage extends APage {
         .stackSize(5)
         .price(new Money().setGold(20).getRaw())
         .build();
+
+    static {
+        byte[] image;
+        try {
+            image = ImageUtils.readImage(GeneralShopPage.class.getResourceAsStream("/images/icon/add.png"));
+        } catch (Exception e) {
+            image = new byte[0];
+        }
+
+        ITEM_1 = new GeneralItem.Builder()
+            .name("Item1")
+            .description("Item created by testFX framework")
+            .stackSize(1)
+            .price(new Money().setCopper(20).getRaw())
+            .image(image)
+            .build();
+    }
 
     // endregion
 
@@ -73,7 +89,7 @@ public class GeneralShopPage extends APage {
         showMoneyPage().setMoney(item.getPrice()).confirm();
         robot.doubleClickOn(TXT_STACKSIZE).write(String.valueOf(item.getStackSize()));
         robot.clickOn(TXT_DESCRIPTION).write(item.getDescription());
-
+        ((ImageView) find(IMAGE_VIEW)).setImage(new Image(new ByteArrayInputStream(item.getImage())));
         return this;
     }
 

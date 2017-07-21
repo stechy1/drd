@@ -9,7 +9,9 @@ import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ImageUtils;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -20,6 +22,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -33,6 +36,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javax.imageio.ImageIO;
 
 /**
  * Kontroler pro vytvoření nového standartního předmětu
@@ -228,10 +232,40 @@ public class ItemGeneralController extends BaseController implements Initializab
         final BooleanProperty uploaded = new SimpleBooleanProperty();
         final BooleanProperty downloaded = new SimpleBooleanProperty();
 
+        private boolean block = false;
+
         {
             imageRaw.addListener((observable, oldValue, newValue) -> {
-                final ByteArrayInputStream inputStream = new ByteArrayInputStream(newValue);
-                image.set(new Image(inputStream));
+                if (block) {
+                    return;
+                }
+
+                block = true;
+                try {
+                    final ByteArrayInputStream inputStream = new ByteArrayInputStream(newValue);
+                    image.set(new Image(inputStream));
+                } finally {
+                    block = false;
+                }
+            });
+            image.addListener((observable, oldValue, newValue) -> {
+                if (block) {
+                    return;
+                }
+
+                block = true;
+                try {
+                    BufferedImage bImage = SwingFXUtils.fromFXImage(newValue, null);
+                    ByteArrayOutputStream s = new ByteArrayOutputStream();
+                    ImageIO.write(bImage, "png", s);
+                    byte[] res = s.toByteArray();
+                    s.close(); //especially if you are using a different output stream.
+                    imageRaw.setValue(res);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    block = false;
+                }
             });
         }
     }

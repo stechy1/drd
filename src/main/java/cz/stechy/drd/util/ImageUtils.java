@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 /**
@@ -21,6 +22,21 @@ public final class ImageUtils {
     public static byte[] readImage(File file) throws IOException {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         final BufferedImage bufferedImage = ImageIO.read(file);
+        ImageIO.write(bufferedImage, "png", outputStream);
+
+        return outputStream.toByteArray();
+    }
+
+    /**
+     * Načte obrázek a vrátí jeho bytovou reprezentaci
+     *
+     * @param inputStream Stream s obrázkem
+     * @return bytová reprezentace obrázku
+     * @throws IOException Pokud se obrázek nepodaří zpracovat
+     */
+    public static byte[] readImage(InputStream inputStream) throws Exception {
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final BufferedImage bufferedImage = ImageIO.read(inputStream);
         ImageIO.write(bufferedImage, "png", outputStream);
 
         return outputStream.toByteArray();
