@@ -8,6 +8,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.Firebase;
 import cz.stechy.drd.model.db.base.OnlineItem;
+import cz.stechy.drd.model.item.ItemRegistry;
 import cz.stechy.drd.util.Base64Util;
 import java.util.HashMap;
 import java.util.Map;
@@ -138,10 +139,10 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     @Override
     public void insert(T item) throws DatabaseException {
-        super.insert(item);
-        if (!showOnline) {
-            usedItems.add(item);
+        if (showOnline) {
+            item.setUploaded(true);
         }
+        super.insert(item);
     }
 
     @Override
@@ -160,12 +161,10 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     public void delete(String id) throws DatabaseException {
         super.delete(id);
 
-        if (!showOnline) {
-            usedItems.stream()
-                .filter(item -> item.getId().equals(id))
-                .findFirst()
-                .ifPresent(usedItems::remove);
-        }
+        onlineDatabase.stream()
+            .filter(item -> item.getId().equals(id))
+            .findFirst()
+            .ifPresent(t -> t.setDownloaded(false));
     }
 
     @Override
@@ -278,10 +277,18 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     // endregion
 
     private final ChildEventListener childEventListener = new ChildEventListener() {
+
+        final ItemRegistry itemRegistry = ItemRegistry.getINSTANCE();
+
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-            T item = parseDataSnapshot(dataSnapshot);
+            final T item = parseDataSnapshot(dataSnapshot);
             logger.trace("Přidávám online item {} do svého povědomí.", item.toString());
+
+            itemRegistry.getItemById(item.getId()).ifPresent(itemBase -> {
+                item.setDownloaded(itemBase.isDownloaded());
+                item.setUploaded(itemBase.isUploaded());
+            });
             onlineDatabase.add(item);
         }
 

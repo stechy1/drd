@@ -51,6 +51,7 @@ final class ShopHelper {
         final String resourceRemove = resources.getString("drd_firebase_entry_remove");
         final String resourceUpload = resources.getString("drd_firebase_entry_upload");
         final String resourceDownload = resources.getString("drd_firebase_entry_download");
+        final String noAction = resources.getString("drd_no_action");
 
         return new TableCell<S, T>() {
             final Button btnAddRemove = new Button();
@@ -142,22 +143,35 @@ final class ShopHelper {
                             .isEqualTo(user.nameProperty())) // Autor jsem já
                         .then(Bindings
                             .when(entry.uploadedProperty())
-                            .then(resourceRemove).otherwise(resourceUpload))
+                            .then(Bindings
+                                .when(entry.downloadedProperty())
+                                .then(resourceRemove)
+                                .otherwise(resourceDownload))
+                            .otherwise(resourceUpload))
                         .otherwise(Bindings
                             .when(entry.downloadedProperty())
-                            .then(resourceRemove).otherwise(resourceDownload)));
+                            .then(noAction)
+                            .otherwise(resourceDownload)));
                     btnRemote.onActionProperty().bind(Bindings
                         .when(entry.authorProperty()
                             .isEqualTo(user.nameProperty())) // Autor jsem já
                         .then(Bindings
                             .when(entry.uploadedProperty())
-                            .then(deleteFromRemoteDatabaseInternal)
+                            .then(Bindings
+                                .when(entry.downloadedProperty())
+                                .then(deleteFromRemoteDatabaseInternal)
+                                .otherwise(downloadHandlerInternal))
                             .otherwise(uploadHandlerInternal))
                         .otherwise(Bindings
                             .when(entry.downloadedProperty())
                             .then(deleteFromLocalDatabaseInternal)
                             .otherwise(downloadHandlerInternal)));
-                    btnRemote.disableProperty().bind(user.loggedProperty().not());
+                    btnRemote.disableProperty().bind(Bindings
+                        .or(
+                            user.loggedProperty().not(),
+                            Bindings.and(
+                                entry.authorProperty().isNotEqualTo(user.nameProperty()),
+                                entry.downloadedProperty())));
                     setGraphic(container);
                 }
             }

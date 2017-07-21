@@ -49,6 +49,7 @@ public final class R {
         public static final String FINISH = "drd_finish";
         public static final String CANCEL = "drd_cancel";
         public static final String RESET = "drd_reset";
+        public static final String NO_ACTION = "drd_no_action";
         public static final String MAIN_TITLE = "drd_main_title";
         public static final String MAIN_TAB_DEFAULTS = "drd_main_tab_defaults";
         public static final String MAIN_TAB_INVENTORY = "drd_main_tab_inventory";
