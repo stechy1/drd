@@ -33,7 +33,7 @@
         <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
         <RowConstraints minHeight="8.0" prefHeight="30.0"/>
       </rowConstraints>
-      <Label fx:id="tmp" text="%drd_hero_live" styleClass="label"/>
+      <Label text="%drd_hero_live" styleClass="label"/>
       <Label GridPane.rowIndex="1" text="%drd_hero_strength"/>
       <Label GridPane.rowIndex="2" text="%drd_hero_dexterity"/>
       <Label GridPane.rowIndex="3" text="%drd_hero_immunity"/>

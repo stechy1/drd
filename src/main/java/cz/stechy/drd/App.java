@@ -36,6 +36,7 @@ public class App extends Application {
     private static final String FILE_JFOENIX_FONTS = "/css/jfoenix-fonts.css";
     private static final String FILE_JFOENIX_DESIGN = "/css/jfoenix-design.css";
     private static final String FILE_COMPONENTS = "css/components.css";
+    private static final String FILE_TABLE_VIEW = "css/table-view.css";
     private static final String FOLDER_LANG = "lang";
     private static final String LANG_FILE_CONVENTION = "lang.translate";
     private static final String FILE_CONFIG = "config.properties";
@@ -74,6 +75,7 @@ public class App extends Application {
             .fxml(App.class.getClassLoader().getResource(FOLDER_FXML))
             .css(App.class.getResource(FILE_JFOENIX_FONTS))
             .css(App.class.getResource(FILE_JFOENIX_DESIGN))
+            .css(App.class.getClassLoader().getResource(FILE_TABLE_VIEW))
             .css(App.class.getClassLoader().getResource(FILE_CSS))
             .css(App.class.getClassLoader().getResource(FILE_COMPONENTS))
             .lang(App.class.getClassLoader().getResource(FOLDER_LANG))
