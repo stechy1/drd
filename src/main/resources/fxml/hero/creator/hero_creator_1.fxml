@@ -10,45 +10,53 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<VBox alignment="TOP_CENTER" prefHeight="400.0" prefWidth="600.0" spacing="24.0"
-  xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+<VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
+  xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.hero.creator.HeroCreatorController1">
-  <HBox alignment="CENTER" styleClass="title-label">
-    <Label text="%drd_guide_new_hero_1_title" HBox.hgrow="ALWAYS"/>
+
+  <HBox alignment="CENTER" styleClass="title-container">
+    <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_guide_new_hero_1_title"/>
   </HBox>
 
-  <JFXTextField fx:id="txtName" labelFloat="true" prefColumnCount="50" promptText="%drd_hero_name">
+  <VBox VBox.vgrow="ALWAYS" alignment="TOP_CENTER" spacing="24">
     <padding>
-      <Insets left="8.0" right="8.0"/>
+      <Insets top="24.0"/>
     </padding>
-  </JFXTextField>
-  <HBox alignment="CENTER" spacing="16.0">
-    <EnumComboBox fx:id="cmbConviction" enumType="cz.stechy.drd.model.entity.Conviction"
-      labelFloat="true" prefWidth="150.0" promptText="%drd_hero_conviction"/>
-    <EnumComboBox fx:id="cmbRace" enumType="cz.stechy.drd.model.entity.hero.Hero$Race"
-      labelFloat="true" promptText="%drd_guide_new_hero_1_hero_race"/>
-    <EnumComboBox fx:id="cmbProfession" enumType="cz.stechy.drd.model.entity.hero.Hero$Profession"
-      labelFloat="true" promptText="%drd_guide_new_hero_1_hero_profession"/>
-  </HBox>
-  <JFXTextArea fx:id="txtDescription" labelFloat="true" promptText="%drd_hero_description">
-    <padding>
-      <Insets left="8.0" right="8.0"/>
-    </padding>
-  </JFXTextArea>
+    <JFXTextField labelFloat="true" prefColumnCount="50" promptText="%drd_hero_name"
+      fx:id="txtName">
+      <padding>
+        <Insets left="8.0" right="8.0"/>
+      </padding>
+    </JFXTextField>
+    <HBox alignment="CENTER" spacing="16.0">
+      <EnumComboBox enumType="cz.stechy.drd.model.entity.Conviction" labelFloat="true"
+        prefWidth="150.0" promptText="%drd_hero_conviction" fx:id="cmbConviction"/>
+      <EnumComboBox enumType="cz.stechy.drd.model.entity.hero.Hero$Race" labelFloat="true"
+        promptText="%drd_guide_new_hero_1_hero_race" fx:id="cmbRace"/>
+      <EnumComboBox enumType="cz.stechy.drd.model.entity.hero.Hero$Profession" labelFloat="true"
+        promptText="%drd_guide_new_hero_1_hero_profession" fx:id="cmbProfession"/>
+    </HBox>
+    <JFXTextArea VBox.vgrow="ALWAYS" labelFloat="true" minHeight="100.0" prefHeight="100.0"
+      promptText="%drd_hero_description" fx:id="txtDescription">
+      <padding>
+        <Insets left="8.0" right="8.0"/>
+      </padding>
+    </JFXTextArea>
+  </VBox>
   <Region VBox.vgrow="ALWAYS"/>
   <Separator orientation="HORIZONTAL"/>
   <HBox alignment="CENTER_LEFT" spacing="8">
-    <JFXButton onAction="#handleBack" styleClass="btn, btn-raised, btn-info" text="%drd_back"
-      HBox.hgrow="ALWAYS" disable="true"/>
-    <JFXButton onAction="#handleCancel" styleClass="btn, btn-raised, btn-warning" text="%drd_cancel"
-      HBox.hgrow="ALWAYS"/>
+    <JFXButton HBox.hgrow="ALWAYS" disable="true" onAction="#handleBack"
+      styleClass="btn, btn-raised, btn-info" text="%drd_back"/>
+    <JFXButton HBox.hgrow="ALWAYS" onAction="#handleCancel" styleClass="btn, btn-raised, btn-warning"
+      text="%drd_cancel"/>
     <Region HBox.hgrow="ALWAYS"/>
-    <JFXButton onAction="#handleReset" styleClass="btn, btn-raised, btn-danger" text="%drd_reset"
-      HBox.hgrow="ALWAYS"/>
-    <JFXButton fx:id="btnNext" onAction="#handleNext" styleClass="btn, btn-raised, btn-success"
-      text="%drd_next" HBox.hgrow="ALWAYS"/>
+    <JFXButton HBox.hgrow="ALWAYS" onAction="#handleReset" styleClass="btn, btn-raised, btn-danger"
+      text="%drd_reset"/>
+    <JFXButton HBox.hgrow="ALWAYS" onAction="#handleNext" styleClass="btn, btn-raised, btn-success"
+      text="%drd_next" fx:id="btnNext"/>
     <padding>
-      <Insets bottom="8.0" left="8.0" right="8.0"/>
+      <Insets topRightBottomLeft="8.0"/>
     </padding>
   </HBox>
 </VBox>

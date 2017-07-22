@@ -28,6 +28,8 @@ import javafx.scene.control.Label;
  */
 public class HeroCreatorController2 extends BaseController implements Initializable {
 
+    public Label tmp;
+
     // region Variables
 
     // region FXML
@@ -61,6 +63,7 @@ public class HeroCreatorController2 extends BaseController implements Initializa
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.GUIDE_NEW_HERO_2_TITLE);
 
+        System.out.println(tmp.getFont());
         // TODO zjistit, jak změnit traversal policy pro tlačítka
         lblLive.textProperty().bind(model.live.asString());
         lblStrength.setHeroProperty(model.strength);
@@ -85,7 +88,7 @@ public class HeroCreatorController2 extends BaseController implements Initializa
 
     @Override
     protected void onResume() {
-        setScreenSize(350, 200);
+        setScreenSize(600, 400);
         setTitle(title);
     }
 

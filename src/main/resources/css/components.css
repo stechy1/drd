@@ -1,6 +1,5 @@
 .root {
     -fx-font-family: Roboto;
-    src: "/resources/roboto/Roboto-Regular.ttf";
 }
 
 /* Burgers Demo */
@@ -429,10 +428,14 @@
     -fx-padding: 5 0 5 0;
 }
 
+.title-container {
+    -fx-text-alignment: CENTER;
+    -fx-background-color: #777;
+}
+
 .title-label {
     -fx-font-family: "Roboto Medium";
     -fx-font-size: 20.0px;
     -fx-padding: 14.0px;
     -fx-text-fill: rgba(0.0, 0.0, 0.0, 0.87);
-    -fx-background-color: #777;
 }
