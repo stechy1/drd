@@ -5,34 +5,32 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<GridPane xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="cz.stechy.drd.controller.main.DefaultStaffRightController">
+
+<GridPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.main.DefaultStaffRightController">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0"/>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="130.0" />
+    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
-    <RowConstraints minHeight="30.0" prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS"/>
-    <RowConstraints minHeight="30.0" prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS"/>
-    <RowConstraints minHeight="30.0" prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS"/>
-    <RowConstraints minHeight="30.0" prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS"/>
-    <RowConstraints minHeight="30.0" prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS"/>
-    <RowConstraints minHeight="30.0" prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS"/>
-    <RowConstraints/>
+    <RowConstraints minHeight="20.0" prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+    <RowConstraints minHeight="20.0" prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+    <RowConstraints minHeight="20.0" prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+    <RowConstraints minHeight="20.0" prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+    <RowConstraints minHeight="20.0" prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+    <RowConstraints minHeight="20.0" prefHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+    <RowConstraints />
   </rowConstraints>
-  <Label text="%drd_hero_agility"/>
-  <Label text="%drd_hero_low_load" GridPane.rowIndex="1"/>
-  <Label text="%drd_hero_medium_load" GridPane.rowIndex="2"/>
-  <Label text="%drd_hero_high_load" GridPane.rowIndex="3"/>
-  <Label text="%drd_hero_observation_objects" GridPane.rowIndex="4"/>
-  <Label text="%drd_hero_observation_mechanics" GridPane.rowIndex="5"/>
-  <LabeledHeroProperty fx:id="lblAgility" GridPane.columnIndex="1"/>
-  <LabeledHeroProperty fx:id="lblLoadLow" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-  <LabeledHeroProperty fx:id="lblLoadMedium" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-  <LabeledHeroProperty fx:id="lblLoadHigh" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-  <LabeledHeroProperty fx:id="lblObservationObjects" GridPane.columnIndex="1"
-    GridPane.rowIndex="4"/>
-  <LabeledHeroProperty fx:id="lblObservationMechanics" GridPane.columnIndex="1"
-    GridPane.rowIndex="5"/>
+  <Label text="%drd_hero_agility" />
+  <Label text="%drd_hero_low_load" GridPane.rowIndex="1" />
+  <Label text="%drd_hero_medium_load" GridPane.rowIndex="2" />
+  <Label text="%drd_hero_high_load" GridPane.rowIndex="3" />
+  <Label text="%drd_hero_observation_objects" GridPane.rowIndex="4" />
+  <Label text="%drd_hero_observation_mechanics" GridPane.rowIndex="5" />
+  <LabeledHeroProperty fx:id="lblAgility" GridPane.columnIndex="1" />
+  <LabeledHeroProperty fx:id="lblLoadLow" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+  <LabeledHeroProperty fx:id="lblLoadMedium" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+  <LabeledHeroProperty fx:id="lblLoadHigh" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+  <LabeledHeroProperty fx:id="lblObservationObjects" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+  <LabeledHeroProperty fx:id="lblObservationMechanics" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
 </GridPane>
