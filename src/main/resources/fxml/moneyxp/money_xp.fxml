@@ -1,63 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import cz.stechy.drd.widget.LabeledProgressBar?>
 <?import cz.stechy.drd.widget.MoneyLabel?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<GridPane xmlns:fx="http://javafx.com/fxml/1" hgap="8.0" prefHeight="200.0" prefWidth="500.0"
-  xmlns="http://javafx.com/javafx/8.0.112"
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="450.0"
+  xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.moneyxp.MoneyXpController">
-  <padding>
-    <Insets topRightBottomLeft="8.0"/>
-  </padding>
-  <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints maxHeight="40.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES"/>
-  </rowConstraints>
-  <MoneyLabel label="%drd_hero_money" fx:id="lblMoney"/>
-  <LabeledProgressBar GridPane.columnIndex="1" displayMode="EXPERIENCE" label="%drd_hero_experience"
-    fx:id="lblExperience"/>
-  <GridPane GridPane.rowIndex="1" alignment="CENTER" hgap="8.0" vgap="8.0">
-    <Label text="%drd_money_gold"/>
-    <Label text="%drd_money_silver" GridPane.rowIndex="1"/>
-    <Label text="%drd_money_copper" GridPane.rowIndex="2"/>
-
-    <TextField fx:id="txtGold" GridPane.columnIndex="1"/>
-    <TextField fx:id="txtSilver" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-    <TextField fx:id="txtCopper" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-    <columnConstraints>
-      <ColumnConstraints/>
-      <ColumnConstraints/>
-    </columnConstraints>
-    <rowConstraints>
-      <RowConstraints/>
-      <RowConstraints/>
-      <RowConstraints/>
-      <RowConstraints/>
-    </rowConstraints>
-  </GridPane>
-  <HBox GridPane.columnIndex="1" GridPane.rowIndex="1" alignment="CENTER">
-    <Label text="%drd_hero_experience"/>
-    <TextField fx:id="txtExperience"/>
-  </HBox>
-  <HBox GridPane.rowIndex="2" alignment="CENTER">
-    <Button onAction="#handleMoneyAdd" text="%drd_money_add"/>
-    <Button onAction="#handleMoneySubtract" text="%drd_money_subtract"/>
-  </HBox>
-  <Button GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2"
-    onAction="#handleXpAdd" text="%drd_xp_add"/>
-  <Button GridPane.rowIndex="3" onAction="#handleCancel" text="%drd_cancel"/>
-  <Button GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3"
-    onAction="#handleFinish" text="%drd_finish"/>
-</GridPane>
+  <top>
+    <HBox alignment="CENTER" styleClass="title-container">
+      <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_money_title"/>
+    </HBox>
+  </top>
+  <left>
+    <VBox style="-fx-background-color: -yellow-A200" spacing="16.0">
+      <padding>
+        <Insets topRightBottomLeft="8.0"/>
+      </padding>
+      <MoneyLabel label="%drd_hero_money" fx:id="lblMoney"/>
+      <Region VBox.vgrow="ALWAYS"/>
+      <VBox spacing="24.0">
+        <JFXTextField labelFloat="true" promptText="%drd_money_gold" fx:id="txtGold"/>
+        <JFXTextField labelFloat="true" promptText="%drd_money_silver" fx:id="txtSilver"/>
+        <JFXTextField labelFloat="true" promptText="%drd_money_copper" fx:id="txtCopper"/>
+      </VBox>
+      <Region VBox.vgrow="ALWAYS"/>
+      <HBox alignment="CENTER">
+        <JFXButton onAction="#handleMoneyAdd" styleClass="btn, btn-success" text="%drd_money_add"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <JFXButton onAction="#handleMoneySubtract" styleClass="btn, btn-danger"
+          text="%drd_money_subtract"/>
+      </HBox>
+    </VBox>
+  </left>
+  <center>
+    <VBox style="-fx-background-color: -orange-A200" spacing="16.0">
+      <padding>
+        <Insets topRightBottomLeft="8.0"/>
+      </padding>
+      <LabeledProgressBar displayMode="EXPERIENCE" label="%drd_hero_experience" maxWidth="Infinity"
+        prefHeight="33.0" prefWidth="150.0" fx:id="lblExperience"/>
+      <Region VBox.vgrow="ALWAYS"/>
+      <JFXTextField labelFloat="true" promptText="%drd_hero_experience" fx:id="txtExperience"/>
+      <Region VBox.vgrow="ALWAYS"/>
+      <HBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <JFXButton contentDisplay="CENTER" onAction="#handleXpAdd" styleClass="btn, btn-success"
+          text="%drd_xp_add"/>
+      </HBox>
+    </VBox>
+  </center>
+  <bottom>
+    <HBox>
+      <JFXButton onAction="#handleCancel" styleClass="btn, btn-warning" text="%drd_cancel"/>
+      <Region HBox.hgrow="ALWAYS"/>
+      <JFXButton onAction="#handleFinish" styleClass="btn, btn-primary" text="%drd_finish"/>
+      <padding>
+        <Insets topRightBottomLeft="8.0"/>
+      </padding>
+    </HBox>
+  </bottom>
+</BorderPane>

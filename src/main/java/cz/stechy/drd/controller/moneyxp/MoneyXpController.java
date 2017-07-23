@@ -37,7 +37,7 @@ public class MoneyXpController extends BaseController implements Initializable {
     @FXML
     private MoneyLabel lblMoney;
     @FXML
-    private LabeledProgressBar lblExperience;
+    private LabeledProgressBar lblExperience = new LabeledProgressBar();
     @FXML
     private TextField txtGold;
     @FXML
@@ -93,7 +93,7 @@ public class MoneyXpController extends BaseController implements Initializable {
     @Override
     protected void onResume() {
         setTitle(title);
-        setScreenSize(400, 300);
+        setScreenSize(450, 400);
     }
 
     // region Button handlers
