@@ -7,6 +7,7 @@ public final class R {
 
         public static final String DICE = "dice";
         public static final String MONEY = "money";
+        public static final String PRELOADER = "preloader";
         public static final String VULNERABILITY = "vulnerability";
         public static final String BESTIARY = "bestiary";
         public static final String BESTIARY_EDIT = "bestiary_edit";

@@ -1,8 +1,10 @@
 package cz.stechy.drd;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.sun.javafx.application.LauncherImpl;
 import cz.stechy.drd.R.FXML;
 import cz.stechy.drd.model.Context;
+import cz.stechy.drd.model.MyPreloaderNotification;
 import cz.stechy.drd.util.UTF8ResourceBundleControl;
 import cz.stechy.screens.ScreenManager;
 import cz.stechy.screens.ScreenManagerConfiguration;
@@ -13,6 +15,8 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.application.Application;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
@@ -43,20 +47,11 @@ public class App extends Application {
 
     // region Variables
 
+    private final BooleanProperty ready = new SimpleBooleanProperty(false);
+
     protected Context context;
 
     protected ScreenManager manager;
-
-    // endregion
-
-    // region Constructors
-
-    public App() throws Exception {
-        super();
-        initScreenManager();
-        context = new Context(getDatabaseName(), manager.getResources());
-        manager.setControllerFactory(new ControllerFactory(context));
-    }
 
     // endregion
 
@@ -99,7 +94,33 @@ public class App extends Application {
 
     public static void main(String[] args) {
         logger.info("Spouštím aplikaci...");
-        launch(args);
+        LauncherImpl.launchApplication(App.class, AppPreloader.class, args);
+    }
+
+    @Override
+    public void init() throws Exception {
+        // Pouze pro soutěž
+        final long start = System.nanoTime();
+        notifyPreloader(new MyPreloaderNotification(0.2, "Inicializace screen managera"));
+        Thread.sleep(1000);
+        initScreenManager();
+        notifyPreloader(new MyPreloaderNotification(0.6, "Inicializace databáze"));
+        Thread.sleep(1000);
+        context = new Context(getDatabaseName(), manager.getResources());
+        manager.setControllerFactory(new ControllerFactory(context));
+
+        notifyPreloader(new MyPreloaderNotification(0.8, "Dokončování..."));
+        Thread.sleep(1000);
+
+        // Pouze pro soutěž
+        final long end = System.nanoTime();
+        final long delta = (end - start) / 1000000;
+        final long seconds = 4000;
+        if (delta < seconds) {
+            Thread.sleep(seconds - delta);
+        }
+        notifyPreloader(new MyPreloaderNotification(1, "Done"));
+        Thread.sleep(500);
     }
 
     public void start(Stage primaryStage) throws Exception {
