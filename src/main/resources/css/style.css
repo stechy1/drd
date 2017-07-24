@@ -15,6 +15,7 @@
     -fx-background-color: rgba(0, 0, 0, 0.1);
 }
 
+
 .sidebar-button {
         -fx-background-repeat: no-repeat;
         -fx-background-size: 80%;
@@ -23,6 +24,23 @@
         -fx-min-height: 32px;
         -fx-max-width: 32px;
         -fx-max-height: 32px;
+}
+
+.icon-next {
+    -fx-background-image: url("../images/icon/next.png");
+}
+
+
+.icon-previous {
+    -fx-background-image: url("../images/icon/previous.png");
+}
+
+.icon-confirm {
+    -fx-background-image: url("../images/icon/confirm.png");
+}
+
+.icon-cancel {
+    -fx-background-image: url("../images/icon/reject.png");
 }
 
 .icon-new {
