@@ -247,7 +247,8 @@ public class ItemBackpackController extends BaseController implements Initializa
 
         try {
             final byte[] image = ImageUtils.readImage(file);
-            model.imageRaw.set(image);
+            final byte[] resizedImage = ImageUtils.resizeImageRaw(image, 150, 150);
+            model.imageRaw.set(resizedImage);
         } catch (IOException e) {
             e.printStackTrace();
         }
