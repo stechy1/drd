@@ -18,31 +18,31 @@
     <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_guide_new_hero_1_title"/>
   </HBox>
 
-  <VBox VBox.vgrow="ALWAYS" alignment="TOP_CENTER" spacing="24">
+  <HBox spacing="16">
     <padding>
-      <Insets top="24.0"/>
+      <Insets top="24.0" left="10.0"/>
     </padding>
-    <JFXTextField labelFloat="true" prefColumnCount="50" promptText="%drd_hero_name"
-      fx:id="txtName">
-      <padding>
-        <Insets left="8.0" right="8.0"/>
-      </padding>
-    </JFXTextField>
-    <HBox alignment="CENTER" spacing="16.0">
-      <EnumComboBox enumType="cz.stechy.drd.model.entity.Conviction" labelFloat="true"
-        prefWidth="150.0" promptText="%drd_hero_conviction" fx:id="cmbConviction"/>
-      <EnumComboBox enumType="cz.stechy.drd.model.entity.hero.Hero$Race" labelFloat="true"
-        promptText="%drd_guide_new_hero_1_hero_race" fx:id="cmbRace"/>
-      <EnumComboBox enumType="cz.stechy.drd.model.entity.hero.Hero$Profession" labelFloat="true"
-        promptText="%drd_guide_new_hero_1_hero_profession" fx:id="cmbProfession"/>
-    </HBox>
+    <VBox VBox.vgrow="ALWAYS" alignment="CENTER_LEFT" spacing="16">
+      <JFXTextField labelFloat="true" minWidth="150.0" promptText="%drd_hero_name"
+        fx:id="txtName">
+        <padding>
+          <Insets left="8.0" right="8.0" top="10.0"/>
+        </padding>
+      </JFXTextField>
+        <EnumComboBox enumType="cz.stechy.drd.model.entity.Conviction" labelFloat="true"
+                minWidth="150.0" promptText="%drd_hero_conviction" fx:id="cmbConviction"/>
+        <EnumComboBox enumType="cz.stechy.drd.model.entity.hero.Hero$Race" labelFloat="true"
+                minWidth="150.0" promptText="%drd_guide_new_hero_1_hero_race" fx:id="cmbRace"/>
+        <EnumComboBox enumType="cz.stechy.drd.model.entity.hero.Hero$Profession" labelFloat="true"
+                minWidth="150.0" promptText="%drd_guide_new_hero_1_hero_profession" fx:id="cmbProfession"/>
+    </VBox>
     <JFXTextArea VBox.vgrow="ALWAYS" labelFloat="true" minHeight="100.0" prefHeight="100.0"
       promptText="%drd_hero_description" fx:id="txtDescription">
       <padding>
-        <Insets left="8.0" right="8.0"/>
+        <Insets top="8.0" left="8.0" right="8.0"/>
       </padding>
     </JFXTextArea>
-  </VBox>
+  </HBox>
   <Region VBox.vgrow="ALWAYS"/>
   <Separator orientation="HORIZONTAL"/>
   <HBox alignment="CENTER_LEFT" spacing="8">
