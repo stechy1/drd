@@ -203,6 +203,7 @@ public class ItemArmorController extends BaseController implements Initializable
         model.description.setValue(bundle.getString(DESCRIPTION));
         model.defence.setActValue(bundle.getInt(DEFENCE));
         model.minimumStrength.setActValue(bundle.getInt(MINIMUM_STRENGTH));
+        model.type.setValue(ArmorType.values()[bundle.getInt(TYPE)]);
         model.weightA.setActValue(bundle.getInt(WEIGHT_A));
         model.weightB.setActValue(bundle.getInt(WEIGHT_B));
         model.weightC.setActValue(bundle.getInt(WEIGHT_C));
