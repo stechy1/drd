@@ -3,7 +3,6 @@ package cz.stechy.drd;
 import com.google.firebase.database.FirebaseDatabase;
 import com.sun.javafx.application.LauncherImpl;
 import cz.stechy.drd.R.FXML;
-import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MyPreloaderNotification;
 import cz.stechy.drd.util.UTF8ResourceBundleControl;
 import cz.stechy.screens.ScreenManager;
@@ -15,8 +14,6 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.application.Application;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
@@ -46,8 +43,6 @@ public class App extends Application {
     // endregion
 
     // region Variables
-
-    private final BooleanProperty ready = new SimpleBooleanProperty(false);
 
     protected Context context;
 
@@ -101,15 +96,17 @@ public class App extends Application {
     public void init() throws Exception {
         // Pouze pro soutěž
         final long start = System.nanoTime();
-        notifyPreloader(new MyPreloaderNotification(0.2, "Inicializace screen managera"));
+        notifyPreloader(new MyPreloaderNotification("Inicializace aplikace..."));
         Thread.sleep(1000);
         initScreenManager();
-        notifyPreloader(new MyPreloaderNotification(0.6, "Inicializace databáze"));
+        notifyPreloader(new MyPreloaderNotification("Inicializace databáze"));
         Thread.sleep(1000);
         context = new Context(getDatabaseName(), manager.getResources());
+        notifier.increaseMaxProgress(context.getServiceCount());
+        context.init(notifier);
         manager.setControllerFactory(new ControllerFactory(context));
 
-        notifyPreloader(new MyPreloaderNotification(0.8, "Dokončování..."));
+        notifyPreloader(new MyPreloaderNotification(1, "Dokončování..."));
         Thread.sleep(1000);
 
         // Pouze pro soutěž
@@ -141,4 +138,26 @@ public class App extends Application {
             //ThreadPool.getInstance().shutDown();
         });
     }
+
+    private final PreloaderNotifier notifier = new PreloaderNotifier() {
+        private int total = 1;
+        private double progress = 0;
+
+        @Override
+        public void updateProgressDescription(String description) {
+            notifyPreloader(new MyPreloaderNotification(description));
+        }
+
+        @Override
+        public void increaseMaxProgress(int max) {
+            total += max;
+            notifyPreloader(new MyPreloaderNotification(this.progress / total));
+        }
+
+        @Override
+        public void increaseProgress(int progress, String description) {
+            this.progress += progress;
+            notifyPreloader(new MyPreloaderNotification(this.progress / total, description));
+        }
+    };
 }

@@ -14,7 +14,7 @@
     </image>
   </ImageView>
   <ProgressBar fx:id="progressBar" layoutX="390.0" layoutY="680.0" prefHeight="20.0" prefWidth="500.0" progress="0.0" />
-   <Label fx:id="lblDescription" layoutX="390.0" layoutY="700.0">
+   <Label fx:id="lblDescription" layoutX="390.0" layoutY="700.0" textFill="WHITE">
       <font>
          <Font name="Roboto" size="24.0" />
       </font>

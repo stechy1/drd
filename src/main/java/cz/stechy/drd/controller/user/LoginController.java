@@ -1,7 +1,7 @@
 package cz.stechy.drd.controller.user;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.persistent.UserService.UserException;
 import cz.stechy.screens.BaseController;

@@ -1,6 +1,5 @@
 package cz.stechy.drd;
 
-import cz.stechy.drd.model.Context;
 import cz.stechy.screens.ScreenManager;
 
 /**

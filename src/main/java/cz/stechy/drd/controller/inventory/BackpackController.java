@@ -1,7 +1,7 @@
 package cz.stechy.drd.controller.inventory;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;

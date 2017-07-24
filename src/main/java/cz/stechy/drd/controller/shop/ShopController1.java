@@ -1,7 +1,7 @@
 package cz.stechy.drd.controller.shop;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
 import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
 import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;

@@ -1,7 +1,7 @@
 package cz.stechy.drd.controller.bestiary.edit;
 
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.Height;

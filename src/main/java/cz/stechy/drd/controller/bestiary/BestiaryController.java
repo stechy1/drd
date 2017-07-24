@@ -1,7 +1,7 @@
 package cz.stechy.drd.controller.bestiary;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;

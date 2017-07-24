@@ -6,7 +6,7 @@ import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper;
 import cz.stechy.drd.controller.hero.opener.HeroOpenerHelper;
 import cz.stechy.drd.controller.moneyxp.MoneyXpController;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;

@@ -56,7 +56,6 @@ public class AppPreloader extends Preloader {
             case BEFORE_INIT:
                 break;
             case BEFORE_START:
-                System.out.println("BEFORE_START");
                 stage.hide();
                 break;
         }

@@ -1,7 +1,7 @@
 package cz.stechy.drd.controller.hero.opener;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.util.Translator;

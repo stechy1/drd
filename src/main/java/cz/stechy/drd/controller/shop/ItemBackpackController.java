@@ -4,7 +4,7 @@ import cz.stechy.drd.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.controller.MoneyController;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.Backpack.Size;

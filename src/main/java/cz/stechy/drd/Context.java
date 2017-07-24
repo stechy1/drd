@@ -1,10 +1,11 @@
-package cz.stechy.drd.model;
+package cz.stechy.drd;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.FirebaseDatabase;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
+import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseService;
 import cz.stechy.drd.model.db.SQLite;
 import cz.stechy.drd.model.db.base.Database;
@@ -73,7 +74,7 @@ public class Context {
     // Mapa obsahující všechny služby
     private final Map<String, DatabaseService> serviceMap = new HashMap<>(SERVICES_COUNT);
     // Služba obsluhující uživatele
-    private final UserService userService;
+    private UserService userService;
 
     private final ResourceBundle resources;
     // Překladač aplikace
@@ -90,7 +91,7 @@ public class Context {
      * @param resources {@link ResourceBundle}
      * @throws Exception Pokud se inicializace kontextu nezdaří
      */
-    public Context(String databaseName, ResourceBundle resources) throws Exception {
+    Context(String databaseName, ResourceBundle resources) throws Exception {
         this.resources = resources;
         this.appDirectory = new File(appDirs
             .getUserDataDir(CREDENTAILS_APP_NAME, CREDENTAILS_APP_VERSION, CREDENTILS_APP_AUTHOR));
@@ -103,9 +104,6 @@ public class Context {
         logger.info("Používám pracovní adresář: {}", appDirectory.getPath());
         database = new SQLite(appDirectory.getPath() + SEPARATOR + databaseName);
 
-        initFirebase();
-        userService = new UserService(FirebaseDatabase.getInstance());
-        initServices();
         initNativeHandlers();
     }
 
@@ -176,6 +174,7 @@ public class Context {
             }
             service.createTable();
             service.selectAll();
+            Thread.sleep(1000);
             return service;
         } catch (Exception e) {
             // nikdy by se nemělo stát
@@ -184,6 +183,31 @@ public class Context {
             Platform.exit();
             return null;
         }
+    }
+
+    // endregion
+
+    // region Package private methods
+
+    /**
+     * Inicializuje tabulky databáze
+     *
+     * @param notifier {@link PreloaderNotifier}
+     */
+    void init(PreloaderNotifier notifier) {
+        BaseDatabaseService.setNotifier(notifier);
+        initFirebase();
+        userService = new UserService(FirebaseDatabase.getInstance());
+        initServices();
+    }
+
+    /**
+     * Vrátí celkový počet služeb, tedy i tabulek v aplikaci
+     *
+     * @return Celkový počet služeb (tabulek) v aplikaci
+     */
+    int getServiceCount() {
+        return SERVICES_COUNT;
     }
 
     // endregion
