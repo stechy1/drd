@@ -76,6 +76,12 @@ public final class R {
         public static final String HERO_OBSERVATION_MECHANICS = "drd_hero_observation_mechanics";
         public static final String HERO_DEFENCE_NUMBER = "drd_hero_defence_number";
         public static final String HERO_MONEY = "drd_hero_money";
+        public static final String HERO_LEVEL_UP = "drd_hero_level_up";
+        public static final String HERO_INCREASE_STRENGTH = "drd_hero_increase_strength";
+        public static final String HERO_INCREASE_DEXTERITY = "drd_hero_increase_dexterity";
+        public static final String HERO_INCREASE_IMMUNITY = "drd_hero_increase_immunity";
+        public static final String HERO_INCREASE_INTELLIGENCE = "drd_hero_increase_intelligence";
+        public static final String HERO_INCREASE_CHARISMA = "drd_hero_increase_charisma";
         public static final String CONVICTION_LAWFUL_GOOD = "drd_conviction_lawful_good";
         public static final String CONVICTION_CONFUSED_GOODNESS = "drd_conviction_confused_goodness";
         public static final String CONVICTION_NEUTRAL = "drd_conviction_neutral";

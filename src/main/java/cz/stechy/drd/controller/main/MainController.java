@@ -21,6 +21,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
@@ -58,6 +59,9 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private BorderPane inventory;
+
+    @FXML
+    private Button btnLevelUp;
 
     // endregion
 
@@ -226,6 +230,11 @@ public class MainController extends BaseController implements Initializable {
 
     }
 
+    @FXML
+    private void handleMenuLevelUp(ActionEvent actionEvent) {
+
+    }
+
     // endregion
 
     private ChangeListener<? super Boolean> levelUpListener = (observable, oldValue, newValue) -> {
@@ -233,5 +242,6 @@ public class MainController extends BaseController implements Initializable {
     };
     private ChangeListener<? super Hero> heroListener = (ChangeListener<Hero>) (observable, oldValue, newValue) -> {
         newValue.levelUpProperty().addListener(levelUpListener);
+        btnLevelUp.visibleProperty().bind(newValue.levelUpProperty());
     };
 }
