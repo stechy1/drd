@@ -25,6 +25,7 @@ import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -77,6 +78,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     // endregion
 
     private final ObservableList<ArmorEntry> armors = FXCollections.observableArrayList();
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
     private final AdvancedDatabaseService<Armor> service;
     private final User user;
@@ -125,7 +127,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
-        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
+        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
 
         ObservableMergers.mergeList(armor -> new ArmorEntry(armor, height),
             armors, service.selectAll());
@@ -155,6 +157,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
             service.toggleDatabase(newValue);
         });
+        ammountEditable.bind(showOnlineDatabase);
     }
 
     @Override

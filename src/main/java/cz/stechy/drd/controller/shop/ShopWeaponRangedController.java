@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -88,6 +89,7 @@ public class ShopWeaponRangedController implements Initializable,
 
     private final ObservableList<RangedWeaponEntry> rangedWeapons = FXCollections
         .observableArrayList();
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final AdvancedDatabaseService<RangedWeapon> service;
     private final Translator translator;
     private final User user;
@@ -132,7 +134,7 @@ public class ShopWeaponRangedController implements Initializable,
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
-        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
+        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
 
         ObservableMergers.mergeList(RangedWeaponEntry::new, rangedWeapons, service.selectAll());
     }
@@ -161,6 +163,7 @@ public class ShopWeaponRangedController implements Initializable,
 
             service.toggleDatabase(newValue);
         });
+        ammountEditable.bind(showOnlineDatabase);
     }
 
     @Override

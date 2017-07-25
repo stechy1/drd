@@ -20,6 +20,7 @@ import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.Bundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -70,6 +71,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     // endregion
 
     private final ObservableList<GeneralEntry> generalItems = FXCollections.observableArrayList();
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final AdvancedDatabaseService<GeneralItem> service;
     private final User user;
 
@@ -102,7 +104,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
-        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
+        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
 
         ObservableMergers.mergeList(GeneralEntry::new, generalItems, service.selectAll());
     }
@@ -131,6 +133,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
             service.toggleDatabase(newValue);
         });
+        ammountEditable.bind(showOnlineDatabase);
     }
 
     @Override

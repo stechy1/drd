@@ -4,6 +4,7 @@ import cz.stechy.drd.Money;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
@@ -38,12 +39,20 @@ public final class CellUtils {
     }
 
     public static <S> TableCell<S, MaxActValue> forMaxActValue() {
+        return forMaxActValue(null);
+    }
+
+    public static <S> TableCell<S, MaxActValue> forMaxActValue(
+        final BooleanProperty editable) {
         return new TableCell<S, MaxActValue>() {
             private final TextField input;
 
             {
                 input = new TextField();
                 input.setVisible(false);
+                if (editable != null) {
+                    input.disableProperty().bind(editable);
+                }
                 setGraphic(input);
                 setText(null);
             }

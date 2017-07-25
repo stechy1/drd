@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -86,6 +87,7 @@ public class ShopWeaponMeleController implements Initializable,
     // endregion
 
     private final ObservableList<MeleWeaponEntry> meleWeapons = FXCollections.observableArrayList();
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final AdvancedDatabaseService<MeleWeapon> service;
     private final Translator translator;
     private final User user;
@@ -130,7 +132,7 @@ public class ShopWeaponMeleController implements Initializable,
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
-        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
+        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
 
         ObservableMergers.mergeList(MeleWeaponEntry::new, meleWeapons, service.selectAll());
     }
@@ -159,6 +161,7 @@ public class ShopWeaponMeleController implements Initializable,
 
             service.toggleDatabase(newValue);
         });
+        ammountEditable.bind(showOnlineDatabase);
     }
 
     @Override
