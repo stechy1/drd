@@ -1,6 +1,7 @@
 package cz.stechy.drd.model.entity.hero;
 
 import cz.stechy.drd.model.Dice;
+import cz.stechy.drd.model.entity.EntityProperty;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
 import cz.stechy.drd.model.entity.hero.Hero.Race;
@@ -246,17 +247,28 @@ public final class HeroGenerator {
 
     /**
      * Vygeneruje počet životů pro postavu
-     * live = baseLive + dice.roll() + addon
+     * baseLive = baseLive + immunity
      *
+     * @param immunity Odolnost hrdiny
      * @return Počet životů
      */
-    public int live() {
-        int baseLive = LIVES_BASE[profession.ordinal()];
-        Dice dice = LIVES_DICE[profession.ordinal()];
-        int addon = LIVES_ADDON[profession.ordinal()];
-
-        return baseLive + dice.roll() + addon;
+    public int baseLive(EntityProperty immunity) {
+        return LIVES_BASE[profession.ordinal()] + immunity.getRepair();
     }
+
+    /**
+     * Vypočítá kolik životů se přidá při přechodu na novou úroveň
+     * live = max(1, dice.roll() + addon
+     *
+     * @param immunity
+     * @return
+     */
+    public int live(EntityProperty immunity) {
+            Dice dice = LIVES_DICE[profession.ordinal()];
+            int addon = LIVES_ADDON[profession.ordinal()];
+
+            return Math.max(1, dice.roll() + addon);
+        }
 
     /**
      * @return Vrátí výšku postavy ve formé výčtového typu {@link Height}

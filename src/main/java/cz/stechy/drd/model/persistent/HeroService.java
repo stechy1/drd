@@ -71,8 +71,8 @@ public final class HeroService extends BaseDatabaseService<Hero> {
             + "%s INT NOT NULL,"                                // charisma
             + "%s INT NOT NULL,"                                // height
             + "%s INT NOT NULL,"                                // defence number
-            + "%s INT NOT NULL,"                                // live
-            + "%s INT NOT NULL,"                                // max live
+            + "%s INT NOT NULL,"                                // baseLive
+            + "%s INT NOT NULL,"                                // max baseLive
             + "%s INT NOT NULL,"                                // mag
             + "%s INT NOT NULL"                                 // max mag
             + ");", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_CONVICTION,

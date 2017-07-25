@@ -110,7 +110,7 @@ public class HeroCreatorController2 extends BaseController implements Initializa
         bundle.remove(HeroCreatorHelper.INTELLIGENCE);
         bundle.remove(HeroCreatorHelper.CHARISMA);
 
-        model.live.setValue(generator.live());
+        model.live.setValue(generator.baseLive(model.immunity));
         model.strength.setValue(generator.strength());
         model.dexterity.setValue(generator.dexterity());
         model.immunity.setValue(generator.immunity());
