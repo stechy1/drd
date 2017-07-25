@@ -1,12 +1,11 @@
 package cz.stechy.drd.controller.main;
 
+import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
-import cz.stechy.drd.controller.IScreenSupport;
 import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper;
 import cz.stechy.drd.controller.hero.opener.HeroOpenerHelper;
 import cz.stechy.drd.controller.moneyxp.MoneyXpController;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
@@ -17,11 +16,11 @@ import cz.stechy.screens.Notification.Length;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
@@ -80,10 +79,10 @@ public class MainController extends BaseController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        title = resources.getString(R.Translate.MAIN_TITLE);
-        loginSuccess = resources.getString(R.Translate.NOTIFY_LOGIN_SUCCESS);
+        this.title = resources.getString(R.Translate.MAIN_TITLE);
+        this.loginSuccess = resources.getString(R.Translate.NOTIFY_LOGIN_SUCCESS);
 
-        controllers = new MainScreen[]{
+        this.controllers = new MainScreen[]{
             defaultStaffController,
             inventoryController
         };
@@ -95,8 +94,8 @@ public class MainController extends BaseController implements Initializable {
             }
         }
 
-        hero.setValue(new Hero.Builder().build());
-
+        this.hero.addListener(heroListener);
+        this.hero.setValue(new Hero.Builder().build());
     }
 
     @Override
@@ -229,36 +228,10 @@ public class MainController extends BaseController implements Initializable {
 
     // endregion
 
-    private final IScreenSupport screenSupport = new IScreenSupport() {
-        @Override
-        public void startScreen(String name, Bundle bundle) {
-            MainController.this.startScreen(name, bundle);
-        }
-
-        @Override
-        public void startScreenForResult(String name, int actionId, Bundle bundle) {
-            MainController.this.startScreenForResult(name, actionId, bundle);
-        }
-
-        @Override
-        public void startNewDialog(String name, Bundle bundle) {
-            MainController.this.startNewDialog(name, bundle);
-        }
-
-        @Override
-        public void startNewDialogForResult(String name, int actionId, Bundle bundle) {
-            MainController.this.startNewDialogForResult(name, actionId, bundle);
-        }
-
-        @Override
-        public void startNewPopupWindow(String name, Bundle bundle, Node parentNode) {
-            MainController.this.startNewPopupWindow(name, bundle, parentNode);
-        }
-
-        @Override
-        public void startNewPopupWindowForResult(String name, int actionId,
-            Bundle bundle, Node parentNode) {
-            MainController.this.startNewPopupWindowForResult(name, actionId, bundle, parentNode);
-        }
+    private ChangeListener<? super Boolean> levelUpListener = (observable, oldValue, newValue) -> {
+        showNotification("LevelUp", Length.SHORT);
+    };
+    private ChangeListener<? super Hero> heroListener = (ChangeListener<Hero>) (observable, oldValue, newValue) -> {
+        newValue.levelUpProperty().addListener(levelUpListener);
     };
 }
