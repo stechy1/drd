@@ -158,6 +158,11 @@ public class App extends Application {
         public void increaseProgress(int progress, String description) {
             this.progress += progress;
             notifyPreloader(new MyPreloaderNotification(this.progress / total, description));
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     };
 }
