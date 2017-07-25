@@ -10,6 +10,7 @@ import cz.stechy.drd.model.user.User;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
@@ -46,7 +47,8 @@ final class ShopHelper {
     public static <S extends ShopEntry, T> TableCell<S, T> forActionButtons(
         final OnAddItemToCart<S> addHandler, final OnRemoveItemFromCart<S> removeHandler,
         final OnUploadItem<S> uploadHandler, final OnDownloadItem<S> downloadHandler,
-        final OnDeleteItem<S> deleteHandler, User user, ResourceBundle resources) {
+        final OnDeleteItem<S> deleteHandler, User user, ResourceBundle resources,
+        BooleanProperty cartEditable) {
         final String resourceAdd = resources.getString("drd_shop_item_cart_add");
         final String resourceRemove = resources.getString("drd_firebase_entry_remove");
         final String resourceUpload = resources.getString("drd_firebase_entry_upload");
@@ -127,8 +129,10 @@ final class ShopHelper {
                             entry.getAmmount().actValueProperty().isEqualTo(0));
 
                     btnAddRemove.disableProperty().bind(Bindings
-                        .and(entry.inShoppingCartProperty().not(),
-                            entry.getAmmount().actValueProperty().isEqualTo(0)));
+                        .or(Bindings
+                            .and(entry.inShoppingCartProperty().not(),
+                                entry.getAmmount().actValueProperty().isEqualTo(0)),
+                            cartEditable));
                     btnAddRemove.textProperty().bind(Bindings
                         .when(addRemoveCondition)
                         .then(resourceRemove)
@@ -167,8 +171,7 @@ final class ShopHelper {
                             .then(deleteFromLocalDatabaseInternal)
                             .otherwise(downloadHandlerInternal)));
                     btnRemote.disableProperty().bind(Bindings
-                        .or(
-                            user.loggedProperty().not(),
+                        .or(user.loggedProperty().not(),
                             Bindings.and(
                                 entry.authorProperty().isNotEqualTo(user.nameProperty()),
                                 entry.downloadedProperty())));

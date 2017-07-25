@@ -143,7 +143,7 @@ public class ShopWeaponMeleController implements Initializable,
         OnDeleteItem<MeleWeaponEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources));
+                downloadHandler, deleteHandler, user, resources, ammountEditable));
 
         ObservableMergers.mergeList(meleWeapon -> {
             final MeleWeaponEntry entry;

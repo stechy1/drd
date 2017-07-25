@@ -114,7 +114,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         OnDeleteItem<GeneralEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources));
+                downloadHandler, deleteHandler, user, resources, ammountEditable));
 
         ObservableMergers.mergeList(generalItem -> {
             final GeneralEntry entry;

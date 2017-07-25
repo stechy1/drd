@@ -138,7 +138,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         OnDeleteItem<ArmorEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources));
+                downloadHandler, deleteHandler, user, resources, ammountEditable));
 
         ObservableMergers.mergeList(armor -> {
                 final ArmorEntry entry;

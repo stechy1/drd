@@ -145,7 +145,7 @@ public class ShopWeaponRangedController implements Initializable,
         OnDeleteItem<RangedWeaponEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources));
+                downloadHandler, deleteHandler, user, resources, ammountEditable));
 
         ObservableMergers.mergeList(weapon -> {
             final RangedWeaponEntry entry;

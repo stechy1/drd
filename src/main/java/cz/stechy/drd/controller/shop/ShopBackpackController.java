@@ -117,7 +117,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
         OnDeleteItem<BackpackEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources));
+                downloadHandler, deleteHandler, user, resources, ammountEditable));
 
         ObservableMergers.mergeList(backpack -> {
             final BackpackEntry entry;
