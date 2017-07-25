@@ -52,6 +52,8 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
      */
     protected AdvancedDatabaseService(Database db) {
         super(db);
+
+        attachOfflineListener();
     }
 
     // endregion
@@ -121,6 +123,18 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 this.usedItems.removeAll(c.getRemoved());
             }
         };
+    }
+
+    private void attachOfflineListener() {
+        this.onlineDatabase.removeListener(listChangeListener);
+        super.items.addListener(listChangeListener);
+        this.usedItems.setAll(super.items);
+    }
+
+    private void attachOnlineListener() {
+        super.items.removeListener(listChangeListener);
+        this.onlineDatabase.addListener(listChangeListener);
+        this.usedItems.setAll(this.onlineDatabase);
     }
 
     // endregion
@@ -217,13 +231,9 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
         this.usedItems.clear();
 
         if (showOnline) {
-            super.items.removeListener(listChangeListener);
-            this.onlineDatabase.addListener(listChangeListener);
-            this.usedItems.setAll(this.onlineDatabase);
+            attachOnlineListener();
         } else {
-            this.onlineDatabase.removeListener(listChangeListener);
-            super.items.addListener(listChangeListener);
-            this.usedItems.setAll(super.items);
+            attachOfflineListener();
         }
     }
 
@@ -287,8 +297,9 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
             itemRegistry.getItemById(item.getId()).ifPresent(itemBase -> {
                 item.setDownloaded(itemBase.isDownloaded());
-                item.setUploaded(itemBase.isUploaded());
             });
+
+            item.setUploaded(true);
             onlineDatabase.add(item);
         }
 
