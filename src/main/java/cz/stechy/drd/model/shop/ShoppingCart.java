@@ -6,6 +6,7 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.value.ChangeListener;
@@ -51,6 +52,17 @@ public class ShoppingCart implements IShoppingCart {
     public void removeItem(ShopEntry entry) {
         orderList.remove(entry);
         entry.setInShoppingCart(false);
+    }
+
+    @Override
+    public boolean containsEntry(ShopEntry entry) {
+        return orderList.contains(entry);
+    }
+
+    @Override
+    public Optional<ShopEntry> getEntry(String id) {
+        return orderList.stream()
+            .filter(entry -> id.equals(entry.getId())).findFirst();
     }
 
     public ReadOnlyBooleanProperty enoughtMoneyProperty() {
