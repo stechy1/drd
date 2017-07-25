@@ -12,7 +12,7 @@ import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -44,8 +44,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
 /**
- * Třetí kontroler z průvodce vytvoření postavy
- * Nastavení základních předmětů a zbraní
+ * Třetí kontroler z průvodce vytvoření postavy Nastavení základních předmětů a zbraní
  */
 public class HeroCreatorController3 extends BaseController implements Initializable {
 
@@ -72,7 +71,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
     // endregion
 
     private final ObservableList<ItemEntry> items = FXCollections.observableArrayList();
-    private final ObservableList<ChoiceEntry> item_registry = FXCollections.observableArrayList();
+    private final ObservableList<ChoiceEntry> itemRegistry = FXCollections.observableArrayList();
     private final IntegerProperty selectedItem = new SimpleIntegerProperty();
 
     private String title;
@@ -93,10 +92,11 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         columnItemCount.setCellValueFactory(new PropertyValueFactory<>("itemCount"));
         columnItemCount.setCellFactory(param -> CellUtils.forMaxActValue());
 
-        ItemRegistry.getINSTANCE().getRegistry().entrySet()
+        final List<ChoiceEntry> items = ItemRegistry.getINSTANCE().getRegistry().entrySet()
             .stream()
-            .map(Entry::getValue)
+            .map(entry -> new ChoiceEntry(entry.getValue()))
             .collect(Collectors.toList());
+        itemRegistry.setAll(items);
 
         btnRemoveItem.disableProperty().bind(selectedItem.lessThan(0));
     }
@@ -138,12 +138,13 @@ public class HeroCreatorController3 extends BaseController implements Initializa
 
     @FXML
     private void handleAddItem(ActionEvent actionEvent) {
-        ChoiceDialog<ChoiceEntry> dialog = new ChoiceDialog<>(null, item_registry);
+        final ChoiceDialog<ChoiceEntry> dialog = new ChoiceDialog<>(null, itemRegistry);
         dialog.setTitle("Přidat item");
         dialog.setHeaderText("Výběr itemu");
         dialog.setContentText("Vyberte...");
         // Trocha čarování k získání reference na combobox abych ho mohl upravit
-        @SuppressWarnings("unchecked") final ComboBox<ChoiceEntry> comboBox = (ComboBox) (((GridPane) dialog.getDialogPane()
+        @SuppressWarnings("unchecked") final ComboBox<ChoiceEntry> comboBox = (ComboBox) (((GridPane) dialog
+            .getDialogPane()
             .getContent())
             .getChildren().get(1));
         comboBox.setPrefWidth(100);
@@ -151,7 +152,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         comboBox.setCellFactory(param -> new ChoiceEntryCell());
         comboBox.setMinWidth(200);
         comboBox.setMinHeight(40);
-        Optional<ChoiceEntry> result = dialog.showAndWait();
+        final Optional<ChoiceEntry> result = dialog.showAndWait();
         result.ifPresent(choiceEntry -> {
             final Optional<ItemEntry> entry = items.stream()
                 .filter(itemEntry -> itemEntry.getId().equals(choiceEntry.id.get()))
@@ -177,7 +178,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
 
         public ChoiceEntry(DatabaseItem databaseItem) {
             assert databaseItem instanceof ItemBase;
-            ItemBase itemBase = (ItemBase) databaseItem;
+            final ItemBase itemBase = (ItemBase) databaseItem;
             this.id.setValue(itemBase.getId());
             this.name.setValue(itemBase.getName());
             final ByteArrayInputStream inputStream = new ByteArrayInputStream(itemBase.getImage());
