@@ -1,8 +1,8 @@
 package cz.stechy.drd.controller.shop;
 
+import cz.stechy.drd.Context;
 import cz.stechy.drd.Money;
 import cz.stechy.drd.R;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -19,6 +19,7 @@ import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -107,8 +108,6 @@ public class ShopBackpackController implements Initializable, ShopItemController
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
-
-        ObservableMergers.mergeList(BackpackEntry::new, backpacks, service.selectAll());
     }
 
     @Override
@@ -119,6 +118,18 @@ public class ShopBackpackController implements Initializable, ShopItemController
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources));
+
+        ObservableMergers.mergeList(backpack -> {
+            final BackpackEntry entry;
+            final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(backpack.getId());
+            if (cartEntry.isPresent()) {
+                entry = (BackpackEntry) cartEntry.get();
+            } else {
+                entry = new BackpackEntry(backpack);
+            }
+
+            return entry;
+        }, backpacks, service.selectAll());
     }
 
     @Override

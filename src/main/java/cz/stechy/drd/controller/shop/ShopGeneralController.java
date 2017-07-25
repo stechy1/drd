@@ -1,8 +1,8 @@
 package cz.stechy.drd.controller.shop;
 
+import cz.stechy.drd.Context;
 import cz.stechy.drd.Money;
 import cz.stechy.drd.R;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -18,6 +18,9 @@ import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.Bundle;
+import java.net.URL;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -31,9 +34,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 /**
  * Pomocný kontroler pro obchod se obecnými předměty
@@ -105,8 +105,6 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
-
-        ObservableMergers.mergeList(GeneralEntry::new, generalItems, service.selectAll());
     }
 
     @Override
@@ -117,6 +115,18 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources));
+
+        ObservableMergers.mergeList(generalItem -> {
+            final GeneralEntry entry;
+            final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(generalItem.getId());
+            if (cartEntry.isPresent()) {
+                entry = (GeneralEntry) cartEntry.get();
+            } else {
+                entry = new GeneralEntry(generalItem);
+            }
+
+            return entry;
+        }, generalItems, service.selectAll());
     }
 
     @Override

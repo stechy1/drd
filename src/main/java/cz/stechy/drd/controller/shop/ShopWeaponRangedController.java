@@ -1,8 +1,8 @@
 package cz.stechy.drd.controller.shop;
 
+import cz.stechy.drd.Context;
 import cz.stechy.drd.Money;
 import cz.stechy.drd.R;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -23,6 +23,7 @@ import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -135,8 +136,6 @@ public class ShopWeaponRangedController implements Initializable,
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
-
-        ObservableMergers.mergeList(RangedWeaponEntry::new, rangedWeapons, service.selectAll());
     }
 
     @Override
@@ -147,6 +146,18 @@ public class ShopWeaponRangedController implements Initializable,
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources));
+
+        ObservableMergers.mergeList(weapon -> {
+            final RangedWeaponEntry entry;
+            final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(weapon.getId());
+            if (cartEntry.isPresent()) {
+                entry = (RangedWeaponEntry) cartEntry.get();
+            } else {
+                entry = new RangedWeaponEntry(weapon);
+            }
+
+            return entry;
+        }, rangedWeapons, service.selectAll());
     }
 
     @Override
