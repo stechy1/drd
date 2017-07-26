@@ -154,7 +154,6 @@ public class ItemSlot {
 
     // Handler na změnu viditelnosti tooltipu
     private final EventHandler<WindowEvent> tooltipShowing = event -> {
-        System.out.println("entered");
         if (tooltipContainer == null) {
             final Map<String, String> tooltipMap = itemStack.getItem().getMapDescription();
             if (tooltipTranslator != null) {

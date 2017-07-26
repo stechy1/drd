@@ -100,15 +100,12 @@ public class ShoppingCart implements IShoppingCart {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue,
             Number newValue) {
-            System.out.println("Changed: " + oldValue + " -> " + newValue);
             if (oldValue.intValue() == newValue.intValue()) {
-                System.out.println("Hodnoty se rovnaji, nebudu aktualizovat");
                 return;
             }
             int rawTotalPrice = totalPrice.getRaw();
             rawTotalPrice -= oldValue.intValue() * price.getRaw();
             rawTotalPrice += newValue.intValue() * price.getRaw();
-            System.out.println(price.getRaw());
             totalPrice.setRaw(rawTotalPrice);
         }
     }
