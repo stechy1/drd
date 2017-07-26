@@ -61,15 +61,12 @@
     <Separator orientation="HORIZONTAL"/>
 
     <HBox alignment="CENTER_LEFT" spacing="8">
-      <JFXButton HBox.hgrow="ALWAYS" onAction="#handleBack" styleClass="btn, btn-raised, btn-info"
-        text="%drd_back"/>
-      <JFXButton HBox.hgrow="ALWAYS" onAction="#handleCancel" styleClass="btn, btn-raised, btn-warning"
-        text="%drd_cancel"/>
+      <Button onAction="#handleBack" styleClass="toolbar-button, icon-previous"/>
       <Region HBox.hgrow="ALWAYS"/>
       <JFXButton HBox.hgrow="ALWAYS" onAction="#handleReset"
         styleClass="btn, btn-raised, btn-danger" text="%drd_reset"/>
-      <JFXButton HBox.hgrow="ALWAYS" onAction="#handleFinish" styleClass="btn, btn-raised, btn-success"
-        text="%drd_finish"/>
+      <Region HBox.hgrow="ALWAYS"/>
+      <Button onAction="#handleFinish" styleClass="toolbar-button, icon-confirm"/>
       <padding>
         <Insets topRightBottomLeft="8.0"/>
       </padding>
