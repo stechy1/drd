@@ -9,8 +9,6 @@ import cz.stechy.drd.util.BitUtils;
 import cz.stechy.drd.widget.LabeledHeroProperty;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -21,6 +19,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * Druhý kontroler z průvodce vytvořením postavy
@@ -102,6 +104,7 @@ public class HeroCreatorController2 extends BaseController implements Initializa
     }
 
     @FXML
+    //private void handleReset(MouseEvent mouseEvent) {
     private void handleReset(ActionEvent actionEvent) {
         bundle.remove(HeroCreatorHelper.LIVE);
         bundle.remove(HeroCreatorHelper.STRENGTH);
@@ -115,6 +118,48 @@ public class HeroCreatorController2 extends BaseController implements Initializa
         model.dexterity.setValue(generator.dexterity());
         model.immunity.setValue(generator.immunity());
         model.intelligence.setValue(generator.intelligence());
+        model.charisma.setValue(generator.charisma());
+    }
+
+    @FXML
+    public void handleResetLive(MouseEvent mouseEvent) {
+        bundle.remove(HeroCreatorHelper.LIVE);
+
+        model.live.setValue(generator.live());
+    }
+
+    @FXML
+    public void handleResetStrenght(MouseEvent mouseEvent) {
+        bundle.remove(HeroCreatorHelper.STRENGTH);
+
+        model.strength.setValue(generator.strength());
+    }
+
+    @FXML
+    public void handleResetDexterity(MouseEvent mouseEvent) {
+        bundle.remove(HeroCreatorHelper.DEXTERITY);
+
+        model.dexterity.setValue(generator.dexterity());
+    }
+
+    @FXML
+    public void handleResetImmunity(MouseEvent mouseEvent) {
+        bundle.remove(HeroCreatorHelper.IMMUNITY);
+
+        model.immunity.setValue(generator.immunity());
+    }
+
+    @FXML
+    public void handleResetIntelligence(MouseEvent mouseEvent) {
+        bundle.remove(HeroCreatorHelper.INTELLIGENCE);
+
+        model.intelligence.setValue(generator.intelligence());
+    }
+
+    @FXML
+    public void handleResetCharisma(MouseEvent mouseEvent) {
+        bundle.remove(HeroCreatorHelper.CHARISMA);
+
         model.charisma.setValue(generator.charisma());
     }
 

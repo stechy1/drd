@@ -64,6 +64,7 @@ public final class R {
         public static final String HERO_IMMUNITY = "drd_hero_immunity";
         public static final String HERO_INTELLIGENCE = "drd_hero_intelligence";
         public static final String HERO_CHARISMA = "drd_hero_charisma";
+        public static final String HERO_ALL_STATS = "drd_hero_all_stats";
         public static final String HERO_HEIGHT = "drd_hero_height";
         public static final String HERO_CAPACITY = "drd_hero_capacity";
         public static final String HERO_AGILITY = "drd_hero_agility";
