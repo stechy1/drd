@@ -41,12 +41,12 @@ public final class FormUtils {
                 }
             }
 
-            long value = Long.parseLong(t.getControlNewText());
+            long value = Long.parseLong(t.getControlNewText().trim());
             if (value > max || value < min) {
                 return null;
             }
 
-            if (t.getText().equals(String.valueOf(min))) {
+            if (value == 0) {
                 t.setCaretPosition(1);
             }
 
