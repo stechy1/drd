@@ -101,6 +101,7 @@ public final class GeneralItemService extends AdvancedDatabaseService<GeneralIte
             .name(resultSet.getString(COLUMN_NAME))
             .description(resultSet.getString(COLUMN_DESCRIPTION))
             .weight(resultSet.getInt(COLUMN_WEIGHT))
+            .price(resultSet.getInt(COLUMN_PRICE))
             .image(readBlob(resultSet, COLUMN_IMAGE))
             .stackSize(resultSet.getInt(COLUMN_STACK_SIZE))
             .downloaded(resultSet.getBoolean(COLUMN_DOWNLOADED))
