@@ -37,34 +37,29 @@ public class MoneyController extends BaseController implements Initializable {
 
     // endregion
 
-    private final Money money = new Money();
-
-    private final MaxActValue goldValue = new MaxActValue(0, Money.MAX_GOLD, money.getGold());
-    private final MaxActValue silverValue = new MaxActValue(0, Money.MAX_SILVER, money.getSilver());
-    private final MaxActValue copperValue = new MaxActValue(0, Money.MAX_COPPER, money.getCopper());
+    private final MaxActValue goldValue = new MaxActValue(0, Money.MAX_GOLD, 0);
+    private final MaxActValue silverValue = new MaxActValue(0, Money.MAX_SILVER, 0);
+    private final MaxActValue copperValue = new MaxActValue(0, Money.MAX_COPPER, 0);
 
     private String title;
-
-    {
-        goldValue.actValueProperty().bindBidirectional(money.gold);
-        silverValue.actValueProperty().bindBidirectional(money.silver);
-        copperValue.actValueProperty().bindBidirectional(money.copper);
-    }
 
     // endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.title = resources.getString(R.Translate.MONEY_TITLE);
-    }
-
-    @Override
-    protected void onCreate(Bundle bundle) {
-        money.setRaw(bundle.getInt(MONEY));
 
         FormUtils.initTextFormater(txtGold, goldValue);
         FormUtils.initTextFormater(txtSilver, silverValue);
         FormUtils.initTextFormater(txtCopper, copperValue);
+    }
+
+    @Override
+    protected void onCreate(Bundle bundle) {
+        Money money = new Money(bundle.getInt(MONEY));
+        goldValue.setActValue(money.getGold());
+        silverValue.setActValue(money.getSilver());
+        copperValue.setActValue(money.getCopper());
     }
 
     @Override
@@ -73,22 +68,15 @@ public class MoneyController extends BaseController implements Initializable {
         setScreenSize(250, 150);
     }
 
-    @Override
-    protected void onClose() {
-        goldValue.actValueProperty().unbindBidirectional(money.gold);
-        silverValue.actValueProperty().unbindBidirectional(money.silver);
-        copperValue.actValueProperty().unbindBidirectional(money.copper);
-
-        FormUtils.disposeTextFormater(txtGold, goldValue);
-        FormUtils.disposeTextFormater(txtSilver, silverValue);
-        FormUtils.disposeTextFormater(txtCopper, copperValue);
-    }
-
     // region Button handles
 
     @FXML
     private void handleFinish(ActionEvent actionEvent) {
         setResult(RESULT_SUCCESS);
+        Money money = new Money();
+        money.setGold(goldValue.getActValue().intValue());
+        money.setSilver(silverValue.getActValue().intValue());
+        money.setCopper(copperValue.getActValue().intValue());
         finish(new Bundle().putInt(MONEY, money.getRaw()));
     }
 

@@ -95,47 +95,48 @@ public final class Money {
      */
     private void init() {
         raw.addListener((observable, oldValue, newValue) -> {
-            synchronized (lock) {
+//            synchronized (lock) {
                 if (changing) {
                     return;
                 }
-            }
+//            }
             changing = true;
             int value = newValue.intValue();
             gold.setValue((value & MASK_GOLD) >> MULTIPLIER_GOLD);
             silver.setValue((value & MASK_SILVER) >> MULTIPLIER_SILVER);
             copper.setValue(value & MASK_COPPER);
             text.setValue(toString());
+            System.out.println("Vysledek penez: " + text + " raw value: " + value);
             changing = false;
         });
         gold.addListener((observable, oldValue, newValue) -> {
-            synchronized (lock) {
+//            synchronized (lock) {
                 if (changing) {
                     return;
                 }
-            }
+//            }
             changing = true;
             subtractGold(oldValue.intValue());
             addGold(newValue.intValue());
             changing = false;
         });
         silver.addListener((observable, oldValue, newValue) -> {
-            synchronized (lock) {
+//            synchronized (lock) {
                 if (changing) {
                     return;
                 }
-            }
+//            }
             changing = true;
             subtractSilver(oldValue.intValue());
             addSilver(newValue.intValue());
             changing = false;
         });
         copper.addListener((observable, oldValue, newValue) -> {
-            synchronized (lock) {
+//            synchronized (lock) {
                 if (changing) {
                     return;
                 }
-            }
+//            }
             changing = true;
             subtractCopper(oldValue.intValue());
             addCopper(newValue.intValue());
