@@ -137,7 +137,7 @@ public class ItemBackpackController extends BaseController implements Initializa
         bundle.putInt(WEIGHT, backpack.getWeight());
         bundle.putInt(PRICE, backpack.getPrice().getRaw());
         bundle.putInt(MAX_LOAD, backpack.getMaxLoad());
-        bundle.putInt(SIZE, backpack.getSize().size);
+        bundle.putInt(SIZE, backpack.getSize().ordinal());
         bundle.putString(AUTHOR, backpack.getAuthor());
         bundle.putByteArray(IMAGE, backpack.getImage());
         bundle.putInt(STACK_SIZE, backpack.getStackSize());
