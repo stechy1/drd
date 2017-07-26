@@ -1,6 +1,6 @@
 package cz.stechy.drd.model.item;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.OnlineItem;

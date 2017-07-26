@@ -1,6 +1,6 @@
 package cz.stechy.drd.widget;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Label;

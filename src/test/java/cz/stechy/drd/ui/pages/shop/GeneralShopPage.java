@@ -1,6 +1,6 @@
 package cz.stechy.drd.ui.pages.shop;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.ui.APage;

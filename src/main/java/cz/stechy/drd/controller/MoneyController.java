@@ -1,6 +1,6 @@
 package cz.stechy.drd.controller;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.util.FormUtils;

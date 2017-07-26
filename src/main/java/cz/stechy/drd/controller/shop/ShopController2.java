@@ -1,6 +1,6 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;

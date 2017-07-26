@@ -1,6 +1,6 @@
 package cz.stechy.drd.util;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import javafx.beans.property.BooleanProperty;

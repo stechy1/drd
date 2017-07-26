@@ -3,7 +3,7 @@ package cz.stechy.drd.unit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import org.junit.Before;
 import org.junit.Test;
 
