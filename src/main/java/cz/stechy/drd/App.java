@@ -75,40 +75,21 @@ public class App extends Application {
         manager.addScreensToBlacklist(SCREENS_BLACKLIST);
     }
 
-    private String getDatabaseName() {
-        if (Boolean.getBoolean("testing")) {
-            return "db-testing.sqlite";
-        }
-
-        Properties properties = new Properties();
+    /**
+     * Vrátí konfiguraci aplikace
+     *
+     * @return {@link Properties} obsahující konfiguraci aplikace
+     */
+    private Properties getProperties() {
+        final Properties properties = new Properties();
         try {
             properties.load(new FileInputStream(
                 manager.getScreenManagerConfiguration().config.toExternalForm()));
-            return properties.getProperty("database");
         } catch (IOException e) {
-            return "database.sqlite";
+            e.printStackTrace();
         }
-    }
 
-    // endregion
-
-    public static void main(String[] args) {
-        logger.info("Spouštím aplikaci...");
-
-        if (Boolean.getBoolean("quick")) {
-            launch(args);
-        } else {
-            LauncherImpl.launchApplication(App.class, AppPreloader.class, args);
-        }
-    }
-
-    @Override
-    public void init() throws Exception {
-        if (Boolean.getBoolean("quick")) {
-            quickInit();
-        } else {
-            lazyInit();
-        }
+        return properties;
     }
 
     /**
@@ -124,7 +105,7 @@ public class App extends Application {
         initScreenManager();
         notifyPreloader(new MyPreloaderNotification("Inicializace databáze"));
         Thread.sleep(1000);
-        context = new Context(getDatabaseName(), manager.getResources());
+        context = new Context(getProperties(), manager.getResources());
         notifier.increaseMaxProgress(context.getServiceCount());
         context.init(notifier);
         manager.setControllerFactory(new ControllerFactory(context));
@@ -154,13 +135,34 @@ public class App extends Application {
         notifyPreloader(new MyPreloaderNotification("Inicializace aplikace..."));
         initScreenManager();
         notifyPreloader(new MyPreloaderNotification("Inicializace databáze"));
-        context = new Context(getDatabaseName(), manager.getResources());
+        context = new Context(getProperties(), manager.getResources());
         notifier.increaseMaxProgress(context.getServiceCount());
         context.init(notifier);
         manager.setControllerFactory(new ControllerFactory(context));
 
         notifyPreloader(new MyPreloaderNotification(0.99, "Dokončování..."));
         notifyPreloader(new MyPreloaderNotification(1, "Done"));
+    }
+
+    // endregion
+
+    public static void main(String[] args) {
+        logger.info("Spouštím aplikaci...");
+
+        if (Boolean.getBoolean("quick")) {
+            launch(args);
+        } else {
+            LauncherImpl.launchApplication(App.class, AppPreloader.class, args);
+        }
+    }
+
+    @Override
+    public void init() throws Exception {
+        if (Boolean.getBoolean("quick")) {
+            quickInit();
+        } else {
+            lazyInit();
+        }
     }
 
     public void start(Stage primaryStage) throws Exception {
