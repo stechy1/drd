@@ -200,9 +200,7 @@ public class ShopController1 extends BaseController implements Initializable {
 
     @Override
     protected void onClose() {
-        for (ShopItemController controller : controllers) {
-            controller.onClose();
-        }
+        showOnlineDatabase.setValue(false);
     }
 
     @Override

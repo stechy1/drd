@@ -231,11 +231,6 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     }
 
     @Override
-    public void onClose() {
-        service.toggleDatabase(false);
-    }
-
-    @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName());
     }
