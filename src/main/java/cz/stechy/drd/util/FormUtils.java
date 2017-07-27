@@ -3,7 +3,6 @@ package cz.stechy.drd.util;
 import cz.stechy.drd.model.MaxActValue;
 import java.util.function.UnaryOperator;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
 import javafx.util.converter.NumberStringConverter;
 
@@ -37,7 +36,7 @@ public final class FormUtils {
 
             if (t.isDeleted()) {
                 if (t.getControlNewText().isEmpty()) {
-                    t.setText(String.valueOf(min));
+                    t.setText(String.valueOf(0));
                 }
             }
 
@@ -55,11 +54,11 @@ public final class FormUtils {
     }
 
     public static void initTextFormater(TextField textField, MaxActValue maxActValue) {
-        textField.setTextFormatter(new TextFormatter<>(new NumberStringConverter(), null,
-            FormUtils.integerFilter(
-                maxActValue.getMinValue().intValue(),
-                maxActValue.getMaxValue().intValue()
-            )));
+//        textField.setTextFormatter(new TextFormatter<>(new NumberStringConverter(), null,
+//            FormUtils.integerFilter(
+//                maxActValue.getMinValue().intValue(),
+//                maxActValue.getMaxValue().intValue()
+//            )));
         textField.textProperty()
             .bindBidirectional(maxActValue.actValueProperty(), new NumberStringConverter());
     }
