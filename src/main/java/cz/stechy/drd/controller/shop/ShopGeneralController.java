@@ -154,10 +154,6 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            if (remote) {
-                item.setDownloaded(true);
-            }
-
             service.insert((GeneralItem) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());

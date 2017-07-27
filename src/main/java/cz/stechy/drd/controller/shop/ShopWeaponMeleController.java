@@ -183,10 +183,6 @@ public class ShopWeaponMeleController implements Initializable,
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            if (remote) {
-                item.setDownloaded(true);
-            }
-
             service.insert((MeleWeapon) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());

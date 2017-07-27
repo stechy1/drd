@@ -179,10 +179,6 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            if (remote) {
-                item.setDownloaded(true);
-            }
-
             service.insert((Armor) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());

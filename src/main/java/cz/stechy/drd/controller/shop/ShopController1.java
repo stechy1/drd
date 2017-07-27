@@ -217,6 +217,7 @@ public class ShopController1 extends BaseController implements Initializable {
                 item = controller.fromBundle(bundle);
                 item.setAuthor(user.getName());
                 item.setId(HashGenerator.createHash());
+                item.setDownloaded(true);
                 controller.onAddItem(item, false);
                 break;
             case ACTION_UPDATE_ITEM:

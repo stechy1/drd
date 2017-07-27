@@ -185,10 +185,6 @@ public class ShopWeaponRangedController implements Initializable,
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            if (remote) {
-                item.setDownloaded(true);
-            }
-
             service.insert((RangedWeapon) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
