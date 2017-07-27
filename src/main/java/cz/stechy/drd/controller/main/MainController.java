@@ -4,6 +4,7 @@ import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper;
+import cz.stechy.drd.controller.hero.levelup.LevelUpController;
 import cz.stechy.drd.controller.hero.opener.HeroOpenerHelper;
 import cz.stechy.drd.controller.moneyxp.MoneyXpController;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -41,6 +42,7 @@ public class MainController extends BaseController implements Initializable {
     private static final int ACTION_LOAD_HERO = 2;
     private static final int ACTION_LOGIN = 3;
     private static final int ACTION_MONEY_EXPERIENCE = 4;
+    private static final int ACTION_LEVEL_UP = 5;
 
     // endregion
 
@@ -232,7 +234,9 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuLevelUp(ActionEvent actionEvent) {
-
+        final Bundle bundle = new Bundle();
+        bundle.put(LevelUpController.HERO, hero.get());
+        startNewDialogForResult(R.FXML.LEVELUP, ACTION_LEVEL_UP, bundle);
     }
 
     // endregion
