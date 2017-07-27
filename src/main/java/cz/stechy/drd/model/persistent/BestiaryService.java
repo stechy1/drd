@@ -48,14 +48,13 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
     private static final String COLUMN_BACIS_BOWER_OF_MIND = TABLE + "_basic_power_of_mind";
     private static final String COLUMN_EXPERIENCE = TABLE + "_experience";
     private static final String COLUMN_DOMESTICATION = TABLE + "_domestication";
-    private static final String COLUMN_DOWNLOADED = TABLE + "_downloaded";
     private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_IMAGE, COLUMN_MOB_CLASS, COLUMN_RULES_TYPE,
         COLUMN_CONVICTION, COLUMN_HEIGHT, COLUMN_ATTACK, COLUMN_DEFENCE, COLUMN_VIABILITY,
         COLUMN_IMMUNITY, COLUMN_METTLE, COLUMN_VULNERABILITY, COLUMN_MOBILITY, COLUMN_PERSERVANCE,
         COLUMN_CONTROL_ABILITY, COLUMN_INTELLIGENCE, COLUMN_CHARISMA, COLUMN_BACIS_BOWER_OF_MIND,
-        COLUMN_EXPERIENCE, COLUMN_DOMESTICATION, COLUMN_DOWNLOADED, COLUMN_UPLOADED};
+        COLUMN_EXPERIENCE, COLUMN_DOMESTICATION, COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -83,14 +82,13 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
             + "%s INT NOT NULL,"                                // basic power of mind
             + "%s INT NOT NULL,"                                // experience
             + "%s INT NOT NULL,"                                // domestication
-            + "%s INT NOT NULL,"                                // downloaded
             + "%s INT NOT NULL"                                 // uploaded
             + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_IMAGE, COLUMN_MOB_CLASS, COLUMN_RULES_TYPE,
         COLUMN_CONVICTION, COLUMN_HEIGHT, COLUMN_ATTACK, COLUMN_DEFENCE, COLUMN_VIABILITY,
         COLUMN_IMMUNITY, COLUMN_METTLE, COLUMN_VULNERABILITY, COLUMN_MOBILITY, COLUMN_PERSERVANCE,
         COLUMN_CONTROL_ABILITY, COLUMN_INTELLIGENCE, COLUMN_CHARISMA, COLUMN_BACIS_BOWER_OF_MIND,
-        COLUMN_EXPERIENCE, COLUMN_DOMESTICATION, COLUMN_DOWNLOADED, COLUMN_UPLOADED);
+        COLUMN_EXPERIENCE, COLUMN_DOMESTICATION, COLUMN_UPLOADED);
 
     // endregion
 
@@ -159,7 +157,7 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
             .basicPowerOfMind(resultSet.getInt(COLUMN_BACIS_BOWER_OF_MIND))
             .experience(resultSet.getInt(COLUMN_EXPERIENCE))
             .domestication(resultSet.getInt(COLUMN_DOMESTICATION))
-            .downloaded(resultSet.getBoolean(COLUMN_DOWNLOADED))
+            .downloaded(true)
             .uploaded(resultSet.getBoolean(COLUMN_UPLOADED))
             .build();
     }
@@ -190,7 +188,6 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
             mob.getBasicPowerOfMind(),
             mob.getExperience(),
             mob.getDomestication(),
-            mob.isDownloaded(),
             mob.isUploaded()
         ));
     }

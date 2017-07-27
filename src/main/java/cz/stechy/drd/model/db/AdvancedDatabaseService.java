@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -245,23 +246,24 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 final Optional<T> optional = super.items.stream()
                     .filter(item -> Objects.equals(item.getId(), onlineItem.getId()))
                     .findFirst();
+                // Mám-li offline záznam o souboru
                 if (optional.isPresent()) {
-                    final T item = optional.get();
-                    final T duplicate = item.duplicate();
-                    duplicate.setUploaded(true);
-                    duplicate.setDownloaded(false);
+                    final T offlineItem = optional.get();
+                    final T offlineDuplicate = offlineItem.duplicate();
+                    offlineDuplicate.setUploaded(true);
                     try {
-                        update(duplicate);
+                        update(offlineDuplicate);
                     } catch (DatabaseException e) {
                         e.printStackTrace();
                     }
+                    // Nemám-li offline záznam o souboru, tak ho vytvořím
                 } else {
-                    final T item = onlineItem;
-                    final T duplicate = item.duplicate();
-                    duplicate.setUploaded(true);
-                    duplicate.setDownloaded(false);
+                    final T offlineItem = onlineItem;
+                    final T offlineDuplicate = offlineItem.duplicate();
+                    offlineDuplicate.setDownloaded(true);
+                    offlineDuplicate.setUploaded(true);
                     try {
-                        insert(duplicate);
+                        insert(offlineDuplicate);
                     } catch (DatabaseException e) {
                         e.printStackTrace();
                     }
@@ -295,12 +297,15 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             final T item = parseDataSnapshot(dataSnapshot);
             logger.trace("Přidávám online item {} do svého povědomí.", item.toString());
 
-            itemRegistry.getItemById(item.getId()).ifPresent(itemBase -> {
-                item.setDownloaded(itemBase.isDownloaded());
-            });
+            Platform.runLater(() -> {
+                itemRegistry.getItemById(item.getId()).ifPresent(itemBase -> {
+                    item.setDownloaded(true);
+                    itemBase.setUploaded(true);
+                });
 
-            item.setUploaded(true);
-            onlineDatabase.add(item);
+                item.setUploaded(true);
+                onlineDatabase.add(item);
+            });
         }
 
         @Override

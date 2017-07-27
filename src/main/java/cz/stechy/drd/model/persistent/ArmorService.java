@@ -38,12 +38,11 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
     private static final String COLUMN_PRICE_C = TABLE + "_price_c";
     private static final String COLUMN_IMAGE = TABLE + "_image";
     private static final String COLUMN_STACK_SIZE = TABLE + "_stack_size";
-    private static final String COLUMN_DOWNLOADED = TABLE + "_downloaded";
     private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_DEFENCE, COLUMN_MINIMUM_STRENGTH, COLUMN_ARMOR_TYPE, COLUMN_WEIGHT_A,
         COLUMN_WEIGHT_B, COLUMN_WEIGHT_C, COLUMN_PRICE_A, COLUMN_PRICE_B, COLUMN_PRICE_C,
-        COLUMN_IMAGE, COLUMN_STACK_SIZE, COLUMN_DOWNLOADED, COLUMN_UPLOADED};
+        COLUMN_IMAGE, COLUMN_STACK_SIZE, COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -63,12 +62,11 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
             + "%s INT NOT NULL,"                                // price C
             + "%s BLOB,"                                        // image
             + "%s INT NOT NULL,"                                // stack size
-            + "%s BOOLEAN NOT NULL,"                            // je položka stažená
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
             + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR,
         COLUMN_DEFENCE, COLUMN_MINIMUM_STRENGTH, COLUMN_ARMOR_TYPE, COLUMN_WEIGHT_A, COLUMN_WEIGHT_B,
         COLUMN_WEIGHT_C, COLUMN_PRICE_A, COLUMN_PRICE_B, COLUMN_PRICE_C, COLUMN_IMAGE,
-        COLUMN_STACK_SIZE, COLUMN_DOWNLOADED, COLUMN_UPLOADED);
+        COLUMN_STACK_SIZE, COLUMN_UPLOADED);
     // endregion
 
     // region Variables
@@ -133,7 +131,7 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
             .priceC(resultSet.getInt(COLUMN_PRICE_C))
             .image(readBlob(resultSet, COLUMN_IMAGE))
             .stackSize(resultSet.getInt(COLUMN_STACK_SIZE))
-            .downloaded(resultSet.getBoolean(COLUMN_DOWNLOADED))
+            .downloaded(true)
             .uploaded(resultSet.getBoolean(COLUMN_UPLOADED))
             .build();
     }
@@ -156,7 +154,6 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
             armor.getPriceC().getRaw(),
             armor.getImage(),
             armor.getStackSize(),
-            armor.isDownloaded(),
             armor.isUploaded()
         ));
     }

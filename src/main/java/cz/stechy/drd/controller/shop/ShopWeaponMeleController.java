@@ -234,12 +234,6 @@ public class ShopWeaponMeleController implements Initializable,
     public void clearSelectedRow() {
         tableMeleWeapon.getSelectionModel().clearSelection();
     }
-
-    @Override
-    public void onClose() {
-        service.toggleDatabase(false);
-    }
-
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName());

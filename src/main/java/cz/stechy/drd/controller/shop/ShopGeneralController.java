@@ -206,11 +206,6 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     }
 
     @Override
-    public void onClose() {
-        service.toggleDatabase(false);
-    }
-
-    @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName());
     }
