@@ -84,7 +84,7 @@ public class App extends Application {
         final Properties properties = new Properties();
         try {
             properties.load(new FileInputStream(
-                manager.getScreenManagerConfiguration().config.toExternalForm()));
+                manager.getScreenManagerConfiguration().config.getPath()));
         } catch (IOException e) {
             e.printStackTrace();
         }
