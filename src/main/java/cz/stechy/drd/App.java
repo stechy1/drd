@@ -42,6 +42,11 @@ public class App extends Application {
 
     // endregion
 
+    static {
+        // Pro rychlé spuštění - přeskočí úvodní splashscreen
+        System.setProperty("quick", "true");
+    }
+
     // region Variables
 
     protected Context context;
@@ -89,11 +94,29 @@ public class App extends Application {
 
     public static void main(String[] args) {
         logger.info("Spouštím aplikaci...");
-        LauncherImpl.launchApplication(App.class, AppPreloader.class, args);
+
+        if (Boolean.getBoolean("quick")) {
+            launch(args);
+        } else {
+            LauncherImpl.launchApplication(App.class, AppPreloader.class, args);
+        }
     }
 
     @Override
     public void init() throws Exception {
+        if (Boolean.getBoolean("quick")) {
+            quickInit();
+        } else {
+            lazyInit();
+        }
+    }
+
+    /**
+     * Pomalá inicializace nasazená do produkčního prostředí
+     *
+     * @throws Exception Pokud se inicializace nepovede
+     */
+    private void lazyInit() throws Exception {
         // Pouze pro soutěž
         final long start = System.nanoTime();
         notifyPreloader(new MyPreloaderNotification("Inicializace aplikace..."));
@@ -106,7 +129,7 @@ public class App extends Application {
         context.init(notifier);
         manager.setControllerFactory(new ControllerFactory(context));
 
-        notifyPreloader(new MyPreloaderNotification(1, "Dokončování..."));
+        notifyPreloader(new MyPreloaderNotification(0.99, "Dokončování..."));
         Thread.sleep(1000);
 
         // Pouze pro soutěž
@@ -118,6 +141,26 @@ public class App extends Application {
         }
         notifyPreloader(new MyPreloaderNotification(1, "Done"));
         Thread.sleep(500);
+    }
+
+    /**
+     * Rychlá inicializace bez zbytečného zdržování
+     * Určeno pro vývoj
+     *
+     * @throws Exception Pokud se inicializace nepovede
+     */
+    private void quickInit() throws Exception {
+        // Pouze pro soutěž
+        notifyPreloader(new MyPreloaderNotification("Inicializace aplikace..."));
+        initScreenManager();
+        notifyPreloader(new MyPreloaderNotification("Inicializace databáze"));
+        context = new Context(getDatabaseName(), manager.getResources());
+        notifier.increaseMaxProgress(context.getServiceCount());
+        context.init(notifier);
+        manager.setControllerFactory(new ControllerFactory(context));
+
+        notifyPreloader(new MyPreloaderNotification(0.99, "Dokončování..."));
+        notifyPreloader(new MyPreloaderNotification(1, "Done"));
     }
 
     public void start(Stage primaryStage) throws Exception {
@@ -158,10 +201,12 @@ public class App extends Application {
         public void increaseProgress(int progress, String description) {
             this.progress += progress;
             notifyPreloader(new MyPreloaderNotification(this.progress / total, description));
-            try {
-                Thread.sleep(200);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (!Boolean.getBoolean("quick")) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
