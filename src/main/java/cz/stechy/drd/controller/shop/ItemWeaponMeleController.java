@@ -290,8 +290,8 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         final Money price = new Money();
         final MaxActValue weight = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue strength = new MaxActValue(Integer.MAX_VALUE);
-        final MaxActValue rampancy = new MaxActValue(Integer.MAX_VALUE);
-        final MaxActValue defence = new MaxActValue(Integer.MAX_VALUE);
+        final MaxActValue rampancy = new MaxActValue(Integer.MIN_VALUE ,Integer.MAX_VALUE, 0);
+        final MaxActValue defence = new MaxActValue(Integer.MIN_VALUE ,Integer.MAX_VALUE, 0);
         final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(
             MeleWeaponClass.LIGHT);
         final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(

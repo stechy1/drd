@@ -288,7 +288,7 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         final Money price = new Money();
         final MaxActValue weight = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue strength = new MaxActValue(Integer.MAX_VALUE);
-        final MaxActValue rampancy = new MaxActValue(Integer.MAX_VALUE);
+        final MaxActValue rampancy = new MaxActValue(Integer.MIN_VALUE ,Integer.MAX_VALUE, 0);
         final MaxActValue rangeLow = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue rangeMedium = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue rangeLong = new MaxActValue(Integer.MAX_VALUE);
