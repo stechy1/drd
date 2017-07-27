@@ -77,6 +77,7 @@ public final class R {
         public static final String HERO_DEFENCE_NUMBER = "drd_hero_defence_number";
         public static final String HERO_MONEY = "drd_hero_money";
         public static final String HERO_LEVEL_UP = "drd_hero_level_up";
+        public static final String HERO_INCREASE_LIVE = "drd_hero_increase_live";
         public static final String HERO_INCREASE_STRENGTH = "drd_hero_increase_strength";
         public static final String HERO_INCREASE_DEXTERITY = "drd_hero_increase_dexterity";
         public static final String HERO_INCREASE_IMMUNITY = "drd_hero_increase_immunity";
@@ -239,5 +240,6 @@ public final class R {
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";
         public static final String NOTIFY_REGISTER_FAIL = "drd_notify_register_fail";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
+        public static final String LEVEL_UP_PRICE = "drd_level_up_price";
     }
 }
