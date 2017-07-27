@@ -174,9 +174,6 @@ public class Context {
             }
             service.createTable();
             service.selectAll();
-            if (!Boolean.getBoolean("quick")) {
-                Thread.sleep(1000);
-            }
             return service;
         } catch (Exception e) {
             // nikdy by se nemělo stát
