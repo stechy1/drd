@@ -246,6 +246,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 final Optional<T> optional = super.items.stream()
                     .filter(item -> Objects.equals(item.getId(), onlineItem.getId()))
                     .findFirst();
+                onlineItem.setDownloaded(true);
                 // Mám-li offline záznam o souboru
                 if (optional.isPresent()) {
                     final T offlineItem = optional.get();
