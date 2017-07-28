@@ -121,7 +121,7 @@ public class HeroCreatorController2 extends BaseController implements Initializa
     @FXML
     public void handleResetLive(ActionEvent actionEvent) {
         bundle.remove(HeroCreatorHelper.LIVE);
-        model.live.setValue(generator.live());
+        model.live.setValue(generator.baseLive(model.immunity));
     }
 
     @FXML

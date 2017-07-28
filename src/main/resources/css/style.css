@@ -28,20 +28,15 @@
 .icon-next {
     -fx-background-image: url("../images/icon/next.png");
 }
-
-
 .icon-previous {
     -fx-background-image: url("../images/icon/previous.png");
 }
-
 .icon-confirm {
     -fx-background-image: url("../images/icon/confirm.png");
 }
-
 .icon-cancel {
     -fx-background-image: url("../images/icon/reject.png");
 }
-
 .icon-new {
     -fx-background-image: url("../images/icon/new.png");
 }
@@ -88,6 +83,7 @@
 .table-column {
     -fx-alignment: CENTER-LEFT;
 }
+
 .item-slot {
     -fx-background-color: rgba(128, 0, 0, 0.5);
 }

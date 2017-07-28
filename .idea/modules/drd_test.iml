@@ -10,7 +10,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="drd_main" />
-    <orderEntry type="library" name="Gradle: com.github.stechy1:screens:v1.5.4" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.stechy1:screens:v2.1" level="project" />
     <orderEntry type="library" name="Gradle: org.xerial:sqlite-jdbc:3.16.1" level="project" />
     <orderEntry type="library" name="Gradle: net.java.dev.jna:jna-platform:4.3.0" level="project" />
     <orderEntry type="library" name="Gradle: com.github.harawata:appdirs:1.0.0-SNAPSHOT" level="project" />
@@ -21,6 +21,7 @@
     <orderEntry type="library" name="Gradle: com.jfoenix:jfoenix:1.6.0" level="project" />
     <orderEntry type="library" name="Gradle: org.testfx:testfx-core:4.0.6-alpha" level="project" />
     <orderEntry type="library" name="Gradle: org.testfx:testfx-junit:4.0.6-alpha" level="project" />
+    <orderEntry type="library" name="Gradle: org.testfx:testfx-legacy:4.0.6-alpha" level="project" />
     <orderEntry type="library" name="Gradle: org.testfx:openjfx-monocle:8u76-b04" level="project" />
     <orderEntry type="library" name="Gradle: pl.pragmatists:JUnitParams:1.1.0" level="project" />
     <orderEntry type="library" name="Gradle: net.java.dev.jna:jna:4.3.0" level="project" />

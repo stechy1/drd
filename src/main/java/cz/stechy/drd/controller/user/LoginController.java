@@ -1,12 +1,12 @@
 package cz.stechy.drd.controller.user;
 
-import cz.stechy.drd.R;
 import cz.stechy.drd.Context;
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.persistent.UserService.UserException;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
-import cz.stechy.screens.Notification.Length;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -87,7 +87,7 @@ public class LoginController extends BaseController implements Initializable {
                 if (statusCode != RESULT_SUCCESS) {
                     return;
                 }
-                showNotification(registerSuccess, Length.SHORT);
+                showNotification(new Notification(registerSuccess));
 
                 break;
             case ACTION_LOST_PASSWORD:
@@ -107,7 +107,7 @@ public class LoginController extends BaseController implements Initializable {
             finish();
         } catch (UserException e) {
             logger.info("Přihlášení se nezdařilo", e);
-            showNotification(loginFail, Length.SHORT);
+            showNotification(new Notification(loginFail));
             loginModel.valid.set(false);
         }
     }
@@ -124,7 +124,7 @@ public class LoginController extends BaseController implements Initializable {
 
     @FXML
     private void handleLostPassword(ActionEvent actionEvent) {
-        showNotification("Funkce není implementována", Length.SHORT);
+        showNotification(new Notification("Funkce není implementována"));
     }
 
     // endregion

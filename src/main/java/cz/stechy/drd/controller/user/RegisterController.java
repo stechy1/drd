@@ -1,11 +1,11 @@
 package cz.stechy.drd.controller.user;
 
-import cz.stechy.drd.R;
 import cz.stechy.drd.Context;
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.persistent.UserService.UserException;
 import cz.stechy.screens.BaseController;
-import cz.stechy.screens.Notification.Length;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -83,7 +83,7 @@ public class RegisterController extends BaseController implements Initializable 
             finish();
         } catch (UserException e) {
             logger.info("Registrace se nezdařila", e);
-            showNotification(registerFail, Length.SHORT);
+            showNotification(new Notification(registerFail));
             loginModel.valid.set(false);
         }
     }

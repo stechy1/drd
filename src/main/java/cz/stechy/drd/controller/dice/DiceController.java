@@ -4,7 +4,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.controller.dice.DiceHelper.AdditionType;
 import cz.stechy.drd.controller.dice.DiceHelper.DiceAddition;
 import cz.stechy.drd.controller.dice.DiceHelper.DiceType;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;

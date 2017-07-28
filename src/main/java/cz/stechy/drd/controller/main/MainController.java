@@ -13,7 +13,7 @@ import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
-import cz.stechy.screens.Notification.Length;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
@@ -74,6 +74,7 @@ public class MainController extends BaseController implements Initializable {
     private MainScreen[] controllers;
     private String title;
     private String loginSuccess;
+    private String actionFailed;
 
     // endregion
 
@@ -87,6 +88,7 @@ public class MainController extends BaseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.title = resources.getString(R.Translate.MAIN_TITLE);
         this.loginSuccess = resources.getString(R.Translate.NOTIFY_LOGIN_SUCCESS);
+        this.actionFailed = resources.getString(R.Translate.ACTION_FAILED);
 
         this.controllers = new MainScreen[]{
             defaultStaffController,
@@ -140,7 +142,7 @@ public class MainController extends BaseController implements Initializable {
                     return;
                 }
 
-                showNotification(loginSuccess, Length.SHORT);
+                showNotification(new Notification(loginSuccess));
                 break;
             case ACTION_MONEY_EXPERIENCE:
                 if (statusCode != RESULT_SUCCESS) {
@@ -153,7 +155,7 @@ public class MainController extends BaseController implements Initializable {
                     heroManager.update(heroCopy);
                 } catch (DatabaseException e) {
                     logger.warn("Hrdinu se nepodařilo aktualizovat", e);
-                    showNotification("Akce se nezdařila", Length.SHORT);
+                    showNotification(new Notification(actionFailed));
                 }
                 break;
         }
@@ -242,7 +244,7 @@ public class MainController extends BaseController implements Initializable {
     // endregion
 
     private ChangeListener<? super Boolean> levelUpListener = (observable, oldValue, newValue) -> {
-        showNotification("LevelUp", Length.SHORT);
+        showNotification(new Notification("levelUp"));
     };
     private ChangeListener<? super Hero> heroListener = (ChangeListener<Hero>) (observable, oldValue, newValue) -> {
         newValue.levelUpProperty().addListener(levelUpListener);

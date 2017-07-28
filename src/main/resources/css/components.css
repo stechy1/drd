@@ -31,11 +31,12 @@
 }
 
 .jfx-decorator {
-    -fx-decorator-color: RED;
+    -fx-decorator-color: -indigo-900;
 }
 
 .jfx-decorator .jfx-decorator-buttons-container {
     -fx-background-color: -fx-decorator-color;
+    -fx-border-radius: 4 4 0 0;
 }
 
 .jfx-decorator .resize-border {

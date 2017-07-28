@@ -47,17 +47,6 @@ public class RootController implements Initializable, IMainScreen {
     }
 
     @Override
-    public void showNotification(String text) {
-        notification.setText(text);
-        notificationVisibility.set(true);
-    }
-
-    @Override
-    public void hideNotification() {
-        notificationVisibility.set(false);
-    }
-
-    @Override
     public void initialize(URL location, ResourceBundle resources) {
         containerContent = container.getChildren();
 

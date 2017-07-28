@@ -15,7 +15,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
@@ -31,7 +31,6 @@ public class App extends Application {
 
     private static final Logger logger = LoggerFactory.getLogger(App.class);
 
-    private static final String BASE_FXML = "root.fxml";
     private static final String FOLDER_FXML = "fxml";
     private static final String FILE_CSS = "css/style.css";
     private static final String FILE_JFOENIX_FONTS = "/css/jfoenix-fonts.css";
@@ -66,7 +65,6 @@ public class App extends Application {
      */
     private void initScreenManager() {
         ScreenManagerConfiguration configuration = new ScreenManagerConfiguration.Builder()
-            .baseFxml(App.class.getClassLoader().getResource(BASE_FXML))
             .fxml(App.class.getClassLoader().getResource(FOLDER_FXML))
             .css(App.class.getResource(FILE_JFOENIX_FONTS))
             .css(App.class.getResource(FILE_JFOENIX_DESIGN))
@@ -176,11 +174,11 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(manager.getScreenManagerConfiguration().baseFxml);
         loader.setResources(manager.getResources());
-        Parent parent = loader.load();
+        AnchorPane parent = loader.load();
         IMainScreen controlledScreen = loader.getController();
         manager.setMainScreen(controlledScreen);
         manager.loadScreens();
-        manager.showNewDialog(parent, primaryStage);
+        manager.showNewDialog(parent, primaryStage, true);
         manager.showScreen(FXML.MAIN, null);
         primaryStage.setOnCloseRequest(event -> {
             logger.info("Ukončuji aplikaci");
