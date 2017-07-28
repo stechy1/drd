@@ -10,12 +10,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Tooltip?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
   xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.hero.creator.HeroCreatorController1">
 
   <top>
-    <HBox alignment="CENTER" styleClass="title-container">
+    <HBox styleClass="title-container">
       <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_guide_new_hero_1_title"/>
     </HBox>
   </top>
@@ -46,12 +47,23 @@
   </center>
   <bottom>
     <HBox alignment="CENTER" spacing="8">
-      <JFXButton onAction="#handleCancel" styleClass="toolbar-button, icon-cancel"/>
+      <JFXButton onAction="#handleCancel" styleClass="toolbar-button, icon-cancel">
+        <tooltip>
+          <Tooltip text="%drd_cancel" />
+        </tooltip>
+      </JFXButton>
       <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton onAction="#handleReset" styleClass="btn, btn-raised, btn-danger"
-        text="%drd_reset"/>
+      <JFXButton onAction="#handleReset" styleClass="btn, btn-raised, btn-danger" text="%drd_reset">
+        <tooltip>
+          <Tooltip text="%drd_reset"/>
+        </tooltip>
+      </JFXButton>
       <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton onAction="#handleNext" styleClass="toolbar-button, icon-next" fx:id="btnNext"/>
+      <JFXButton onAction="#handleNext" styleClass="toolbar-button, icon-next" fx:id="btnNext">
+        <tooltip>
+          <Tooltip text="%drd_next"/>
+        </tooltip>
+      </JFXButton>
       <padding>
         <Insets topRightBottomLeft="8.0"/>
       </padding>

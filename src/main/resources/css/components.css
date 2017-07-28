@@ -101,6 +101,9 @@
     -jfx-unchecked-color: BLACK;
 }
 
+.button {
+    -fx-cursor: hand;
+}
 /* Button */
 .btn {
     -fx-padding: 0.7em 0.57em;
@@ -463,6 +466,7 @@
 }
 
 .title-container {
+    -fx-alignment: CENTER;
     -fx-text-alignment: CENTER;
     -fx-background-color: #777;
 }
