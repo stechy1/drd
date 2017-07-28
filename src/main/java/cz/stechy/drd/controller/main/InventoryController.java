@@ -3,7 +3,7 @@ package cz.stechy.drd.controller.main;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.inventory.BackpackController;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
@@ -11,6 +11,7 @@ import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.InventoryType;
 import cz.stechy.drd.model.inventory.ItemClickListener;
 import cz.stechy.drd.model.inventory.ItemContainer;
+import cz.stechy.drd.model.inventory.TooltipTranslator;
 import cz.stechy.drd.model.inventory.container.EquipItemContainer;
 import cz.stechy.drd.model.inventory.container.GridItemContainer;
 import cz.stechy.drd.model.item.Backpack;
@@ -18,9 +19,11 @@ import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.InventoryContent;
 import cz.stechy.drd.model.persistent.InventoryService;
+import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -32,7 +35,8 @@ import javafx.scene.layout.BorderPane;
 /**
  * Kontroler pro inventář hrdiny
  */
-public class InventoryController implements Initializable, MainScreen, InjectableChild {
+public class InventoryController implements Initializable, MainScreen, InjectableChild,
+    TooltipTranslator {
 
     // region Variables
 
@@ -45,9 +49,10 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
     // endregion
 
     // Základní inventář
-    private final ItemContainer mainItemContainer = new GridItemContainer(20, 5, 4);
+    private final ItemContainer mainItemContainer = new GridItemContainer(this, 20, 5, 4);
     // Inventář s výbavou hrdiny
-    private final ItemContainer equipItemContainer = new EquipItemContainer();
+    private final ItemContainer equipItemContainer = new EquipItemContainer(this);
+    private final Translator translator;
 
     private HeroService heroManager;
     private ObjectProperty<Hero> hero;
@@ -59,6 +64,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
 
     public InventoryController(Context context) {
         this.heroManager = context.getService(Context.SERVICE_HERO);
+        this.translator = context.getTranslator();
 
         mainItemContainer.setItemClickListener(itemClickListener);
         equipItemContainer.setItemClickListener(itemClickListener);
@@ -87,6 +93,11 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
     @Override
     public void injectParent(BaseController parent) {
         this.parent = parent;
+    }
+
+    @Override
+    public void onTooltipTranslateRequest(Map<String, String> map) {
+        translator.translateTooltipKeys(map);
     }
 
     private final ChangeListener<? super Hero> heroChangeListener = (observable, oldValue, newValue) -> {

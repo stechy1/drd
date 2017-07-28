@@ -1,10 +1,11 @@
-package cz.stechy.drd.model;
+package cz.stechy.drd;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.FirebaseDatabase;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
+import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseService;
 import cz.stechy.drd.model.db.SQLite;
 import cz.stechy.drd.model.db.base.Database;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import net.harawata.appdirs.AppDirs;
@@ -50,6 +52,9 @@ public class Context {
     private static final int SERVICES_COUNT = 7;
     private static final int EXECUTORS_COUNT = 4;
 
+    private static final String KEY_DATABASE = "database";
+    private static final String DEFAULT_VALUE_DATABASE = "database.sqlite";
+
     // Pomocná reference pro žískání uživatelských složek v různých systémech
     private static final AppDirs appDirs = AppDirsFactory.getInstance();
 
@@ -72,8 +77,10 @@ public class Context {
     private final File appDirectory;
     // Mapa obsahující všechny služby
     private final Map<String, DatabaseService> serviceMap = new HashMap<>(SERVICES_COUNT);
+    // Nastavení aplikace
+    private final Properties configuration;
     // Služba obsluhující uživatele
-    private final UserService userService;
+    private UserService userService;
 
     private final ResourceBundle resources;
     // Překladač aplikace
@@ -86,12 +93,13 @@ public class Context {
     /**
      * Vytvoří nový kontext apliakce
      *
-     * @param databaseName Název databáze
+     * @param configuration Soubor s konfigurací aplikace
      * @param resources {@link ResourceBundle}
      * @throws Exception Pokud se inicializace kontextu nezdaří
      */
-    public Context(String databaseName, ResourceBundle resources) throws Exception {
+    Context(Properties configuration, ResourceBundle resources) throws Exception {
         this.resources = resources;
+        this.configuration = configuration;
         this.appDirectory = new File(appDirs
             .getUserDataDir(CREDENTAILS_APP_NAME, CREDENTAILS_APP_VERSION, CREDENTILS_APP_AUTHOR));
         if (!appDirectory.exists()) {
@@ -101,12 +109,18 @@ public class Context {
             }
         }
         logger.info("Používám pracovní adresář: {}", appDirectory.getPath());
-        database = new SQLite(appDirectory.getPath() + SEPARATOR + databaseName);
+        database = new SQLite(appDirectory.getPath() + SEPARATOR + getDatabaseName());
 
-        initFirebase();
-        userService = new UserService(FirebaseDatabase.getInstance());
-        initServices();
         initNativeHandlers();
+    }
+
+    /**
+     * Vrátí název databáze přečtený z konfigurace
+     *
+     * @return Název databáze
+     */
+    private String getDatabaseName() {
+        return configuration.getProperty(KEY_DATABASE, DEFAULT_VALUE_DATABASE);
     }
 
     // endregion
@@ -188,6 +202,31 @@ public class Context {
 
     // endregion
 
+    // region Package private methods
+
+    /**
+     * Inicializuje tabulky databáze
+     *
+     * @param notifier {@link PreloaderNotifier}
+     */
+    void init(PreloaderNotifier notifier) {
+        BaseDatabaseService.setNotifier(notifier);
+        initFirebase();
+        userService = new UserService(FirebaseDatabase.getInstance());
+        initServices();
+    }
+
+    /**
+     * Vrátí celkový počet služeb, tedy i tabulek v aplikaci
+     *
+     * @return Celkový počet služeb (tabulek) v aplikaci
+     */
+    int getServiceCount() {
+        return SERVICES_COUNT;
+    }
+
+    // endregion
+
     // region Getters & Setters
 
     @SuppressWarnings("unchecked")
@@ -208,6 +247,15 @@ public class Context {
 
     public UserService getUserService() {
         return userService;
+    }
+
+    /**
+     * Vrátí konfiguraci aplikace s důležitými konstantami
+     *
+     * @return {@link Properties}
+     */
+    public Properties getConfiguration() {
+        return configuration;
     }
 
     // endregion

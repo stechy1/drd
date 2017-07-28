@@ -1,8 +1,9 @@
 package cz.stechy.drd;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.sun.javafx.application.LauncherImpl;
 import cz.stechy.drd.R.FXML;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.model.MyPreloaderNotification;
 import cz.stechy.drd.util.UTF8ResourceBundleControl;
 import cz.stechy.screens.ScreenManager;
 import cz.stechy.screens.ScreenManagerConfiguration;
@@ -45,22 +46,16 @@ public class App extends Application {
 
     // endregion
 
+    static {
+        // Pro rychlé spuštění - přeskočí úvodní splashscreen
+        System.setProperty("quick", "true");
+    }
+
     // region Variables
 
     protected Context context;
 
     protected ScreenManager manager;
-
-    // endregion
-
-    // region Constructors
-
-    public App() throws Exception {
-        super();
-        initScreenManager();
-        context = new Context(getDatabaseName(), manager.getResources());
-        manager.setControllerFactory(new ControllerFactory(context));
-    }
 
     // endregion
 
@@ -88,26 +83,94 @@ public class App extends Application {
         manager.addScreensToBlacklist(SCREENS_BLACKLIST);
     }
 
-    private String getDatabaseName() {
-        if (Boolean.getBoolean("testing")) {
-            return "db-testing.sqlite";
-        }
-
-        Properties properties = new Properties();
+    /**
+     * Vrátí konfiguraci aplikace
+     *
+     * @return {@link Properties} obsahující konfiguraci aplikace
+     */
+    private Properties getProperties() {
+        final Properties properties = new Properties();
         try {
             properties.load(new FileInputStream(
-                manager.getScreenManagerConfiguration().config.toExternalForm()));
-            return properties.getProperty("database");
+                manager.getScreenManagerConfiguration().config.getPath()));
         } catch (IOException e) {
-            return "database.sqlite";
+            e.printStackTrace();
         }
+
+        return properties;
+    }
+
+    /**
+     * Pomalá inicializace nasazená do produkčního prostředí
+     *
+     * @throws Exception Pokud se inicializace nepovede
+     */
+    private void lazyInit() throws Exception {
+        // Pouze pro soutěž
+        final long start = System.nanoTime();
+        notifyPreloader(new MyPreloaderNotification("Inicializace aplikace..."));
+        Thread.sleep(1000);
+        initScreenManager();
+        notifyPreloader(new MyPreloaderNotification("Inicializace databáze"));
+        Thread.sleep(1000);
+        context = new Context(getProperties(), manager.getResources());
+        notifier.increaseMaxProgress(context.getServiceCount());
+        context.init(notifier);
+        manager.setControllerFactory(new ControllerFactory(context));
+
+        notifyPreloader(new MyPreloaderNotification(0.99, "Dokončování..."));
+        Thread.sleep(1000);
+
+        // Pouze pro soutěž
+        final long end = System.nanoTime();
+        final long delta = (end - start) / 1000000;
+        final long seconds = 4000;
+        if (delta < seconds) {
+            Thread.sleep(seconds - delta);
+        }
+        notifyPreloader(new MyPreloaderNotification(1, "Done"));
+        Thread.sleep(500);
+    }
+
+    /**
+     * Rychlá inicializace bez zbytečného zdržování
+     * Určeno pro vývoj
+     *
+     * @throws Exception Pokud se inicializace nepovede
+     */
+    private void quickInit() throws Exception {
+        // Pouze pro soutěž
+        notifyPreloader(new MyPreloaderNotification("Inicializace aplikace..."));
+        initScreenManager();
+        notifyPreloader(new MyPreloaderNotification("Inicializace databáze"));
+        context = new Context(getProperties(), manager.getResources());
+        notifier.increaseMaxProgress(context.getServiceCount());
+        context.init(notifier);
+        manager.setControllerFactory(new ControllerFactory(context));
+
+        notifyPreloader(new MyPreloaderNotification(0.99, "Dokončování..."));
+        notifyPreloader(new MyPreloaderNotification(1, "Done"));
     }
 
     // endregion
 
     public static void main(String[] args) {
         logger.info("Spouštím aplikaci...");
-        launch(args);
+
+        if (Boolean.getBoolean("quick")) {
+            launch(args);
+        } else {
+            LauncherImpl.launchApplication(App.class, AppPreloader.class, args);
+        }
+    }
+
+    @Override
+    public void init() throws Exception {
+        if (Boolean.getBoolean("quick")) {
+            quickInit();
+        } else {
+            lazyInit();
+        }
     }
 
     public void start(Stage primaryStage) throws Exception {
@@ -128,4 +191,33 @@ public class App extends Application {
             //ThreadPool.getInstance().shutDown();
         });
     }
+
+    private final PreloaderNotifier notifier = new PreloaderNotifier() {
+        private int total = 1;
+        private double progress = 0;
+
+        @Override
+        public void updateProgressDescription(String description) {
+            notifyPreloader(new MyPreloaderNotification(description));
+        }
+
+        @Override
+        public void increaseMaxProgress(int max) {
+            total += max;
+            notifyPreloader(new MyPreloaderNotification(this.progress / total));
+        }
+
+        @Override
+        public void increaseProgress(int progress, String description) {
+            this.progress += progress;
+            notifyPreloader(new MyPreloaderNotification(this.progress / total, description));
+            if (!Boolean.getBoolean("quick")) {
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
 }

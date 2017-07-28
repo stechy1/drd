@@ -1,27 +1,30 @@
 package cz.stechy.drd.controller.inventory;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.ItemClickListener;
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
+import cz.stechy.drd.model.inventory.TooltipTranslator;
 import cz.stechy.drd.model.inventory.container.FlowItemContainer;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.InventoryService;
+import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 
 /**
  * Obecný kontroler pro inventář v batohu či jiném předmětu
  */
-public class BackpackController extends BaseController {
+public class BackpackController extends BaseController implements TooltipTranslator {
 
     // region Constants
 
@@ -52,6 +55,7 @@ public class BackpackController extends BaseController {
     // endregion
 
     private final HeroService heroManager;
+    private final Translator translator;
     private ItemContainer itemContainer;
     // Velikost inventáře = počet slotů v inventáři
     private int backpackSize;
@@ -63,6 +67,7 @@ public class BackpackController extends BaseController {
 
     public BackpackController(Context context) {
         this.heroManager = context.getService(Context.SERVICE_HERO);
+        this.translator = context.getTranslator();
     }
 
     // endregion
@@ -91,7 +96,7 @@ public class BackpackController extends BaseController {
         backpackSize = bundle.getInt(BACKPACK_SIZE);
         inventoryId = bundle.getString(INVENTORY_ID);
         setTitle(bundle.getString(ITEM_NAME));
-        itemContainer = new FlowItemContainer(backpackSize);
+        itemContainer = new FlowItemContainer(this, backpackSize);
         container.setContent(itemContainer.getGraphics());
         itemContainer.setItemClickListener(itemClickListener);
         setScreenSize(WIDTH, BackpackController.computeHeight(backpackSize));
@@ -103,6 +108,11 @@ public class BackpackController extends BaseController {
         } catch (DatabaseException e) {
             itemContainer.clear();
         }
+    }
+
+    @Override
+    public void onTooltipTranslateRequest(Map<String, String> map) {
+        translator.translateTooltipKeys(map);
     }
 
     private final ItemClickListener itemClickListener = itemSlot -> {

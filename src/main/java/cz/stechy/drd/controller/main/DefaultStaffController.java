@@ -1,6 +1,6 @@
 package cz.stechy.drd.controller.main;
 
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;

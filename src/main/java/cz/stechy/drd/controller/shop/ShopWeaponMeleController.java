@@ -1,8 +1,8 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.Context;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -24,9 +24,11 @@ import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -86,6 +88,7 @@ public class ShopWeaponMeleController implements Initializable,
     // endregion
 
     private final ObservableList<MeleWeaponEntry> meleWeapons = FXCollections.observableArrayList();
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final AdvancedDatabaseService<MeleWeapon> service;
     private final Translator translator;
     private final User user;
@@ -130,9 +133,7 @@ public class ShopWeaponMeleController implements Initializable,
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
-        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
-
-        ObservableMergers.mergeList(MeleWeaponEntry::new, meleWeapons, service.selectAll());
+        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
     }
 
     @Override
@@ -142,7 +143,19 @@ public class ShopWeaponMeleController implements Initializable,
         OnDeleteItem<MeleWeaponEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources));
+                downloadHandler, deleteHandler, user, resources, ammountEditable));
+
+        ObservableMergers.mergeList(meleWeapon -> {
+            final MeleWeaponEntry entry;
+            final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(meleWeapon.getId());
+            if (cartEntry.isPresent()) {
+                entry = (MeleWeaponEntry) cartEntry.get();
+            } else {
+                entry = new MeleWeaponEntry(meleWeapon);
+            }
+
+            return entry;
+        }, meleWeapons, service.selectAll());
     }
 
     @Override
@@ -159,6 +172,7 @@ public class ShopWeaponMeleController implements Initializable,
 
             service.toggleDatabase(newValue);
         });
+        ammountEditable.bind(showOnlineDatabase);
     }
 
     @Override
@@ -170,13 +184,6 @@ public class ShopWeaponMeleController implements Initializable,
     public void onAddItem(ItemBase item, boolean remote) {
         try {
             service.insert((MeleWeapon) item);
-            if (remote) {
-                meleWeapons.get(
-                    meleWeapons.indexOf(
-                        new MeleWeaponEntry((MeleWeapon) item)))
-                    .setDownloaded(true);
-            }
-
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
         }
@@ -227,12 +234,6 @@ public class ShopWeaponMeleController implements Initializable,
     public void clearSelectedRow() {
         tableMeleWeapon.getSelectionModel().clearSelection();
     }
-
-    @Override
-    public void onClose() {
-        service.toggleDatabase(false);
-    }
-
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName());

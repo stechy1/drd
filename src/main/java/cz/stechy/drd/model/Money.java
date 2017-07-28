@@ -1,4 +1,4 @@
-package cz.stechy.drd;
+package cz.stechy.drd.model;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;

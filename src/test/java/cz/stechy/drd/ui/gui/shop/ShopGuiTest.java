@@ -1,9 +1,11 @@
 package cz.stechy.drd.ui.gui.shop;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.testfx.api.FxAssert.verifyThat;
 
-import cz.stechy.drd.ui.GUITestBase;
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.ui.GUITestBase;
+import cz.stechy.drd.ui.pages.shop.GeneralShopPage;
 import cz.stechy.drd.ui.pages.shop.ShopPage;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.TitledPane;
@@ -12,6 +14,7 @@ import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.loadui.testfx.controls.TableViews;
 
 /**
  * Třída obsahující Gui testy pro screen {@link cz.stechy.drd.controller.shop.ShopController1}
@@ -32,6 +35,8 @@ public final class ShopGuiTest extends GUITestBase {
     private static final String BTN_EDIT_ITEM = "#btnEditItem";
     private static final String BTN_SYNCHRONIZE = "#btnSynchronize";
     private static final String BTN_TOGGLE_ONLINE = "#btnToggleOnline";
+
+    private static final String TBL_GENERAL = "#tableGeneralItems";
 
     // endregion
 
@@ -88,5 +93,13 @@ public final class ShopGuiTest extends GUITestBase {
             translated.equals(pane.getText()));
     }
 
+    @Test
+    public void testGeneralItem() throws Exception {
+        final int numberOfRowsBefore = TableViews.numberOfRowsIn(TBL_GENERAL);
+        final GeneralShopPage generalPage = (GeneralShopPage) shopPage.showGeneralPage();
+        generalPage.fillValues(GeneralShopPage.ITEM_1).confirm();
+        final int numberOfRowsAfter = TableViews.numberOfRowsIn(TBL_GENERAL);
+        assertNotEquals("Chyba, počet řádek se nezměnil", numberOfRowsBefore, numberOfRowsAfter);
 
+    }
 }

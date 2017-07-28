@@ -1,15 +1,21 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.MoneyController;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.item.Armor;
+import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ImageUtils;
+import cz.stechy.drd.util.StringConvertors;
+import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -20,10 +26,12 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -32,6 +40,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javax.imageio.ImageIO;
 
 /**
  * Kontroler pro vytvoření nového brnění
@@ -49,6 +58,7 @@ public class ItemArmorController extends BaseController implements Initializable
     private static final String DESCRIPTION = "description";
     private static final String DEFENCE = "defence";
     private static final String MINIMUM_STRENGTH = "minimum_strength";
+    private static final String TYPE = "type";
     private static final String WEIGHT_A = "weight_a";
     private static final String WEIGHT_B = "weight_b";
     private static final String WEIGHT_C = "weight_c";
@@ -77,6 +87,8 @@ public class ItemArmorController extends BaseController implements Initializable
     @FXML
     private TextField txtMiniumStrength;
     @FXML
+    private ComboBox<ArmorType> cmbType;
+    @FXML
     private TextField txtWeightA;
     @FXML
     private TextField txtWeightB;
@@ -96,6 +108,7 @@ public class ItemArmorController extends BaseController implements Initializable
     // endregion
 
     private final ArmorModel model = new ArmorModel();
+    private final Translator translator;
     private String title;
     private int action;
     private String imageChooserTitle;
@@ -103,6 +116,10 @@ public class ItemArmorController extends BaseController implements Initializable
     // endregion
 
     // region Constructors
+
+    public ItemArmorController(Context context) {
+        this.translator = context.getTranslator();
+    }
 
     // endregion
 
@@ -115,6 +132,7 @@ public class ItemArmorController extends BaseController implements Initializable
             .description(bundle.getString(DESCRIPTION))
             .defenceNumber(bundle.getInt(DEFENCE))
             .minimumStrength(bundle.getInt(MINIMUM_STRENGTH))
+            .type(bundle.getInt(TYPE))
             .weightA(bundle.getInt(WEIGHT_A))
             .weightB(bundle.getInt(WEIGHT_B))
             .weightC(bundle.getInt(WEIGHT_C))
@@ -133,15 +151,16 @@ public class ItemArmorController extends BaseController implements Initializable
         bundle.getString(ID, armor.getId());
         bundle.putString(NAME, armor.getName());
         bundle.putString(DESCRIPTION, armor.getDescription());
+        bundle.putString(AUTHOR, armor.getAuthor());
         bundle.putInt(DEFENCE, armor.getDefenceNumber());
         bundle.putInt(MINIMUM_STRENGTH, armor.getMinimumStrength());
+        bundle.putInt(TYPE, armor.getType().ordinal());
         bundle.putInt(WEIGHT_A, armor.getWeightA());
         bundle.putInt(WEIGHT_B, armor.getWeightB());
         bundle.putInt(WEIGHT_C, armor.getWeightC());
         bundle.putInt(PRICE_A, armor.getPriceA().getRaw());
         bundle.putInt(PRICE_B, armor.getPriceB().getRaw());
         bundle.putInt(PRICE_C, armor.getPriceC().getRaw());
-        bundle.putString(AUTHOR, armor.getAuthor());
         bundle.putByteArray(IMAGE, armor.getImage());
         bundle.putInt(STACK_SIZE, armor.getStackSize());
         bundle.putBoolean(UPLOADED, armor.isUploaded());
@@ -155,6 +174,8 @@ public class ItemArmorController extends BaseController implements Initializable
         this.title = resources.getString(R.Translate.ITEM_TYPE_ARMOR);
         this.imageChooserTitle = resources.getString(R.Translate.ITEM_IMAGE_CHOOSE_DIALOG);
 
+        cmbType.converterProperty().setValue(StringConvertors.forArmorType(translator));
+
         txtName.textProperty().bindBidirectional(model.name);
         txtDescription.textProperty().bindBidirectional(model.description);
 
@@ -163,6 +184,8 @@ public class ItemArmorController extends BaseController implements Initializable
         FormUtils.initTextFormater(txtWeightA, model.weightA);
         FormUtils.initTextFormater(txtWeightB, model.weightB);
         FormUtils.initTextFormater(txtWeightC, model.weightC);
+
+        cmbType.valueProperty().bindBidirectional(model.type);
 
         lblPriceA.textProperty().bind(model.priceA.text);
         lblPriceB.textProperty().bind(model.priceB.text);
@@ -180,6 +203,7 @@ public class ItemArmorController extends BaseController implements Initializable
         model.description.setValue(bundle.getString(DESCRIPTION));
         model.defence.setActValue(bundle.getInt(DEFENCE));
         model.minimumStrength.setActValue(bundle.getInt(MINIMUM_STRENGTH));
+        model.type.setValue(ArmorType.values()[bundle.getInt(TYPE)]);
         model.weightA.setActValue(bundle.getInt(WEIGHT_A));
         model.weightB.setActValue(bundle.getInt(WEIGHT_B));
         model.weightC.setActValue(bundle.getInt(WEIGHT_C));
@@ -239,6 +263,7 @@ public class ItemArmorController extends BaseController implements Initializable
         bundle.putString(DESCRIPTION, model.description.getValue());
         bundle.putInt(DEFENCE, model.defence.getActValue().intValue());
         bundle.putInt(MINIMUM_STRENGTH, model.minimumStrength.getActValue().intValue());
+        bundle.putInt(TYPE, model.type.getValue().ordinal());
         bundle.putInt(WEIGHT_A, model.weightA.getActValue().intValue());
         bundle.putInt(WEIGHT_B, model.weightB.getActValue().intValue());
         bundle.putInt(WEIGHT_C, model.weightC.getActValue().intValue());
@@ -284,7 +309,8 @@ public class ItemArmorController extends BaseController implements Initializable
 
         try {
             final byte[] image = ImageUtils.readImage(file);
-            model.imageRaw.set(image);
+            final byte[] resizedImage = ImageUtils.resizeImageRaw(image, 150, 150);
+            model.imageRaw.set(resizedImage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -299,6 +325,7 @@ public class ItemArmorController extends BaseController implements Initializable
         final StringProperty description = new SimpleStringProperty();
         final MaxActValue defence = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue minimumStrength = new MaxActValue(Integer.MAX_VALUE);
+        final ObjectProperty<ArmorType> type = new SimpleObjectProperty<>();
         final MaxActValue weightA = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue weightB = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue weightC = new MaxActValue(Integer.MAX_VALUE);
@@ -308,14 +335,44 @@ public class ItemArmorController extends BaseController implements Initializable
         final StringProperty author = new SimpleStringProperty();
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
         final ObjectProperty<Image> image = new SimpleObjectProperty<>();
-        final MaxActValue stackSize = new MaxActValue(Integer.MAX_VALUE);
+        final MaxActValue stackSize = new MaxActValue(1, Integer.MAX_VALUE, 1);
         final BooleanProperty uploaded = new SimpleBooleanProperty();
         final BooleanProperty downloaded = new SimpleBooleanProperty();
 
+        private boolean block = false;
+
         {
             imageRaw.addListener((observable, oldValue, newValue) -> {
-                final ByteArrayInputStream inputStream = new ByteArrayInputStream(newValue);
-                image.set(new Image(inputStream));
+                if (block) {
+                    return;
+                }
+
+                block = true;
+                try {
+                    final ByteArrayInputStream inputStream = new ByteArrayInputStream(newValue);
+                    image.set(new Image(inputStream));
+                } finally {
+                    block = false;
+                }
+            });
+            image.addListener((observable, oldValue, newValue) -> {
+                if (block) {
+                    return;
+                }
+
+                block = true;
+                try {
+                    BufferedImage bImage = SwingFXUtils.fromFXImage(newValue, null);
+                    ByteArrayOutputStream s = new ByteArrayOutputStream();
+                    ImageIO.write(bImage, "png", s);
+                    byte[] res = s.toByteArray();
+                    s.close(); //especially if you are using a different output stream.
+                    imageRaw.setValue(res);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    block = false;
+                }
             });
         }
     }

@@ -1,10 +1,9 @@
 package cz.stechy.drd.util;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.inventory.ItemSlot;
-import javafx.beans.binding.Bindings;
-import javafx.scene.control.Label;
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -38,12 +37,20 @@ public final class CellUtils {
     }
 
     public static <S> TableCell<S, MaxActValue> forMaxActValue() {
+        return forMaxActValue(null);
+    }
+
+    public static <S> TableCell<S, MaxActValue> forMaxActValue(
+        final BooleanProperty editable) {
         return new TableCell<S, MaxActValue>() {
             private final TextField input;
 
             {
                 input = new TextField();
                 input.setVisible(false);
+                if (editable != null) {
+                    input.disableProperty().bind(editable);
+                }
                 setGraphic(input);
                 setText(null);
             }
@@ -70,7 +77,6 @@ public final class CellUtils {
     }
 
     public static <S> TableCell<S, Money> forMoney() {
-        final Label text = new Label();
 
         return new TableCell<S, Money>() {
             @Override
@@ -78,13 +84,9 @@ public final class CellUtils {
                 super.updateItem(item, empty);
 
                 if(empty) {
-                    setGraphic(null);
+                    setText(null);
                 } else {
-                    text.textProperty().bind(Bindings.concat(
-                        item.gold.asString(), "zl ",
-                        item.silver.asString(), "st ",
-                        item.copper.asString(), "md"));
-                    setGraphic(text);
+                    setText(item.toString());
                 }
             }
         };

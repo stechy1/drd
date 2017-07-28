@@ -10,6 +10,7 @@ import cz.stechy.drd.model.user.User;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
@@ -46,11 +47,13 @@ final class ShopHelper {
     public static <S extends ShopEntry, T> TableCell<S, T> forActionButtons(
         final OnAddItemToCart<S> addHandler, final OnRemoveItemFromCart<S> removeHandler,
         final OnUploadItem<S> uploadHandler, final OnDownloadItem<S> downloadHandler,
-        final OnDeleteItem<S> deleteHandler, User user, ResourceBundle resources) {
+        final OnDeleteItem<S> deleteHandler, User user, ResourceBundle resources,
+        BooleanProperty cartEditable) {
         final String resourceAdd = resources.getString("drd_shop_item_cart_add");
         final String resourceRemove = resources.getString("drd_firebase_entry_remove");
         final String resourceUpload = resources.getString("drd_firebase_entry_upload");
         final String resourceDownload = resources.getString("drd_firebase_entry_download");
+        final String noAction = resources.getString("drd_no_action");
 
         return new TableCell<S, T>() {
             final Button btnAddRemove = new Button();
@@ -126,8 +129,10 @@ final class ShopHelper {
                             entry.getAmmount().actValueProperty().isEqualTo(0));
 
                     btnAddRemove.disableProperty().bind(Bindings
-                        .and(entry.inShoppingCartProperty().not(),
-                            entry.getAmmount().actValueProperty().isEqualTo(0)));
+                        .or(Bindings
+                            .and(entry.inShoppingCartProperty().not(),
+                                entry.getAmmount().actValueProperty().isEqualTo(0)),
+                            cartEditable));
                     btnAddRemove.textProperty().bind(Bindings
                         .when(addRemoveCondition)
                         .then(resourceRemove)
@@ -142,22 +147,34 @@ final class ShopHelper {
                             .isEqualTo(user.nameProperty())) // Autor jsem já
                         .then(Bindings
                             .when(entry.uploadedProperty())
-                            .then(resourceRemove).otherwise(resourceUpload))
+                            .then(Bindings
+                                .when(entry.downloadedProperty())
+                                .then(resourceRemove)
+                                .otherwise(resourceDownload))
+                            .otherwise(resourceUpload))
                         .otherwise(Bindings
                             .when(entry.downloadedProperty())
-                            .then(resourceRemove).otherwise(resourceDownload)));
+                            .then(noAction)
+                            .otherwise(resourceDownload)));
                     btnRemote.onActionProperty().bind(Bindings
                         .when(entry.authorProperty()
                             .isEqualTo(user.nameProperty())) // Autor jsem já
                         .then(Bindings
                             .when(entry.uploadedProperty())
-                            .then(deleteFromRemoteDatabaseInternal)
+                            .then(Bindings
+                                .when(entry.downloadedProperty())
+                                .then(deleteFromRemoteDatabaseInternal)
+                                .otherwise(downloadHandlerInternal))
                             .otherwise(uploadHandlerInternal))
                         .otherwise(Bindings
                             .when(entry.downloadedProperty())
                             .then(deleteFromLocalDatabaseInternal)
                             .otherwise(downloadHandlerInternal)));
-                    btnRemote.disableProperty().bind(user.loggedProperty().not());
+                    btnRemote.disableProperty().bind(Bindings
+                        .or(user.loggedProperty().not(),
+                            Bindings.and(
+                                entry.authorProperty().isNotEqualTo(user.nameProperty()),
+                                entry.downloadedProperty())));
                     setGraphic(container);
                 }
             }

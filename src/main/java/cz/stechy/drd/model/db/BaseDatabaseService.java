@@ -1,5 +1,6 @@
 package cz.stechy.drd.model.db;
 
+import cz.stechy.drd.PreloaderNotifier;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.TransactionHandler;
@@ -32,6 +33,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
     @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(BaseDatabaseService.class);
+    private static PreloaderNotifier notifier;
 
     /**
      * Vygeneruje řetěžec obsahující názvy sloupců oddělené čárkou
@@ -126,6 +128,10 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
         return arrayOutputStream.toByteArray();
     }
 
+    public static void setNotifier(PreloaderNotifier notifier) {
+        BaseDatabaseService.notifier = notifier;
+    }
+
     // endregion
 
     // region Private methods
@@ -198,9 +204,19 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     @Override
     public void createTable() throws DatabaseException {
         logger.trace("Inicializuji tabulku {}", getTable());
+        if (notifier != null) {
+            notifier.increaseProgress(
+                String.format("Inicializuji tabulku: %s", getTable()));
+        }
         final String query = getInitializationQuery();
         try {
             db.query(query);
+            db.select(resultSet -> {
+                final int count = resultSet.getInt(1);
+                if (notifier != null) {
+                    notifier.increaseMaxProgress(count);
+                }
+            }, String.format("SELECT COUNT(%s) FROM %s", getColumnWithId(), getTable()));
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
@@ -222,7 +238,14 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     public ObservableList<T> selectAll() {
         if (items.isEmpty() && !selectAllCalled) {
             try {
-                db.select(resultSet -> items.add(parseResultSet(resultSet)),
+                db.select(resultSet -> {
+                        final T item = parseResultSet(resultSet);
+                        if (notifier != null) {
+                            notifier.increaseProgress(
+                                String.format("Načítám záznam: %s", item.toString()));
+                        }
+                        items.add(item);
+                    },
                     getQuerySelectAll(), getParamsForSelectAll());
                 selectAllCalled = true;
             } catch (SQLException e) {

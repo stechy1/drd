@@ -1,11 +1,12 @@
 package cz.stechy.drd.model.shop;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.value.ChangeListener;
@@ -53,6 +54,17 @@ public class ShoppingCart implements IShoppingCart {
         entry.setInShoppingCart(false);
     }
 
+    @Override
+    public boolean containsEntry(ShopEntry entry) {
+        return orderList.contains(entry);
+    }
+
+    @Override
+    public Optional<ShopEntry> getEntry(String id) {
+        return orderList.stream()
+            .filter(entry -> id.equals(entry.getId())).findFirst();
+    }
+
     public ReadOnlyBooleanProperty enoughtMoneyProperty() {
         return enoughtMoney.getReadOnlyProperty();
     }
@@ -88,15 +100,12 @@ public class ShoppingCart implements IShoppingCart {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue,
             Number newValue) {
-            System.out.println("Changed: " + oldValue + " -> " + newValue);
             if (oldValue.intValue() == newValue.intValue()) {
-                System.out.println("Hodnoty se rovnaji, nebudu aktualizovat");
                 return;
             }
             int rawTotalPrice = totalPrice.getRaw();
             rawTotalPrice -= oldValue.intValue() * price.getRaw();
             rawTotalPrice += newValue.intValue() * price.getRaw();
-            System.out.println(price.getRaw());
             totalPrice.setRaw(rawTotalPrice);
         }
     }

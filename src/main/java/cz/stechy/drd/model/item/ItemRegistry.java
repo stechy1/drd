@@ -71,7 +71,7 @@ public final class ItemRegistry {
      * @return {@link ItemBase}
      */
     public Optional<ItemBase> getItemById(String id) {
-        return Optional.of((ItemBase) registry.get(id));
+        return Optional.ofNullable((ItemBase) registry.get(id));
     }
 
     public ObservableMap<String, DatabaseItem> getRegistry() {

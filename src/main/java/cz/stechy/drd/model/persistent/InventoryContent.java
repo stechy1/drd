@@ -38,6 +38,9 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
     @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(InventoryContent.class);
 
+    private static final int SLOT_OCCUPIED = 1;
+    private static final int SLOT_NOT_OCCUPIED = 0;
+
     // Název tabulky
     private static final String TABLE = "inventory_content";
 
@@ -77,6 +80,7 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
     private static boolean tableInitialized = false;
     // Inventář
     private final Inventory inventory;
+    private int[] occupiedSlots;
 
     // endregion
 
@@ -92,6 +96,7 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
         super(db);
 
         this.inventory = inventory;
+        this.occupiedSlots = new int[inventory.getCapacity()];
         try {
             createTable();
         } catch (DatabaseException e) {
@@ -255,10 +260,9 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
      * @throws InventoryException Pokud volný slot neexistuje
      */
     public synchronized Map<Integer, Integer> getFreeSlot(ItemBase item, int ammount) throws InventoryException {
-        final int[] occupiedSlots = new int[inventory.getCapacity()];
         final Map<Integer, Integer> mapSlots = new HashMap<>();
         final int stackSize = item.getStackSize();
-        items.stream().forEach(inventoryRecord -> occupiedSlots[inventoryRecord.getSlotId()] = 1);
+        items.stream().forEach(inventoryRecord -> occupiedSlots[inventoryRecord.getSlotId()] = SLOT_OCCUPIED);
         final Map<Integer, Integer> map = items.stream()
             .filter(inventoryRecord -> inventoryRecord.getItemId().equals(item.getId()))
             .collect(Collectors.toMap(o -> o.getSlotId(), t -> stackSize - t.getAmmount()));
@@ -282,7 +286,7 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
         final int capacity = inventory.getCapacity();
         int index = 0;
         while (remaining > 0) {
-            if (occupiedSlots[index] != 0) {
+            if (occupiedSlots[index] != SLOT_NOT_OCCUPIED) {
                 index++;
                 continue;
             }
@@ -290,6 +294,7 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
             final int insertAmmount = Math.min(remaining, stackSize);
             mapSlots.put(index, insertAmmount);
             remaining -= insertAmmount;
+            occupiedSlots[index] = SLOT_OCCUPIED;
             index++;
             assert index != capacity;
         }

@@ -7,6 +7,7 @@ public final class R {
 
         public static final String DICE = "dice";
         public static final String MONEY = "money";
+        public static final String PRELOADER = "preloader";
         public static final String VULNERABILITY = "vulnerability";
         public static final String BESTIARY = "bestiary";
         public static final String BESTIARY_EDIT = "bestiary_edit";
@@ -18,6 +19,7 @@ public final class R {
         public static final String HERO_CREATOR_1 = "hero_creator_1";
         public static final String HERO_CREATOR_2 = "hero_creator_2";
         public static final String HERO_CREATOR_3 = "hero_creator_3";
+        public static final String LEVELUP = "levelup";
         public static final String OPEN_HERO = "open_hero";
         public static final String BACKPACK = "backpack";
         public static final String DEFAULT_STAFF = "default_staff";
@@ -49,6 +51,7 @@ public final class R {
         public static final String FINISH = "drd_finish";
         public static final String CANCEL = "drd_cancel";
         public static final String RESET = "drd_reset";
+        public static final String NO_ACTION = "drd_no_action";
         public static final String MAIN_TITLE = "drd_main_title";
         public static final String MAIN_TAB_DEFAULTS = "drd_main_tab_defaults";
         public static final String MAIN_TAB_INVENTORY = "drd_main_tab_inventory";
@@ -75,6 +78,13 @@ public final class R {
         public static final String HERO_OBSERVATION_MECHANICS = "drd_hero_observation_mechanics";
         public static final String HERO_DEFENCE_NUMBER = "drd_hero_defence_number";
         public static final String HERO_MONEY = "drd_hero_money";
+        public static final String HERO_LEVEL_UP = "drd_hero_level_up";
+        public static final String HERO_INCREASE_LIVE = "drd_hero_increase_live";
+        public static final String HERO_INCREASE_STRENGTH = "drd_hero_increase_strength";
+        public static final String HERO_INCREASE_DEXTERITY = "drd_hero_increase_dexterity";
+        public static final String HERO_INCREASE_IMMUNITY = "drd_hero_increase_immunity";
+        public static final String HERO_INCREASE_INTELLIGENCE = "drd_hero_increase_intelligence";
+        public static final String HERO_INCREASE_CHARISMA = "drd_hero_increase_charisma";
         public static final String CONVICTION_LAWFUL_GOOD = "drd_conviction_lawful_good";
         public static final String CONVICTION_CONFUSED_GOODNESS = "drd_conviction_confused_goodness";
         public static final String CONVICTION_NEUTRAL = "drd_conviction_neutral";
@@ -129,6 +139,12 @@ public final class R {
         public static final String ITEM_BACKPACK_SIZE_SMALL = "drd_item_backpack_size_small";
         public static final String ITEM_BACKPACK_SIZE_MEDIUM = "drd_item_backpack_size_medium";
         public static final String ITEM_BACKPACK_SIZE_LARGE = "drd_item_backpack_size_large";
+        public static final String TEM_ARMOR_TYPE = "drditem_armor_type";
+        public static final String ITEM_ARMOR_TYPE_HELM = "drd_item_armor_type_helm";
+        public static final String ITEM_ARMOR_TYPE_BODY = "drd_item_armor_type_body";
+        public static final String ITEM_ARMOR_TYPE_LEGS = "drd_item_armor_type_legs";
+        public static final String ITEM_ARMOR_TYPE_BOOTS = "drd_item_armor_type_boots";
+        public static final String ITEM_ARMOR_TYPE_GLASES = "drd_item_armor_type_glases";
         public static final String OPENER_TITLE = "drd_opener_title";
         public static final String DICE_TITLE = "drd_dice_title";
         public static final String DICE_PROPERTY = "drd_dice_property";
@@ -168,11 +184,12 @@ public final class R {
         public static final String ITEM_WEAPON_MELE_CLASS = "drd_item_weapon_mele_class";
         public static final String ITEM_WEAPON_MELE_ARMOR_DEFENCE_NUMBER = "drd_item_weapon_mele_armor_defence_number";
         public static final String ITEM_WEAPON_MELE_RANGED_TYPE = "drd_item_weapon_mele_ranged_type";
+        public static final String ITEM_WEAPON_RANGED_RANGE = "drd_item_weapon_ranged_range";
         public static final String ITEM_WEAPON_RANGED_RANGE_LOW = "drd_item_weapon_ranged_range_low";
         public static final String ITEM_WEAPON_RANGED_RANGE_MEDIUM = "drd_item_weapon_ranged_range_medium";
         public static final String ITEM_WEAPON_RANGED_RANGE_LONG = "drd_item_weapon_ranged_range_long";
         public static final String ITEM_ARMOR_MINIMUM_STRENGTH = "drd_item_armor_minimum_strength";
-        public static final String MONEY_TITLE = "drd_money_title";
+        public static final String MONEY_XP_TITLE = "drd_money_xp_title";
         public static final String MONEY_GOLD = "drd_money_gold";
         public static final String MONEY_SILVER = "drd_money_silver";
         public static final String MONEY_COPPER = "drd_money_copper";
@@ -212,6 +229,7 @@ public final class R {
         public static final String BESTIARY_TYPE_STATUE = "drd_bestiary_type_statue";
         public static final String BESTIARY_TYPE_SPIDER = "drd_bestiary_type_spider";
         public static final String BESTIARY_TYPE_OTHER = "drd_bestiary_type_other";
+        public static final String MONEY_TITLE = "drd_money_title";
         public static final String USER_LOGIN_TITLE = "drd_user_login_title";
         public static final String USER_USERNAME = "drd_user_username";
         public static final String USER_PASSWORD = "drd_user_password";
@@ -224,6 +242,6 @@ public final class R {
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";
         public static final String NOTIFY_REGISTER_FAIL = "drd_notify_register_fail";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
-        public static final String ITEM_WEAPON_RANGED_RANGE = "drd_item_weapon_ranged_range";
+        public static final String LEVEL_UP_PRICE = "drd_level_up_price";
     }
 }

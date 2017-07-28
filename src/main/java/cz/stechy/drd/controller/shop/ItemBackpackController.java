@@ -1,10 +1,10 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.controller.MoneyController;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.Backpack.Size;
@@ -15,7 +15,9 @@ import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.widget.EnumComboBox;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -27,6 +29,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -40,6 +43,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javax.imageio.ImageIO;
 
 /**
  * Kontroler pro vytvoření nového standartního předmětu
@@ -133,7 +137,7 @@ public class ItemBackpackController extends BaseController implements Initializa
         bundle.putInt(WEIGHT, backpack.getWeight());
         bundle.putInt(PRICE, backpack.getPrice().getRaw());
         bundle.putInt(MAX_LOAD, backpack.getMaxLoad());
-        bundle.putInt(SIZE, backpack.getSize().size);
+        bundle.putInt(SIZE, backpack.getSize().ordinal());
         bundle.putString(AUTHOR, backpack.getAuthor());
         bundle.putByteArray(IMAGE, backpack.getImage());
         bundle.putInt(STACK_SIZE, backpack.getStackSize());
@@ -243,7 +247,8 @@ public class ItemBackpackController extends BaseController implements Initializa
 
         try {
             final byte[] image = ImageUtils.readImage(file);
-            model.imageRaw.set(image);
+            final byte[] resizedImage = ImageUtils.resizeImageRaw(image, 150, 150);
+            model.imageRaw.set(resizedImage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -262,16 +267,47 @@ public class ItemBackpackController extends BaseController implements Initializa
         final StringProperty author = new SimpleStringProperty();
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
         final ObjectProperty<Image> image = new SimpleObjectProperty<>();
-        final MaxActValue stackSize = new MaxActValue(Integer.MAX_VALUE);
+        final MaxActValue stackSize = new MaxActValue(1, Integer.MAX_VALUE, 1);
         final BooleanProperty uploaded = new SimpleBooleanProperty();
         final BooleanProperty downloaded = new SimpleBooleanProperty();
         final ObjectProperty<Size> size = new SimpleObjectProperty<>();
 
+        private boolean block = false;
+
         {
             imageRaw.addListener((observable, oldValue, newValue) -> {
-                final ByteArrayInputStream inputStream = new ByteArrayInputStream(newValue);
-                image.set(new Image(inputStream));
+                if (block) {
+                    return;
+                }
+
+                block = true;
+                try {
+                    final ByteArrayInputStream inputStream = new ByteArrayInputStream(newValue);
+                    image.set(new Image(inputStream));
+                } finally {
+                    block = false;
+                }
+            });
+            image.addListener((observable, oldValue, newValue) -> {
+                if (block) {
+                    return;
+                }
+
+                block = true;
+                try {
+                    BufferedImage bImage = SwingFXUtils.fromFXImage(newValue, null);
+                    ByteArrayOutputStream s = new ByteArrayOutputStream();
+                    ImageIO.write(bImage, "png", s);
+                    byte[] res = s.toByteArray();
+                    s.close(); //especially if you are using a different output stream.
+                    imageRaw.setValue(res);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    block = false;
+                }
             });
         }
+
     }
 }

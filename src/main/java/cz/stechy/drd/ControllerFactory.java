@@ -1,6 +1,5 @@
 package cz.stechy.drd;
 
-import cz.stechy.drd.model.Context;
 import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

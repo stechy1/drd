@@ -1,6 +1,6 @@
 package cz.stechy.drd.model.entity.hero;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.base.DatabaseItem;
@@ -12,10 +12,13 @@ import cz.stechy.drd.model.entity.SimpleEntityProperty;
 import cz.stechy.drd.util.HashGenerator;
 import java.util.regex.Pattern;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -82,6 +85,8 @@ public class Hero extends EntityBase {
     private final EntityProperty observationObjects = new SimpleEntityProperty();
     // Postřeh na mechanické předměty
     private final EntityProperty observationMechanics = new SimpleEntityProperty();
+
+    private final BooleanProperty levelUp = new SimpleBooleanProperty(this, "levelUp");
 
     // endregion
 
@@ -182,8 +187,9 @@ public class Hero extends EntityBase {
                 ));
 
         // Nastavení nosnosti
-        this.strength.repairProperty().addListener((observable, oldValue, newValue) ->
-            setCapacity(CAPACITY_BY_STRENGTH[newValue.intValue() + 5]));
+        this.capacity.bind(Bindings.createIntegerBinding(() ->
+            CAPACITY_BY_STRENGTH[this.strength.getRepair() + 5],
+            this.strength.repairProperty()));
 
         // Nastavení postřehu na objekty
         this.observationObjects.bindTo(intelligence.valueProperty());
@@ -199,6 +205,12 @@ public class Hero extends EntityBase {
 
         this.levelProperty().addListener((observable, oldValue, newValue) ->
             this.experiences.setMaxValue(HeroGenerator.experience(getRace(), newValue.intValue())));
+
+        this.levelUp.bind(Bindings.createBooleanBinding(() -> {
+            final int experience = this.experiences.getActValue().intValue();
+            final int maxExperience = this.experiences.getMaxValue().intValue();
+            return experience >= maxExperience;
+        }, this.experiences.actValueProperty(), this.experiences.maxValueProperty()));
     }
 
     // endregion
@@ -315,6 +327,14 @@ public class Hero extends EntityBase {
 
     public final EntityProperty getObservationMechanics() {
         return observationMechanics;
+    }
+
+    public final boolean canLevelUp() {
+        return levelUp.get();
+    }
+
+    public final ReadOnlyBooleanProperty levelUpProperty() {
+        return levelUp;
     }
 
     // endregion

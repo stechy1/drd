@@ -1,9 +1,9 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.MoneyController;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
@@ -13,7 +13,9 @@ import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -24,6 +26,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,6 +40,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javax.imageio.ImageIO;
 
 /**
  * Kontroler pro vytvoření nové zbraně na dálku
@@ -267,7 +271,8 @@ public class ItemWeaponRangedController extends BaseController implements Initia
 
         try {
             final byte[] image = ImageUtils.readImage(file);
-            model.imageRaw.set(image);
+            final byte[] resizedImage = ImageUtils.resizeImageRaw(image, 150, 150);
+            model.imageRaw.set(resizedImage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -283,7 +288,7 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         final Money price = new Money();
         final MaxActValue weight = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue strength = new MaxActValue(Integer.MAX_VALUE);
-        final MaxActValue rampancy = new MaxActValue(Integer.MAX_VALUE);
+        final MaxActValue rampancy = new MaxActValue(Integer.MIN_VALUE ,Integer.MAX_VALUE, 0);
         final MaxActValue rangeLow = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue rangeMedium = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue rangeLong = new MaxActValue(Integer.MAX_VALUE);
@@ -292,15 +297,46 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         final StringProperty author = new SimpleStringProperty();
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
         final ObjectProperty<Image> image = new SimpleObjectProperty<>();
-        final MaxActValue stackSize = new MaxActValue(Integer.MAX_VALUE);
+        final MaxActValue stackSize = new MaxActValue(1, Integer.MAX_VALUE, 1);
         final BooleanProperty uploaded = new SimpleBooleanProperty();
         final BooleanProperty downloaded = new SimpleBooleanProperty();
 
+        private boolean block = false;
+
         {
             imageRaw.addListener((observable, oldValue, newValue) -> {
-                final ByteArrayInputStream inputStream = new ByteArrayInputStream(newValue);
-                image.set(new Image(inputStream));
+                if (block) {
+                    return;
+                }
+
+                block = true;
+                try {
+                    final ByteArrayInputStream inputStream = new ByteArrayInputStream(newValue);
+                    image.set(new Image(inputStream));
+                } finally {
+                    block = false;
+                }
+            });
+            image.addListener((observable, oldValue, newValue) -> {
+                if (block) {
+                    return;
+                }
+
+                block = true;
+                try {
+                    BufferedImage bImage = SwingFXUtils.fromFXImage(newValue, null);
+                    ByteArrayOutputStream s = new ByteArrayOutputStream();
+                    ImageIO.write(bImage, "png", s);
+                    byte[] res = s.toByteArray();
+                    s.close(); //especially if you are using a different output stream.
+                    imageRaw.setValue(res);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                } finally {
+                    block = false;
+                }
             });
         }
+
     }
 }

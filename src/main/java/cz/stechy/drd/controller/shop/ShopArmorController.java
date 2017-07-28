@@ -1,8 +1,8 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.Context;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -21,10 +21,12 @@ import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -77,6 +79,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     // endregion
 
     private final ObservableList<ArmorEntry> armors = FXCollections.observableArrayList();
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
     private final AdvancedDatabaseService<Armor> service;
     private final User user;
@@ -125,10 +128,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
-        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
-
-        ObservableMergers.mergeList(armor -> new ArmorEntry(armor, height),
-            armors, service.selectAll());
+        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
     }
 
     @Override
@@ -138,7 +138,20 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         OnDeleteItem<ArmorEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources));
+                downloadHandler, deleteHandler, user, resources, ammountEditable));
+
+        ObservableMergers.mergeList(armor -> {
+                final ArmorEntry entry;
+                final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(armor.getId());
+                if (cartEntry.isPresent()) {
+                    entry = (ArmorEntry) cartEntry.get();
+                } else {
+                    entry = new ArmorEntry(armor, height);
+                }
+
+                return entry;
+            },
+            armors, service.selectAll());
     }
 
     @Override
@@ -155,6 +168,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
             service.toggleDatabase(newValue);
         });
+        ammountEditable.bind(showOnlineDatabase);
     }
 
     @Override
@@ -166,10 +180,6 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     public void onAddItem(ItemBase item, boolean remote) {
         try {
             service.insert((Armor) item);
-            armors.get(
-                armors.indexOf(
-                    new ArmorEntry((Armor) item, height)))
-                .setDownloaded(true);
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
         }
@@ -218,11 +228,6 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     @Override
     public void clearSelectedRow() {
         tableArmor.getSelectionModel().clearSelection();
-    }
-
-    @Override
-    public void onClose() {
-        service.toggleDatabase(false);
     }
 
     @Override

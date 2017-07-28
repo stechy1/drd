@@ -1,8 +1,11 @@
 package cz.stechy.drd.model.item;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.OnlineItem;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -16,7 +19,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Základní třída pro všechny itemy ve světě dračího doupěte
  */
-public abstract class ItemBase extends OnlineItem {
+public abstract class ItemBase extends OnlineItem implements IDescriptable {
 
     // region Variables
 
@@ -150,6 +153,17 @@ public abstract class ItemBase extends OnlineItem {
         this.price.setRaw(price.getRaw());
         setAuthor(item.getAuthor());
         setImage(item.getImage());
+    }
+
+    @Override
+    public Map<String, String> getMapDescription() {
+        final Map<String, String> map = new LinkedHashMap<>();
+
+        map.put(R.Translate.ITEM_NAME, name.getValue());
+        map.put(R.Translate.ITEM_WEIGHT, weight.getValue().toString());
+        map.put(R.Translate.ITEM_PRICE, price.toString());
+
+        return map;
     }
 
     /**

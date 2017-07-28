@@ -2,6 +2,7 @@ package cz.stechy.drd.model.inventory.container;
 
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
+import cz.stechy.drd.model.inventory.TooltipTranslator;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 
@@ -24,12 +25,13 @@ public class GridItemContainer extends ItemContainer {
     /**
      * Inicializuje inventář
      *
+     * @param tooltipTranslator {@link TooltipTranslator}
      * @param capacity Počet slotů v inventáři
      * @param cols Počet sloupečků
      * @param rows Počet řádků
      */
-    public GridItemContainer(int capacity, int cols, int rows) {
-        super(capacity);
+    public GridItemContainer(TooltipTranslator tooltipTranslator, int capacity, int cols, int rows) {
+        super(tooltipTranslator, capacity);
 
         this.cols = cols;
         this.rows = rows;

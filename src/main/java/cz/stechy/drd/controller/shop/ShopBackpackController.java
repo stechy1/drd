@@ -1,8 +1,8 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.Context;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -19,9 +19,11 @@ import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -71,6 +73,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
     // endregion
 
     private final ObservableList<BackpackEntry> backpacks = FXCollections.observableArrayList();
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final AdvancedDatabaseService<Backpack> service;
     private final User user;
 
@@ -104,9 +107,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
-        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
-
-        ObservableMergers.mergeList(BackpackEntry::new, backpacks, service.selectAll());
+        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
     }
 
     @Override
@@ -116,7 +117,19 @@ public class ShopBackpackController implements Initializable, ShopItemController
         OnDeleteItem<BackpackEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources));
+                downloadHandler, deleteHandler, user, resources, ammountEditable));
+
+        ObservableMergers.mergeList(backpack -> {
+            final BackpackEntry entry;
+            final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(backpack.getId());
+            if (cartEntry.isPresent()) {
+                entry = (BackpackEntry) cartEntry.get();
+            } else {
+                entry = new BackpackEntry(backpack);
+            }
+
+            return entry;
+        }, backpacks, service.selectAll());
     }
 
     @Override
@@ -133,6 +146,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
             service.toggleDatabase(newValue);
         });
+        ammountEditable.bind(showOnlineDatabase);
     }
 
     @Override
@@ -144,13 +158,6 @@ public class ShopBackpackController implements Initializable, ShopItemController
     public void onAddItem(ItemBase item, boolean remote) {
         try {
             service.insert((Backpack) item);
-            if (remote) {
-                backpacks.get(
-                    backpacks.indexOf(
-                        new BackpackEntry((Backpack) item)))
-                    .setDownloaded(true);
-            }
-
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
         }
@@ -199,11 +206,6 @@ public class ShopBackpackController implements Initializable, ShopItemController
     @Override
     public void clearSelectedRow() {
         tableBackpacks.getSelectionModel().clearSelection();
-    }
-
-    @Override
-    public void onClose() {
-        service.toggleDatabase(false);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package cz.stechy.drd.model.shop.entry;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.item.ItemBase;

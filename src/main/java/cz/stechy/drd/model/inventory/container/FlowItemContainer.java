@@ -2,6 +2,7 @@ package cz.stechy.drd.model.inventory.container;
 
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
+import cz.stechy.drd.model.inventory.TooltipTranslator;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.FlowPane;
@@ -19,8 +20,8 @@ public class FlowItemContainer extends ItemContainer {
 
     // region Constructors
 
-    public FlowItemContainer(int capacity) {
-        super(capacity);
+    public FlowItemContainer(TooltipTranslator tooltipTranslator, int capacity) {
+        super(tooltipTranslator, capacity);
 
         container.setHgap(SLOT_SPACING);
         container.setVgap(SLOT_SPACING);

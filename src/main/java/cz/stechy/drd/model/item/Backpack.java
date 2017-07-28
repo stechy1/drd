@@ -37,7 +37,7 @@ public final class Backpack extends ItemBase {
      * @param backpack Kopírovaný batoh
      */
     private Backpack(Backpack backpack) {
-        this(backpack.getId(), backpack.getName(), backpack.getDescription(), backpack.getAuthor(),
+        this(backpack.getId(), backpack.getAuthor(), backpack.getName(), backpack.getDescription(),
             backpack.getWeight(), backpack.getPrice().getRaw(), backpack.getMaxLoad(),
             backpack.getSize(), backpack.getImage(), backpack.getStackSize(),
             backpack.isDownloaded(), backpack.isUploaded());

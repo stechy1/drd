@@ -1,8 +1,8 @@
 package cz.stechy.drd.controller.moneyxp;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
@@ -54,7 +54,10 @@ public class MoneyXpController extends BaseController implements Initializable {
     private final MaxActValue silverValue = new MaxActValue(0, Money.MAX_SILVER, moneyModel.getSilver());
     private final MaxActValue copperValue = new MaxActValue(0, Money.MAX_COPPER, moneyModel.getCopper());
     private final MaxActValue experienceModel = new MaxActValue(Integer.MAX_VALUE);
-    private final Hero hero;
+
+    private final Money heroMoney;
+    private final MaxActValue heroExperience = new MaxActValue();
+    //private final Hero hero;
 
     private String title;
 
@@ -63,27 +66,25 @@ public class MoneyXpController extends BaseController implements Initializable {
     // region Constructors
 
     public MoneyXpController(Context context) {
-        this.hero = ((HeroService)context.getService(Context.SERVICE_HERO)).getHero().get();
+        final Hero hero = ((HeroService)context.getService(Context.SERVICE_HERO)).getHero().get();
+
+        this.heroMoney = new Money(hero.getMoney());
+        this.heroExperience.update(hero.getExperiences());
 
         goldValue.actValueProperty().bindBidirectional(moneyModel.gold);
         silverValue.actValueProperty().bindBidirectional(moneyModel.silver);
         copperValue.actValueProperty().bindBidirectional(moneyModel.copper);
-
-        experienceModel.update(hero.getExperiences());
     }
 
     // endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        title = resources.getString(R.Translate.MONEY_TITLE);
+        title = resources.getString(R.Translate.MONEY_XP_TITLE);
 
-        lblMoney.forMoney(hero.getMoney());
-        lblExperience.setMaxActValue(hero.getExperiences());
-    }
+        lblMoney.forMoney(heroMoney);
+        lblExperience.setMaxActValue(heroExperience);
 
-    @Override
-    protected void onCreate(Bundle bundle) {
         FormUtils.initTextFormater(txtGold, goldValue);
         FormUtils.initTextFormater(txtSilver, silverValue);
         FormUtils.initTextFormater(txtCopper, copperValue);
@@ -100,19 +101,19 @@ public class MoneyXpController extends BaseController implements Initializable {
 
     @FXML
     private void handleMoneyAdd(ActionEvent actionEvent) {
-        hero.getMoney().add(moneyModel);
+        heroMoney.add(moneyModel);
         moneyModel.setRaw(0);
     }
 
     @FXML
     private void handleMoneySubtract(ActionEvent actionEvent) {
-        hero.getMoney().subtract(moneyModel);
+        heroMoney.subtract(moneyModel);
         moneyModel.setRaw(0);
     }
 
     @FXML
     private void handleXpAdd(ActionEvent actionEvent) {
-        hero.getExperiences().add(experienceModel.getActValue().intValue());
+        heroExperience.add(experienceModel.getActValue().intValue());
         experienceModel.setActValue(0);
     }
 
@@ -125,8 +126,8 @@ public class MoneyXpController extends BaseController implements Initializable {
     private void handleFinish(ActionEvent actionEvent) {
         setResult(RESULT_SUCCESS);
         finish(new Bundle()
-            .putInt(MONEY, hero.getMoney().getRaw())
-            .putInt(EXPERIENCE, hero.getExperiences().getActValue().intValue()));
+            .putInt(MONEY, heroMoney.getRaw())
+            .putInt(EXPERIENCE, heroExperience.getActValue().intValue()));
     }
 
     // endregion

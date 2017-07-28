@@ -106,11 +106,6 @@ interface ShopItemController<T> {
     void clearSelectedRow();
 
     /**
-     * Metoda se zavolá při zavření okna s obchodem
-     */
-    void onClose();
-
-    /**
      * Synchronizuje online předměty s offline databází podle přihlášeného uživatele.
      * Všechny předměty, které uživatel nahrál do online databáze se uloží do offline
      * databáze pouze v případě, se ještě tak nestalo.

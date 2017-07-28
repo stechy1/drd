@@ -1,8 +1,8 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.Context;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -18,8 +18,12 @@ import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.Bundle;
+import java.net.URL;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -30,9 +34,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 /**
  * Pomocný kontroler pro obchod se obecnými předměty
@@ -70,6 +71,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     // endregion
 
     private final ObservableList<GeneralEntry> generalItems = FXCollections.observableArrayList();
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final AdvancedDatabaseService<GeneralItem> service;
     private final User user;
 
@@ -102,9 +104,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
-        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
-
-        ObservableMergers.mergeList(GeneralEntry::new, generalItems, service.selectAll());
+        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
     }
 
     @Override
@@ -114,7 +114,19 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         OnDeleteItem<GeneralEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources));
+                downloadHandler, deleteHandler, user, resources, ammountEditable));
+
+        ObservableMergers.mergeList(generalItem -> {
+            final GeneralEntry entry;
+            final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(generalItem.getId());
+            if (cartEntry.isPresent()) {
+                entry = (GeneralEntry) cartEntry.get();
+            } else {
+                entry = new GeneralEntry(generalItem);
+            }
+
+            return entry;
+        }, generalItems, service.selectAll());
     }
 
     @Override
@@ -131,6 +143,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
             service.toggleDatabase(newValue);
         });
+        ammountEditable.bind(showOnlineDatabase);
     }
 
     @Override
@@ -141,9 +154,6 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            if (remote) {
-                item.setDownloaded(true);
-            }
             service.insert((GeneralItem) item);
         } catch (DatabaseException e) {
             logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
@@ -193,11 +203,6 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     @Override
     public void clearSelectedRow() {
         tableGeneralItems.getSelectionModel().clearSelection();
-    }
-
-    @Override
-    public void onClose() {
-        service.toggleDatabase(false);
     }
 
     @Override

@@ -27,7 +27,7 @@ public final class HeroCreatorHelper {
     public static final String CONVICTION = "conviction";
     public static final String RACE = "race";
     public static final String PROFESSION = "profession";
-    public static final String LIVE = "live";
+    public static final String LIVE = "baseLive";
     public static final String STRENGTH = "strength";
     public static final String DEXTERITY = "dexterity";
     public static final String IMMUNITY = "immunity";
