@@ -477,3 +477,26 @@
     -fx-padding: 14.0px;
     -fx-text-fill: rgba(0.0, 0.0, 0.0, 0.87);
 }
+
+.separator-line {
+    -fx-border-color: black;
+    -fx-border-style: solid;
+}
+.separator-line.line-top {
+    -fx-border-width: 2px 0 0 0;
+}
+.separator-line.line-top-bottom {
+    -fx-border-width: 2px 0 2px 0;
+}
+.separator-line.line-right {
+    -fx-border-width: 0 2px 0 0;
+}
+.separator-line.line-bottom {
+    -fx-border-width: 0 0 2px 0;
+}
+.separator-line.line-left {
+    -fx-border-width: 0 0 0 2px;
+}
+.separator-line.line-left-right {
+    -fx-border-width: 0 2px 0 2px;
+}
