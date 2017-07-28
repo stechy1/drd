@@ -3,26 +3,27 @@
     -fx-background-repeat: no-repeat;
     -fx-background-size: 65%;
     -fx-background-position: center;
-    -fx-border-color: rgba(0, 0, 0, 0.2);
-    -fx-border-radius: 5px;
-    -fx-border-style: solid;
-    -fx-min-width: 48px;
-    -fx-min-height: 48px;
-    -fx-max-width: 48px;
+    -fx-background-radius: 5px;
+    -fx-pref-height: 48px;
+    -fx-pref-width: 48px;
     -fx-max-height: 48px;
-}
-.toolbar-button:hover {
-    -fx-background-color: rgba(0, 0, 0, 0.1);
+    -fx-max-width: 48px;
 }
 
 .sidebar-button {
-        -fx-background-repeat: no-repeat;
-        -fx-background-size: 80%;
-        -fx-background-position: center;
-        -fx-min-width: 32px;
-        -fx-min-height: 32px;
-        -fx-max-width: 32px;
-        -fx-max-height: 32px;
+    -fx-background-color: transparent;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 65%;
+    -fx-background-position: center;
+    -fx-background-radius: 5px;
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-max-width: 32px;
+    -fx-max-height: 32px;
+}
+
+.toolbar-button:hover, .sidebar-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
 }
 
 .icon-next {

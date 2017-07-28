@@ -288,11 +288,11 @@
 }
 
 .jfx-tool-bar {
-    -fx-font-size: 20;
+    -fx-font-size: 20em;
     -fx-font-weight: BOLD;
-    -fx-background-color: #5264AE;
     -fx-pref-width: 100%;
-    -fx-pref-height: 64px;
+    -fx-pref-height: 50px;
+    -fx-min-height: 50px;
 }
 
 .jfx-tool-bar HBox {
