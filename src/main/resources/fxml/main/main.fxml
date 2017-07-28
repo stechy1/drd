@@ -12,10 +12,10 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import com.jfoenix.controls.JFXTabPane?>
 <VBox xmlns:fx="http://javafx.com/fxml/1"
   xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.main.MainController">
@@ -181,13 +181,12 @@
       </tooltip>
     </JFXButton>
   </ToolBar>
-  <TabPane BorderPane.alignment="CENTER" HBox.hgrow="ALWAYS" side="BOTTOM"
-    tabClosingPolicy="UNAVAILABLE">
-    <Tab text="%drd_main_tab_defaults" fx:id="tabDefaults">
+  <JFXTabPane HBox.hgrow="ALWAYS" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
+    <Tab text="%drd_main_tab_defaults" fx:id="tabDefaults" style="-fx-cursor: hand;">
       <fx:include source="default_staff.fxml" fx:id="defaultStaff"/>
     </Tab>
     <Tab text="%drd_main_tab_inventory" fx:id="tabInventory">
       <fx:include source="inventory.fxml" fx:id="inventory"/>
     </Tab>
-  </TabPane>
+  </JFXTabPane>
 </VBox>
