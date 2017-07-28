@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import cz.stechy.drd.widget.LabeledHeroProperty?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
+  xmlns="http://javafx.com/javafx/8.0.121"
+  fx:controller="cz.stechy.drd.controller.hero.creator.HeroCreatorController2">
+  <top>
+    <HBox styleClass="title-container">
+      <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_guide_new_hero_2_title"/>
+    </HBox>
+  </top>
+  <center>
+    <GridPane HBox.hgrow="ALWAYS" alignment="CENTER" hgap="8.0"
+      styleClass="separator-line, line-bottom" vgap="16.0">
+      <columnConstraints>
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        <ColumnConstraints/>
+        <ColumnConstraints/>
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="8.0" prefHeight="30.0"/>
+      </rowConstraints>
+      <Label styleClass="label" text="%drd_hero_live"/>
+      <Label GridPane.rowIndex="1" text="%drd_hero_strength"/>
+      <Label GridPane.rowIndex="2" text="%drd_hero_dexterity"/>
+      <Label GridPane.rowIndex="3" text="%drd_hero_immunity"/>
+      <Label GridPane.rowIndex="4" text="%drd_hero_intelligence"/>
+      <Label GridPane.rowIndex="5" text="%drd_hero_charisma"/>
+      <Label GridPane.columnIndex="1" fx:id="lblLive"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="lblStrength"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="lblDexterity"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="3" fx:id="lblImmunity"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="4" fx:id="lblIntelligence"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="5" fx:id="lblCharisma"/>
+      <JFXButton GridPane.columnIndex="2" onAction="#handleResetLive"
+        styleClass="btn, sidebar-button, icon-dice" fx:id="imgDiceLive">
+        <tooltip>
+          <Tooltip text="%drd_dice_roll"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="1" onAction="#handleResetStrenght"
+        styleClass="btn, sidebar-button, btn-primary, icon-dice">
+        <tooltip>
+          <Tooltip text="%drd_dice_roll"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="2" onAction="#handleResetDexterity"
+        styleClass="btn, sidebar-button, btn-primary, icon-dice">
+        <tooltip>
+          <Tooltip text="%drd_dice_roll"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="3" onAction="#handleResetImmunity"
+        styleClass="btn, sidebar-button, btn-primary, icon-dice">
+        <tooltip>
+          <Tooltip text="%drd_dice_roll"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="4" onAction="#handleResetIntelligence"
+        styleClass="btn, sidebar-button, btn-primary, icon-dice">
+        <tooltip>
+          <Tooltip text="%drd_dice_roll"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="5" onAction="#handleResetCharisma"
+        styleClass="btn, sidebar-button, btn-primary, icon-dice">
+        <tooltip>
+          <Tooltip text="%drd_dice_roll"/>
+        </tooltip>
+      </JFXButton>
+      <Label styleClass="label" text="%drd_hero_live"/>
+      <Label GridPane.columnIndex="3" GridPane.rowIndex="1" fx:id="diceCounterStrength"/>
+      <Label GridPane.columnIndex="3" GridPane.rowIndex="2" fx:id="diceCounterDexterity"/>
+      <Label GridPane.columnIndex="3" GridPane.rowIndex="3" fx:id="diceCounterImmunity"/>
+      <Label GridPane.columnIndex="3" GridPane.rowIndex="4" fx:id="diceCounterIntelligence"/>
+      <Label GridPane.columnIndex="3" GridPane.rowIndex="5" fx:id="diceCounterCharisma"/>
+      <padding>
+        <Insets topRightBottomLeft="8.0"/>
+      </padding>
+    </GridPane>
+  </center>
+  <bottom>
+    <HBox spacing="8">
+      <JFXButton onAction="#handleBack" styleClass="toolbar-button, icon-previous">
+        <tooltip>
+          <Tooltip text="%drd_back"/>
+        </tooltip>
+      </JFXButton>
+      <Region HBox.hgrow="ALWAYS"/>
+      <JFXButton onAction="#handleReset" styleClass="toolbar-button, icon-dice">
+        <tooltip>
+          <Tooltip text="%drd_dice_roll"/>
+        </tooltip>
+      </JFXButton>
+      <Region HBox.hgrow="ALWAYS"/>
+      <JFXButton onAction="#handleNext" styleClass="toolbar-button, icon-next" fx:id="btnNext">
+        <tooltip>
+          <Tooltip text="%drd_next"/>
+        </tooltip>
+      </JFXButton>
+      <padding>
+        <Insets topRightBottomLeft="8.0"/>
+      </padding>
+    </HBox>
+  </bottom>
+</BorderPane>

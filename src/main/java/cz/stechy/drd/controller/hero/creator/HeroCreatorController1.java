@@ -102,7 +102,7 @@ public class HeroCreatorController1 extends BaseController implements Initializa
 
     @Override
     protected void onResume() {
-        setScreenSize(400, 250);
+        setScreenSize(600, 400);
         setTitle(title);
     }
 
@@ -135,7 +135,7 @@ public class HeroCreatorController1 extends BaseController implements Initializa
         bundle.putInt(HeroCreatorHelper.RACE, model.race.getValue().ordinal());
         bundle.putInt(HeroCreatorHelper.PROFESSION, model.profession.getValue().ordinal());
         bundle.putString(HeroCreatorHelper.DESCRIPTION, model.description.getValue());
-        startScreen(R.FXML.NEW_HERO_2, bundle);
+        startScreen(R.FXML.HERO_CREATOR_2, bundle);
     }
 
     // endregion

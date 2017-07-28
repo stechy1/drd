@@ -4,9 +4,11 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.controller.dice.DiceHelper.AdditionType;
 import cz.stechy.drd.controller.dice.DiceHelper.DiceAddition;
 import cz.stechy.drd.controller.dice.DiceHelper.DiceType;
-import cz.stechy.drd.Context;
+import cz.stechy.drd.model.Context;
+import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
@@ -14,9 +16,7 @@ import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
@@ -25,9 +25,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Spinner;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -53,16 +53,16 @@ public class DiceController extends BaseController implements Initializable {
     @FXML
     private TableColumn<DiceAddition, Boolean> columnUseSubtract;
     @FXML
-    private Spinner<Integer> spinnerDiceSideCount;
+    private TextField txtDiceSideCount;
     @FXML
-    private Spinner<Integer> spinnerRollCount;
+    private TextField txtRollCount;
     @FXML
     private Label lblRollResult;
 
     // endregion
 
-    private final IntegerProperty diceSideCount = new SimpleIntegerProperty();
-    private final IntegerProperty diceRollCount = new SimpleIntegerProperty();
+    private final MaxActValue diceSideCount = new MaxActValue(1, Integer.MAX_VALUE, 1);
+    private final MaxActValue diceRollCount = new MaxActValue(1, Integer.MAX_VALUE, 1);
     private final ObjectProperty<Hero> hero;
     private final Translator translator;
 
@@ -106,15 +106,15 @@ public class DiceController extends BaseController implements Initializable {
                 return cell;
             }
         });
-        spinnerDiceSideCount.disableProperty().bind(
+        txtDiceSideCount.disableProperty().bind(
             lvDices.getFocusModel().focusedIndexProperty().isEqualTo(0).not());
-        // TODO vymyslet lepší způsob
-        spinnerDiceSideCount.valueProperty().addListener((observable, oldValue, newValue) ->
-            diceSideCount.setValue(newValue));
+
+        FormUtils.initTextFormater(txtDiceSideCount, diceSideCount);
+        FormUtils.initTextFormater(txtRollCount, diceRollCount);
+
         lvDices.getFocusModel().focusedItemProperty()
             .addListener((observable, oldValue, newValue) ->
-                diceSideCount.setValue(newValue.getSideCount()));
-        diceRollCount.bind(spinnerRollCount.valueProperty());
+                diceSideCount.setActValue(newValue.getSideCount()));
 
         initTable();
     }
@@ -183,7 +183,7 @@ public class DiceController extends BaseController implements Initializable {
 
     @FXML
     private void handleRoll(ActionEvent actionEvent) {
-        diceHelper.roll(diceSideCount.getValue(), diceRollCount.getValue());
+        diceHelper.roll(diceSideCount.getActValue().intValue(), diceRollCount.getActValue().intValue());
     }
 
     // endregion

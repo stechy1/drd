@@ -16,9 +16,9 @@ public final class R {
         public static final String BESTIARY_EDIT_IMAGE = "bestiary_edit_image";
         public static final String BESTIARY_EDIT_OTHER = "bestiary_edit_other";
         public static final String BESTIARY_EDIT_PROPERTIES = "bestiary_edit_properties";
-        public static final String NEW_HERO_1 = "new_hero_1";
-        public static final String NEW_HERO_2 = "new_hero_2";
-        public static final String NEW_HERO_3 = "new_hero_3";
+        public static final String HERO_CREATOR_1 = "hero_creator_1";
+        public static final String HERO_CREATOR_2 = "hero_creator_2";
+        public static final String HERO_CREATOR_3 = "hero_creator_3";
         public static final String LEVELUP = "levelup";
         public static final String OPEN_HERO = "open_hero";
         public static final String BACKPACK = "backpack";
@@ -67,6 +67,7 @@ public final class R {
         public static final String HERO_IMMUNITY = "drd_hero_immunity";
         public static final String HERO_INTELLIGENCE = "drd_hero_intelligence";
         public static final String HERO_CHARISMA = "drd_hero_charisma";
+        public static final String HERO_ALL_STATS = "drd_hero_all_stats";
         public static final String HERO_HEIGHT = "drd_hero_height";
         public static final String HERO_CAPACITY = "drd_hero_capacity";
         public static final String HERO_AGILITY = "drd_hero_agility";

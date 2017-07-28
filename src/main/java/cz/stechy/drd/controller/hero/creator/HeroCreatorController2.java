@@ -85,7 +85,7 @@ public class HeroCreatorController2 extends BaseController implements Initializa
 
     @Override
     protected void onResume() {
-        setScreenSize(350, 200);
+        setScreenSize(600, 400);
         setTitle(title);
     }
 
@@ -119,6 +119,42 @@ public class HeroCreatorController2 extends BaseController implements Initializa
     }
 
     @FXML
+    public void handleResetLive(ActionEvent actionEvent) {
+        bundle.remove(HeroCreatorHelper.LIVE);
+        model.live.setValue(generator.live());
+    }
+
+    @FXML
+    public void handleResetStrenght(ActionEvent actionEvent) {
+        bundle.remove(HeroCreatorHelper.STRENGTH);
+        model.strength.setValue(generator.strength());
+    }
+
+    @FXML
+    public void handleResetDexterity(ActionEvent actionEvent) {
+        bundle.remove(HeroCreatorHelper.DEXTERITY);
+        model.dexterity.setValue(generator.dexterity());
+    }
+
+    @FXML
+    public void handleResetImmunity(ActionEvent actionEvent) {
+        bundle.remove(HeroCreatorHelper.IMMUNITY);
+        model.immunity.setValue(generator.immunity());
+    }
+
+    @FXML
+    public void handleResetIntelligence(ActionEvent actionEvent) {
+        bundle.remove(HeroCreatorHelper.INTELLIGENCE);
+        model.intelligence.setValue(generator.intelligence());
+    }
+
+    @FXML
+    public void handleResetCharisma(ActionEvent actionEvent) {
+        bundle.remove(HeroCreatorHelper.CHARISMA);
+        model.charisma.setValue(generator.charisma());
+    }
+
+    @FXML
     private void handleNext(ActionEvent actionEvent) {
         bundle.putInt(HeroCreatorHelper.LIVE, model.live.getValue());
         bundle.putInt(HeroCreatorHelper.STRENGTH, model.strength.getValue());
@@ -126,7 +162,7 @@ public class HeroCreatorController2 extends BaseController implements Initializa
         bundle.putInt(HeroCreatorHelper.IMMUNITY, model.immunity.getValue());
         bundle.putInt(HeroCreatorHelper.INTELLIGENCE, model.intelligence.getValue());
         bundle.putInt(HeroCreatorHelper.CHARISMA, model.charisma.getValue());
-        startScreen(R.FXML.NEW_HERO_3, bundle);
+        startScreen(R.FXML.HERO_CREATOR_3, bundle);
     }
 
     // endregion
