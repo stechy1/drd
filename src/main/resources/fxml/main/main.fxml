@@ -7,7 +7,6 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
@@ -183,10 +182,16 @@
   </ToolBar>
   <JFXTabPane HBox.hgrow="ALWAYS" side="BOTTOM" tabClosingPolicy="UNAVAILABLE">
     <Tab text="%drd_main_tab_defaults" fx:id="tabDefaults" style="-fx-cursor: hand;">
+      <tooltip>
+        <Tooltip text="Základní informace o hrdinovi"/>
+      </tooltip>
       <fx:include source="default_staff.fxml" fx:id="defaultStaff"/>
     </Tab>
     <Tab text="%drd_main_tab_inventory" fx:id="tabInventory">
       <fx:include source="inventory.fxml" fx:id="inventory"/>
+      <tooltip>
+        <Tooltip text="Inventář hrdiny"/>
+      </tooltip>
     </Tab>
   </JFXTabPane>
 </VBox>

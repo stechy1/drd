@@ -38,7 +38,7 @@ public class LabeledProgressBar extends VBox {
     public LabeledProgressBar() {
         setDisplayMode(DisplayMode.LIVE);
 
-        progressLabel.setStyle("-fx-text-fill: black; -fx-background-color: rgba(0, 0, 0, 0.1)");
+        progressLabel.setStyle("-fx-text-fill: black; -fx-background-color: rgba(0, 0, 0, 0.1); -fx-font-size: 12;");
         label.setFont(Font.font(10));
 
         progressBar.setPrefWidth(Double.MAX_VALUE);

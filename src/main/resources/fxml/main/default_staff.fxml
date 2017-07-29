@@ -15,7 +15,7 @@
   <HBox>
     <ImageView fitHeight="100.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
       <HBox.margin>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+        <Insets topRightBottomLeft="8.0"/>
       </HBox.margin>
     </ImageView>
     <GridPane HBox.hgrow="ALWAYS" hgap="8.0">
@@ -48,4 +48,7 @@
     <fx:include fx:id="defaultStaffRight" source="default_staff_right.fxml"
       HBox.hgrow="ALWAYS"/>
   </HBox>
+  <padding>
+    <Insets topRightBottomLeft="8.0"/>
+  </padding>
 </VBox>

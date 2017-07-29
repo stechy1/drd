@@ -1,4 +1,4 @@
-.root {
+.root, .button, .label {
     -fx-font-family: Roboto;
 }
 
@@ -502,6 +502,12 @@
     -fx-border-width: 0 2px 0 2px;
 }
 
-.jfx-tab-pane.tab {
-    -fx-background-color: ORANGE;
+.jfx-tab-pane .tab-label {
+    -fx-background-color: -deep-purple-400;
+}
+.jfx-tab-pane .tab-label:active {
+    -fx-background-color: -deep-purple-600;
+}
+.jfx-tab-pane .tab-header-background {
+    -fx-background-color: -deep-purple-A100;
 }
