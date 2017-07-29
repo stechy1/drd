@@ -140,7 +140,7 @@ public final class R {
         public static final String ITEM_BACKPACK_SIZE_SMALL = "drd_item_backpack_size_small";
         public static final String ITEM_BACKPACK_SIZE_MEDIUM = "drd_item_backpack_size_medium";
         public static final String ITEM_BACKPACK_SIZE_LARGE = "drd_item_backpack_size_large";
-        public static final String TEM_ARMOR_TYPE = "drditem_armor_type";
+        public static final String ITEM_ARMOR_TYPE = "drd_item_armor_type";
         public static final String ITEM_ARMOR_TYPE_HELM = "drd_item_armor_type_helm";
         public static final String ITEM_ARMOR_TYPE_BODY = "drd_item_armor_type_body";
         public static final String ITEM_ARMOR_TYPE_LEGS = "drd_item_armor_type_legs";

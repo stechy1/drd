@@ -43,7 +43,7 @@
     <Label text="%drd_item_weapon_mele_armor_defence_number" GridPane.columnIndex="1"
       GridPane.rowIndex="1"/>
     <Label text="%drd_item_armor_minimum_strength" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-    <Label text="%drditem_armor_type" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    <Label text="%drd_item_armor_type" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
     <Label prefWidth="200.0" rotate="270.0" text="Váha" GridPane.rowIndex="4" GridPane.rowSpan="1"/>
     <Label text="A" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
     <Label text="B" GridPane.columnIndex="1" GridPane.rowIndex="5"/>

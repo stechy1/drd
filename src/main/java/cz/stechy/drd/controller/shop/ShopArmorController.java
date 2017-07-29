@@ -11,6 +11,7 @@ import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
 import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.item.Armor;
+import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.ArmorEntry;
@@ -19,6 +20,8 @@ import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
+import cz.stechy.drd.util.StringConvertors;
+import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.Optional;
@@ -35,6 +38,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +68,8 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     @FXML
     private TableColumn<ArmorEntry, String> columnAuthor;
     @FXML
+    private TableColumn<ArmorEntry, ArmorType> columnArmorType;
+    @FXML
     private TableColumn<ArmorEntry, Integer> columnDefenceNumber;
     @FXML
     private TableColumn<ArmorEntry, Integer> columnMinimumStrength;
@@ -82,6 +88,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
     private final AdvancedDatabaseService<Armor> service;
+    private final Translator translator;
     private final User user;
 
     private IntegerProperty selectedRowIndex;
@@ -93,7 +100,8 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
     public ShopArmorController(Context context) {
         this.service = context.getService(Context.SERVICE_ARMOR);
-        user = context.getUserService().getUser().get();
+        this.translator = context.getTranslator();
+        this.user = context.getUserService().getUser().get();
     }
 
     // endregion
@@ -122,6 +130,9 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
+        columnArmorType.setCellValueFactory(new PropertyValueFactory<>("armorType"));
+        columnArmorType.setCellFactory(
+            TextFieldTableCell.forTableColumn(StringConvertors.forArmorType(translator)));
         columnDefenceNumber.setCellValueFactory(new PropertyValueFactory<>("defenceNumber"));
         columnMinimumStrength.setCellValueFactory(new PropertyValueFactory<>("minimumStrength"));
         columnWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));

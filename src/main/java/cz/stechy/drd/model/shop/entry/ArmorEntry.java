@@ -2,9 +2,11 @@ package cz.stechy.drd.model.shop.entry;
 
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.item.Armor;
+import cz.stechy.drd.model.item.Armor.ArmorType;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Položka v obchodě představující brnění
@@ -13,6 +15,7 @@ public class ArmorEntry extends ShopEntry {
 
     private final IntegerProperty defenceNumber = new SimpleIntegerProperty();
     private final IntegerProperty minimumStrength = new SimpleIntegerProperty();
+    private final ObjectProperty<ArmorType> armorType = new SimpleObjectProperty<>();
 
     // endregion
 
@@ -29,6 +32,7 @@ public class ArmorEntry extends ShopEntry {
 
         this.defenceNumber.bind(armor.defenceNumberProperty());
         this.minimumStrength.bind(armor.minimumStrengthProperty());
+        this.armorType.bind(armor.typeProperty());
 
         height.addListener((observable, oldValue, newValue) -> armor.forHeight(newValue));
     }
@@ -59,6 +63,18 @@ public class ArmorEntry extends ShopEntry {
 
     public void setMinimumStrength(int minimumStrength) {
         this.minimumStrength.set(minimumStrength);
+    }
+
+    public ArmorType getArmorType() {
+        return armorType.get();
+    }
+
+    public ObjectProperty<ArmorType> armorTypeProperty() {
+        return armorType;
+    }
+
+    public void setArmorType(ArmorType armorType) {
+        this.armorType.set(armorType);
     }
 
     // endregion
