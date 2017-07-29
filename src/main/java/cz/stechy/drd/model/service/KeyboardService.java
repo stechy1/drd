@@ -1,16 +1,26 @@
 package cz.stechy.drd.model.service;
 
-import org.jnativehook.keyboard.NativeKeyEvent;
-import org.jnativehook.keyboard.NativeKeyListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableSet;
+import javafx.event.EventHandler;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 
 /**
  * Pomocná třída sloužící pro přímý přístup ke klávesnici
  */
-public final class KeyboardService implements NativeKeyListener {
+public final class KeyboardService {
 
     private static KeyboardService INSTANCE;
 
-    private int modifiers = 0;
+    private final ObservableSet<KeyCode> pressedKeys = FXCollections.observableSet();
+
+    public final EventHandler<? super KeyEvent> keyPressHandler = event -> {
+        pressedKeys.add(event.getCode());
+    };
+    public EventHandler<? super KeyEvent> keyReleasedHandler = event -> {
+        pressedKeys.remove(event.getCode());
+    };
 
     // region Constructors
 
@@ -31,33 +41,23 @@ public final class KeyboardService implements NativeKeyListener {
     // endregion
 
     // region Public methods
-    
-    public boolean isShiftPressed() {
-        return (modifiers & NativeKeyEvent.SHIFT_L_MASK) != 0;
+
+    public boolean isShiftDown() {
+        return pressedKeys.contains(KeyCode.SHIFT);
     }
 
-    public boolean isCtrlPressed() {
-        return (modifiers & NativeKeyEvent.CTRL_L_MASK) != 0;
+    public boolean isCtrlDown() {
+        return pressedKeys.contains(KeyCode.CONTROL);
     }
 
-    public boolean isAltPressed() {
-        return (modifiers & NativeKeyEvent.ALT_L_MASK) != 0;
+    public boolean isAltDown() {
+        return pressedKeys.contains(KeyCode.ALT);
+    }
+
+    public boolean isAltGrDown() {
+        return pressedKeys.contains(KeyCode.ALT_GRAPH);
     }
 
     // endregion
 
-    @Override
-    public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
-        
-    }
-
-    @Override
-    public void nativeKeyPressed(NativeKeyEvent nativeKeyEvent) {
-        modifiers = nativeKeyEvent.getModifiers();
-    }
-
-    @Override
-    public void nativeKeyReleased(NativeKeyEvent nativeKeyEvent) {
-
-    }
 }

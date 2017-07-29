@@ -17,7 +17,6 @@ import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.MeleWeaponService;
 import cz.stechy.drd.model.persistent.RangedWeaponService;
 import cz.stechy.drd.model.persistent.UserService;
-import cz.stechy.drd.model.service.KeyboardService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
 import java.io.InputStream;
@@ -28,8 +27,6 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -110,8 +107,6 @@ public class Context {
         }
         logger.info("Používám pracovní adresář: {}", appDirectory.getPath());
         database = new SQLite(appDirectory.getPath() + SEPARATOR + getDatabaseName());
-
-        initNativeHandlers();
     }
 
     /**
@@ -160,23 +155,6 @@ public class Context {
         serviceMap.put(SERVICE_GENERAL, initService(GeneralItemService.class));
         serviceMap.put(SERVICE_BACKPACK, initService(BackpackService.class));
         serviceMap.put(SERVICE_BESTIARY, initService(BestiaryService.class));
-    }
-
-    private void initNativeHandlers() throws Exception {
-        // Get the logger for "org.jnativehook" and set the level to warning.
-        java.util.logging.Logger logger = java.util.logging.Logger.getLogger(GlobalScreen.class.getPackage().getName());
-        logger.setLevel(java.util.logging.Level.WARNING);
-
-        // Don't forget to disable the parent handlers.
-        logger.setUseParentHandlers(false);
-
-        try {
-            GlobalScreen.registerNativeHook();
-        } catch (NativeHookException e) {
-            throw new Exception(e);
-        }
-
-        GlobalScreen.addNativeKeyListener(KeyboardService.getINSTANCE());
     }
 
     @SuppressWarnings("unchecked")

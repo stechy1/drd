@@ -96,9 +96,9 @@ public class ItemSlot {
         final Dragboard db = imgItem.startDragAndDrop(TransferMode.ANY);
         final ClipboardContent content = new ClipboardContent();
         int ammount = 1;
-        if (keyboardService.isShiftPressed()) {
+        if (keyboardService.isShiftDown()) {
             ammount = itemStack.getAmmount();
-        } else if (keyboardService.isCtrlPressed()) {
+        } else if (keyboardService.isCtrlDown()) {
             ammount = itemStack.getAmmount() / 2;
         }
         final DragItemContainer dragItemContainer = new DragItemContainer(

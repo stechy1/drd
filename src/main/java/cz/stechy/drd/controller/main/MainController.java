@@ -161,6 +161,11 @@ public class MainController extends BaseController implements Initializable {
         }
     }
 
+    @Override
+    protected void onClose() {
+        System.out.println("On close handler");
+    }
+
     // region Button handle
 
     @FXML

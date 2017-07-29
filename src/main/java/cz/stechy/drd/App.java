@@ -4,6 +4,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.sun.javafx.application.LauncherImpl;
 import cz.stechy.drd.R.FXML;
 import cz.stechy.drd.model.MyPreloaderNotification;
+import cz.stechy.drd.model.service.KeyboardService;
 import cz.stechy.drd.util.UTF8ResourceBundleControl;
 import cz.stechy.screens.ScreenManager;
 import cz.stechy.screens.ScreenManagerConfiguration;
@@ -17,8 +18,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import org.jnativehook.GlobalScreen;
-import org.jnativehook.NativeHookException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,6 +78,11 @@ public class App extends Application {
             LANG_FILE_CONVENTION, Locale.getDefault(), new UTF8ResourceBundleControl());
         manager.setResources(resources);
         manager.addScreensToBlacklist(SCREENS_BLACKLIST);
+        manager.setOnCloseWindowHandler(event -> {
+            logger.info("Ukončuji aplikaci");
+            FirebaseDatabase.getInstance().goOffline();
+            //ThreadPool.getInstance().shutDown();
+        });
     }
 
     /**
@@ -164,6 +168,8 @@ public class App extends Application {
 
     @Override
     public void init() throws Exception {
+        ScreenManager.setKeyPressedHandler(KeyboardService.getINSTANCE().keyPressHandler);
+        ScreenManager.setKeyReleasedHandler(KeyboardService.getINSTANCE().keyReleasedHandler);
         if (Boolean.getBoolean("quick")) {
             quickInit();
         } else {
@@ -180,14 +186,6 @@ public class App extends Application {
         manager.loadScreens();
         manager.showNewDialog(parent, primaryStage, true);
         manager.showScreen(FXML.MAIN, null);
-        primaryStage.setOnCloseRequest(event -> {
-            logger.info("Ukončuji aplikaci");
-            FirebaseDatabase.getInstance().goOffline();
-            try {
-                GlobalScreen.unregisterNativeHook();
-            } catch (NativeHookException e) {}
-            //ThreadPool.getInstance().shutDown();
-        });
     }
 
     private final PreloaderNotifier notifier = new PreloaderNotifier() {
