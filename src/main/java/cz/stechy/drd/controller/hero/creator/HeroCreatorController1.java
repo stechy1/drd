@@ -2,6 +2,7 @@ package cz.stechy.drd.controller.hero.creator;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.Context;
+import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
@@ -91,13 +92,13 @@ public class HeroCreatorController1 extends BaseController implements Initializa
     protected void onCreate(Bundle bundle) {
         this.bundle = bundle;
 
-        model.name.setValue(bundle.getString(HeroCreatorHelper.NAME));
+        model.name.setValue(bundle.getString(HeroHelper.NAME));
         model.conviction.setValue(
-            Conviction.valueOf(bundle.getInt(HeroCreatorHelper.CONVICTION, -1)));
-        model.race.setValue(Hero.Race.valueOf(bundle.getInt(HeroCreatorHelper.RACE, -1)));
+            Conviction.valueOf(bundle.getInt(HeroHelper.CONVICTION, -1)));
+        model.race.setValue(Hero.Race.valueOf(bundle.getInt(HeroHelper.RACE, -1)));
         model.profession.setValue(
-            Hero.Profession.valueOf(bundle.getInt(HeroCreatorHelper.PROFESSION, -1)));
-        model.description.setValue(bundle.getString(HeroCreatorHelper.DESCRIPTION));
+            Hero.Profession.valueOf(bundle.getInt(HeroHelper.PROFESSION, -1)));
+        model.description.setValue(bundle.getString(HeroHelper.DESCRIPTION));
     }
 
     @Override
@@ -121,20 +122,20 @@ public class HeroCreatorController1 extends BaseController implements Initializa
     @FXML
     private void handleReset(ActionEvent actionEvent) {
         model.resetValues();
-        bundle.remove(HeroCreatorHelper.NAME);
-        bundle.remove(HeroCreatorHelper.CONVICTION);
-        bundle.remove(HeroCreatorHelper.RACE);
-        bundle.remove(HeroCreatorHelper.PROFESSION);
-        bundle.remove(HeroCreatorHelper.DESCRIPTION);
+        bundle.remove(HeroHelper.NAME);
+        bundle.remove(HeroHelper.CONVICTION);
+        bundle.remove(HeroHelper.RACE);
+        bundle.remove(HeroHelper.PROFESSION);
+        bundle.remove(HeroHelper.DESCRIPTION);
     }
 
     @FXML
     private void handleNext(ActionEvent actionEvent) {
-        bundle.putString(HeroCreatorHelper.NAME, model.name.getValue());
-        bundle.putInt(HeroCreatorHelper.CONVICTION, model.conviction.getValue().ordinal());
-        bundle.putInt(HeroCreatorHelper.RACE, model.race.getValue().ordinal());
-        bundle.putInt(HeroCreatorHelper.PROFESSION, model.profession.getValue().ordinal());
-        bundle.putString(HeroCreatorHelper.DESCRIPTION, model.description.getValue());
+        bundle.putString(HeroHelper.NAME, model.name.getValue());
+        bundle.putInt(HeroHelper.CONVICTION, model.conviction.getValue().ordinal());
+        bundle.putInt(HeroHelper.RACE, model.race.getValue().ordinal());
+        bundle.putInt(HeroHelper.PROFESSION, model.profession.getValue().ordinal());
+        bundle.putString(HeroHelper.DESCRIPTION, model.description.getValue());
         startScreen(R.FXML.HERO_CREATOR_2, bundle);
     }
 

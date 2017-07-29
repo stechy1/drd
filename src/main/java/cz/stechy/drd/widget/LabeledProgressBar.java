@@ -30,6 +30,8 @@ public class LabeledProgressBar extends VBox {
     private final Label progressLabel = new Label("0 / 0");
     private final StackPane container = new StackPane(progressBar, progressLabel);
     private DisplayMode displayMode;
+    private int actValue = 1;
+    private int maxValue = 1;
 
     // endregion
 
@@ -59,6 +61,10 @@ public class LabeledProgressBar extends VBox {
             progressLabel.getBoundsInLocal().getHeight() + DEFAULT_LABEL_PADDING * 2);
         progressBar.setMinWidth(
             progressLabel.getBoundsInLocal().getWidth() + DEFAULT_LABEL_PADDING * 2);
+
+        // Uložení nových hodnot do pomocných proměnných pro pozdější využití
+        this.actValue = actValue;
+        this.maxValue = maxValue;
     }
 
     // endregion
@@ -66,9 +72,12 @@ public class LabeledProgressBar extends VBox {
     // region Public methods
 
     public void setMaxActValue(final MaxActValue maxActValue) {
-        final int maxValue = maxActValue.getMaxValue().intValue();
-        maxActValue.actValueProperty().addListener((observable, oldValue, newValue) ->
-            sync(newValue.intValue(), maxValue));
+        maxActValue.actValueProperty().addListener((observable, oldValue, newValue) -> {
+            sync(newValue.intValue(), maxValue);
+        });
+        maxActValue.maxValueProperty().addListener((observable, oldValue, newValue) -> {
+            sync(this.actValue, newValue.intValue());
+        });
 
         sync(maxActValue.getActValue().intValue(), maxActValue.getMaxValue().intValue());
     }

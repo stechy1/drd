@@ -1,6 +1,5 @@
 package cz.stechy.drd.model.persistent;
 
-import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper;
 import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
@@ -205,7 +204,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
         tableInitialized = true;
     }
 
-    public void insert(Hero hero, ObservableList<HeroCreatorHelper.ItemEntry> items)
+    public void insert(Hero hero, ObservableList<InventoryHelper.ItemRecord> items)
         throws DatabaseException {
         insert(hero);
 

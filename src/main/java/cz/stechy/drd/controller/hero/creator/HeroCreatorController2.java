@@ -1,6 +1,7 @@
 package cz.stechy.drd.controller.hero.creator;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.model.entity.EntityProperty;
 import cz.stechy.drd.model.entity.SimpleEntityProperty;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -76,11 +77,11 @@ public class HeroCreatorController2 extends BaseController implements Initializa
     protected void onCreate(Bundle bundle) {
         this.bundle = bundle;
 
-        race = Hero.Race.valueOf(bundle.getInt(HeroCreatorHelper.RACE));
-        profession = Hero.Profession.valueOf(bundle.getInt(HeroCreatorHelper.PROFESSION));
+        race = Hero.Race.valueOf(bundle.getInt(HeroHelper.RACE));
+        profession = Hero.Profession.valueOf(bundle.getInt(HeroHelper.PROFESSION));
         generator = new HeroGenerator(race, profession);
 
-        bundle.putInt(HeroCreatorHelper.HEIGHT, generator.height().ordinal());
+        bundle.putInt(HeroHelper.HEIGHT, generator.height().ordinal());
     }
 
     @Override
@@ -103,12 +104,12 @@ public class HeroCreatorController2 extends BaseController implements Initializa
 
     @FXML
     private void handleReset(ActionEvent actionEvent) {
-        bundle.remove(HeroCreatorHelper.LIVE);
-        bundle.remove(HeroCreatorHelper.STRENGTH);
-        bundle.remove(HeroCreatorHelper.DEXTERITY);
-        bundle.remove(HeroCreatorHelper.IMMUNITY);
-        bundle.remove(HeroCreatorHelper.INTELLIGENCE);
-        bundle.remove(HeroCreatorHelper.CHARISMA);
+        bundle.remove(HeroHelper.LIVE);
+        bundle.remove(HeroHelper.STRENGTH);
+        bundle.remove(HeroHelper.DEXTERITY);
+        bundle.remove(HeroHelper.IMMUNITY);
+        bundle.remove(HeroHelper.INTELLIGENCE);
+        bundle.remove(HeroHelper.CHARISMA);
 
         model.live.setValue(generator.baseLive(model.immunity));
         model.strength.setValue(generator.strength());
@@ -120,48 +121,48 @@ public class HeroCreatorController2 extends BaseController implements Initializa
 
     @FXML
     public void handleResetLive(ActionEvent actionEvent) {
-        bundle.remove(HeroCreatorHelper.LIVE);
+        bundle.remove(HeroHelper.LIVE);
         model.live.setValue(generator.baseLive(model.immunity));
     }
 
     @FXML
     public void handleResetStrenght(ActionEvent actionEvent) {
-        bundle.remove(HeroCreatorHelper.STRENGTH);
+        bundle.remove(HeroHelper.STRENGTH);
         model.strength.setValue(generator.strength());
     }
 
     @FXML
     public void handleResetDexterity(ActionEvent actionEvent) {
-        bundle.remove(HeroCreatorHelper.DEXTERITY);
+        bundle.remove(HeroHelper.DEXTERITY);
         model.dexterity.setValue(generator.dexterity());
     }
 
     @FXML
     public void handleResetImmunity(ActionEvent actionEvent) {
-        bundle.remove(HeroCreatorHelper.IMMUNITY);
+        bundle.remove(HeroHelper.IMMUNITY);
         model.immunity.setValue(generator.immunity());
     }
 
     @FXML
     public void handleResetIntelligence(ActionEvent actionEvent) {
-        bundle.remove(HeroCreatorHelper.INTELLIGENCE);
+        bundle.remove(HeroHelper.INTELLIGENCE);
         model.intelligence.setValue(generator.intelligence());
     }
 
     @FXML
     public void handleResetCharisma(ActionEvent actionEvent) {
-        bundle.remove(HeroCreatorHelper.CHARISMA);
+        bundle.remove(HeroHelper.CHARISMA);
         model.charisma.setValue(generator.charisma());
     }
 
     @FXML
     private void handleNext(ActionEvent actionEvent) {
-        bundle.putInt(HeroCreatorHelper.LIVE, model.live.getValue());
-        bundle.putInt(HeroCreatorHelper.STRENGTH, model.strength.getValue());
-        bundle.putInt(HeroCreatorHelper.DEXTERITY, model.dexterity.getValue());
-        bundle.putInt(HeroCreatorHelper.IMMUNITY, model.immunity.getValue());
-        bundle.putInt(HeroCreatorHelper.INTELLIGENCE, model.intelligence.getValue());
-        bundle.putInt(HeroCreatorHelper.CHARISMA, model.charisma.getValue());
+        bundle.putInt(HeroHelper.LIVE, model.live.getValue());
+        bundle.putInt(HeroHelper.STRENGTH, model.strength.getValue());
+        bundle.putInt(HeroHelper.DEXTERITY, model.dexterity.getValue());
+        bundle.putInt(HeroHelper.IMMUNITY, model.immunity.getValue());
+        bundle.putInt(HeroHelper.INTELLIGENCE, model.intelligence.getValue());
+        bundle.putInt(HeroHelper.CHARISMA, model.charisma.getValue());
         startScreen(R.FXML.HERO_CREATOR_3, bundle);
     }
 

@@ -209,7 +209,7 @@ public class Hero extends EntityBase {
         this.levelUp.bind(Bindings.createBooleanBinding(() -> {
             final int experience = this.experiences.getActValue().intValue();
             final int maxExperience = this.experiences.getMaxValue().intValue();
-            return experience >= maxExperience;
+            return experience > 0 && experience >= maxExperience;
         }, this.experiences.actValueProperty(), this.experiences.maxValueProperty()));
     }
 
@@ -365,6 +365,17 @@ public class Hero extends EntityBase {
         return (T) new Hero(this);
     }
 
+    /**
+     * Zvýší úroveň hrdiny o 1 pouze za předpokladu, že může
+     */
+    public void levelUp() {
+        if (!canLevelUp()) {
+            return;
+        }
+
+        setLevel(getLevel() + 1);
+    }
+
     // endregion
 
     // Výčet ras
@@ -402,7 +413,7 @@ public class Hero extends EntityBase {
         private Conviction conviction = Conviction.NEUTRAL;
         private Race race;
         private Profession profession;
-        private int level;
+        private int level = 1;
         private int money;
         private int experiences;
         private int strength;

@@ -1,6 +1,7 @@
 package cz.stechy.drd.controller.hero.levelup;
 
 import cz.stechy.drd.Context;
+import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.EntityProperty;
 import cz.stechy.drd.model.entity.SimpleEntityProperty;
@@ -130,6 +131,8 @@ public class LevelUpController extends BaseController implements Initializable {
         btnIntelligence.disableProperty().bind(rollFinish);
         btnCharisma.disableProperty().bind(rollFinish);
 
+        lblLevelUpPrice.setText(lblLevelUpPrice.getText() + money.toString());
+
         // Až když vylepším základní vlastnosti tak povolím hod kostkou
         rollFinish.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -195,7 +198,18 @@ public class LevelUpController extends BaseController implements Initializable {
 
     @FXML
     private void handleFinish(ActionEvent actionEvent) {
+        setResult(RESULT_SUCCESS);
+        final Bundle bundle = new Bundle();
 
+        bundle.putInt(HeroHelper.LIVE, model.live.getValue());
+        bundle.putInt(HeroHelper.STRENGTH, model.strength.getValue());
+        bundle.putInt(HeroHelper.DEXTERITY, model.dexterity.getValue());
+        bundle.putInt(HeroHelper.IMMUNITY, model.immunity.getValue());
+        bundle.putInt(HeroHelper.INTELLIGENCE, model.intelligence.getValue());
+        bundle.putInt(HeroHelper.CHARISMA, model.charisma.getValue());
+        bundle.putInt(HeroHelper.LEVEL_UP_PRICE, money.getRaw());
+
+        finish(bundle);
     }
 
     // endregion

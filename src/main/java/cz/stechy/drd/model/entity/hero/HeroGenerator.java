@@ -267,7 +267,7 @@ public final class HeroGenerator {
             Dice dice = LIVES_DICE[profession.ordinal()];
             int addon = LIVES_ADDON[profession.ordinal()];
 
-            return Math.max(1, dice.roll() + addon);
+            return Math.max(1, dice.roll() + addon + immunity.getRepair());
         }
 
     /**
@@ -285,6 +285,9 @@ public final class HeroGenerator {
      * @return Počet zkušeností k dosažení další úrovně
      */
     public static int experience(Race race, int level) {
+        if (race == null) {
+            return 0;
+        }
         return EXPERIENCES[race.ordinal()][level];
     }
 

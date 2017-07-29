@@ -1,7 +1,7 @@
 package cz.stechy.drd.controller.hero.creator;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper.ItemEntry;
+import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.inventory.ItemSlot;
@@ -132,7 +132,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
     @FXML
     private void handleFinish(ActionEvent actionEvent) {
         setResult(RESULT_SUCCESS);
-        bundle.put(HeroCreatorHelper.INVENTORY, items);
+        bundle.put(HeroHelper.INVENTORY, items);
         finish(bundle);
     }
 

@@ -3,12 +3,13 @@ package cz.stechy.drd.controller.main;
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.InjectableChild;
-import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper;
+import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.controller.hero.levelup.LevelUpController;
 import cz.stechy.drd.controller.hero.opener.HeroOpenerHelper;
 import cz.stechy.drd.controller.moneyxp.MoneyXpController;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
+import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.screens.BaseController;
@@ -120,10 +121,10 @@ public class MainController extends BaseController implements Initializable {
                     return;
                 }
                 closeChildScreens();
-                Hero hero = HeroCreatorHelper.fromBundle(bundle);
+                final Hero hero = HeroHelper.fromBundle(bundle);
                 hero.setAuthor(userService.getUser().getName());
-                ObservableList<HeroCreatorHelper.ItemEntry> itemsToInventory = bundle
-                    .get(HeroCreatorHelper.INVENTORY);
+                ObservableList<InventoryHelper.ItemRecord> itemsToInventory = bundle
+                    .get(HeroHelper.INVENTORY);
                 try {
                     heroManager.insert(hero, itemsToInventory);
                     this.hero.setValue(hero);
@@ -158,12 +159,21 @@ public class MainController extends BaseController implements Initializable {
                     showNotification(new Notification(actionFailed));
                 }
                 break;
+            case ACTION_LEVEL_UP:
+                if (statusCode != RESULT_SUCCESS) {
+                    return;
+                }
+                final Hero clone = this.hero.get().duplicate();
+                HeroHelper.levelUp(clone, bundle);
+                try {
+                    heroManager.update(clone);
+                    showNotification(new Notification("Hrdina povýšil na novou úroveň"));
+                } catch (DatabaseException e) {
+                    logger.warn("Hrdinovi se nepodařilo přejít na novou úroveň", e);
+                    showNotification(new Notification(actionFailed));
+                }
+                break;
         }
-    }
-
-    @Override
-    protected void onClose() {
-        System.out.println("On close handler");
     }
 
     // region Button handle
