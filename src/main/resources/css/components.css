@@ -110,7 +110,7 @@
     -fx-padding: 0.7em 0.57em;
     -fx-font-size: 14px;
     -fx-text-fill: rgba(0, 0, 0, 0.87);
-    -fx-background-color: hsba(0, 0%, 60%, 0.2);
+    -fx-background-color: #f4f4f4;
     -fx-border-color: hsba(0,0%,60%,.2);
 }
 .btn.btn-primary {

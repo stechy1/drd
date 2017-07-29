@@ -112,7 +112,7 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
     @Override
     protected void onResume() {
-        setScreenSize(400, 250);
+        setScreenSize(400, 400);
         setTitle(title);
     }
 
