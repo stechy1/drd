@@ -110,6 +110,7 @@ public final class R {
         public static final String MAIN_MENU_FILE_IMPORT_HERO = "drd_main_menu_file_import_hero";
         public static final String MAIN_MENU_FILE_CLOSE_HERO = "drd_main_menu_file_close_hero";
         public static final String MAIN_MENU_FILE_LOGIN = "drd_main_menu_file_login";
+        public static final String MAIN_MENU_FILE_LOGOUT = "drd_main_menu_file_logout";
         public static final String MAIN_MENU_FILE_CLOSE_PROGRAM = "drd_main_menu_file_close_program";
         public static final String MAIN_MENU_TOOLS = "drd_main_menu_tools";
         public static final String MAIN_MENU_TOOLS_DICE = "drd_main_menu_tools_dice";

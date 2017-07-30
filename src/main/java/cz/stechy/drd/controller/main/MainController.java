@@ -17,13 +17,17 @@ import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
@@ -64,6 +68,9 @@ public class MainController extends BaseController implements Initializable {
     private BorderPane inventory;
 
     @FXML
+    private MenuItem menuLogin;
+
+    @FXML
     private Button btnLevelUp;
 
     // endregion
@@ -74,6 +81,8 @@ public class MainController extends BaseController implements Initializable {
 
     private MainScreen[] controllers;
     private String title;
+    private String loginText;
+    private String logoutText;
     private String loginSuccess;
     private String actionFailed;
 
@@ -88,8 +97,11 @@ public class MainController extends BaseController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.title = resources.getString(R.Translate.MAIN_TITLE);
+        this.loginText = resources.getString(R.Translate.MAIN_MENU_FILE_LOGIN);
+        this.logoutText = resources.getString(R.Translate.MAIN_MENU_FILE_LOGOUT);
         this.loginSuccess = resources.getString(R.Translate.NOTIFY_LOGIN_SUCCESS);
         this.actionFailed = resources.getString(R.Translate.ACTION_FAILED);
+        bindMenuLogin();
 
         this.controllers = new MainScreen[]{
             defaultStaffController,
@@ -176,6 +188,24 @@ public class MainController extends BaseController implements Initializable {
         }
     }
 
+    // region Private methods
+
+    /**
+     * Nastaví vlastnosti menu tlačítku pro přihlášení/odhlášení
+     */
+    private void bindMenuLogin() {
+        this.menuLogin.textProperty().bind(Bindings
+            .when(userService.loggedProperty())
+            .then(logoutText)
+            .otherwise(loginText));
+        this.menuLogin.onActionProperty().bind(Bindings
+            .when(userService.loggedProperty())
+            .then(new SimpleObjectProperty<EventHandler<ActionEvent>>(event -> handleMenuLogout(event)))
+            .otherwise(new SimpleObjectProperty<>(event -> handleMenuLogin(event))));
+    }
+
+    // endregion
+
     // region Button handle
 
     @FXML
@@ -207,6 +237,11 @@ public class MainController extends BaseController implements Initializable {
     @FXML
     private void handleMenuLogin(ActionEvent actionEvent) {
         startNewDialogForResult(R.FXML.LOGIN, ACTION_LOGIN);
+    }
+
+    @FXML
+    private void handleMenuLogout(ActionEvent actionEvent) {
+        userService.logout();
     }
 
     @FXML

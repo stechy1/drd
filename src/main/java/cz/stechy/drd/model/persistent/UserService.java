@@ -11,7 +11,11 @@ import cz.stechy.drd.util.HashGenerator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -44,6 +48,7 @@ public final class UserService implements Firebase<User> {
     private final ObservableList<User> onlineDatabase = FXCollections.observableArrayList();
     private final DatabaseReference firebaseReference;
     private final ObjectProperty<User> user = new SimpleObjectProperty<>(new User());
+    private final BooleanProperty logged = new SimpleBooleanProperty(this, "logged");
 
     // endregion
 
@@ -92,7 +97,14 @@ public final class UserService implements Firebase<User> {
         }
 
         this.user.set(result.get());
+        logged.set(true);
         this.user.get().setLogged(true);
+    }
+
+    public void logout() {
+        this.user.get().setLogged(false);
+        user.set(new User());
+        logged.set(false);
     }
 
     public void register(String username, String password) throws UserException {
@@ -111,8 +123,16 @@ public final class UserService implements Firebase<User> {
 
     // region Getters & Setters
 
-    public ObjectProperty<User> getUser() {
+    public final ReadOnlyObjectProperty<User> getUser() {
         return user;
+    }
+
+    public final boolean isLogged() {
+        return logged.get();
+    }
+
+    public final ReadOnlyBooleanProperty loggedProperty() {
+        return logged;
     }
 
     // endregion
