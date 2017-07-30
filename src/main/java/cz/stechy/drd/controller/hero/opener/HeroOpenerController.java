@@ -122,7 +122,7 @@ public class HeroOpenerController extends BaseController implements Initializabl
     private void handleOpenHero(ActionEvent actionEvent) {
         setResult(selectedHero.isNull().get() ? RESULT_FAIL : RESULT_SUCCESS);
         Bundle bundle = new Bundle();
-        bundle.put(HeroOpenerHelper.HERO, selectedHero.getValue());
+        bundle.put(HeroOpenerHelper.HERO, selectedHero.getValue().getId());
         finish(bundle);
     }
 

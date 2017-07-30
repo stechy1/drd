@@ -18,7 +18,7 @@ import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
@@ -75,7 +75,7 @@ public class MainController extends BaseController implements Initializable {
 
     // endregion
 
-    private final ObjectProperty<Hero> hero;
+    private final ReadOnlyObjectProperty<Hero> hero;
     private final HeroService heroManager;
     private final UserService userService;
 
@@ -115,8 +115,12 @@ public class MainController extends BaseController implements Initializable {
             }
         }
 
+        this.userService.loggedProperty().addListener((observable, oldValue, newValue) -> {
+            closeChildScreens();
+            heroManager.resetHero();
+        });
+
         this.hero.addListener(heroListener);
-        this.hero.setValue(new Hero.Builder().build());
     }
 
     @Override
@@ -132,6 +136,7 @@ public class MainController extends BaseController implements Initializable {
                 if (statusCode != RESULT_SUCCESS) {
                     return;
                 }
+
                 closeChildScreens();
                 final Hero hero = HeroHelper.fromBundle(bundle);
                 hero.setAuthor(userService.getUser().getName());
@@ -139,7 +144,7 @@ public class MainController extends BaseController implements Initializable {
                     .get(HeroHelper.INVENTORY);
                 try {
                     heroManager.insert(hero, itemsToInventory);
-                    this.hero.setValue(hero);
+                    heroManager.load(hero.getId());
                 } catch (DatabaseException e) {
                     logger.warn("Nepodařilo se vytvořit nového hrdinu");
                 }
@@ -148,13 +153,21 @@ public class MainController extends BaseController implements Initializable {
                 if (statusCode != RESULT_SUCCESS) {
                     return;
                 }
-                this.hero.setValue(bundle.get(HeroOpenerHelper.HERO));
+
+                final String heroId = bundle.getString(HeroOpenerHelper.HERO);
+                try {
+                    this.heroManager.load(heroId);
+                } catch (DatabaseException e) {
+                    logger.warn(e.getMessage());
+                    showNotification(new Notification("Hrdina nebyl nalezen"));
+                }
                 break;
             case ACTION_LOGIN:
                 if (statusCode != RESULT_SUCCESS) {
                     return;
                 }
 
+                heroManager.resetHero();
                 showNotification(new Notification(loginSuccess));
                 break;
             case ACTION_MONEY_EXPERIENCE:
@@ -175,6 +188,7 @@ public class MainController extends BaseController implements Initializable {
                 if (statusCode != RESULT_SUCCESS) {
                     return;
                 }
+
                 final Hero clone = this.hero.get().duplicate();
                 HeroHelper.levelUp(clone, bundle);
                 try {
@@ -186,6 +200,11 @@ public class MainController extends BaseController implements Initializable {
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onClose() {
+        closeChildScreens();
     }
 
     // region Private methods
@@ -231,7 +250,7 @@ public class MainController extends BaseController implements Initializable {
     @FXML
     private void handleMenuCloseHero(ActionEvent actionEvent) {
         closeChildScreens();
-        hero.setValue(new Hero.Builder().build());
+        heroManager.resetHero();
     }
 
     @FXML

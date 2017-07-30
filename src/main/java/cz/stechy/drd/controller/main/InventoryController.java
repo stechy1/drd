@@ -1,9 +1,9 @@
 package cz.stechy.drd.controller.main;
 
+import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.inventory.BackpackController;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
@@ -25,7 +25,7 @@ import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -55,7 +55,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
     private final Translator translator;
 
     private HeroService heroManager;
-    private ObjectProperty<Hero> hero;
+    private ReadOnlyObjectProperty<Hero> hero;
     private BaseController parent;
 
     // endregion
@@ -73,7 +73,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
     // endregion
 
     @Override
-    public void setHero(final ObjectProperty<Hero> hero) {
+    public void setHero(final ReadOnlyObjectProperty<Hero> hero) {
         if (this.hero != null) {
             this.hero.removeListener(heroChangeListener);
         }

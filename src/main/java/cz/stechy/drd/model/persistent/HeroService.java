@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 
@@ -253,11 +254,24 @@ public final class HeroService extends BaseDatabaseService<Hero> {
         return inventoryManager;
     }
 
+    /**
+     * Načte hrdinu podle ID
+     *
+     * @param heroId ID hrdiny, který se má načíst
+     * @throws DatabaseException Pokud hrdina nebude nalezen
+     */
+    public void load(String heroId) throws DatabaseException {
+        this.hero.setValue(select(ID_FILTER(heroId)));
+    }
+
+    public void resetHero() {
+        this.hero.setValue(new Hero.Builder().build());
+    }
     // endregion
 
     // region Getters & Setters
 
-    public ObjectProperty<Hero> getHero() {
+    public ReadOnlyObjectProperty<Hero> getHero() {
         return hero;
     }
 

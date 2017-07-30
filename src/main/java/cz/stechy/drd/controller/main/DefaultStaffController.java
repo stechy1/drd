@@ -7,7 +7,7 @@ import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.widget.LabeledProgressBar;
 import cz.stechy.drd.widget.LabeledText;
 import cz.stechy.drd.widget.MoneyLabel;
-import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
 
@@ -57,7 +57,7 @@ public class DefaultStaffController implements MainScreen {
     // endregion
 
     @Override
-    public void setHero(ObjectProperty<Hero> hero) {
+    public void setHero(ReadOnlyObjectProperty<Hero> hero) {
         hero.addListener((observable, oldValue, newValue) -> {
             lblHeroName.textProperty().bind(newValue.nameProperty());
             lblHeroRaceAndProfession.textProperty()

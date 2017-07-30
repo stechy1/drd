@@ -1,10 +1,10 @@
 package cz.stechy.drd.controller.dice;
 
+import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.dice.DiceHelper.AdditionType;
 import cz.stechy.drd.controller.dice.DiceHelper.DiceAddition;
 import cz.stechy.drd.controller.dice.DiceHelper.DiceType;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
@@ -16,7 +16,7 @@ import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
@@ -63,7 +63,7 @@ public class DiceController extends BaseController implements Initializable {
 
     private final MaxActValue diceSideCount = new MaxActValue(1, Integer.MAX_VALUE, 1);
     private final MaxActValue diceRollCount = new MaxActValue(1, Integer.MAX_VALUE, 1);
-    private final ObjectProperty<Hero> hero;
+    private final ReadOnlyObjectProperty<Hero> hero;
     private final Translator translator;
 
     private DiceHelper diceHelper;
