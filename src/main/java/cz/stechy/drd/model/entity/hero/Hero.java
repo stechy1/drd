@@ -151,7 +151,9 @@ public class Hero extends EntityBase {
         int maxLive, int mag, int maxMag, boolean downloaded, boolean uploaded) {
         super(id, author, name, description, live, maxLive, mag, maxMag, conviction, height,
             downloaded, uploaded);
-
+        // Hodnota zkušeností může přetýct přes horní hranici
+        // Při získání nové úrovně lze stále získávat nové zkušenosti
+        this.experiences.setOverflow(true);
         initBindings();
 
         setRace(race);

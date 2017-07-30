@@ -1,6 +1,8 @@
 package cz.stechy.drd.model;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 
@@ -16,6 +18,10 @@ public final class MaxActValue {
     private final ObjectProperty<Number> minValue = new SimpleObjectProperty<>(0);
     private final ObjectProperty<Number> maxValue = new SimpleObjectProperty<>(0);
     private final ObjectProperty<Number> actValue = new SimpleObjectProperty<>(0);
+    // Možnost přetečení hodnoty - bude se ignorovat horní interval
+    private final BooleanProperty overflow = new SimpleBooleanProperty(this, "overflow", false);
+    // Možnost podtečení hodnoty - bude se ignorovat dolní interval
+    private final BooleanProperty underflow = new SimpleBooleanProperty(this, "underflow",false);
 
     // endregion
 
@@ -47,20 +53,37 @@ public final class MaxActValue {
 
     // region Public methods
 
+    /**
+     * Přidá zadaný počet
+     *
+     * @param ammount Počet, který se má přičíst k aktuální hodnotě
+     */
     public void add(int ammount) {
         int act = actValue.get().intValue();
         actValue.set(act + ammount);
     }
 
+    /**
+     * Odebere zadaný počet
+     *
+     * @param ammount Počet, který se má odečíst od aktuální hodnoty
+     */
     public void subtract(int ammount) {
         int act = actValue.get().intValue();
         actValue.set(act - ammount);
     }
 
+    /**
+     * Aktualizuje hodnoty v aktuální instanci
+     *
+     * @param other Instance, ze které se mají aktualizovat hodnoty
+     */
     public void update(MaxActValue other) {
         this.setMaxValue(other.getMaxValue());
         this.setMinValue(other.getMinValue());
         this.setActValue(other.getActValue());
+        this.setOverflow(other.canOverflow());
+        this.setUnderflow(other.canUnderflow());
     }
 
     // endregion
@@ -107,13 +130,37 @@ public final class MaxActValue {
         return valueListener;
     }
 
+    public final boolean canOverflow() {
+        return overflow.get();
+    }
+
+    public final BooleanProperty overflowProperty() {
+        return overflow;
+    }
+
+    public final void setOverflow(boolean overflow) {
+        this.overflow.set(overflow);
+    }
+
+    public final boolean canUnderflow() {
+        return underflow.get();
+    }
+
+    public final BooleanProperty underflowProperty() {
+        return underflow;
+    }
+
+    public final void setUnderflow(boolean underflow) {
+        this.underflow.set(underflow);
+    }
+
     // endregion
 
     private final ChangeListener<Number> valueListener = (observable, oldValue, newValue) -> {
         int value = newValue.intValue();
-        if (value > maxValue.get().doubleValue()) {
+        if (value > maxValue.get().doubleValue() && !canOverflow()) {
             actValue.setValue(maxValue.get());
-        } else if (value < minValue.get().doubleValue()) {
+        } else if (value < minValue.get().doubleValue() && !canUnderflow()) {
             actValue.setValue(minValue.get());
         }
     };
