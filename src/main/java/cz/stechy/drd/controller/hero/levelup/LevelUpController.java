@@ -13,6 +13,7 @@ import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -31,9 +32,7 @@ public class LevelUpController extends BaseController implements Initializable {
     // region Constants
 
     private static final String KEY_POINTS_PER_LEVEL = "hero_levelup_points_per_level";
-    private static final String KEY_LEVEL_UP_PRICE = "hero_levelup_price";
     private static final String DEFAULT_VALUE_POINTS_PER_LEVEL = "1";
-    private static final String DEFAULT_VALUE_LEVEL_UP_PRICE = "60";
 
     public static final String HERO = "hero";
 
@@ -82,7 +81,7 @@ public class LevelUpController extends BaseController implements Initializable {
     private final Model model = new Model();
 
     private Hero hero;
-    private HeroGenerator heroCreator;
+    private HeroGenerator heroGenerator;
 
     // endregion
 
@@ -91,7 +90,6 @@ public class LevelUpController extends BaseController implements Initializable {
     public LevelUpController(Context context) {
         Properties properties = context.getConfiguration();
         remaingPoints.setValue(Integer.parseInt(properties.getProperty(KEY_POINTS_PER_LEVEL, DEFAULT_VALUE_POINTS_PER_LEVEL)));
-        money.setRaw(Integer.parseInt(properties.getProperty(KEY_LEVEL_UP_PRICE, DEFAULT_VALUE_LEVEL_UP_PRICE)));
 
         rollFinish.bind(remaingPoints.greaterThan(0).not());
     }
@@ -131,7 +129,8 @@ public class LevelUpController extends BaseController implements Initializable {
         btnIntelligence.disableProperty().bind(rollFinish);
         btnCharisma.disableProperty().bind(rollFinish);
 
-        lblLevelUpPrice.setText(lblLevelUpPrice.getText() + money.toString());
+        final String lblLevelUpPricePrefix = lblLevelUpPrice.getText();
+        lblLevelUpPrice.textProperty().bind(Bindings.concat(lblLevelUpPricePrefix, money.text));
 
         // Až když vylepším základní vlastnosti tak povolím hod kostkou
         rollFinish.addListener((observable, oldValue, newValue) -> {
@@ -145,7 +144,8 @@ public class LevelUpController extends BaseController implements Initializable {
     @Override
     protected void onCreate(Bundle bundle) {
         this.hero = bundle.get(HERO);
-        this.heroCreator = new HeroGenerator(this.hero.getRace(), this.hero.getProfession());
+        this.heroGenerator = new HeroGenerator(this.hero.getRace(), this.hero.getProfession());
+        this.money.setGold(HeroGenerator.priceForLevelUp(this.hero.getRace(), this.hero.getLevel()));
 
         model.live.setValue(hero.getLive().getMaxValue());
         model.strength.update(hero.getStrength());
@@ -161,7 +161,7 @@ public class LevelUpController extends BaseController implements Initializable {
     @FXML
     private void handleIncreaseLive(ActionEvent actionEvent) {
         final int live = model.live.get();
-        model.live.setValue(live + heroCreator.live(model.immunity));
+        model.live.setValue(live + heroGenerator.live(model.immunity));
         btnLive.setDisable(true);
         finish.setValue(true);
     }
