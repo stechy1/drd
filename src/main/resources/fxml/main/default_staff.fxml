@@ -2,7 +2,7 @@
 
 <?import cz.stechy.drd.widget.LabeledProgressBar?>
 <?import cz.stechy.drd.widget.LabeledText?>
-<?import cz.stechy.drd.widget.MoneyLabel?>
+<?import cz.stechy.drd.widget.LabeledMoney?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -38,7 +38,7 @@
         prefWidth="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
       <LabeledProgressBar fx:id="lblExperience" displayMode="EXPERIENCE"
         label="%drd_hero_experience" prefWidth="10.0" GridPane.rowIndex="2" />
-      <MoneyLabel fx:id="lblMoney" label="%drd_hero_money" GridPane.columnIndex="1"
+      <LabeledMoney fx:id="lblMoney" label="%drd_hero_money" GridPane.columnIndex="1"
         GridPane.rowIndex="2" />
     </GridPane>
   </HBox>

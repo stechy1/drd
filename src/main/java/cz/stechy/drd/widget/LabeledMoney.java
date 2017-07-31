@@ -1,7 +1,6 @@
 package cz.stechy.drd.widget;
 
 import cz.stechy.drd.model.Money;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -10,21 +9,21 @@ import javafx.scene.text.Font;
 /**
  * Kontrolka vizualizující peníze
  */
-public class MoneyLabel extends VBox {
+public class LabeledMoney extends VBox {
 
     // region Variables
 
     private final Label label = new Label();
-    private final Label lblMoney = new Label();
+    private final MoneyWidget moneyWidget = new MoneyWidget();
 
     // endregion
 
     /**
      * Vytvoří novou kontrolku pro vizualizaci peněz
      */
-    public MoneyLabel() {
+    public LabeledMoney() {
         label.setFont(Font.font(10));
-        getChildren().addAll(label, lblMoney);
+        getChildren().addAll(label, moneyWidget);
     }
 
     /**
@@ -33,10 +32,7 @@ public class MoneyLabel extends VBox {
      * @param money {@link Money}
      */
     public void forMoney(Money money) {
-        this.lblMoney.textProperty().bind(Bindings.concat(
-            money.gold.asString(), "zl ",
-            money.silver.asString(), "st ",
-            money.copper.asString(), "md"));
+        this.moneyWidget.bind(money);
     }
 
     public StringProperty labelProperty() {

@@ -3,6 +3,7 @@ package cz.stechy.drd.util;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.inventory.ItemSlot;
+import cz.stechy.drd.widget.MoneyWidget;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
@@ -83,10 +84,15 @@ public final class CellUtils {
             protected void updateItem(Money item, boolean empty) {
                 super.updateItem(item, empty);
 
+                final MoneyWidget moneyWidget = new MoneyWidget();
+
                 if(empty) {
                     setText(null);
+                    setGraphic(null);
                 } else {
-                    setText(item.toString());
+                    setText(null);
+                    moneyWidget.bind(item);
+                    setGraphic(moneyWidget);
                 }
             }
         };

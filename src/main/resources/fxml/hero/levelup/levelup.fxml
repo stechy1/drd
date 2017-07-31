@@ -11,51 +11,52 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" fx:controller="cz.stechy.drd.controller.hero.levelup.LevelUpController">
+<?import cz.stechy.drd.widget.MoneyWidget?>
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.hero.levelup.LevelUpController">
    <center>
       <GridPane BorderPane.alignment="CENTER">
         <columnConstraints>
-          <ColumnConstraints hgrow="NEVER" minWidth="10.0" percentWidth="30.0"/>
-          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0"/>
-          <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" percentWidth="30.0"/>
+          <ColumnConstraints hgrow="NEVER" minWidth="10.0" percentWidth="30.0" />
+          <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+          <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" percentWidth="30.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
-        <Label text="%drd_hero_live"/>
-        <Label GridPane.rowIndex="1" text="%drd_hero_strength"/>
-        <Label GridPane.rowIndex="2" text="%drd_hero_dexterity"/>
-        <Label GridPane.rowIndex="3" text="%drd_hero_immunity"/>
-        <Label GridPane.rowIndex="4" text="%drd_hero_intelligence"/>
-        <Label GridPane.rowIndex="5" text="%drd_hero_charisma"/>
-        <Label GridPane.columnIndex="1" fx:id="lblLive"/>
-        <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="lblStrength"/>
-        <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="lblDexterity"/>
-        <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="3" fx:id="lblImmunity"/>
-        <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="4" fx:id="lblIntelligence"/>
-        <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="5" fx:id="lblCharisma"/>
-         <Button fx:id="btnLive" onAction="#handleIncreaseLive" GridPane.columnIndex="2" text="%drd_hero_increase_live" disable="true"/>
-         <Button fx:id="btnStrength" onAction="#handleIncreaseStrength" GridPane.columnIndex="2" GridPane.rowIndex="1" text="%drd_hero_increase_strength"/>
-         <Button fx:id="btnDexterity" onAction="#handleIncreaseDexterity" GridPane.columnIndex="2" GridPane.rowIndex="2" text="%drd_hero_increase_dexterity"/>
-         <Button fx:id="btnImmunity" onAction="#handleIncreaseImmunity" GridPane.columnIndex="2" GridPane.rowIndex="3" text="%drd_hero_increase_immunity"/>
-         <Button fx:id="btnIntelligence" onAction="#handleIncreaseIntelligence" GridPane.columnIndex="2" GridPane.rowIndex="4" text="%drd_hero_increase_intelligence"/>
-         <Button fx:id="btnCharisma" onAction="#handleIncreaseCharisma" GridPane.columnIndex="2" GridPane.rowIndex="5" text="%drd_hero_increase_charisma"/>
+        <Label text="%drd_hero_live" />
+        <Label text="%drd_hero_strength" GridPane.rowIndex="1" />
+        <Label text="%drd_hero_dexterity" GridPane.rowIndex="2" />
+        <Label text="%drd_hero_immunity" GridPane.rowIndex="3" />
+        <Label text="%drd_hero_intelligence" GridPane.rowIndex="4" />
+        <Label text="%drd_hero_charisma" GridPane.rowIndex="5" />
+        <Label fx:id="lblLive" GridPane.columnIndex="1" />
+        <LabeledHeroProperty fx:id="lblStrength" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <LabeledHeroProperty fx:id="lblDexterity" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <LabeledHeroProperty fx:id="lblImmunity" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <LabeledHeroProperty fx:id="lblIntelligence" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+        <LabeledHeroProperty fx:id="lblCharisma" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+         <Button fx:id="btnLive" disable="true" onAction="#handleIncreaseLive" text="%drd_hero_increase_live" GridPane.columnIndex="2" />
+         <Button fx:id="btnStrength" onAction="#handleIncreaseStrength" text="%drd_hero_increase_strength" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+         <Button fx:id="btnDexterity" onAction="#handleIncreaseDexterity" text="%drd_hero_increase_dexterity" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+         <Button fx:id="btnImmunity" onAction="#handleIncreaseImmunity" text="%drd_hero_increase_immunity" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+         <Button fx:id="btnIntelligence" onAction="#handleIncreaseIntelligence" text="%drd_hero_increase_intelligence" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+         <Button fx:id="btnCharisma" onAction="#handleIncreaseCharisma" text="%drd_hero_increase_charisma" GridPane.columnIndex="2" GridPane.rowIndex="5" />
       </GridPane>
    </center>
    <bottom>
-     <HBox BorderPane.alignment="CENTER" prefHeight="50.0">
+     <HBox prefHeight="50.0" BorderPane.alignment="CENTER">
        <padding>
-         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
        </padding>
-       <Label text="%drd_level_up_price"/>
-       <Label fx:id="lblLevelUpPrice"/>
-       <Region HBox.hgrow="ALWAYS"/>
-       <Button onAction="#handleFinish" text="%drd_finish" fx:id="btnFinish"/>
+       <Label text="%drd_level_up_price" />
+       <MoneyWidget fx:id="widgetMoney"/>
+       <Region HBox.hgrow="ALWAYS" />
+       <Button fx:id="btnFinish" onAction="#handleFinish" text="%drd_finish" />
      </HBox>
    </bottom>
 </BorderPane>

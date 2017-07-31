@@ -8,12 +8,12 @@ import cz.stechy.drd.model.entity.SimpleEntityProperty;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.HeroGenerator;
 import cz.stechy.drd.widget.LabeledHeroProperty;
+import cz.stechy.drd.widget.MoneyWidget;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -35,7 +35,6 @@ public class LevelUpController extends BaseController implements Initializable {
     private static final String DEFAULT_VALUE_POINTS_PER_LEVEL = "1";
 
     public static final String HERO = "hero";
-
 
     // endregion
 
@@ -68,7 +67,7 @@ public class LevelUpController extends BaseController implements Initializable {
     @FXML
     private Button btnCharisma;
     @FXML
-    private Label lblLevelUpPrice;
+    private MoneyWidget widgetMoney;
     @FXML
     private Button btnFinish;
 
@@ -129,9 +128,6 @@ public class LevelUpController extends BaseController implements Initializable {
         btnIntelligence.disableProperty().bind(rollFinish);
         btnCharisma.disableProperty().bind(rollFinish);
 
-        final String lblLevelUpPricePrefix = lblLevelUpPrice.getText();
-        lblLevelUpPrice.textProperty().bind(Bindings.concat(lblLevelUpPricePrefix, money.text));
-
         // Až když vylepším základní vlastnosti tak povolím hod kostkou
         rollFinish.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
@@ -146,6 +142,7 @@ public class LevelUpController extends BaseController implements Initializable {
         this.hero = bundle.get(HERO);
         this.heroGenerator = new HeroGenerator(this.hero.getRace(), this.hero.getProfession());
         this.money.setGold(HeroGenerator.priceForLevelUp(this.hero.getRace(), this.hero.getLevel()));
+        this.widgetMoney.bind(this.money);
 
         model.live.setValue(hero.getLive().getMaxValue());
         model.strength.update(hero.getStrength());

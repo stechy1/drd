@@ -8,7 +8,7 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.widget.LabeledProgressBar;
-import cz.stechy.drd.widget.MoneyLabel;
+import cz.stechy.drd.widget.LabeledMoney;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -35,7 +35,7 @@ public class MoneyXpController extends BaseController implements Initializable {
     // region FXML
 
     @FXML
-    private MoneyLabel lblMoney;
+    private LabeledMoney lblMoney;
     @FXML
     private LabeledProgressBar lblExperience = new LabeledProgressBar();
     @FXML

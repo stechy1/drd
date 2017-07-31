@@ -124,6 +124,11 @@ public class MainController extends BaseController implements Initializable {
     }
 
     @Override
+    protected void onCreate(Bundle bundle) {
+        heroManager.resetHero();
+    }
+
+    @Override
     protected void onResume() {
         setTitle(title);
         setScreenSize(550, 440);

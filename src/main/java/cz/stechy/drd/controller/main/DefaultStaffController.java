@@ -6,7 +6,7 @@ import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.widget.LabeledProgressBar;
 import cz.stechy.drd.widget.LabeledText;
-import cz.stechy.drd.widget.MoneyLabel;
+import cz.stechy.drd.widget.LabeledMoney;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.layout.GridPane;
@@ -36,7 +36,7 @@ public class DefaultStaffController implements MainScreen {
     @FXML
     private LabeledProgressBar lblExperience;
     @FXML
-    private MoneyLabel lblMoney;
+    private LabeledMoney lblMoney;
     @FXML
     private GridPane defaultStaffLeft;
     @FXML

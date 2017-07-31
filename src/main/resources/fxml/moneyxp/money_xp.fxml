@@ -3,7 +3,7 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import cz.stechy.drd.widget.LabeledProgressBar?>
-<?import cz.stechy.drd.widget.MoneyLabel?>
+<?import cz.stechy.drd.widget.LabeledMoney?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
@@ -23,7 +23,7 @@
       <padding>
         <Insets topRightBottomLeft="8.0"/>
       </padding>
-      <MoneyLabel label="%drd_hero_money" fx:id="lblMoney"/>
+      <LabeledMoney label="%drd_hero_money" fx:id="lblMoney"/>
       <Region VBox.vgrow="ALWAYS"/>
       <VBox spacing="24.0">
         <JFXTextField labelFloat="true" promptText="%drd_money_gold" fx:id="txtGold"/>
