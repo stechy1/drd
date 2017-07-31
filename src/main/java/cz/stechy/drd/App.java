@@ -81,7 +81,7 @@ public class App extends Application {
         manager.setOnCloseWindowHandler(event -> {
             logger.info("Ukončuji aplikaci");
             FirebaseDatabase.getInstance().goOffline();
-            //ThreadPool.getInstance().shutDown();
+            ThreadPool.getInstance().shutDown();
         });
     }
 

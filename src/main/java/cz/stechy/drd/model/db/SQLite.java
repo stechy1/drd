@@ -61,7 +61,7 @@ public class SQLite implements Database {
     }
 
     @Override
-    public long query(String query, Object... params) throws SQLException {
+    public synchronized long query(String query, Object... params) throws SQLException {
         if (isTransactional()) {
             return query(transactionalConnection, query, params);
         } else {
@@ -70,7 +70,7 @@ public class SQLite implements Database {
     }
 
     @Override
-    public void select(OnRowHandler handler, String query, Object... params) throws SQLException {
+    public synchronized void select(OnRowHandler handler, String query, Object... params) throws SQLException {
         try (
             final Connection connection = pool.getConnection();
             final PreparedStatement statement = connection.prepareStatement(query)) {

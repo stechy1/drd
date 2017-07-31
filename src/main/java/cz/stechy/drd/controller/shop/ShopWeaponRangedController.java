@@ -239,6 +239,7 @@ public class ShopWeaponRangedController implements Initializable,
 
     @Override
     public void synchronizeItems() {
-        service.synchronize(this.user.getName());
+        service.synchronize(this.user.getName(), total ->
+            logger.info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon ranged."));
     }
 }

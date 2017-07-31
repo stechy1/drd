@@ -5,6 +5,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.Firebase;
 import cz.stechy.drd.model.db.base.OnlineItem;
@@ -18,6 +19,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -238,39 +240,22 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
         }
     }
 
-    public void synchronize(final String author) {
-        this.onlineDatabase
-            .stream()
-            .filter(onlineItem -> Objects.equals(onlineItem.getAuthor(), author))
-            .forEach(onlineItem -> {
-                final Optional<T> optional = super.items.stream()
-                    .filter(item -> Objects.equals(item.getId(), onlineItem.getId()))
-                    .findFirst();
-                onlineItem.setDownloaded(true);
-                // Mám-li offline záznam o souboru
-                if (optional.isPresent()) {
-                    final T offlineItem = optional.get();
-                    final T offlineDuplicate = offlineItem.duplicate();
-                    offlineDuplicate.setUploaded(true);
-                    try {
-                        update(offlineDuplicate);
-                    } catch (DatabaseException e) {
-                        e.printStackTrace();
-                    }
-                    // Nemám-li offline záznam o souboru, tak ho vytvořím
-                } else {
-                    final T offlineItem = onlineItem;
-                    final T offlineDuplicate = offlineItem.duplicate();
-                    offlineDuplicate.setDownloaded(true);
-                    offlineDuplicate.setUploaded(true);
-                    try {
-                        insert(offlineDuplicate);
-                    } catch (DatabaseException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+    /**
+     * Stáhne všechny online předměty do offline databáze
+     *
+     * @param author Autor předmětů, které chci stáhnout
+     * @param completeListener
+     */
+    public void synchronize(final String author,
+        final OnSynchronizationCompleteListener completeListener) {
+        final Task<Integer> task = new SynchronizationTask(author);
+        task.setOnSucceeded(event -> {
+            if (completeListener != null) {
+                completeListener.onSynchronizationComplete(task.getValue());
+            }
+        });
 
+        ThreadPool.getInstance().submit(task);
     }
 
     // endregion
@@ -334,5 +319,92 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     private final ListChangeListener<T> listChangeListener = makeChangeListener();
 
+    /**
+     * Třída představující synchronizační úlohu prováděnou asynchroně
+     */
+    private final class SynchronizationTask extends Task<Integer> {
 
+        // region Variables
+
+        private final Object lock = new Object();
+        private final String author;
+
+        // endregion
+
+        // region Constructors
+
+        /**
+         * Vytvoří novou synchronizační úlohu
+         *
+         * @param author Autor předmětů, které se budou synchronizovat
+         */
+        private SynchronizationTask(String author) {
+            this.author = author;
+        }
+
+        // endregion
+
+        @Override
+        protected Integer call() throws Exception {
+            final int[] updated = new int[] {0};
+            onlineDatabase
+                .stream()
+                .filter(onlineItem -> Objects.equals(onlineItem.getAuthor(), author))
+                .forEach(onlineItem -> {
+                    final Optional<T> optional = items.stream()
+                        .filter(item -> Objects.equals(item.getId(), onlineItem.getId()))
+                        .findFirst();
+                    onlineItem.setDownloaded(true);
+                    // Mám-li offline záznam o souboru
+                    if (optional.isPresent()) {
+                        final T offlineItem = optional.get();
+                        // Pokud nemá offline item záznam že je nahraný,
+                        // tak vložím záznam do databáze
+                        if (!offlineItem.isUploaded()) {
+                            final T offlineDuplicate = offlineItem.duplicate();
+                            offlineDuplicate.setUploaded(true);
+                            try {
+                                update(offlineDuplicate);
+                                // Protože aktualizuji sdílenou proměnnou, pridám zámek
+                                synchronized (lock) {
+                                    updated[0]++;
+                                }
+                            } catch (DatabaseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        // Nemám-li offline záznam o souboru, tak ho vytvořím
+                    } else {
+                        final T offlineItem = onlineItem;
+                        final T offlineDuplicate = offlineItem.duplicate();
+                        offlineDuplicate.setDownloaded(true);
+                        offlineDuplicate.setUploaded(true);
+                        try {
+                            insert(offlineDuplicate);
+                            // Protože aktualizuji sdílenou proměnnou, pridám zámek
+                            synchronized (lock) {
+                                updated[0]++;
+                            }
+                        } catch (DatabaseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            return updated[0];
+        }
+    }
+
+    /**
+     * Rozhraní s metodou pro callback po úspěšné synchronizaci
+     */
+    @FunctionalInterface
+    public interface OnSynchronizationCompleteListener {
+
+        /**
+         * Metoda se zavolá po úspěšné synchronizaci
+         *
+         * @param total Celkový počet synchronizovaných položek
+         */
+        void onSynchronizationComplete(int total);
+    }
 }

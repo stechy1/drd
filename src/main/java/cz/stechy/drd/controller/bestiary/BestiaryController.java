@@ -214,7 +214,9 @@ public class BestiaryController extends BaseController implements Initializable 
     }
 
     public void handleSynchronize(ActionEvent actionEvent) {
-        service.synchronize(user.getName());
+        service.synchronize(user.getName(), total -> {
+            logger.info("Bylo synchronizováno celkem: " + total + " nestvůr.");
+        });
     }
 
     // endregion
