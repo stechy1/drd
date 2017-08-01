@@ -24,6 +24,7 @@ import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
@@ -31,6 +32,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -88,6 +90,8 @@ public class ShopWeaponMeleController implements Initializable,
     // endregion
 
     private final ObservableList<MeleWeaponEntry> meleWeapons = FXCollections.observableArrayList();
+    private final SortedList<MeleWeaponEntry> sortedList = new SortedList<>(meleWeapons,
+        Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final AdvancedDatabaseService<MeleWeapon> service;
     private final Translator translator;
@@ -112,7 +116,7 @@ public class ShopWeaponMeleController implements Initializable,
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
-        tableMeleWeapon.setItems(meleWeapons);
+        tableMeleWeapon.setItems(sortedList);
         tableMeleWeapon.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
 
@@ -201,7 +205,7 @@ public class ShopWeaponMeleController implements Initializable,
     @Override
     public void insertItemToBundle(Bundle bundle, int index) {
         ItemWeaponMeleController
-            .toBundle(bundle, (MeleWeapon) meleWeapons.get(index).getItemBase());
+            .toBundle(bundle, (MeleWeapon) sortedList.get(index).getItemBase());
     }
 
     @Override
@@ -211,7 +215,7 @@ public class ShopWeaponMeleController implements Initializable,
 
     @Override
     public void requestRemoveItem(int index) {
-        final MeleWeaponEntry entry = meleWeapons.get(index);
+        final MeleWeaponEntry entry = sortedList.get(index);
         final String name = entry.getName();
         try {
             service.delete(entry.getId());

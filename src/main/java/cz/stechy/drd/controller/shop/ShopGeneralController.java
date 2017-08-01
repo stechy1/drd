@@ -1,9 +1,9 @@
 package cz.stechy.drd.controller.shop;
 
 import cz.stechy.drd.Context;
-import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
@@ -19,6 +19,7 @@ import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
@@ -26,6 +27,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -71,6 +73,8 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     // endregion
 
     private final ObservableList<GeneralEntry> generalItems = FXCollections.observableArrayList();
+    private final SortedList<GeneralEntry> sortedList = new SortedList<>(generalItems,
+        Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final AdvancedDatabaseService<GeneralItem> service;
     private final User user;
@@ -92,7 +96,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
-        tableGeneralItems.setItems(generalItems);
+        tableGeneralItems.setItems(sortedList);
         tableGeneralItems.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
 
@@ -171,7 +175,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
     @Override
     public void insertItemToBundle(Bundle bundle, int index) {
-        ItemGeneralController.toBundle(bundle, (GeneralItem) generalItems.get(index).getItemBase());
+        ItemGeneralController.toBundle(bundle, (GeneralItem) sortedList.get(index).getItemBase());
     }
 
     @Override
@@ -181,7 +185,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
     @Override
     public void requestRemoveItem(int index) {
-        final GeneralEntry entry = generalItems.get(index);
+        final GeneralEntry entry = sortedList.get(index);
         final String name = entry.getName();
         try {
             service.delete(entry.getId());

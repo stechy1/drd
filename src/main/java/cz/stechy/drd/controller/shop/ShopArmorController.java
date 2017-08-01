@@ -24,6 +24,7 @@ import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
@@ -33,6 +34,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -85,6 +87,8 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     // endregion
 
     private final ObservableList<ArmorEntry> armors = FXCollections.observableArrayList();
+    private final SortedList<ArmorEntry> sortedList = new SortedList<>(armors,
+        Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
     private final AdvancedDatabaseService<Armor> service;
@@ -122,7 +126,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
-        tableArmor.setItems(armors);
+        tableArmor.setItems(sortedList);
         tableArmor.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
 
@@ -207,7 +211,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
     @Override
     public void insertItemToBundle(Bundle bundle, int index) {
-        ItemArmorController.toBundle(bundle, (Armor) armors.get(index).getItemBase());
+        ItemArmorController.toBundle(bundle, (Armor) sortedList.get(index).getItemBase());
     }
 
     @Override
@@ -217,7 +221,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
     @Override
     public void requestRemoveItem(int index) {
-        final ArmorEntry entry = armors.get(index);
+        final ArmorEntry entry = sortedList.get(index);
         final String name = entry.getName();
         try {
             service.delete(entry.getId());

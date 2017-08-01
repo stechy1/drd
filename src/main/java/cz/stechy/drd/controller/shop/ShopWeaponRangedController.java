@@ -23,6 +23,7 @@ import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
@@ -30,6 +31,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -90,6 +92,8 @@ public class ShopWeaponRangedController implements Initializable,
 
     private final ObservableList<RangedWeaponEntry> rangedWeapons = FXCollections
         .observableArrayList();
+    private final SortedList<RangedWeaponEntry> sortedList = new SortedList<>(rangedWeapons,
+        Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final AdvancedDatabaseService<RangedWeapon> service;
     private final Translator translator;
@@ -115,7 +119,7 @@ public class ShopWeaponRangedController implements Initializable,
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
-        tableRangedWeapons.setItems(rangedWeapons);
+        tableRangedWeapons.setItems(sortedList);
         tableRangedWeapons.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
 
@@ -203,7 +207,7 @@ public class ShopWeaponRangedController implements Initializable,
     @Override
     public void insertItemToBundle(Bundle bundle, int index) {
         ItemWeaponRangedController.toBundle(bundle,
-            (RangedWeapon) rangedWeapons.get(index).getItemBase());
+            (RangedWeapon) sortedList.get(index).getItemBase());
     }
 
     @Override
@@ -213,7 +217,7 @@ public class ShopWeaponRangedController implements Initializable,
 
     @Override
     public void requestRemoveItem(int index) {
-        final RangedWeaponEntry entry = rangedWeapons.get(index);
+        final RangedWeaponEntry entry = sortedList.get(index);
         final String name = entry.getName();
         try {
             service.delete(entry.getId());

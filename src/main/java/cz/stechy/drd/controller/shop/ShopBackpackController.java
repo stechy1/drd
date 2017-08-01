@@ -1,9 +1,9 @@
 package cz.stechy.drd.controller.shop;
 
 import cz.stechy.drd.Context;
-import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
@@ -19,6 +19,7 @@ import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
@@ -26,6 +27,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -73,6 +75,8 @@ public class ShopBackpackController implements Initializable, ShopItemController
     // endregion
 
     private final ObservableList<BackpackEntry> backpacks = FXCollections.observableArrayList();
+    private final SortedList<BackpackEntry> sortedList = new SortedList<>(backpacks,
+        Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final AdvancedDatabaseService<Backpack> service;
     private final User user;
@@ -94,7 +98,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
-        tableBackpacks.setItems(backpacks);
+        tableBackpacks.setItems(sortedList);
         tableBackpacks.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
 
@@ -174,7 +178,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     @Override
     public void insertItemToBundle(Bundle bundle, int index) {
-        ItemBackpackController.toBundle(bundle, (Backpack) backpacks.get(index).getItemBase());
+        ItemBackpackController.toBundle(bundle, (Backpack) sortedList.get(index).getItemBase());
     }
 
     @Override
@@ -184,7 +188,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     @Override
     public void requestRemoveItem(int index) {
-        final BackpackEntry entry = backpacks.get(index);
+        final BackpackEntry entry = sortedList.get(index);
         final String name = entry.getName();
         try {
             service.delete(entry.getId());
