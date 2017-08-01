@@ -141,7 +141,7 @@ public class LevelUpController extends BaseController implements Initializable {
     protected void onCreate(Bundle bundle) {
         this.hero = bundle.get(HERO);
         this.heroGenerator = new HeroGenerator(this.hero.getRace(), this.hero.getProfession());
-        this.money.setGold(HeroGenerator.priceForLevelUp(this.hero.getRace(), this.hero.getLevel()));
+        this.money.setGold(HeroGenerator.priceForLevelUp(this.hero.getProfession(), this.hero.getLevel()));
         this.widgetMoney.bind(this.money);
 
         model.live.setValue(hero.getLive().getMaxValue());

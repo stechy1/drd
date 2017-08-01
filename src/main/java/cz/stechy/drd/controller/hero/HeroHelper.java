@@ -69,6 +69,6 @@ public final class HeroHelper {
         hero.getCharisma().setValue(bundle.getInt(CHARISMA));
         Money price = new Money(bundle.getInt(LEVEL_UP_PRICE));
         hero.getMoney().subtract(price);
-        hero.getExperiences().setMaxValue(HeroGenerator.experience(hero.getRace(), hero.getLevel()));
+        hero.getExperiences().setMaxValue(HeroGenerator.experience(hero.getProfession(), hero.getLevel()));
     }
 }

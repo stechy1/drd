@@ -267,29 +267,29 @@ public final class HeroGenerator {
     /**
      * Vypočítá zkušenosti na základě rasy a úrovni postavy
      *
-     * @param race Rasa postavy
+     * @param profession Rasa postavy
      * @param level Úroveň postavy
      * @return Počet zkušeností k dosažení další úrovně
      */
-    public static int experience(Race race, int level) {
-        if (race == null) {
+    public static int experience(Profession profession, int level) {
+        if (profession == null) {
             return 0;
         }
-        return EXPERIENCES[race.ordinal()][level][EXPERIENCE_INDEX];
+        return EXPERIENCES[profession.ordinal()][level][EXPERIENCE_INDEX];
     }
 
     /**
      * Vypočítá cenu za přechod na vyšší úroveň
      *
-     * @param race Rasa za kterou postava
+     * @param profession Rasa za kterou postava
      * @param level
      * @return
      */
-    public static int priceForLevelUp(Race race, int level) {
-        if (race == null) {
+    public static int priceForLevelUp(Profession profession, int level) {
+        if (profession == null) {
             return 0;
         }
-        return EXPERIENCES[race.ordinal()][level][PRICE_INDEX];
+        return EXPERIENCES[profession.ordinal()][level][PRICE_INDEX];
     }
 
     // endregion

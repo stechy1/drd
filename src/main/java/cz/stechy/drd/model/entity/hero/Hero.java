@@ -206,7 +206,7 @@ public class Hero extends EntityBase {
         });
 
         this.levelProperty().addListener((observable, oldValue, newValue) ->
-            this.experiences.setMaxValue(HeroGenerator.experience(getRace(), newValue.intValue())));
+            this.experiences.setMaxValue(HeroGenerator.experience(getProfession(), newValue.intValue())));
 
         this.levelUp.bind(Bindings.createBooleanBinding(() -> {
             final int experience = this.experiences.getActValue().intValue();
