@@ -6,7 +6,7 @@ import cz.stechy.drd.model.Trap;
 /**
  * Třída reprezentující válečníka od 1 do 5 úrovně
  */
-public final class Varior {
+public final class Warior {
 
     // region Constants
 
@@ -56,7 +56,7 @@ public final class Varior {
      *
      * @param hero {@link Hero}
      */
-    public Varior(Hero hero) {
+    public Warior(Hero hero) {
         this.hero = hero;
     }
 
