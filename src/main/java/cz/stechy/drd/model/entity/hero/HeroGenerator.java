@@ -102,39 +102,6 @@ public final class HeroGenerator {
 
     // endregion
 
-    // region Private methods
-
-    /**
-     * Vypočte, kolikrát se bude házet šestistěnnou kostkou
-     *
-     * @param value Hodnota, která určí, kolikrát se bude házet kostkou
-     * @return Kolikrát bude potřeba hodit šestistěnnou kostkou
-     */
-    private int getRollCount(int value) {
-        return (int) Math.floor(value / (double) 5) + 1;
-    }
-
-    /**
-     * Vygeneruje hodnotu z intervalu
-     *
-     * @param left Levá strana intervalue
-     * @param right Pravá strana intervalue
-     * @return Hodnota z intervalu
-     */
-    private int generateValue(int left, int right) {
-        int delta = right - left;
-        int rollCount = getRollCount(delta);
-        int addon = left - rollCount;
-        int result = 0;
-        for (int i = 0; i < rollCount; i++) {
-            result += Dice.K6.roll();
-        }
-        result += addon;
-        return result;
-    }
-
-    // endregion
-
     // region Public methods
 
     /**
@@ -143,17 +110,18 @@ public final class HeroGenerator {
      * @return Síla postavy
      */
     public int strength() {
-        int left, right;
-        int raceOrdinal = race.ordinal();
-        int professionOrdinal = profession.ordinal();
+        final int left, right;
+        final int raceOrdinal = race.ordinal();
+        final int professionOrdinal = profession.ordinal();
         if (profession == Profession.WARIOR || profession == Profession.RANGER) {
-            left = PROPERTIES_BY_PROFESSION[professionOrdinal][0];
-            right = PROPERTIES_BY_PROFESSION[professionOrdinal][1];
+            final int repair = REPAIRS_BY_RACE[raceOrdinal][INDEX_STRENGTH];
+            left = PROPERTIES_BY_PROFESSION[professionOrdinal][0] + repair;
+            right = PROPERTIES_BY_PROFESSION[professionOrdinal][1] + repair;
         } else {
             left = PROPERTIES[professionOrdinal][2 * INDEX_STRENGTH];
             right = PROPERTIES[professionOrdinal][2 * INDEX_STRENGTH + 1];
         }
-        return generateValue(left, right) + REPAIRS_BY_RACE[raceOrdinal][INDEX_STRENGTH];
+        return Dice.generateValue(left, right);
     }
 
     /**
@@ -162,17 +130,18 @@ public final class HeroGenerator {
      * @return Obratnost postavy
      */
     public int dexterity() {
-        int left, right;
-        int raceOrdinal = race.ordinal();
-        int professionOrdinal = profession.ordinal();
+        final int left, right;
+        final int raceOrdinal = race.ordinal();
+        final int professionOrdinal = profession.ordinal();
         if (profession == Profession.ALCHEMIST || profession == Profession.THIEF) {
-            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_DEXTERITY];
-            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_DEXTERITY + 1];
+            final int repair = REPAIRS_BY_RACE[raceOrdinal][INDEX_DEXTERITY];
+            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_DEXTERITY] + repair;
+            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_DEXTERITY + 1] + repair;
         } else {
             left = PROPERTIES[professionOrdinal][2 * INDEX_DEXTERITY];
             right = PROPERTIES[professionOrdinal][2 * INDEX_DEXTERITY + 1];
         }
-        return generateValue(left, right) + REPAIRS_BY_RACE[raceOrdinal][INDEX_DEXTERITY];
+        return Dice.generateValue(left, right);
     }
 
     /**
@@ -185,13 +154,14 @@ public final class HeroGenerator {
         int raceOrdinal = race.ordinal();
         int professionOrdinal = profession.ordinal();
         if (profession == Profession.WARIOR || profession == Profession.ALCHEMIST) {
-            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_IMMUNITY];
-            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_IMMUNITY + 1];
+            final int repair = REPAIRS_BY_RACE[raceOrdinal][INDEX_IMMUNITY];
+            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_IMMUNITY] + repair;
+            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_IMMUNITY + 1] + repair;
         } else {
             left = PROPERTIES[professionOrdinal][2 * INDEX_IMMUNITY];
             right = PROPERTIES[professionOrdinal][2 * INDEX_IMMUNITY + 1];
         }
-        return generateValue(left, right) + REPAIRS_BY_RACE[raceOrdinal][INDEX_IMMUNITY];
+        return Dice.generateValue(left, right);
     }
 
     /**
@@ -204,13 +174,14 @@ public final class HeroGenerator {
         int raceOrdinal = race.ordinal();
         int professionOrdinal = profession.ordinal();
         if (profession == Profession.RANGER || profession == Profession.MAGICIAN) {
-            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_INTELLIGENCE];
-            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_INTELLIGENCE + 1];
+            final int repair = REPAIRS_BY_RACE[raceOrdinal][INDEX_INTELLIGENCE];
+            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_INTELLIGENCE] + repair;
+            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_INTELLIGENCE + 1] + repair;
         } else {
             left = PROPERTIES[professionOrdinal][2 * INDEX_INTELLIGENCE];
             right = PROPERTIES[professionOrdinal][2 * INDEX_INTELLIGENCE + 1];
         }
-        return generateValue(left, right) + REPAIRS_BY_RACE[raceOrdinal][INDEX_INTELLIGENCE];
+        return Dice.generateValue(left, right);
     }
 
     /**
@@ -223,13 +194,14 @@ public final class HeroGenerator {
         int raceOrdinal = race.ordinal();
         int professionOrdinal = profession.ordinal();
         if (profession == Profession.MAGICIAN || profession == Profession.THIEF) {
-            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_CHARISMA];
-            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_CHARISMA + 1];
+            final int repair = REPAIRS_BY_RACE[raceOrdinal][INDEX_CHARISMA];
+            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_CHARISMA] + repair;
+            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_CHARISMA + 1] + repair;
         } else {
             left = PROPERTIES[professionOrdinal][2 * INDEX_CHARISMA];
             right = PROPERTIES[professionOrdinal][2 * INDEX_CHARISMA + 1];
         }
-        return generateValue(left, right) + REPAIRS_BY_RACE[raceOrdinal][INDEX_CHARISMA];
+        return Dice.generateValue(left, right);
     }
 
     /**
@@ -247,8 +219,8 @@ public final class HeroGenerator {
      * Vypočítá kolik životů se přidá při přechodu na novou úroveň
      * live = max(1, dice.roll() + addon
      *
-     * @param immunity
-     * @return
+     * @param immunity Odolnost hrdiny
+     * @return Počet životů, který se má přičíst ke stávající hodnotě
      */
     public int live(EntityProperty immunity) {
             Dice dice = LIVES_DICE[profession.ordinal()];
@@ -282,8 +254,8 @@ public final class HeroGenerator {
      * Vypočítá cenu za přechod na vyšší úroveň
      *
      * @param profession Rasa za kterou postava
-     * @param level
-     * @return
+     * @param level Úroveň postavy
+     * @return Cena za přestup na novou úroveň
      */
     public static int priceForLevelUp(Profession profession, int level) {
         if (profession == null) {
