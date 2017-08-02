@@ -62,7 +62,7 @@ public final class Trap {
     // region Public methods
 
     /**
-     * Nastaví požadovanou vlastnost
+     * Nastaví požadované vlastnosti
      *
      * @param properties {@link EntityProperty} Vlastnosti, které se budou testovat
      * @return {@link Trap}
@@ -91,6 +91,28 @@ public final class Trap {
      */
     public Trap propertyFromLive(int live) {
         this.propertyRepair += (int) Math.round(live / 5.0);
+        return this;
+    }
+
+    /**
+     * Nastaví požadované vlastnosti se záporným znaménkem
+     *
+     * @param properties {@link EntityProperty} Vlastnosti, které se budou testovatt
+     * @return
+     */
+    public Trap subtractProperty(EntityProperty ...properties) {
+        this.propertyRepair -= Arrays.stream(properties).mapToInt(value -> value.getRepair()).sum();
+        return this;
+    }
+
+    /**
+     * Přidá do výpočtu konstantu se záporným znaménkem - odečte ji od interní hodnoty
+     *
+     * @param value Konstante, která se má připočítat do výpočtu
+     * @return {@link Trap}
+     */
+    public Trap subtractProperty(int value) {
+        this.propertyRepair -= value;
         return this;
     }
 
