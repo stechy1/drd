@@ -5,9 +5,12 @@ public final class R {
 
     public static class FXML {
 
+        public static final String CARD = "card";
         public static final String DICE = "dice";
+        public static final String GROUP = "group";
         public static final String MONEY = "money";
         public static final String PRELOADER = "preloader";
+        public static final String TEXT = "text";
         public static final String VULNERABILITY = "vulnerability";
         public static final String BESTIARY = "bestiary";
         public static final String BESTIARY_EDIT = "bestiary_edit";
@@ -61,6 +64,7 @@ public final class R {
         public static final String HERO_DESCRIPTION = "drd_hero_description";
         public static final String HERO_LIVE = "drd_hero_live";
         public static final String HERO_MAG = "drd_hero_mag";
+        public static final String HERO_EXPERIENCE_COUNT = "drd_hero_experience_count";
         public static final String HERO_EXPERIENCE = "drd_hero_experience";
         public static final String HERO_CONVICTION = "drd_hero_conviction";
         public static final String HERO_STRENGTH = "drd_hero_strength";

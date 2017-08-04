@@ -37,7 +37,7 @@
       <LabeledProgressBar fx:id="lblMag" displayMode="MAG" label="%drd_hero_mag"
         prefWidth="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
       <LabeledProgressBar fx:id="lblExperience" displayMode="EXPERIENCE"
-        label="%drd_hero_experience" prefWidth="10.0" GridPane.rowIndex="2" />
+        label="%drd_hero_experience_count" prefWidth="10.0" GridPane.rowIndex="2" />
       <LabeledMoney fx:id="lblMoney" label="%drd_hero_money" GridPane.columnIndex="1"
         GridPane.rowIndex="2" />
     </GridPane>

@@ -94,7 +94,7 @@ public class MoneyXpController extends BaseController implements Initializable {
     @Override
     protected void onResume() {
         setTitle(title);
-        setScreenSize(450, 400);
+        setScreenSize(500, 490);
     }
 
     // region Button handlers
