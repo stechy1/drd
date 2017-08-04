@@ -71,7 +71,7 @@ public class RegisterController extends BaseController implements Initializable 
     @Override
     protected void onResume() {
         setTitle(title);
-        setScreenSize(500, 160);
+        setScreenSize(400, 260);
     }
 
     // region Button handlers
@@ -86,16 +86,6 @@ public class RegisterController extends BaseController implements Initializable 
             showNotification(new Notification(registerFail));
             loginModel.valid.set(false);
         }
-    }
-
-    @FXML
-    private void handleBack(ActionEvent actionEvent) {
-        back();
-    }
-
-    @FXML
-    private void handleCancel(ActionEvent actionEvent) {
-        finish();
     }
 
     // endregion
