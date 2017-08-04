@@ -5,21 +5,23 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="300" prefWidth="400"
-  xmlns="http://javafx.com/javafx/8.0.112" alignment="CENTER"
-  fx:controller="cz.stechy.drd.controller.bestiary.edit.BestiaryEditGeneralController" spacing="16">
-  <JFXTextField GridPane.columnIndex="1" fx:id="txtName" labelFloat="true" promptText="%drd_bestiary_name"/>
+<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="300"
+  prefWidth="400" spacing="16"
+  xmlns="http://javafx.com/javafx/8.0.112"
+  fx:controller="cz.stechy.drd.controller.bestiary.edit.BestiaryEditGeneralController">
+  <JFXTextField GridPane.columnIndex="1" labelFloat="true" prefWidth="250.0"
+    promptText="%drd_bestiary_name" fx:id="txtName"/>
   <EnumComboBox GridPane.columnIndex="1" GridPane.rowIndex="1" enumType="cz.stechy.drd.model.Rule"
-    prefWidth="250.0" fx:id="cmbRule" labelFloat="true" promptText="%drd_bestiary_rules_type"/>
+    labelFloat="true" prefWidth="250.0" promptText="%drd_bestiary_rules_type" fx:id="cmbRule"/>
   <EnumComboBox GridPane.columnIndex="1" GridPane.rowIndex="2"
-    enumType="cz.stechy.drd.model.entity.mob.Mob$MobClass" prefWidth="250.0"
-    fx:id="cmbMobClass" labelFloat="true"  promptText="%drd_bestiary_mob_class"/>
+    enumType="cz.stechy.drd.model.entity.mob.Mob$MobClass" labelFloat="true"
+    prefWidth="250.0" promptText="%drd_bestiary_mob_class" fx:id="cmbMobClass"/>
   <EnumComboBox GridPane.columnIndex="1" GridPane.rowIndex="3"
-    enumType="cz.stechy.drd.model.entity.Conviction" prefWidth="250.0"
-    fx:id="cmbConviction" labelFloat="true" promptText="%drd_entity_conviction"/>
+    enumType="cz.stechy.drd.model.entity.Conviction" labelFloat="true"
+    prefWidth="250.0" promptText="%drd_entity_conviction" fx:id="cmbConviction"/>
   <EnumComboBox GridPane.columnIndex="1" GridPane.rowIndex="4"
     enumType="cz.stechy.drd.model.entity.Height"
-    prefWidth="250.0" fx:id="cmbHeight" labelFloat="true" promptText="%drd_entity_height"/>
+    labelFloat="true" prefWidth="250.0" promptText="%drd_entity_height" fx:id="cmbHeight"/>
   <padding>
     <Insets topRightBottomLeft="8.0"/>
   </padding>
