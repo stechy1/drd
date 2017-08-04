@@ -1,6 +1,7 @@
 package cz.stechy.drd.controller.hero.levelup;
 
 import cz.stechy.drd.Context;
+import cz.stechy.drd.R;
 import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.EntityProperty;
@@ -81,6 +82,7 @@ public class LevelUpController extends BaseController implements Initializable {
 
     private Hero hero;
     private HeroGenerator heroGenerator;
+    private String title;
 
     // endregion
 
@@ -116,6 +118,8 @@ public class LevelUpController extends BaseController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.title = resources.getString(R.Translate.LEVEL_UP_TITLE);
+
         lblLive.textProperty().bind(model.live.asString());
         lblStrength.setHeroProperty(model.strength);
         lblDexterity.setHeroProperty(model.dexterity);
@@ -151,6 +155,12 @@ public class LevelUpController extends BaseController implements Initializable {
         model.intelligence.update(hero.getIntelligence());
         model.charisma.update(hero.getCharisma());
 
+    }
+
+    @Override
+    protected void onResume() {
+        setTitle(title);
+        setScreenSize(600, 400);
     }
 
     // region Button handlers
