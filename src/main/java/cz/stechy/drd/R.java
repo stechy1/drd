@@ -7,10 +7,9 @@ public final class R {
 
         public static final String CARD = "card";
         public static final String DICE = "dice";
-        public static final String GROUP = "group";
+        public static final String LABELED_MAX_ACT_VALUE = "labeled_max_act_value";
         public static final String MONEY = "money";
         public static final String PRELOADER = "preloader";
-        public static final String TEXT = "text";
         public static final String VULNERABILITY = "vulnerability";
         public static final String BESTIARY = "bestiary";
         public static final String BESTIARY_EDIT = "bestiary_edit";

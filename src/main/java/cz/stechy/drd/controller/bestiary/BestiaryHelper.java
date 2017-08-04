@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.bestiary;
 
+import cz.stechy.drd.model.bestiary.MobEntry;
 import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
 import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
 import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
@@ -126,10 +127,10 @@ public final class BestiaryHelper {
             .build();
     }
 
-    public static <T> TableCell<Mob, T> forActionButtons(final OnUploadItem<Mob> uploadHandler,
-        final OnDownloadItem<Mob> downloadHandler, final OnDeleteItem<Mob> deleteHandler,
+    public static <T> TableCell<MobEntry, T> forActionButtons(final OnUploadItem<MobEntry> uploadHandler,
+        final OnDownloadItem<MobEntry> downloadHandler, final OnDeleteItem<MobEntry> deleteHandler,
         User user, final ResourceBundle resources) {
-        return new TableCell<Mob, T>() {
+        return new TableCell<MobEntry, T>() {
             final String resourceRemove = resources.getString("drd_firebase_entry_remove");
             final String resourceUpload = resources.getString("drd_firebase_entry_upload");
             final String resourceDownload = resources.getString("drd_firebase_entry_download");
@@ -152,7 +153,7 @@ public final class BestiaryHelper {
                     setText(null);
                 } else {
                     setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-                    final Mob entry = getTableView().getItems().get(getIndex());
+                    final MobEntry entry = getTableView().getItems().get(getIndex());
 
                     final ObjectProperty<EventHandler<ActionEvent>> downloadHandlerInternal = new SimpleObjectProperty<>();
                     final ObjectProperty<EventHandler<ActionEvent>> uploadHandlerInternal = new SimpleObjectProperty<>();

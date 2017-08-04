@@ -1,8 +1,9 @@
 package cz.stechy.drd.controller.bestiary;
 
-import cz.stechy.drd.R;
 import cz.stechy.drd.Context;
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.Rule;
+import cz.stechy.drd.model.bestiary.MobEntry;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
@@ -11,12 +12,15 @@ import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
 import cz.stechy.drd.model.user.User;
+import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.HashGenerator;
+import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -24,7 +28,9 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -34,6 +40,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,19 +63,21 @@ public class BestiaryController extends BaseController implements Initializable 
     // region FXML
 
     @FXML
-    private TableView<Mob> tableBestiary;
+    private TableView<MobEntry> tableBestiary;
     @FXML
-    private TableColumn<Mob, String> columnName;
+    private TableColumn<MobEntry, Image> columnImage;
     @FXML
-    private TableColumn<Mob, String> columnAuthor;
+    private TableColumn<MobEntry, String> columnName;
     @FXML
-    private TableColumn<Mob, MobClass> columnMobClass;
+    private TableColumn<MobEntry, String> columnAuthor;
     @FXML
-    private TableColumn<Mob, Rule> columnRulesType;
+    private TableColumn<MobEntry, MobClass> columnMobClass;
     @FXML
-    private TableColumn<Mob, Integer> columnViability;
+    private TableColumn<MobEntry, Rule> columnRulesType;
     @FXML
-    private TableColumn<Mob, ?> columnAction;
+    private TableColumn<MobEntry, Integer> columnViability;
+    @FXML
+    private TableColumn<MobEntry, ?> columnAction;
 
     @FXML
     private Button btnAddItem;
@@ -83,6 +92,9 @@ public class BestiaryController extends BaseController implements Initializable 
 
     // endregion
 
+    private final ObservableList<MobEntry> mobs = FXCollections.observableArrayList();
+    private final SortedList<MobEntry> sortedList = new SortedList<>(mobs,
+        Comparator.comparing(MobEntry::getName));
     private final IntegerProperty selectedRowIndex = new SimpleIntegerProperty(
         this, "selectedRowIndex");
     private final BooleanProperty showOnlineDatabase = new SimpleBooleanProperty(this,
@@ -91,7 +103,7 @@ public class BestiaryController extends BaseController implements Initializable 
     private final Translator translator;
 
     private AdvancedDatabaseService<Mob> service;
-    private ObservableList<Mob> mobs;
+
     private String title;
     private ResourceBundle resources;
 
@@ -103,7 +115,7 @@ public class BestiaryController extends BaseController implements Initializable 
         this.service = context.getService(Context.SERVICE_BESTIARY);
         this.user = context.getUserService().getUser().get();
         this.translator = context.getTranslator();
-        this.mobs = service.selectAll();
+        ObservableMergers.mergeList(MobEntry::new, this.mobs, service.selectAll());
     }
 
     // endregion
@@ -113,7 +125,7 @@ public class BestiaryController extends BaseController implements Initializable 
         this.resources = resources;
         this.title = resources.getString(R.Translate.BESTIARY_TITLE);
 
-        tableBestiary.setItems(mobs);
+        tableBestiary.setItems(sortedList);
 
         final BooleanBinding selectedRowBinding = selectedRowIndex.isEqualTo(NO_SELECTED_INDEX);
         selectedRowIndex.bind(tableBestiary.getSelectionModel().selectedIndexProperty());
@@ -125,6 +137,7 @@ public class BestiaryController extends BaseController implements Initializable 
         btnEditItem.disableProperty().bind(Bindings.or(
             selectedRowBinding,
             showOnlineDatabase));
+        btnSynchronize.disableProperty().bind(user.loggedProperty().not());
 
         showOnlineDatabase.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -134,6 +147,8 @@ public class BestiaryController extends BaseController implements Initializable 
             service.toggleDatabase(newValue);
         });
 
+        columnImage.setCellValueFactory(new PropertyValueFactory<>("image"));
+        columnImage.setCellFactory(param -> CellUtils.forImage());
         columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
         columnAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
         columnMobClass.setCellValueFactory(new PropertyValueFactory<>("mobClass"));
@@ -197,18 +212,18 @@ public class BestiaryController extends BaseController implements Initializable 
 
     public void handleRemoveItem(ActionEvent actionEvent) {
         final int rowIndex = selectedRowIndex.get();
-        final Mob mob = mobs.get(rowIndex);
-        final String name = mob.getName();
+        final MobEntry entry = sortedList.get(rowIndex);
+        final String name = entry.getName();
         try {
-            service.delete(mob.getId());
+            service.delete(entry.getMobBase().getId());
         } catch (DatabaseException e) {
             logger.warn("Příšeru {} se nepodařilo odebrat z databáze", name);
         }
     }
 
     public void handleEditItem(ActionEvent actionEvent) {
-        final Mob mob = mobs.get(selectedRowIndex.get());
-        final Bundle bundle = BestiaryHelper.mobToBundle(mob);
+        final MobEntry entry = sortedList.get(selectedRowIndex.get());
+        final Bundle bundle = BestiaryHelper.mobToBundle(entry.getMobBase());
         bundle.putInt(BestiaryHelper.MOB_ACTION, BestiaryHelper.MOB_ACTION_UPDATE);
         startNewDialogForResult(R.FXML.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_UPDATE, bundle);
     }
@@ -221,13 +236,13 @@ public class BestiaryController extends BaseController implements Initializable 
 
     // endregion
 
-    private final OnUploadItem<Mob> uploadHandler = mob -> service.upload(mob);
-    private final OnDownloadItem<Mob> downloadHandler = mob -> {
+    private final OnUploadItem<MobEntry> uploadHandler = entry -> service.upload(entry.getMobBase());
+    private final OnDownloadItem<MobEntry> downloadHandler = entry -> {
         try {
-            service.insert(mob);
+            service.insert(entry.getMobBase());
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
     };
-    private final OnDeleteItem<Mob> deleteHandler = (mob, remote) -> service.deleteRemote(mob, true);
+    private final OnDeleteItem<MobEntry> deleteHandler = (entry, remote) -> service.deleteRemote(entry.getMobBase(), true);
 }
