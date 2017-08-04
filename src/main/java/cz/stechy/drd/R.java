@@ -243,7 +243,7 @@ public final class R {
         public static final String USER_LOGIN_TITLE = "drd_user_login_title";
         public static final String USER_USERNAME = "drd_user_username";
         public static final String USER_PASSWORD = "drd_user_password";
-        public static final String USER_QUESTION_REGISTRATION = "drd_user_question_registration";
+        public static final String USER_QUESTION_LOST_PASSWORD = "drd_user_question_lost_password";
         public static final String USER_GO_REGISTRATION = "drd_user_go_registration";
         public static final String USER_REGISTER_TITLE = "drd_user_register_title";
         public static final String ITEM_MAX_LOAD = "drd_item_max_load";

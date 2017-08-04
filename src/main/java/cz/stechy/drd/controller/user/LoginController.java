@@ -77,7 +77,7 @@ public class LoginController extends BaseController implements Initializable {
     @Override
     protected void onResume() {
         setTitle(title);
-        setScreenSize(500, 160);
+        setScreenSize(500, 260);
     }
 
     @Override
@@ -110,11 +110,6 @@ public class LoginController extends BaseController implements Initializable {
             showNotification(new Notification(loginFail));
             loginModel.valid.set(false);
         }
-    }
-
-    @FXML
-    private void handleCancel(ActionEvent actionEvent) {
-        finish();
     }
 
     @FXML
