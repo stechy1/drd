@@ -1,51 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<HBox spacing="8" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.shop.ItemGeneralController">
-  <padding>
-    <Insets bottom="8.0" left="8.0" right="8.0"/>
-  </padding>
-  <GridPane prefWidth="270" HBox.hgrow="ALWAYS">
-    <columnConstraints>
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-    </columnConstraints>
-    <rowConstraints>
-      <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-      <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-      <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-      <RowConstraints minHeight="8.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-    </rowConstraints>
-
-    <Label text="%drd_item_name"/>
-    <Label text="%drd_item_weight" GridPane.rowIndex="1"/>
-    <Label text="%drd_item_price" GridPane.rowIndex="2"/>
-    <Label text="%drd_item_stack_size" GridPane.rowIndex="3"/>
-    <TextField fx:id="txtName" GridPane.columnIndex="1"/>
-    <TextField fx:id="txtWeight" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-    <Hyperlink fx:id="lblPrice" onAction="#handleShowMoneyPopup" GridPane.columnIndex="1"
-      GridPane.rowIndex="2"/>
-    <TextField fx:id="txtStackSize" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-  </GridPane>
-  <VBox prefWidth="300.0">
-    <Label text="%drd_item_image"/>
-    <ImageView fx:id="imageView" onMouseClicked="#handleSelectImage" fitHeight="150.0"
-      fitWidth="200.0"
-      pickOnBounds="true" preserveRatio="true"/>
-    <Label text="%drd_item_description"/>
-    <TextArea fx:id="txtDescription" VBox.vgrow="ALWAYS"/>
-    <Button fx:id="btnFinish" onAction="#handleFinish" text="%drd_finish"/>
-  </VBox>
-</HBox>
+  <top>
+    <HBox styleClass="title-container">
+      <Label HBox.hgrow="ALWAYS" styleClass="title-label" fx:id="lblTitle"/>
+    </HBox>
+  </top>
+  <center>
+    <VBox spacing="16.0">
+      <HBox VBox.vgrow="ALWAYS" spacing="16.0">
+        <VBox HBox.hgrow="ALWAYS" spacing="16.0">
+          <JFXTextField labelFloat="true" promptText="%drd_item_name" fx:id="txtName"/>
+          <JFXTextField labelFloat="true" promptText="%drd_item_weight" fx:id="txtWeight"/>
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS" spacing="16.0">
+          <Hyperlink onAction="#handleShowMoneyPopup" text="%drd_item_price" fx:id="lblPrice"/>
+          <JFXTextField labelFloat="true" promptText="%drd_item_stack_size" fx:id="txtStackSize"/>
+        </VBox>
+        <padding>
+          <Insets top="8.0"/>
+        </padding>
+      </HBox>
+      <HBox VBox.vgrow="NEVER" spacing="8.0">
+        <StackPane>
+          <ImageView fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleSelectImage"
+            pickOnBounds="true" preserveRatio="true" fx:id="imageView"/>
+          <Label text="%drd_image_click_for_image" visible="true" fx:id="lblSelectImage"/>
+        </StackPane>
+        <JFXTextArea VBox.vgrow="ALWAYS" labelFloat="true" promptText="%drd_item_description"
+          fx:id="txtDescription"/>
+      </HBox>
+      <padding>
+        <Insets topRightBottomLeft="8.0"/>
+      </padding>
+    </VBox>
+  </center>
+  <bottom>
+    <HBox prefHeight="50" styleClass="separator-line, line-top">
+      <Region HBox.hgrow="ALWAYS"/>
+      <JFXButton onAction="#handleFinish" prefHeight="34.0" styleClass="btn, btn-success"
+        text="%drd_finish"/>
+      <padding>
+        <Insets topRightBottomLeft="8.0"/>
+      </padding>
+    </HBox>
+  </bottom>
+</BorderPane>

@@ -2,7 +2,6 @@ package cz.stechy.drd.controller.shop;
 
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
-import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.controller.MoneyController;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
@@ -21,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -36,6 +36,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -67,13 +68,14 @@ public class ItemBackpackController extends BaseController implements Initializa
     private static final String UPLOADED = "uploaded";
     private static final String DOWNLOADED = "downloaded";
 
-
     // endregion
 
     // region Variables
 
     // region FXML
 
+    @FXML
+    private Label lblTitle;
     @FXML
     private TextField txtName;
     @FXML
@@ -91,13 +93,16 @@ public class ItemBackpackController extends BaseController implements Initializa
     @FXML
     private Button btnFinish;
     @FXML
+    private Label lblSelectImage;
+    @FXML
     private ImageView imageView;
 
     // endregion
 
     private final Translator translator;
     private final ItemModel model = new ItemModel();
-    private String title;
+    private String titleNew;
+    private String titleUpdate;
     private String imageChooserTitle;
     private int action;
 
@@ -149,7 +154,8 @@ public class ItemBackpackController extends BaseController implements Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.title = resources.getString(Translate.ITEM_TYPE_BACKPACK);
+        this.titleNew = resources.getString(R.Translate.ITEM_NEW);
+        this.titleUpdate = resources.getString(R.Translate.ITEM_UPDATE);
         this.imageChooserTitle = resources.getString(R.Translate.IMAGE_CHOOSE_DIALOG);
 
         txtName.textProperty().bindBidirectional(model.name);
@@ -165,6 +171,8 @@ public class ItemBackpackController extends BaseController implements Initializa
         FormUtils.initTextFormater(txtStackSize, model.stackSize);
 
         imageView.imageProperty().bindBidirectional(model.image);
+        model.imageRaw.addListener((observable, oldValue, newValue) ->
+            lblSelectImage.setVisible(Arrays.equals(newValue, new byte[0])));
 
         btnFinish.disableProperty()
             .bind(Bindings.or(model.name.isEmpty(), model.imageRaw.isNull()));
@@ -172,6 +180,9 @@ public class ItemBackpackController extends BaseController implements Initializa
 
     @Override
     protected void onCreate(Bundle bundle) {
+        action = bundle.getInt(ShopHelper.ITEM_ACTION);
+        lblTitle.setText(action == ShopHelper.ITEM_ACTION_ADD ? titleNew : titleUpdate);
+
         model.id.setValue(bundle.getString(ID));
         model.name.setValue(bundle.getString(NAME));
         model.description.setValue(bundle.getString(DESCRIPTION));
@@ -184,13 +195,12 @@ public class ItemBackpackController extends BaseController implements Initializa
         model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
         model.uploaded.setValue(bundle.getBoolean(UPLOADED));
         model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
-        action = bundle.getInt(ShopHelper.ITEM_ACTION);
     }
 
     @Override
     protected void onResume() {
-        setTitle(title);
-        setScreenSize(570, 350);
+        setTitle(action == ShopHelper.ITEM_ACTION_ADD ? titleNew : titleUpdate);
+        setScreenSize(570, 450);
     }
 
     @Override

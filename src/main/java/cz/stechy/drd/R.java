@@ -57,6 +57,7 @@ public final class R {
         public static final String ACTION_FAILED = "drd_action_failed";
         public static final String IMAGE_CLICK_FOR_IMAGE = "drd_image_click_for_image";
         public static final String IMAGE_CHOOSE_DIALOG = "drd_image_choose_dialog";
+        public static final String TOTAL_PRICE = "drd_total_price";
         public static final String MAIN_TITLE = "drd_main_title";
         public static final String MAIN_TAB_DEFAULTS = "drd_main_tab_defaults";
         public static final String MAIN_TAB_INVENTORY = "drd_main_tab_inventory";
@@ -130,6 +131,8 @@ public final class R {
         public static final String GUIDE_NEW_HERO_1_HERO_PROFESSION = "drd_guide_new_hero_1_hero_profession";
         public static final String GUIDE_NEW_HERO_2_TITLE = "drd_guide_new_hero_2_title";
         public static final String GUIDE_NEW_HERO_3_TITLE = "drd_guide_new_hero_3_title";
+        public static final String ITEM_NEW = "drd_item_new";
+        public static final String ITEM_UPDATE = "drd_item_update";
         public static final String ITEM_TYPE_WEAPON_MELE = "drd_item_type_weapon_mele";
         public static final String ITEM_TYPE_WEAPON_RANGED = "drd_item_type_weapon_ranged";
         public static final String ITEM_TYPE_ARMOR = "drd_item_type_armor";
