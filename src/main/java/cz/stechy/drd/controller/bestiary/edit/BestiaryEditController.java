@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 /**
  * Kontroler pro řížení kontrolerů pro editaci vlastností nestvůry
@@ -47,7 +48,7 @@ public class BestiaryEditController extends BaseController implements Initializa
     @FXML
     private Pane tabBestiaryImage;
     @FXML
-    private GridPane tabBestiaryGeneral;
+    private VBox tabBestiaryGeneral;
     @FXML
     private GridPane tabBestiaryProperties;
     @FXML
