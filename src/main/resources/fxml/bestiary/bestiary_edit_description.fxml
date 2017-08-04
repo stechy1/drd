@@ -4,5 +4,5 @@
 <JFXTextArea xmlns:fx="http://javafx.com/fxml/1" prefHeight="200.0" prefWidth="200.0"
   xmlns="http://javafx.com/javafx/8.0.112"
   fx:controller="cz.stechy.drd.controller.bestiary.edit.BestiaryEditDescriptionController"
-  fx:id="txtDescription" labelFloat="true" promptText="%drd_item_description">
+  fx:id="txtDescription">
 </JFXTextArea>
