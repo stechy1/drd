@@ -55,6 +55,8 @@ public final class R {
         public static final String RESET = "drd_reset";
         public static final String NO_ACTION = "drd_no_action";
         public static final String ACTION_FAILED = "drd_action_failed";
+        public static final String IMAGE_CLICK_FOR_IMAGE = "drd_image_click_for_image";
+        public static final String IMAGE_CHOOSE_DIALOG = "drd_image_choose_dialog";
         public static final String MAIN_TITLE = "drd_main_title";
         public static final String MAIN_TAB_DEFAULTS = "drd_main_tab_defaults";
         public static final String MAIN_TAB_INVENTORY = "drd_main_tab_inventory";
@@ -183,7 +185,6 @@ public final class R {
         public static final String ITEM_AMMOUNT = "drd_item_ammount";
         public static final String ITEM_STACK_SIZE = "drd_item_stack_size";
         public static final String ITEM_IMAGE = "drd_item_image";
-        public static final String ITEM_IMAGE_CHOOSE_DIALOG = "drd_item_image_choose_dialog";
         public static final String ITEM_WEAPON_STRENGTH = "drd_item_weapon_strength";
         public static final String ITEM_WEAPON_RAMPANCY = "drd_item_weapon_rampancy";
         public static final String ITEM_WEAPON_MELE_CLASS = "drd_item_weapon_mele_class";

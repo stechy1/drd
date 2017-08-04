@@ -11,8 +11,10 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -20,7 +22,7 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 
 /**
@@ -32,7 +34,10 @@ public class BestiaryEditImageController implements IEditController, Initializab
 
     // region FXML
 
-    public Pane container;
+    public StackPane container;
+
+    @FXML
+    private Label lblSelectImage;
 
     // endregion
 
@@ -50,6 +55,7 @@ public class BestiaryEditImageController implements IEditController, Initializab
                 BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER,
                 BackgroundSize.DEFAULT)));
+            lblSelectImage.setVisible(newValue == null);
         });
     }
 
