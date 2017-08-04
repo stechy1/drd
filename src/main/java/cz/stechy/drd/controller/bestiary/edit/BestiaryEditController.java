@@ -50,7 +50,7 @@ public class BestiaryEditController extends BaseController implements Initializa
     @FXML
     private VBox tabBestiaryGeneral;
     @FXML
-    private GridPane tabBestiaryProperties;
+    private VBox tabBestiaryProperties;
     @FXML
     private GridPane tabBestiaryOther;
     @FXML
