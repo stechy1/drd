@@ -1,10 +1,9 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.R.Translate;
-import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.MoneyController;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ImageUtils;
@@ -16,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -30,6 +30,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -67,6 +68,8 @@ public class ItemGeneralController extends BaseController implements Initializab
     // region FXML
 
     @FXML
+    Label lblTitle;
+    @FXML
     private TextField txtName;
     @FXML
     private TextArea txtDescription;
@@ -79,12 +82,15 @@ public class ItemGeneralController extends BaseController implements Initializab
     @FXML
     private Button btnFinish;
     @FXML
+    private Label lblSelectImage;
+    @FXML
     private ImageView imageView;
 
     // endregion
 
     private final ItemModel model = new ItemModel();
-    private String title;
+    private String titleNew;
+    private String titleUpdate;
     private String imageChooserTitle;
     private int action;
 
@@ -124,7 +130,8 @@ public class ItemGeneralController extends BaseController implements Initializab
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.title = resources.getString(R.Translate.ITEM_TYPE_GENERAL);
+        this.titleNew = resources.getString(R.Translate.ITEM_NEW);
+        this.titleUpdate = resources.getString(R.Translate.ITEM_UPDATE);
         this.imageChooserTitle = resources.getString(R.Translate.IMAGE_CHOOSE_DIALOG);
 
         txtName.textProperty().bindBidirectional(model.name);
@@ -136,10 +143,15 @@ public class ItemGeneralController extends BaseController implements Initializab
         FormUtils.initTextFormater(txtStackSize, model.stackSize);
 
         imageView.imageProperty().bindBidirectional(model.image);
+        model.imageRaw.addListener((observable, oldValue, newValue) ->
+            lblSelectImage.setVisible(Arrays.equals(newValue, new byte[0])));
     }
 
     @Override
     protected void onCreate(Bundle bundle) {
+        action = bundle.getInt(ShopHelper.ITEM_ACTION);
+        lblTitle.setText(action == ShopHelper.ITEM_ACTION_ADD ? titleNew : titleUpdate);
+
         model.id.setValue(bundle.getString(ID));
         model.name.setValue(bundle.getString(NAME));
         model.description.setValue(bundle.getString(DESCRIPTION));
@@ -150,13 +162,12 @@ public class ItemGeneralController extends BaseController implements Initializab
         model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
         model.uploaded.setValue(bundle.getBoolean(UPLOADED));
         model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
-        action = bundle.getInt(ShopHelper.ITEM_ACTION);
     }
 
     @Override
     protected void onResume() {
-        setTitle(title);
-        setScreenSize(570, 350);
+        setTitle(action == ShopHelper.ITEM_ACTION_ADD ? titleNew : titleUpdate);
+        setScreenSize(570, 450);
     }
 
     @Override
