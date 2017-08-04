@@ -36,7 +36,7 @@
     </JFXTabPane>
   </center>
   <bottom>
-    <HBox BorderPane.alignment="CENTER" prefHeight="50.0" spacing="8.0">
+    <HBox BorderPane.alignment="CENTER" prefHeight="50.0" spacing="8.0" styleClass="separator-line, line-top">
       <padding>
         <Insets topRightBottomLeft="8.0"/>
       </padding>
