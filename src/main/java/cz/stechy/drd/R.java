@@ -202,7 +202,8 @@ public final class R {
         public static final String MONEY_SUBTRACT = "drd_money_subtract";
         public static final String XP_ADD = "drd_xp_add";
         public static final String BESTIARY_TITLE = "drd_bestiary_title";
-        public static final String BESTIARY_EDIT_TITLE = "drd_bestiary_edit_title";
+        public static final String BESTIARY_EDIT_NEW_TITLE = "drd_bestiary_edit_new_title";
+        public static final String BESTIARY_EDIT_UPDATE_TITLE = "drd_bestiary_edit_update_title";
         public static final String BESTIARY_NAME = "drd_bestiary_name";
         public static final String BESTIARY_AUTHOR = "drd_bestiary_author";
         public static final String BESTIARY_MOB_CLASS = "drd_bestiary_mob_class";
