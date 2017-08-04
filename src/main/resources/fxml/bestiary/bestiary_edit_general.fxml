@@ -3,25 +3,21 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import cz.stechy.drd.widget.EnumComboBox?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="300"
   prefWidth="400" spacing="16"
   xmlns="http://javafx.com/javafx/8.0.112"
   fx:controller="cz.stechy.drd.controller.bestiary.edit.BestiaryEditGeneralController">
-  <JFXTextField GridPane.columnIndex="1" labelFloat="true" prefWidth="250.0"
-    promptText="%drd_bestiary_name" fx:id="txtName"/>
-  <EnumComboBox GridPane.columnIndex="1" GridPane.rowIndex="1" enumType="cz.stechy.drd.model.Rule"
-    labelFloat="true" prefWidth="250.0" promptText="%drd_bestiary_rules_type" fx:id="cmbRule"/>
-  <EnumComboBox GridPane.columnIndex="1" GridPane.rowIndex="2"
-    enumType="cz.stechy.drd.model.entity.mob.Mob$MobClass" labelFloat="true"
+  <JFXTextField labelFloat="true" prefWidth="250.0" promptText="%drd_bestiary_name"
+    fx:id="txtName"/>
+  <EnumComboBox enumType="cz.stechy.drd.model.Rule" labelFloat="true" prefWidth="250.0"
+    promptText="%drd_bestiary_rules_type" fx:id="cmbRule"/>
+  <EnumComboBox enumType="cz.stechy.drd.model.entity.mob.Mob$MobClass" labelFloat="true"
     prefWidth="250.0" promptText="%drd_bestiary_mob_class" fx:id="cmbMobClass"/>
-  <EnumComboBox GridPane.columnIndex="1" GridPane.rowIndex="3"
-    enumType="cz.stechy.drd.model.entity.Conviction" labelFloat="true"
-    prefWidth="250.0" promptText="%drd_entity_conviction" fx:id="cmbConviction"/>
-  <EnumComboBox GridPane.columnIndex="1" GridPane.rowIndex="4"
-    enumType="cz.stechy.drd.model.entity.Height"
-    labelFloat="true" prefWidth="250.0" promptText="%drd_entity_height" fx:id="cmbHeight"/>
+  <EnumComboBox enumType="cz.stechy.drd.model.entity.Conviction" labelFloat="true" prefWidth="250.0"
+    promptText="%drd_entity_conviction" fx:id="cmbConviction"/>
+  <EnumComboBox enumType="cz.stechy.drd.model.entity.Height" labelFloat="true" prefWidth="250.0"
+    promptText="%drd_entity_height" fx:id="cmbHeight"/>
   <padding>
     <Insets topRightBottomLeft="8.0"/>
   </padding>
