@@ -56,41 +56,6 @@
       </padding>
     </VBox>
   </center>
-<!--  <left>
-    <VBox spacing="16">
-      <JFXTextField labelFloat="true" promptText="%drd_item_name" fx:id="txtName"/>
-      <JFXTextField labelFloat="true" promptText="%drd_item_weapon_mele_armor_defence_number"
-        fx:id="txtDefenceNumber"/>
-      <JFXTextField labelFloat="true" promptText="%drd_item_armor_minimum_strength"
-        fx:id="txtMiniumStrength"/>
-      <EnumComboBox enumType="cz.stechy.drd.model.item.Armor$ArmorType" labelFloat="true"
-        promptText="%drd_item_armor_type" fx:id="cmbType"/>
-      <JFXTextField labelFloat="true" promptText="%drd_item_armor_type" fx:id="txtWeightA"/>
-      <JFXTextField labelFloat="true" promptText="Váha A" fx:id="txtWeightB"/>
-      <JFXTextField labelFloat="true" promptText="Váha B" fx:id="txtWeightC"/>
-      <Hyperlink onAction="#handleShowMoneyAPopup" text="Cena A" fx:id="lblPriceA"/>
-      <Hyperlink onAction="#handleShowMoneyBPopup" text="Cena B" fx:id="lblPriceB"/>
-      <Hyperlink onAction="#handleShowMoneyCPopup" text="Cena C" fx:id="lblPriceC"/>
-      <JFXTextField labelFloat="true" promptText="Váha C" fx:id="txtStackSize"/>
-      <padding>
-        <Insets topRightBottomLeft="8.0"/>
-      </padding>
-    </VBox>
-  </left>
-  <center>
-    <VBox>
-      <StackPane>
-        <ImageView fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleSelectImage"
-          pickOnBounds="true" preserveRatio="true" fx:id="imageView"/>
-        <Label text="%drd_image_click_for_image" fx:id="lblSelectImage"/>
-      </StackPane>
-      <JFXTextArea VBox.vgrow="ALWAYS" labelFloat="true" promptText="%drd_item_description"
-        fx:id="txtDescription"/>
-      <padding>
-        <Insets topRightBottomLeft="8.0"/>
-      </padding>
-    </VBox>
-  </center>-->
   <bottom>
     <HBox prefHeight="50" styleClass="separator-line, line-top">
       <Region HBox.hgrow="ALWAYS"/>
