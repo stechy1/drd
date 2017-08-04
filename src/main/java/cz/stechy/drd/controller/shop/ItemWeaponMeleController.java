@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.shop;
 
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.MoneyController;
@@ -165,7 +166,7 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.title = resources.getString(R.Translate.ITEM_TYPE_WEAPON_MELE);
-        this.imageChooserTitle = resources.getString(R.Translate.ITEM_IMAGE_CHOOSE_DIALOG);
+        this.imageChooserTitle = resources.getString(R.Translate.IMAGE_CHOOSE_DIALOG);
 
         txtName.textProperty().bindBidirectional(model.name);
         txtDescription.textProperty().bindBidirectional(model.description);

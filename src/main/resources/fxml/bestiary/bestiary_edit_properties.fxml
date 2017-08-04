@@ -1,50 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<GridPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="300" prefWidth="400"
-  xmlns="http://javafx.com/javafx/8.0.112"
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="300" prefWidth="400"
+  spacing="16" xmlns="http://javafx.com/javafx/8.0.112"
   fx:controller="cz.stechy.drd.controller.bestiary.edit.BestiaryEditPropertiesController">
-  <columnConstraints>
-    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-    <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-  </rowConstraints>
-  <Label text="%drd_bestiary_attack_number"/>
-  <Label GridPane.rowIndex="1" text="%drd_bestiary_defence_number"/>
-  <Label GridPane.rowIndex="2" text="%drd_bestiary_viability"/>
-  <Label GridPane.rowIndex="3" text="%drd_bestiary_immunity"/>
-  <Label GridPane.rowIndex="4" text="%drd_bestiary_mettle"/>
-  <Label GridPane.rowIndex="5" text="%drd_bestiary_intelligence"/>
-  <Label GridPane.rowIndex="6" text="%drd_bestiary_charisma"/>
-  <TextField GridPane.columnIndex="1" maxWidth="150.0" fx:id="txtAttackNumber"/>
-  <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" layoutX="235.0" layoutY="46.0"
-    maxWidth="150.0"
-    fx:id="txtDefenceNumber"/>
-  <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" layoutX="235.0" layoutY="146.0"
-    maxWidth="150.0"
-    fx:id="txtViability"/>
-  <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" layoutX="235.0" layoutY="146.0"
-    maxWidth="150.0"
-    fx:id="txtImmunity"/>
-  <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" layoutX="235.0" layoutY="146.0"
-    maxWidth="150.0"
-    fx:id="txtMettle"/>
-  <TextField GridPane.columnIndex="1" GridPane.rowIndex="5" layoutX="235.0" layoutY="146.0"
-    maxWidth="150.0"
-    fx:id="txtIntelligence"/>
-  <TextField GridPane.columnIndex="1" GridPane.rowIndex="6" layoutX="235.0" layoutY="146.0"
-    maxWidth="150.0"
-    fx:id="txtCharisma"/>
-</GridPane>
+  <JFXTextField labelFloat="true" maxWidth="150.0" promptText="%drd_bestiary_attack_number"
+    fx:id="txtAttackNumber"/>
+  <JFXTextField labelFloat="true" layoutX="235.0" layoutY="46.0" maxWidth="150.0"
+    promptText="%drd_bestiary_defence_number" fx:id="txtDefenceNumber"/>
+  <JFXTextField labelFloat="true" layoutX="235.0" layoutY="146.0" maxWidth="150.0"
+    promptText="%drd_bestiary_viability" fx:id="txtViability"/>
+  <JFXTextField labelFloat="true" layoutX="235.0" layoutY="146.0" maxWidth="150.0"
+    promptText="%drd_bestiary_immunity" fx:id="txtImmunity"/>
+  <JFXTextField labelFloat="true" layoutX="235.0" layoutY="146.0" maxWidth="150.0"
+    promptText="%drd_bestiary_mettle" fx:id="txtMettle"/>
+  <JFXTextField labelFloat="true" layoutX="235.0" layoutY="146.0" maxWidth="150.0"
+    promptText="%drd_bestiary_intelligence" fx:id="txtIntelligence"/>
+  <JFXTextField labelFloat="true" layoutX="235.0" layoutY="146.0" maxWidth="150.0"
+    promptText="%drd_bestiary_charisma" fx:id="txtCharisma"/>
+  <padding>
+    <Insets topRightBottomLeft="8.0"/>
+  </padding>
+</VBox>

@@ -7,10 +7,9 @@ public final class R {
 
         public static final String CARD = "card";
         public static final String DICE = "dice";
-        public static final String GROUP = "group";
+        public static final String LABELED_MAX_ACT_VALUE = "labeled_max_act_value";
         public static final String MONEY = "money";
         public static final String PRELOADER = "preloader";
-        public static final String TEXT = "text";
         public static final String VULNERABILITY = "vulnerability";
         public static final String BESTIARY = "bestiary";
         public static final String BESTIARY_EDIT = "bestiary_edit";
@@ -56,6 +55,8 @@ public final class R {
         public static final String RESET = "drd_reset";
         public static final String NO_ACTION = "drd_no_action";
         public static final String ACTION_FAILED = "drd_action_failed";
+        public static final String IMAGE_CLICK_FOR_IMAGE = "drd_image_click_for_image";
+        public static final String IMAGE_CHOOSE_DIALOG = "drd_image_choose_dialog";
         public static final String MAIN_TITLE = "drd_main_title";
         public static final String MAIN_TAB_DEFAULTS = "drd_main_tab_defaults";
         public static final String MAIN_TAB_INVENTORY = "drd_main_tab_inventory";
@@ -184,7 +185,6 @@ public final class R {
         public static final String ITEM_AMMOUNT = "drd_item_ammount";
         public static final String ITEM_STACK_SIZE = "drd_item_stack_size";
         public static final String ITEM_IMAGE = "drd_item_image";
-        public static final String ITEM_IMAGE_CHOOSE_DIALOG = "drd_item_image_choose_dialog";
         public static final String ITEM_WEAPON_STRENGTH = "drd_item_weapon_strength";
         public static final String ITEM_WEAPON_RAMPANCY = "drd_item_weapon_rampancy";
         public static final String ITEM_WEAPON_MELE_CLASS = "drd_item_weapon_mele_class";
@@ -203,7 +203,8 @@ public final class R {
         public static final String MONEY_SUBTRACT = "drd_money_subtract";
         public static final String XP_ADD = "drd_xp_add";
         public static final String BESTIARY_TITLE = "drd_bestiary_title";
-        public static final String BESTIARY_EDIT_TITLE = "drd_bestiary_edit_title";
+        public static final String BESTIARY_EDIT_NEW_TITLE = "drd_bestiary_edit_new_title";
+        public static final String BESTIARY_EDIT_UPDATE_TITLE = "drd_bestiary_edit_update_title";
         public static final String BESTIARY_NAME = "drd_bestiary_name";
         public static final String BESTIARY_AUTHOR = "drd_bestiary_author";
         public static final String BESTIARY_MOB_CLASS = "drd_bestiary_mob_class";

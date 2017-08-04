@@ -11,9 +11,10 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 
 /**
  * Kontroler pro řížení kontrolerů pro editaci vlastností nestvůry
@@ -42,20 +43,23 @@ public class BestiaryEditController extends BaseController implements Initializa
     private BestiaryEditDescriptionController tabBestiaryDescriptionController;
 
     @FXML
+    private Label lblTitle;
+    @FXML
     private Pane tabBestiaryImage;
     @FXML
-    private GridPane tabBestiaryGeneral;
+    private VBox tabBestiaryGeneral;
     @FXML
-    private GridPane tabBestiaryProperties;
+    private VBox tabBestiaryProperties;
     @FXML
-    private GridPane tabBestiaryOther;
+    private VBox tabBestiaryOther;
     @FXML
     private TextArea tabBestiaryDescription;
 
     // endregion
 
     private IEditController[] controllers;
-    private String title;
+    private String titleNew;
+    private String titleUpdate;
 
     private int action;
     private String id;
@@ -66,7 +70,8 @@ public class BestiaryEditController extends BaseController implements Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        title = resources.getString(R.Translate.BESTIARY_EDIT_TITLE);
+        titleNew = resources.getString(R.Translate.BESTIARY_EDIT_NEW_TITLE);
+        titleUpdate = resources.getString(R.Translate.BESTIARY_EDIT_UPDATE_TITLE);
 
         controllers = new IEditController[] {
             tabBestiaryImageController,
@@ -88,13 +93,14 @@ public class BestiaryEditController extends BaseController implements Initializa
         id = bundle.getString(BestiaryHelper.ID);
         downloaded =bundle.getBoolean(BestiaryHelper.DOWNLOADED);
         uploaded = bundle.getBoolean(BestiaryHelper.UPLOADED);
+        lblTitle.setText(action == BestiaryHelper.MOB_ACTION_ADD ? titleNew : titleUpdate);
         Arrays.stream(controllers).forEach(controller -> controller.loadMobPropertiesFromBundle(bundle));
     }
 
     @Override
     protected void onResume() {
-        setTitle(title);
-        setScreenSize(400, 370);
+        setTitle(action == BestiaryHelper.MOB_ACTION_ADD ? titleNew : titleUpdate);
+        setScreenSize(400, 450);
     }
 
     @Override

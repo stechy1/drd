@@ -1,11 +1,11 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.model.Money;
+import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.controller.MoneyController;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.Backpack.Size;
 import cz.stechy.drd.util.FormUtils;
@@ -150,7 +150,7 @@ public class ItemBackpackController extends BaseController implements Initializa
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.title = resources.getString(Translate.ITEM_TYPE_BACKPACK);
-        this.imageChooserTitle = resources.getString(R.Translate.ITEM_IMAGE_CHOOSE_DIALOG);
+        this.imageChooserTitle = resources.getString(R.Translate.IMAGE_CHOOSE_DIALOG);
 
         txtName.textProperty().bindBidirectional(model.name);
         txtDescription.textProperty().bindBidirectional(model.description);
