@@ -15,7 +15,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.image.Image;
 
-final class ItemEntry implements InventoryHelper.ItemRecord {
+public final class ItemEntry implements InventoryHelper.ItemRecord {
 
     private final StringProperty id = new SimpleStringProperty();
     private final StringProperty name = new SimpleStringProperty();

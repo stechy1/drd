@@ -26,13 +26,9 @@ public final class R {
         public static final String BACKPACK = "backpack";
         public static final String DEFAULT_STAFF = "default_staff";
         public static final String DEFAULT_STAFF_LEFT = "default_staff_left";
-        public static final String DEFAULT_STAFF_LEFT_OLD = "default_staff_left_old";
-        public static final String DEFAULT_STAFF_OLD = "default_staff_old";
         public static final String DEFAULT_STAFF_RIGHT = "default_staff_right";
-        public static final String DEFAULT_STAFF_RIGHT_OLD = "default_staff_right_old";
         public static final String INVENTORY = "inventory";
         public static final String MAIN = "main";
-        public static final String MAIN_OLD = "main_old";
         public static final String MONEY_XP = "money_xp";
         public static final String ITEM_ARMOR = "item_armor";
         public static final String ITEM_BACKPACK = "item_backpack";

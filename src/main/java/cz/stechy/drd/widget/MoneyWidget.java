@@ -28,25 +28,29 @@ public class MoneyWidget extends VBox {
     private static final int FONT_SIZE = 20;
     private static final Font TEXT_FONT = Font.font("Roboto", FONT_SIZE);
 
-    private static final Image goldImage;
-    private static final Image silverImage;
-    private static final Image copperImage;
+    private static final Image GOLD_IMAGE;
+    private static final Image SILVER_IMAGE;
+    private static final Image COPPER_IMAGE;
 
     // endregion
 
     static {
-        goldImage = new Image(MoneyWidget.class.getResourceAsStream(COIN_GOLD), COIN_SIZE, COIN_SIZE, PRESERVE_RATIO, SMOOTH);
-        silverImage = new Image(MoneyWidget.class.getResourceAsStream(COIN_SILVER), COIN_SIZE, COIN_SIZE, PRESERVE_RATIO, SMOOTH);
-        copperImage = new Image(MoneyWidget.class.getResourceAsStream(COIN_COPPER), COIN_SIZE, COIN_SIZE, PRESERVE_RATIO, SMOOTH);
+        GOLD_IMAGE = new Image(MoneyWidget.class.getResourceAsStream(COIN_GOLD), COIN_SIZE, COIN_SIZE, PRESERVE_RATIO, SMOOTH);
+        SILVER_IMAGE = new Image(MoneyWidget.class.getResourceAsStream(COIN_SILVER), COIN_SIZE, COIN_SIZE, PRESERVE_RATIO, SMOOTH);
+        COPPER_IMAGE = new Image(MoneyWidget.class.getResourceAsStream(COIN_COPPER), COIN_SIZE, COIN_SIZE, PRESERVE_RATIO, SMOOTH);
     }
 
+    // region Variables
+
     private final Text goldText = new Text();
-    private final ImageView goldView = new ImageView(goldImage);
+    private final ImageView goldView = new ImageView(GOLD_IMAGE);
     private final Text silverText = new Text();
-    private final ImageView silverView = new ImageView(silverImage);
+    private final ImageView silverView = new ImageView(SILVER_IMAGE);
     private final Text copperText = new Text();
-    private final ImageView copperView = new ImageView(copperImage);
+    private final ImageView copperView = new ImageView(COPPER_IMAGE);
     private final TextFlow container = new TextFlow(goldText, goldView, silverText, silverView, copperText, copperView);
+
+    // endregion
 
     // region Constructors
 
