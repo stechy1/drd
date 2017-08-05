@@ -15,6 +15,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
@@ -34,7 +35,7 @@ public class ItemSlot {
 
     // region Constants
 
-    public static final int SLOT_SIZE = 40;
+    private static final DataFormat MOVE_ITEM = new DataFormat("move_item");
     private static final int LABEL_TRANSLATE_Y = 15;
     private static final int LABEL_SIZE = 10;
     private static final int LABEL_AMMOUNT_HEGHT = 15;
@@ -42,6 +43,9 @@ public class ItemSlot {
     private static final String STYLE_CLASS_ACCEPTING = "accepting";
     private static final String STYLE_CLASS_DECLINE = "decline";
 
+    private static final Predicate<ItemBase> DEFAULT_FILTER = itemBase -> true;
+
+    public static final int SLOT_SIZE = 40;
     // endregion
 
     // region Variables
@@ -61,7 +65,7 @@ public class ItemSlot {
     private TooltipTranslator tooltipTranslator;
     private ItemStack itemStack;
     // Výchozí item filster, který přijímá vše
-    private Predicate<ItemBase> filter = itemBase -> true;
+    private Predicate<ItemBase> filter = DEFAULT_FILTER;
     // Kontejner pro tooltip
     private GridPane tooltipContainer;
 
@@ -101,10 +105,8 @@ public class ItemSlot {
         } else if (keyboardService.isCtrlDown()) {
             ammount = itemStack.getAmmount() / 2;
         }
-        final DragItemContainer dragItemContainer = new DragItemContainer(
-            itemStack.getItem().getId(), ammount);
 
-        content.put(DragItemContainer.MOVE_ITEM, dragItemContainer);
+        content.put(MOVE_ITEM, "");
 
         db.setDragView(imgItem.getImage());
         db.setContent(content);
@@ -113,16 +115,14 @@ public class ItemSlot {
         event.consume();
     };
     private final EventHandler<? super DragEvent> onDragDone = event -> {
-        if (event.getTransferMode() == TransferMode.MOVE) {
-            dragDropHandlers.onDragEnd();
-        }
+        dragDropHandlers.onDragEnd();
         event.consume();
     };
 
     // Destination slot drag events
     private final EventHandler<? super DragEvent> onDragOver = event -> {
         if (event.getGestureSource() != imgItem &&
-            event.getDragboard().hasContent(DragItemContainer.MOVE_ITEM)) {
+            event.getDragboard().hasContent(MOVE_ITEM)) {
               /* allow for moving */
             event.acceptTransferModes(TransferMode.MOVE);
         }
@@ -132,9 +132,7 @@ public class ItemSlot {
     private final EventHandler<? super DragEvent> onDragDropped = event -> {
         Dragboard db = event.getDragboard();
         boolean success = false;
-        if (db.hasContent(DragItemContainer.MOVE_ITEM) && dragDropHandlers.acceptDrop(this)) {
-            DragItemContainer dragItemContainer = (DragItemContainer) db
-                .getContent(DragItemContainer.MOVE_ITEM);
+        if (db.hasContent(MOVE_ITEM) && dragDropHandlers.acceptDrop(this)) {
             success = true;
         }
 
@@ -239,7 +237,7 @@ public class ItemSlot {
         imgItem.setImage(null);
         lblAmmount.setText(null);
         clickListener = null;
-        filter = null;
+        //filter = DEFAULT_FILTER;
     }
 
     /**
@@ -307,17 +305,17 @@ public class ItemSlot {
      * @return True, pokud lze item vložit, jinak false
      */
     public boolean acceptItem(ItemStack itemStack) {
-        // Není přítomný žádný předmět -> true
-        if (filter == null || itemStack == null) {
-            return true;
-        }
-
-        // Nějaký předmět je přítomný, tak ho otestujeme
         final boolean filterTest = filter.test(itemStack.getItem());
         if (!filterTest) {
             return false;
         }
 
+        // Pokud je slot prázdný a prošel filtrem, tak lze předmět vložit
+        if (isEmpty()) {
+            return true;
+        }
+
+        // Předmět prošel testem a slot není prázdný -> lze do stacku vložit požadované množství?
         return this.itemStack.canInsertAmmount(itemStack.getAmmount());
     }
 
@@ -365,10 +363,6 @@ public class ItemSlot {
      * @param filter Filtr pro příjem itemů
      */
     public void setFilter(Predicate<ItemBase> filter) {
-        if (this.filter != null) {
-            return;
-        }
-
         this.filter = filter;
     }
 

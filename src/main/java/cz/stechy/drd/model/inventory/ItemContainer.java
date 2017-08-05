@@ -270,7 +270,6 @@ public abstract class ItemContainer {
         @Override
         public void onDragEnd() {
             dragInformations.setValue(null);
-            //cancelSlotHighlight();
         }
     };
 
@@ -299,7 +298,6 @@ public abstract class ItemContainer {
         final String sourceInventoryId;
         final ItemSlot sourceSlot;
         final ItemStack draggedStack;
-
 
         private DragInformations(String sourceInventoryId, ItemSlot sourceSlot,
             ItemStack draggedStack) {

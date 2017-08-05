@@ -15,36 +15,37 @@ public final class ItemSlotHelper {
     // region Constants
 
     // Filtr pro přilbu
-    private static final Predicate<ItemBase> helmFilter = itemBase ->
-        itemBase.getItemType() == ItemType.ARMOR &&
+    private static final Predicate<ItemBase> HELM_FILTER = itemBase -> {
+        return itemBase.getItemType() == ItemType.ARMOR &&
             ((Armor) itemBase).getType() == ArmorType.HELM;
+    };
 
     // Filtr pro hrudní brnění
-    private static final Predicate<ItemBase> bodyFilter = itemBase ->
+    private static final Predicate<ItemBase> BODY_FILTER = itemBase ->
         itemBase.getItemType() == ItemType.ARMOR &&
             ((Armor) itemBase).getType() == ArmorType.BODY;
 
     // Filtr pro kalhoty
-    private static final Predicate<ItemBase> legsFilter = itemBase ->
+    private static final Predicate<ItemBase> LEGS_FILTER = itemBase ->
         itemBase.getItemType() == ItemType.ARMOR &&
             ((Armor) itemBase).getType() == ArmorType.LEGS;
 
     // Filtr pro boty
-    private static final Predicate<ItemBase> botsFilter = itemBase ->
+    private static final Predicate<ItemBase> BOTS_FILTER = itemBase ->
         itemBase.getItemType() == ItemType.ARMOR &&
             ((Armor) itemBase).getType() == ArmorType.BOTS;
 
     // Filtr pro rukavice
-    private static final Predicate<ItemBase> glovesFilter = itemBase ->
+    private static final Predicate<ItemBase> GLOVES_FILTER = itemBase ->
         itemBase.getItemType() == ItemType.ARMOR &&
             ((Armor) itemBase).getType() == ArmorType.GLOVES;
 
     // Filtr pro zbraně
-    private static final Predicate<ItemBase> weaponFilter = itemBase ->
+    private static final Predicate<ItemBase> WEAPON_FILTER = itemBase ->
         ItemType.isSword(itemBase.getItemType());
 
     // Filtr pro štíty
-    private static final Predicate<ItemBase> shieldFilter = itemBase -> true;
+    private static final Predicate<ItemBase> SHIELD_FILTER = itemBase -> true;
 
     // endregion
 
@@ -78,7 +79,7 @@ public final class ItemSlotHelper {
      * @return
      */
     public static ItemSlot forArmorHelm(int id, DragDropHandlers dragDropHandlers) {
-        return createSlot(id, dragDropHandlers, helmFilter);
+        return createSlot(id, dragDropHandlers, HELM_FILTER);
     }
 
     /**
@@ -89,7 +90,7 @@ public final class ItemSlotHelper {
      * @return
      */
     public static ItemSlot forArmorBody(int id, DragDropHandlers dragDropHandlers) {
-        return createSlot(id, dragDropHandlers, bodyFilter);
+        return createSlot(id, dragDropHandlers, BODY_FILTER);
     }
 
     /**
@@ -100,7 +101,7 @@ public final class ItemSlotHelper {
      * @return
      */
     public static ItemSlot forArmorLegs(int id, DragDropHandlers dragDropHandlers) {
-        return createSlot(id, dragDropHandlers, legsFilter);
+        return createSlot(id, dragDropHandlers, LEGS_FILTER);
     }
 
     /**
@@ -111,7 +112,7 @@ public final class ItemSlotHelper {
      * @return
      */
     public static ItemSlot forArmorBots(int id, DragDropHandlers dragDropHandlers) {
-        return createSlot(id, dragDropHandlers, botsFilter);
+        return createSlot(id, dragDropHandlers, BOTS_FILTER);
     }
 
     /**
@@ -122,7 +123,7 @@ public final class ItemSlotHelper {
      * @return
      */
     public static ItemSlot forArmorGloves(int id, DragDropHandlers dragDropHandlers) {
-        return createSlot(id, dragDropHandlers, glovesFilter);
+        return createSlot(id, dragDropHandlers, GLOVES_FILTER);
     }
 
     /**
@@ -133,7 +134,7 @@ public final class ItemSlotHelper {
      * @return
      */
     public static ItemSlot forWeapon(int id, DragDropHandlers dragDropHandlers) {
-        return createSlot(id, dragDropHandlers, weaponFilter);
+        return createSlot(id, dragDropHandlers, WEAPON_FILTER);
     }
 
     /**
@@ -144,7 +145,7 @@ public final class ItemSlotHelper {
      * @return
      */
     public static ItemSlot forShield(int id, DragDropHandlers dragDropHandlers) {
-        return createSlot(id, dragDropHandlers, shieldFilter);
+        return createSlot(id, dragDropHandlers, SHIELD_FILTER);
     }
 
     // endregion

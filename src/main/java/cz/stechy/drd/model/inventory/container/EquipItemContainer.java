@@ -17,7 +17,8 @@ public class EquipItemContainer extends ItemContainer {
 
     // region Constants
 
-    public static final int CAPACITY = 3;
+    // Počet slotů v inventáři
+    public static final int CAPACITY = 7;
 
     // endregion
 
