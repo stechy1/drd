@@ -1,7 +1,10 @@
 package cz.stechy.drd.model.item;
 
+import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
+import java.util.Map;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -89,6 +92,17 @@ public final class RangedWeapon extends WeaponBase {
         setRangeMedium(weapon.getRangeMedium());
         setRangeLong(weapon.getRangeLong());
 
+    }
+
+    @Override
+    public Map<String, String> getMapDescription() {
+        final Map<String, String> map = super.getMapDescription();
+        map.put(R.Translate.ITEM_WEAPON_MELE_RANGED_TYPE, getWeaponType().name());
+        map.put(R.Translate.ITEM_WEAPON_RANGED_RANGE_LOW, String.valueOf(getRangeLow()));
+        map.put(R.Translate.ITEM_WEAPON_RANGED_RANGE_MEDIUM, String.valueOf(getRangeMedium()));
+        map.put(R.Translate.ITEM_WEAPON_RANGED_RANGE_LONG, String.valueOf(getRangeLong()));
+
+        return map;
     }
 
     @Override

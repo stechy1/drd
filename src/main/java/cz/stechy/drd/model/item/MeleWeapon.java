@@ -1,7 +1,10 @@
 package cz.stechy.drd.model.item;
 
+import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
+import java.util.Map;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -124,6 +127,16 @@ public final class MeleWeapon extends WeaponBase {
         setDefence(weapon.getDefence());
         setWeaponClass(weapon.getWeaponClass());
         setWeaponType(weapon.getWeaponType());
+    }
+
+    @Override
+    public Map<String, String> getMapDescription() {
+        final Map<String, String> map = super.getMapDescription();
+        map.put(R.Translate.ITEM_WEAPON_MELE_ARMOR_DEFENCE_NUMBER, String.valueOf(getDefence()));
+        map.put(R.Translate.ITEM_WEAPON_MELE_CLASS, getWeaponClass().name());
+        map.put(R.Translate.ITEM_WEAPON_MELE_RANGED_TYPE, getWeaponType().name());
+
+        return map;
     }
 
     @Override

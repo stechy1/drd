@@ -1,7 +1,9 @@
 package cz.stechy.drd.model.item;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
+import java.util.Map;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -77,6 +79,15 @@ public final class Backpack extends ItemBase {
         Backpack backpack = (Backpack) other;
         setMaxLoad(backpack.getMaxLoad());
         setSize(backpack.getSize());
+    }
+
+    @Override
+    public Map<String, String> getMapDescription() {
+        final Map<String, String> map = super.getMapDescription();
+        map.put(R.Translate.ITEM_BACKPACK_SIZE, getSize().name());
+        map.put(R.Translate.ITEM_MAX_LOAD, String.valueOf(getMaxLoad()));
+
+        return map;
     }
 
     @Override

@@ -1,6 +1,9 @@
 package cz.stechy.drd.model.item;
 
+import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.db.base.DatabaseItem;
+import java.util.Map;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -56,6 +59,15 @@ public abstract class WeaponBase extends ItemBase {
         WeaponBase weapon = (WeaponBase) other;
         setStrength(weapon.getStrength());
         setRampancy(weapon.getRampancy());
+    }
+
+    @Override
+    public Map<String, String> getMapDescription() {
+        final Map<String, String> map = super.getMapDescription();
+        map.put(R.Translate.ITEM_WEAPON_STRENGTH, String.valueOf(getStrength()));
+        map.put(R.Translate.ITEM_WEAPON_RAMPANCY, String.valueOf(getRampancy()));
+
+        return map;
     }
 
     // endregion

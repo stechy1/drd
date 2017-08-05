@@ -1,9 +1,11 @@
 package cz.stechy.drd.model.item;
 
-import cz.stechy.drd.model.Money;
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.IClonable;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Height;
+import java.util.Map;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -132,6 +134,15 @@ public final class Armor extends ItemBase {
         this.priceB.setRaw(armor.getPriceB().getRaw());
         this.priceC.setRaw(armor.getPriceC().getRaw());
         setMinimumStrength(armor.getMinimumStrength());
+    }
+
+    @Override
+    public Map<String, String> getMapDescription() {
+        final Map<String, String> map = super.getMapDescription();
+        map.put(R.Translate.ITEM_WEAPON_MELE_ARMOR_DEFENCE_NUMBER, String.valueOf(getDefenceNumber()));
+        map.put(R.Translate.ITEM_ARMOR_MINIMUM_STRENGTH, String.valueOf(getMinimumStrength()));
+
+        return map;
     }
 
     @Override
