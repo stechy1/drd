@@ -4,12 +4,12 @@ import cz.stechy.drd.Context;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.widget.Card;
+import cz.stechy.drd.widget.LabeledMoney;
 import cz.stechy.drd.widget.LabeledProgressBar;
 import cz.stechy.drd.widget.LabeledText;
-import cz.stechy.drd.widget.LabeledMoney;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.fxml.FXML;
-import javafx.scene.layout.GridPane;
 
 /**
  * Kontroler pro základní parametry postavy
@@ -38,9 +38,9 @@ public class DefaultStaffController implements MainScreen {
     @FXML
     private LabeledMoney lblMoney;
     @FXML
-    private GridPane defaultStaffLeft;
+    private Card defaultStaffLeft;
     @FXML
-    private GridPane defaultStaffRight;
+    private Card defaultStaffRight;
 
     // endregion
 
