@@ -131,7 +131,7 @@ public class MainController extends BaseController implements Initializable {
     @Override
     protected void onResume() {
         setTitle(title);
-        setScreenSize(550, 440);
+        setScreenSize(880, 700);
     }
 
     @Override

@@ -63,13 +63,6 @@
 }
 
 /* Progress Bar Demo */
-.progress-bar > .bar {
-    -fx-min-width: 500;
-}
-
-.jfx-progress-bar > .bar {
-    -fx-min-width: 500;
-}
 
 .jfx-progress-bar {
     -fx-progress-color: #0F9D58;
@@ -509,4 +502,7 @@
 }
 .jfx-tab-pane .tab-header-background {
     -fx-background-color: -deep-purple-A100;
+}
+.jfx-tab-pane .tab {
+    -fx-cursor: hand;
 }

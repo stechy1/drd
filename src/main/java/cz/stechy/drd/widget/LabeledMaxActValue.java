@@ -1,6 +1,5 @@
 package cz.stechy.drd.widget;
 
-import com.jfoenix.controls.JFXProgressBar;
 import cz.stechy.drd.model.MaxActValue;
 import java.io.IOException;
 import javafx.beans.NamedArg;
@@ -8,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -28,18 +28,22 @@ public class LabeledMaxActValue extends Group {
     @FXML
     private MaxActWidget lblValue;
     @FXML
-    private JFXProgressBar bar;
+    private ProgressBar bar;
     @FXML
     private Label lblDescription;
+
+    // endregion
 
     private int actValue = 1;
     private int maxValue = 1;
 
     // endregion
 
-    // endregion
-
     // region Constructors
+
+    public LabeledMaxActValue(@NamedArg("caption") String caption, @NamedArg("description") String description) {
+        this(caption, description, new MaxActValue(0, 100, 50));
+    }
 
     public LabeledMaxActValue(@NamedArg("caption") String caption, @NamedArg("description") String description, @NamedArg("maxActValue") MaxActValue maxActValue) {
         try {
@@ -51,6 +55,8 @@ public class LabeledMaxActValue extends Group {
             lblCaption.setText(caption);
             lblDescription.setText(description);
             lblValue.forMaxActValue(maxActValue);
+            prefWidth(270);
+            prefHeight(140);
         } catch (IOException e) {
             e.printStackTrace();
         }

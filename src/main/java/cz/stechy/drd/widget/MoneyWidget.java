@@ -1,10 +1,10 @@
 package cz.stechy.drd.widget;
 
 import cz.stechy.drd.model.Money;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.IntegerBinding;
+import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -12,7 +12,7 @@ import javafx.scene.text.TextFlow;
 /**
  * Widget reprezenzující peníze s grafickou vizualizací
  */
-public class MoneyWidget extends TextFlow {
+public class MoneyWidget extends VBox {
 
     // region Constants
 
@@ -25,8 +25,8 @@ public class MoneyWidget extends TextFlow {
     private static final boolean PRESERVE_RATIO = false;
     private static final boolean SMOOTH = true;
 
-    private static final int FONT_SIZE = 12;
-    private static final Font textFont = Font.font("Roboto", FONT_SIZE);
+    private static final int FONT_SIZE = 20;
+    private static final Font TEXT_FONT = Font.font("Roboto", FONT_SIZE);
 
     private static final Image goldImage;
     private static final Image silverImage;
@@ -46,6 +46,7 @@ public class MoneyWidget extends TextFlow {
     private final ImageView silverView = new ImageView(silverImage);
     private final Text copperText = new Text();
     private final ImageView copperView = new ImageView(copperImage);
+    private final TextFlow container = new TextFlow(goldText, goldView, silverText, silverView, copperText, copperView);
 
     // region Constructors
 
@@ -64,17 +65,12 @@ public class MoneyWidget extends TextFlow {
     }
 
     {
-        goldText.setFont(textFont);
-        silverText.setFont(textFont);
-        copperText.setFont(textFont);
+        goldText.setFont(TEXT_FONT);
+        silverText.setFont(TEXT_FONT);
+        copperText.setFont(TEXT_FONT);
 
-        final IntegerBinding translateBinding = Bindings.createIntegerBinding(() ->
-            -((int) getHeight() / 2 - FONT_SIZE / 2), heightProperty());
-        goldText.translateYProperty().bind(translateBinding);
-        silverText.translateYProperty().bind(translateBinding);
-        copperText.translateYProperty().bind(translateBinding);
-
-        getChildren().setAll(goldText, goldView, silverText, silverView, copperText, copperView);
+        getChildren().setAll(container);
+        setAlignment(Pos.CENTER);
     }
 
     // endregion
