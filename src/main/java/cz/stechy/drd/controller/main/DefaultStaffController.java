@@ -5,11 +5,11 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.widget.Card;
-import cz.stechy.drd.widget.LabeledMoney;
-import cz.stechy.drd.widget.LabeledProgressBar;
-import cz.stechy.drd.widget.LabeledText;
+import cz.stechy.drd.widget.LabeledMaxActValue;
+import cz.stechy.drd.widget.MoneyWidget;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 
 /**
  * Kontroler pro základní parametry postavy
@@ -26,17 +26,17 @@ public class DefaultStaffController implements MainScreen {
     private DefaultStaffRightController defaultStaffRightController;
 
     @FXML
-    private LabeledText lblHeroName;
+    private Label lblName;
     @FXML
-    private LabeledText lblHeroRaceAndProfession;
+    private Label lblRaceAndProfession;
     @FXML
-    private LabeledProgressBar lblLive;
+    private LabeledMaxActValue lblLive;
     @FXML
-    private LabeledProgressBar lblMag;
+    private LabeledMaxActValue lblMag;
     @FXML
-    private LabeledProgressBar lblExperience;
+    private LabeledMaxActValue lblExperience;
     @FXML
-    private LabeledMoney lblMoney;
+    private MoneyWidget lblMoney;
     @FXML
     private Card defaultStaffLeft;
     @FXML
@@ -59,15 +59,15 @@ public class DefaultStaffController implements MainScreen {
     @Override
     public void setHero(ReadOnlyObjectProperty<Hero> hero) {
         hero.addListener((observable, oldValue, newValue) -> {
-            lblHeroName.textProperty().bind(newValue.nameProperty());
-            lblHeroRaceAndProfession.textProperty()
+            lblName.textProperty().bind(newValue.nameProperty());
+            lblRaceAndProfession.textProperty()
                 .bind(StringConvertors.forRaceAndProfessionConverter(translator, newValue));
             lblLive.setMaxActValue(newValue.getLive());
             lblMag.setMaxActValue(newValue.getMag());
             lblExperience.setMaxActValue(newValue.getExperiences());
             defaultStaffLeftController.bindWithHero(newValue);
             defaultStaffRightController.bindWithHero(newValue);
-            lblMoney.forMoney(newValue.getMoney());
+            lblMoney.bind(newValue.getMoney());
         });
     }
 

@@ -63,13 +63,6 @@
 }
 
 /* Progress Bar Demo */
-.progress-bar > .bar {
-    -fx-min-width: 500;
-}
-
-.jfx-progress-bar > .bar {
-    -fx-min-width: 500;
-}
 
 .jfx-progress-bar {
     -fx-progress-color: #0F9D58;
