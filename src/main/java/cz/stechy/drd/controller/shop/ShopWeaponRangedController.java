@@ -3,9 +3,9 @@ package cz.stechy.drd.controller.shop;
 import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.Context;
-import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
@@ -38,7 +38,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import org.slf4j.Logger;
@@ -127,22 +126,10 @@ public class ShopWeaponRangedController implements Initializable,
         tableRangedWeapons.setFixedCellSize(SHOP_ROW_HEIGHT);
         sortedList.comparatorProperty().bind(tableRangedWeapons.comparatorProperty());
 
-        columnImage.setCellValueFactory(new PropertyValueFactory<>("image"));
         columnImage.setCellFactory(param -> CellUtils.forImage());
-        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        columnAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
-        columnStrength.setCellValueFactory(new PropertyValueFactory<>("strength"));
-        columnRampancy.setCellValueFactory(new PropertyValueFactory<>("rampancy"));
-        columnType.setCellValueFactory(new PropertyValueFactory<>("weaponType"));
-        columnRangeLow.setCellValueFactory(new PropertyValueFactory<>("rangeLow"));
-        columnRangeMedium.setCellValueFactory(new PropertyValueFactory<>("rangeMedium"));
-        columnRangeLong.setCellValueFactory(new PropertyValueFactory<>("rangeLong"));
         columnType.setCellFactory(
             TextFieldTableCell.forTableColumn(StringConvertors.forRangedWeaponType(translator)));
-        columnWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
-        columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
-        columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
     }
 

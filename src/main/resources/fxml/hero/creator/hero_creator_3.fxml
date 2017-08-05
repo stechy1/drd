@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
   xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.hero.creator.HeroCreatorController3">
@@ -26,13 +27,29 @@
       </columnResizePolicy>
       <columns>
         <TableColumn minWidth="50" styleClass="table-column" text="%drd_item_image"
-          fx:id="columnImage"/>
+          fx:id="columnImage">
+          <cellValueFactory>
+            <PropertyValueFactory property="image"/>
+          </cellValueFactory>
+        </TableColumn>
         <TableColumn minWidth="100.0" styleClass="table-column" text="%drd_item_name"
-          fx:id="columnName"/>
+          fx:id="columnName">
+          <cellValueFactory>
+            <PropertyValueFactory property="name"/>
+          </cellValueFactory>
+        </TableColumn>
         <TableColumn minWidth="40.0" styleClass="table-column" text="%drd_item_ammount"
-          fx:id="columnItemCount"/>
+          fx:id="columnItemCount">
+          <cellValueFactory>
+            <PropertyValueFactory property="weight"/>
+          </cellValueFactory>
+        </TableColumn>
         <TableColumn minWidth="40.0" styleClass="table-column" text="%drd_item_weight"
-          fx:id="columnWeight"/>
+          fx:id="columnWeight">
+          <cellValueFactory>
+            <PropertyValueFactory property="itemCount"/>
+          </cellValueFactory>
+        </TableColumn>
       </columns>
     </TableView>
   </center>

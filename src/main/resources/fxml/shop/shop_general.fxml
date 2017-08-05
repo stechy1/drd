@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <TableView fx:id="tableGeneralItems" prefHeight="400.0" prefWidth="1000.0"
   xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="cz.stechy.drd.controller.shop.ShopGeneralController">
@@ -9,12 +10,36 @@
     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
   </columnResizePolicy>
   <columns>
-    <TableColumn fx:id="columnImage" minWidth="40.0" text="%drd_item_image"/>
-    <TableColumn fx:id="columnName" minWidth="100.0" text="%drd_item_name"/>
-    <TableColumn fx:id="columnAuthor" minWidth="100.0" text="%drd_item_author"/>
-    <TableColumn fx:id="columnWeight" minWidth="50.0" text="%drd_item_weight"/>
-    <TableColumn fx:id="columnPrice" minWidth="50.0" text="%drd_item_price"/>
-    <TableColumn fx:id="columnAmmount" minWidth="75.0" text="%drd_item_ammount"/>
+    <TableColumn fx:id="columnImage" minWidth="40.0" text="%drd_item_image">
+      <cellValueFactory>
+        <PropertyValueFactory property="image"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnName" minWidth="100.0" text="%drd_item_name">
+      <cellValueFactory>
+        <PropertyValueFactory property="name"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnAuthor" minWidth="100.0" text="%drd_item_author">
+      <cellValueFactory>
+        <PropertyValueFactory property="author"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnWeight" minWidth="50.0" text="%drd_item_weight">
+      <cellValueFactory>
+        <PropertyValueFactory property="weight"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnPrice" minWidth="50.0" text="%drd_item_price">
+      <cellValueFactory>
+        <PropertyValueFactory property="price"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnAmmount" minWidth="75.0" text="%drd_item_ammount">
+      <cellValueFactory>
+        <PropertyValueFactory property="ammount"/>
+      </cellValueFactory>
+    </TableColumn>
     <TableColumn fx:id="columnAction" minWidth="135.0" text="%drd_shop_action"/>
   </columns>
 </TableView>

@@ -35,7 +35,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -85,11 +84,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         tableItems.setItems(items);
         selectedItem.bind(tableItems.getSelectionModel().selectedIndexProperty());
 
-        columnImage.setCellValueFactory(new PropertyValueFactory<>("image"));
         columnImage.setCellFactory(param -> CellUtils.forImage());
-        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        columnWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
-        columnItemCount.setCellValueFactory(new PropertyValueFactory<>("itemCount"));
         columnItemCount.setCellFactory(param -> CellUtils.forMaxActValue());
 
         final List<ChoiceEntry> items = ItemRegistry.getINSTANCE().getRegistry().entrySet()

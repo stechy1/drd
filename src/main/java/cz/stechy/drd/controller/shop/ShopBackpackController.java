@@ -34,7 +34,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,15 +105,8 @@ public class ShopBackpackController implements Initializable, ShopItemController
         tableBackpacks.setFixedCellSize(SHOP_ROW_HEIGHT);
         sortedList.comparatorProperty().bind(tableBackpacks.comparatorProperty());
 
-        columnImage.setCellValueFactory(new PropertyValueFactory<>("image"));
         columnImage.setCellFactory(param -> CellUtils.forImage());
-        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        columnAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
-        columnWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
-        columnMaxLoad.setCellValueFactory(new PropertyValueFactory<>("maxLoad"));
-        columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
-        columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
     }
 

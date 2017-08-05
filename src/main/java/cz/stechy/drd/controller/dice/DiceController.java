@@ -30,7 +30,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
 /**
@@ -123,20 +122,17 @@ public class DiceController extends BaseController implements Initializable {
      * Inicializuje tabulku pro přidávání konstant k hodu kostkou
      */
     private void initTable() {
-        columnAdditionType.setCellValueFactory(new PropertyValueFactory<>("additionType"));
         columnAdditionType.setCellFactory(ComboBoxTableCell
             .forTableColumn(StringConvertors.forAdditionType(translator), AdditionType.values()));
         columnAdditionType.setOnEditCommit(
             event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
                 .setAdditionType(event.getNewValue()));
 
-        columnUseRepair.setCellValueFactory(new PropertyValueFactory<>("useRepair"));
         columnUseRepair.setCellFactory(CheckBoxTableCell.forTableColumn(columnUseRepair));
         columnUseRepair.setOnEditCommit(
             event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
                 .setUseRepair(event.getNewValue()));
 
-        columnUseSubtract.setCellValueFactory(new PropertyValueFactory<>("useSubtract"));
         columnUseSubtract.setCellFactory(CheckBoxTableCell.forTableColumn(columnUseSubtract));
         columnUseSubtract.setOnEditCommit(
             event -> tableAdditions.getItems().get(event.getTablePosition().getRow())

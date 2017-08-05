@@ -38,7 +38,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import org.slf4j.Logger;
@@ -147,17 +146,11 @@ public class BestiaryController extends BaseController implements Initializable 
             service.toggleDatabase(newValue);
         });
 
-        columnImage.setCellValueFactory(new PropertyValueFactory<>("image"));
         columnImage.setCellFactory(param -> CellUtils.forImage());
-        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        columnAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
-        columnMobClass.setCellValueFactory(new PropertyValueFactory<>("mobClass"));
         columnMobClass.setCellFactory(
             TextFieldTableCell.forTableColumn(StringConvertors.forMobClass(translator)));
-        columnRulesType.setCellValueFactory(new PropertyValueFactory<>("rulesType"));
         columnRulesType.setCellFactory(
             TextFieldTableCell.forTableColumn(StringConvertors.forRulesType(translator)));
-        columnViability.setCellValueFactory(new PropertyValueFactory<>("viability"));
         columnAction.setCellFactory(param -> BestiaryHelper
             .forActionButtons(uploadHandler, downloadHandler, deleteHandler, user, resources));
     }

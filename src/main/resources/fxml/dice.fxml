@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <BorderPane prefHeight="300.0" prefWidth="470.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.dice.DiceController">
   <left>
     <JFXListView fx:id="lvDices" maxWidth="65.0" prefWidth="65.0" />
@@ -26,9 +27,21 @@
           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
         </columnResizePolicy>
         <columns>
-          <TableColumn fx:id="columnAdditionType" prefWidth="75.0" text="%drd_dice_property" />
-          <TableColumn fx:id="columnUseRepair" prefWidth="75.0" text="%drd_dice_rate_repair" />
-          <TableColumn fx:id="columnUseSubtract" prefWidth="75.0" text="%drd_dice_add_subtract" />
+          <TableColumn fx:id="columnAdditionType" prefWidth="75.0" text="%drd_dice_property">
+            <cellValueFactory>
+              <PropertyValueFactory property="additionType"/>
+            </cellValueFactory>
+          </TableColumn>
+          <TableColumn fx:id="columnUseRepair" prefWidth="75.0" text="%drd_dice_rate_repair">
+            <cellValueFactory>
+              <PropertyValueFactory property="useRepair"/>
+            </cellValueFactory>
+          </TableColumn>
+          <TableColumn fx:id="columnUseSubtract" prefWidth="75.0" text="%drd_dice_add_subtract">
+            <cellValueFactory>
+              <PropertyValueFactory property="useSubtract"/>
+            </cellValueFactory>
+          </TableColumn>
         </columns>
       </TableView>
       <HBox>

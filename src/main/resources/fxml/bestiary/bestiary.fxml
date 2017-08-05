@@ -9,6 +9,7 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <BorderPane prefWidth="900" prefHeight="500" xmlns="http://javafx.com/javafx/8.0.112"
   xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="cz.stechy.drd.controller.bestiary.BestiaryController">
@@ -18,13 +19,37 @@
         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
       </columnResizePolicy>
       <columns>
-        <TableColumn fx:id="columnImage" prefWidth="75.0" text="%drd_item_image"/>
-        <TableColumn fx:id="columnName" prefWidth="75.0" text="%drd_bestiary_name"/>
-        <TableColumn fx:id="columnAuthor" prefWidth="75.0" text="%drd_bestiary_author"/>
-        <TableColumn fx:id="columnMobClass" prefWidth="75.0" text="%drd_bestiary_mob_class"/>
-        <TableColumn fx:id="columnRulesType" prefWidth="75.0" text="%drd_bestiary_rules_type"/>
-        <TableColumn fx:id="columnViability" prefWidth="75.0" text="%drd_bestiary_viability"/>
-        <TableColumn fx:id="columnAction" minWidth="135.0" text="%drd_bestiary_action" />
+        <TableColumn fx:id="columnImage" prefWidth="75.0" text="%drd_item_image">
+          <cellValueFactory>
+            <PropertyValueFactory property="image"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnName" prefWidth="75.0" text="%drd_bestiary_name">
+          <cellValueFactory>
+            <PropertyValueFactory property="name"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnAuthor" prefWidth="75.0" text="%drd_bestiary_author">
+          <cellValueFactory>
+            <PropertyValueFactory property="author"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnMobClass" prefWidth="75.0" text="%drd_bestiary_mob_class">
+          <cellValueFactory>
+            <PropertyValueFactory property="mobClass"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnRulesType" prefWidth="75.0" text="%drd_bestiary_rules_type">
+          <cellValueFactory>
+            <PropertyValueFactory property="rulesType"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnViability" prefWidth="75.0" text="%drd_bestiary_viability">
+          <cellValueFactory>
+            <PropertyValueFactory property="viability"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnAction" minWidth="135.0" text="%drd_bestiary_action"/>
       </columns>
     </TableView>
   </center>
@@ -35,8 +60,8 @@
       </padding>
       <Button fx:id="btnAddItem" onAction="#handleAddItem">
         <styleClass>
-          <String fx:value="sidebar-button" />
-          <String fx:value="icon-add" />
+          <String fx:value="sidebar-button"/>
+          <String fx:value="icon-add"/>
         </styleClass>
       </Button>
       <Button fx:id="btnRemoveItem" onAction="#handleRemoveItem">
@@ -44,7 +69,7 @@
           <Tooltip text="%drd_repository_item_remove"/>
         </tooltip>
         <styleClass>
-          <String fx:value="sidebar-button" />
+          <String fx:value="sidebar-button"/>
           <String fx:value="icon-subtract"/>
         </styleClass>
       </Button>
@@ -53,7 +78,7 @@
           <Tooltip text="%drd_repository_item_edit"/>
         </tooltip>
         <styleClass>
-          <String fx:value="sidebar-button" />
+          <String fx:value="sidebar-button"/>
           <String fx:value="icon-edit"/>
         </styleClass>
       </Button>
@@ -62,7 +87,7 @@
           <Tooltip text="%drd_repository_item_synchronize"/>
         </tooltip>
         <styleClass>
-          <String fx:value="sidebar-button" />
+          <String fx:value="sidebar-button"/>
           <String fx:value="icon-synchronize"/>
         </styleClass>
       </Button>
@@ -71,7 +96,7 @@
           <Tooltip text="%drd_repository_toggle_online_database"/>
         </tooltip>
         <styleClass>
-          <String fx:value="sidebar-button" />
+          <String fx:value="sidebar-button"/>
           <String fx:value="icon-online"/>
         </styleClass>
       </ToggleButton>
