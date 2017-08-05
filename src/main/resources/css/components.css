@@ -510,3 +510,6 @@
 .jfx-tab-pane .tab-header-background {
     -fx-background-color: -deep-purple-A100;
 }
+.jfx-tab-pane .tab {
+    -fx-cursor: hand;
+}

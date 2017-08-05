@@ -41,6 +41,10 @@ public class LabeledMaxActValue extends Group {
 
     // region Constructors
 
+    public LabeledMaxActValue(@NamedArg("caption") String caption, @NamedArg("description") String description) {
+        this(caption, description, new MaxActValue());
+    }
+
     public LabeledMaxActValue(@NamedArg("caption") String caption, @NamedArg("description") String description, @NamedArg("maxActValue") MaxActValue maxActValue) {
         try {
             final FXMLLoader loader = new FXMLLoader(getClass().getResource(

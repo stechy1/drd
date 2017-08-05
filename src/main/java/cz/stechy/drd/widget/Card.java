@@ -1,6 +1,7 @@
 package cz.stechy.drd.widget;
 
 import java.io.IOException;
+import javafx.beans.DefaultProperty;
 import javafx.beans.NamedArg;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
@@ -11,6 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
+@DefaultProperty("content")
 public final class Card extends Group {
 
     // region Variables
