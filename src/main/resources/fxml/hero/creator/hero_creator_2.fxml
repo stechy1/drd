@@ -49,37 +49,37 @@
       <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="4" fx:id="lblIntelligence"/>
       <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="5" fx:id="lblCharisma"/>
       <JFXButton GridPane.columnIndex="2" onAction="#handleResetLive"
-        styleClass="btn, sidebar-button, icon-dice" fx:id="imgDiceLive">
+        styleClass="sidebar-button, icon-dice" fx:id="imgDiceLive">
         <tooltip>
           <Tooltip text="%drd_dice_roll"/>
         </tooltip>
       </JFXButton>
       <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="1" onAction="#handleResetStrenght"
-        styleClass="btn, sidebar-button, btn-primary, icon-dice">
+        styleClass="sidebar-button, icon-dice">
         <tooltip>
           <Tooltip text="%drd_dice_roll"/>
         </tooltip>
       </JFXButton>
       <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="2" onAction="#handleResetDexterity"
-        styleClass="btn, sidebar-button, btn-primary, icon-dice">
+        styleClass="sidebar-button, icon-dice">
         <tooltip>
           <Tooltip text="%drd_dice_roll"/>
         </tooltip>
       </JFXButton>
       <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="3" onAction="#handleResetImmunity"
-        styleClass="btn, sidebar-button, btn-primary, icon-dice">
+        styleClass="sidebar-button, icon-dice">
         <tooltip>
           <Tooltip text="%drd_dice_roll"/>
         </tooltip>
       </JFXButton>
       <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="4" onAction="#handleResetIntelligence"
-        styleClass="btn, sidebar-button, btn-primary, icon-dice">
+        styleClass="sidebar-button, icon-dice">
         <tooltip>
           <Tooltip text="%drd_dice_roll"/>
         </tooltip>
       </JFXButton>
       <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="5" onAction="#handleResetCharisma"
-        styleClass="btn, sidebar-button, btn-primary, icon-dice">
+        styleClass="sidebar-button, icon-dice">
         <tooltip>
           <Tooltip text="%drd_dice_roll"/>
         </tooltip>
