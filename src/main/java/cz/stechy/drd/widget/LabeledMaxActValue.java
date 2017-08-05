@@ -32,10 +32,10 @@ public class LabeledMaxActValue extends Group {
     @FXML
     private Label lblDescription;
 
+    // endregion
+
     private int actValue = 1;
     private int maxValue = 1;
-
-    // endregion
 
     // endregion
 
