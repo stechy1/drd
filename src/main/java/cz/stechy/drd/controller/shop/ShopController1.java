@@ -1,7 +1,7 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.R;
 import cz.stechy.drd.Context;
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
 import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
 import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
@@ -194,7 +194,7 @@ public class ShopController1 extends BaseController implements Initializable {
 
     @Override
     protected void onResume() {
-        setScreenSize(1000, 600);
+        setScreenSize(1280, 600);
         setTitle(title);
     }
 

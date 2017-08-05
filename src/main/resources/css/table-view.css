@@ -52,8 +52,7 @@
 
 .table-view .table-cell {
     -fx-border-width: 0 0 0 0;
-    -fx-padding: 16 0 16 0;
-    -fx-alignment: top-center;
+    -fx-alignment: center;
 }
 
 .table-view .column-overlay {

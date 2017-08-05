@@ -1,5 +1,5 @@
-.root, .button, .label {
-    -fx-font-family: Roboto;
+.root{
+    -fx-font-family: "Roboto";
 }
 
 /* Burgers Demo */

@@ -73,7 +73,7 @@
   <bottom>
     <HBox prefHeight="50.0" spacing="8.0" styleClass="separator-line, line-top">
       <Label prefHeight="34.0" text="%drd_total_price"/>
-      <Label fx:id="lblTotalPrice"/>
+      <Label prefHeight="34.0" fx:id="lblTotalPrice"/>
       <Region HBox.hgrow="ALWAYS"/>
       <JFXButton disable="true" onAction="#handleContinueShopping" prefHeight="34.0"
         styleClass="btn, btn-primary" text="%drd_shop_continue_shopping"

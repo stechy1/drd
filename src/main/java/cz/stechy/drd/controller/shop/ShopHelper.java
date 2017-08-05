@@ -29,6 +29,7 @@ final class ShopHelper {
 
     // region Constants
 
+    public static final int SHOP_ROW_HEIGHT = 40;
     public static final String ITEM_ACTION = "item_action";
     public static final int ITEM_ACTION_ADD = 1;
     public static final int ITEM_ACTION_UPDATE = 2;

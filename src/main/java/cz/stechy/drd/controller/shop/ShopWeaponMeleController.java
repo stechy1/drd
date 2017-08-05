@@ -1,5 +1,7 @@
 package cz.stechy.drd.controller.shop;
 
+import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
+
 import cz.stechy.drd.Context;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
@@ -119,6 +121,8 @@ public class ShopWeaponMeleController implements Initializable,
         tableMeleWeapon.setItems(sortedList);
         tableMeleWeapon.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
+        tableMeleWeapon.setFixedCellSize(SHOP_ROW_HEIGHT);
+        sortedList.comparatorProperty().bind(tableMeleWeapon.comparatorProperty());
 
         columnImage.setCellValueFactory(new PropertyValueFactory<>("image"));
         columnImage.setCellFactory(param -> CellUtils.forImage());

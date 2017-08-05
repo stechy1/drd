@@ -1,5 +1,7 @@
 package cz.stechy.drd.controller.shop;
 
+import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
+
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
@@ -99,6 +101,8 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         tableGeneralItems.setItems(sortedList);
         tableGeneralItems.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
+        tableGeneralItems.setFixedCellSize(SHOP_ROW_HEIGHT);
+        sortedList.comparatorProperty().bind(tableGeneralItems.comparatorProperty());
 
         columnImage.setCellValueFactory(new PropertyValueFactory<>("image"));
         columnImage.setCellFactory(param -> CellUtils.forImage());
