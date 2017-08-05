@@ -7,6 +7,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
 /**
@@ -74,6 +75,7 @@ public class MoneyWidget extends VBox {
         copperText.setFont(TEXT_FONT);
 
         getChildren().setAll(container);
+        container.setTextAlignment(TextAlignment.CENTER);
         setAlignment(Pos.CENTER);
     }
 
