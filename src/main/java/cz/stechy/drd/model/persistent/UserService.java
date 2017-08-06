@@ -5,6 +5,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.drd.model.db.base.Firebase;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.HashGenerator;
@@ -46,9 +47,9 @@ public final class UserService implements Firebase<User> {
     // region Variables
 
     private final ObservableList<User> onlineDatabase = FXCollections.observableArrayList();
-    private final DatabaseReference firebaseReference;
     private final ObjectProperty<User> user = new SimpleObjectProperty<>(new User());
     private final BooleanProperty logged = new SimpleBooleanProperty(this, "logged");
+    private DatabaseReference firebaseReference;
 
     // endregion
 
@@ -57,11 +58,17 @@ public final class UserService implements Firebase<User> {
     /**
      * Vytvoří nového správce uživatelů
      *
-     * @param firebase {@link FirebaseDatabase}
+     * @param wrapper {@link FirebaseDatabase}
      */
-    public UserService(FirebaseDatabase firebase) {
-        firebaseReference = firebase.getReference(FIREBASE_CHILD_NAME);
-        firebaseReference.addChildEventListener(childEventListener);
+    public UserService(FirebaseWrapper wrapper) {
+        wrapper.firebaseProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                logout();
+                onlineDatabase.clear();
+                firebaseReference = newValue.getReference(FIREBASE_CHILD_NAME);
+                firebaseReference.addChildEventListener(childEventListener);
+            }
+        });
     }
 
     // endregion

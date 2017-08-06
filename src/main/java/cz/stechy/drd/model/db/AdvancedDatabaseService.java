@@ -265,11 +265,16 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     /**
      * Nastaví firebase databázi
      *
-     * @param firebaseDatabase {@link FirebaseDatabase}
+     * @param wrapper {@link FirebaseDatabase}
      */
-    public void setFirebaseDatabase(FirebaseDatabase firebaseDatabase) {
-        firebaseReference = firebaseDatabase.getReference(getFirebaseChildName());
-        firebaseReference.addChildEventListener(childEventListener);
+    public void setFirebaseDatabase(FirebaseWrapper wrapper) {
+        wrapper.firebaseProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                firebaseReference = newValue.getReference(getFirebaseChildName());
+                firebaseReference.addChildEventListener(childEventListener);
+            }
+        });
+
     }
 
     // endregion

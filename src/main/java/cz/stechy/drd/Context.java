@@ -7,6 +7,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseService;
+import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.drd.model.db.SQLite;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.persistent.ArmorService;
@@ -19,6 +20,7 @@ import cz.stechy.drd.model.persistent.RangedWeaponService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +43,7 @@ public class Context {
     private static final Logger logger = LoggerFactory.getLogger(Context.class);
 
     private static final String FIREBASE_URL = "https://drd-personal-diary.firebaseio.com";
-    private static final String FIREBASE_CREDENTAILS = "/other/firebase_credentials.json";
+    private static final String FIREBASE_CREDENTIALS = "/other/firebase_credentials.json";
     private static final String CREDENTAILS_APP_NAME = "drd_helper";
     private static final String CREDENTAILS_APP_VERSION = "1.0";
     private static final String CREDENTILS_APP_AUTHOR = "stechy1";
@@ -68,6 +70,8 @@ public class Context {
 
     // region Variables
 
+    // Pomocný wrapper na pozdější inicializaci firebase databáze
+    private final FirebaseWrapper firebaseWrapper = new FirebaseWrapper();
     // Databáze
     private final Database database;
     // Pracovní adresář, kam můžu ukládat potřebné soubory
@@ -123,25 +127,32 @@ public class Context {
     // region Private methods
 
     /**
-     * Inicializace firebase služby
+     * Inicializuje firebase databázi
+     *
+     * @param credentialsPath Cesta k souboru s credentials
      */
-    private void initFirebase() {
-        try {
-            InputStream serviceAccount = getClass().getResourceAsStream(FIREBASE_CREDENTAILS);
+    public void initFirebase(String credentialsPath) throws Exception {
+        initFirebase(new FileInputStream(credentialsPath));
+    }
 
-            Map<String, Object> auth = new HashMap<>();
-            auth.put("uid", "my_resources");
+    /**
+     * Inicializace firebase služby
+     *
+     * @throws Exception Pokud soubor neexistuje, nebo se inicializace nezdařila
+     * @param inputStream
+     */
+    private void initFirebase(InputStream inputStream) throws Exception {
+        final Map<String, Object> auth = new HashMap<>();
+        auth.put("uid", "my_resources");
 
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredential(FirebaseCredentials.fromCertificate(serviceAccount))
-                .setDatabaseUrl(FIREBASE_URL)
-                .setDatabaseAuthVariableOverride(auth)
-                .build();
+        final FirebaseOptions options = new FirebaseOptions.Builder()
+            .setCredential(FirebaseCredentials.fromCertificate(inputStream))
+            .setDatabaseUrl(FIREBASE_URL)
+            .setDatabaseAuthVariableOverride(auth)
+            .build();
 
-            FirebaseApp.initializeApp(options);
-        } catch (Exception e) {
-            logger.info("Nemůžu se připojit k firebase", e);
-        }
+        FirebaseApp.initializeApp(options);
+        firebaseWrapper.setFirebase(FirebaseDatabase.getInstance());
     }
 
     /**
@@ -164,7 +175,7 @@ public class Context {
                 .newInstance(database);
             if (service instanceof AdvancedDatabaseService) {
                 ((AdvancedDatabaseService) service)
-                    .setFirebaseDatabase(FirebaseDatabase.getInstance());
+                    .setFirebaseDatabase(firebaseWrapper);
             }
             service.createTable();
             service.selectAll();
@@ -186,12 +197,18 @@ public class Context {
      * Inicializuje tabulky databáze
      *
      * @param notifier {@link PreloaderNotifier}
+     * @throws Exception Pokud se inicializace nezdaří
      */
-    void init(PreloaderNotifier notifier) {
+    void init(PreloaderNotifier notifier) throws Exception {
         BaseDatabaseService.setNotifier(notifier);
-        initFirebase();
-        userService = new UserService(FirebaseDatabase.getInstance());
+        userService = new UserService(firebaseWrapper);
         initServices();
+        try {
+            initFirebase(getClass().getResourceAsStream(FIREBASE_CREDENTIALS));
+        } catch (Exception ex) {
+            // Pokud se nepodaří inicializovat firebase při startu, tak se prakticky nic neděje
+            // aplikace může bez firebase běžet
+        }
     }
 
     /**
