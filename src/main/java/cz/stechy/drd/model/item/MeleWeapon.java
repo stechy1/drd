@@ -1,7 +1,6 @@
 package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import java.util.Map;
@@ -77,6 +76,41 @@ public final class MeleWeapon extends WeaponBase {
 
     // endregion
 
+    // region Public methods
+
+    @Override
+    public void update(DatabaseItem other) {
+        super.update(other);
+
+        MeleWeapon weapon = (MeleWeapon) other;
+        setDefence(weapon.getDefence());
+        setWeaponClass(weapon.getWeaponClass());
+        setWeaponType(weapon.getWeaponType());
+    }
+
+    @Override
+    public Map<String, String> getMapDescription() {
+        final Map<String, String> map = super.getMapDescription();
+        map.put(R.Translate.ITEM_WEAPON_MELE_ARMOR_DEFENCE_NUMBER, String.valueOf(getDefence()));
+        map.put(R.Translate.ITEM_WEAPON_MELE_CLASS, getWeaponClass().name());
+        map.put(R.Translate.ITEM_WEAPON_MELE_RANGED_TYPE, getWeaponType().name());
+
+        return map;
+    }
+
+    @Override
+    public ItemType getItemType() {
+        return ItemType.WEAPON_MELE;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T extends IClonable> T duplicate() {
+        return (T) new MeleWeapon(this);
+    }
+
+    // endregion
+
     // region Getters & Setters
 
     public final int getDefence() {
@@ -113,41 +147,6 @@ public final class MeleWeapon extends WeaponBase {
 
     private void setWeaponType(MeleWeaponType weaponType) {
         this.weaponType.set(weaponType);
-    }
-
-    // endregion
-
-    // region Public methods
-
-    @Override
-    public void update(DatabaseItem other) {
-        super.update(other);
-
-        MeleWeapon weapon = (MeleWeapon) other;
-        setDefence(weapon.getDefence());
-        setWeaponClass(weapon.getWeaponClass());
-        setWeaponType(weapon.getWeaponType());
-    }
-
-    @Override
-    public Map<String, String> getMapDescription() {
-        final Map<String, String> map = super.getMapDescription();
-        map.put(R.Translate.ITEM_WEAPON_MELE_ARMOR_DEFENCE_NUMBER, String.valueOf(getDefence()));
-        map.put(R.Translate.ITEM_WEAPON_MELE_CLASS, getWeaponClass().name());
-        map.put(R.Translate.ITEM_WEAPON_MELE_RANGED_TYPE, getWeaponType().name());
-
-        return map;
-    }
-
-    @Override
-    public ItemType getItemType() {
-        return ItemType.WEAPON_MELE;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <T extends IClonable> T duplicate() {
-        return (T) new MeleWeapon(this);
     }
 
     // endregion

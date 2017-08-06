@@ -217,6 +217,45 @@ public class Hero extends EntityBase {
 
     // endregion
 
+    // region Public methods
+
+    @Override
+    public void update(DatabaseItem other) {
+        super.update(other);
+
+        Hero hero = (Hero) other;
+        setRace(hero.getRace());
+        setProfession(hero.getProfession());
+        setLevel(hero.getLevel());
+        this.money.setRaw(hero.getMoney().getRaw());
+        this.experiences.update(hero.getExperiences());
+        this.strength.setValue(hero.getStrength().getValue());
+        this.dexterity.setValue(hero.getDexterity().getValue());
+        this.immunity.setValue(hero.getImmunity().getValue());
+        this.intelligence.setValue(hero.getIntelligence().getValue());
+        this.charisma.setValue(hero.getCharisma().getValue());
+        this.defenceNumber.setValue(hero.getDefenceNumber());
+    }
+
+    @Override
+    @SuppressWarnings({"unused", "unchecked"})
+    public <T extends IClonable> T duplicate() {
+        return (T) new Hero(this);
+    }
+
+    /**
+     * Zvýší úroveň hrdiny o 1 pouze za předpokladu, že může
+     */
+    public void levelUp() {
+        if (!canLevelUp()) {
+            return;
+        }
+
+        setLevel(getLevel() + 1);
+    }
+
+    // endregion
+
     // region Getters & Setters
 
     public final Race getRace() {
@@ -337,45 +376,6 @@ public class Hero extends EntityBase {
 
     public final ReadOnlyBooleanProperty levelUpProperty() {
         return levelUp;
-    }
-
-    // endregion
-
-    // region Public methods
-
-    @Override
-    public void update(DatabaseItem other) {
-        super.update(other);
-
-        Hero hero = (Hero) other;
-        setRace(hero.getRace());
-        setProfession(hero.getProfession());
-        setLevel(hero.getLevel());
-        this.money.setRaw(hero.getMoney().getRaw());
-        this.experiences.update(hero.getExperiences());
-        this.strength.setValue(hero.getStrength().getValue());
-        this.dexterity.setValue(hero.getDexterity().getValue());
-        this.immunity.setValue(hero.getImmunity().getValue());
-        this.intelligence.setValue(hero.getIntelligence().getValue());
-        this.charisma.setValue(hero.getCharisma().getValue());
-        this.defenceNumber.setValue(hero.getDefenceNumber());
-    }
-
-    @Override
-    @SuppressWarnings({"unused", "unchecked"})
-    public <T extends IClonable> T duplicate() {
-        return (T) new Hero(this);
-    }
-
-    /**
-     * Zvýší úroveň hrdiny o 1 pouze za předpokladu, že může
-     */
-    public void levelUp() {
-        if (!canLevelUp()) {
-            return;
-        }
-
-        setLevel(getLevel() + 1);
     }
 
     // endregion

@@ -129,6 +129,8 @@ public abstract class EntityBase extends OnlineItem {
 
     // endregion
 
+    // region Public methods
+
     @Override
     public void update(DatabaseItem other) {
         super.update(other);
@@ -144,6 +146,8 @@ public abstract class EntityBase extends OnlineItem {
         setConviction(entity.getConviction());
         setHeight(entity.getHeight());
     }
+
+    // endregion
 
     @Override
     public String toString() {

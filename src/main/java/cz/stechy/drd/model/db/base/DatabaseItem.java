@@ -30,6 +30,19 @@ public abstract class DatabaseItem implements IClonable {
 ;
     // endregion
 
+    // region Public methods
+
+    /**
+     * Aktualizuje parametry objektu z jiného objektu
+     *
+     * @param other Jiný objekt, ze kterého se převezmou parametry
+     */
+    public void update(DatabaseItem other) {
+        this.id.setValue(other.getId());
+    }
+
+    // endregion
+
     // region Getters & Setters
 
     public String getId() {
@@ -42,19 +55,6 @@ public abstract class DatabaseItem implements IClonable {
 
     public void setId(String id) {
         this.id.set(id);
-    }
-
-    // endregion
-
-    // region Public methods
-
-    /**
-     * Aktualizuje parametry objektu z jiného objektu
-     *
-     * @param other Jiný objekt, ze kterého se převezmou parametry
-     */
-    public void update(DatabaseItem other) {
-        this.id.setValue(other.getId());
     }
 
     // endregion
