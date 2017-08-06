@@ -62,7 +62,9 @@ public final class R {
         public static final String MAIN_TAB_DASHBOARD = "drd_main_tab_dashboard";
         public static final String MAIN_TAB_INVENTORY = "drd_main_tab_inventory";
         public static final String HERO_NAME = "drd_hero_name";
-        public static final String HERO_RACE_AND_PROFESSION = "drd_hero_race_and_profession";
+        public static final String HERO_RACE = "drd_hero_race";
+        public static final String HERO_PROFESSION = "drd_hero_profession";
+        public static final String HERO_SPECIALIZATION = "drd_hero_specialization";
         public static final String HERO_DESCRIPTION = "drd_hero_description";
         public static final String HERO_LIVE = "drd_hero_live";
         public static final String HERO_LIVES = "drd_hero_lives";
@@ -131,8 +133,6 @@ public final class R {
         public static final String MAIN_MENU_HELP_CHANGELOG = "drd_main_menu_help_changelog";
         public static final String MAIN_MENU_HELP_ABOUT = "drd_main_menu_help_about";
         public static final String GUIDE_NEW_HERO_1_TITLE = "drd_guide_new_hero_1_title";
-        public static final String GUIDE_NEW_HERO_1_HERO_RACE = "drd_guide_new_hero_1_hero_race";
-        public static final String GUIDE_NEW_HERO_1_HERO_PROFESSION = "drd_guide_new_hero_1_hero_profession";
         public static final String GUIDE_NEW_HERO_2_TITLE = "drd_guide_new_hero_2_title";
         public static final String GUIDE_NEW_HERO_3_TITLE = "drd_guide_new_hero_3_title";
         public static final String ITEM_NEW = "drd_item_new";

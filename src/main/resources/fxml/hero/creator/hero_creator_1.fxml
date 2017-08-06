@@ -31,10 +31,10 @@
         <EnumComboBox fx:id="cmbConviction" enumType="cz.stechy.drd.model.entity.Conviction"
           labelFloat="true" minWidth="150.0" promptText="%drd_hero_conviction"/>
         <EnumComboBox fx:id="cmbRace" enumType="cz.stechy.drd.model.entity.hero.Hero$Race"
-          labelFloat="true" minWidth="150.0" promptText="%drd_guide_new_hero_1_hero_race"/>
+          labelFloat="true" minWidth="150.0" promptText="%drd_hero_race"/>
         <EnumComboBox fx:id="cmbProfession"
           enumType="cz.stechy.drd.model.entity.hero.Hero$Profession" labelFloat="true"
-          minWidth="150.0" promptText="%drd_guide_new_hero_1_hero_profession"/>
+          minWidth="150.0" promptText="%drd_hero_profession"/>
       </VBox>
       <JFXTextArea fx:id="txtDescription" labelFloat="true" minHeight="100.0" prefHeight="100.0"
         promptText="%drd_hero_description" HBox.hgrow="ALWAYS"/>

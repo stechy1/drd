@@ -45,9 +45,9 @@
       <Label GridPane.columnIndex="1" fx:id="lblName"/>
       <Label GridPane.rowIndex="1" text="%drd_hero_conviction"/>
       <Label GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="lblConviction"/>
-      <Label GridPane.rowIndex="2" text="%drd_guide_new_hero_1_hero_race"/>
+      <Label GridPane.rowIndex="2" text="%drd_hero_race"/>
       <Label GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="lblRace"/>
-      <Label GridPane.rowIndex="3" text="%drd_guide_new_hero_1_hero_profession"/>
+      <Label GridPane.rowIndex="3" text="%drd_hero_profession"/>
       <Label GridPane.columnIndex="1" GridPane.rowIndex="3" fx:id="lblProfession"/>
       <Label GridPane.rowIndex="4" text="%drd_hero_strength"/>
       <Label GridPane.rowIndex="5" text="%drd_hero_dexterity"/>

@@ -28,7 +28,11 @@ public class DefaultStaffController implements MainScreen {
     @FXML
     private Label lblName;
     @FXML
-    private Label lblRaceAndProfession;
+    private Label lblRace;
+    @FXML
+    private Label lblProfession;
+    @FXML
+    private Label lblSpecialization;
     @FXML
     private LabeledMaxActValue lblLive;
     @FXML
@@ -60,8 +64,10 @@ public class DefaultStaffController implements MainScreen {
     public void setHero(ReadOnlyObjectProperty<Hero> hero) {
         hero.addListener((observable, oldValue, newValue) -> {
             lblName.textProperty().bind(newValue.nameProperty());
-            lblRaceAndProfession.textProperty()
-                .bind(StringConvertors.forRaceAndProfessionConverter(translator, newValue));
+            lblRace.textProperty()
+                .bind(StringConvertors.forRaceConverter(translator, newValue.getRace()));
+            lblProfession.textProperty()
+                .bind(StringConvertors.forProfessionConverter(translator, newValue.getProfession()));
             lblLive.setMaxActValue(newValue.getLive());
             lblMag.setMaxActValue(newValue.getMag());
             lblExperience.setMaxActValue(newValue.getExperiences());

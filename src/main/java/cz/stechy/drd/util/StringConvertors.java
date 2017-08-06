@@ -4,7 +4,6 @@ import cz.stechy.drd.controller.dice.DiceHelper;
 import cz.stechy.drd.controller.dice.DiceHelper.AdditionType;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.entity.Conviction;
-import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
 import cz.stechy.drd.model.entity.hero.Hero.Race;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
@@ -17,8 +16,8 @@ import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponType;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
 import cz.stechy.drd.util.Translator.Key;
-import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringExpression;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.util.StringConverter;
 
 /**
@@ -51,6 +50,14 @@ public final class StringConvertors {
         };
     }
 
+    public static StringExpression forRaceConverter(Translator translator, Race race) {
+        if (race == null) {
+            return new ReadOnlyStringWrapper();
+        }
+        final String translated = translator.getTranslationFor(Key.RACES).get(race.ordinal());
+        return new ReadOnlyStringWrapper(translated);
+    }
+
     public static StringConverter<Race> forRaceConverter(Translator translator) {
         return new StringConverter<Race>() {
             @Override
@@ -67,6 +74,16 @@ public final class StringConvertors {
                 return Race.valueOf(string);
             }
         };
+    }
+
+    public static StringExpression forProfessionConverter(Translator translator,
+        Profession profession) {
+        if (profession == null) {
+            return new ReadOnlyStringWrapper();
+        }
+        final String translated = translator.getTranslationFor(Key.PROFESSIONS)
+            .get(profession.ordinal());
+        return new ReadOnlyStringWrapper(translated);
     }
 
     public static StringConverter<Profession> forProfessionConverter(Translator translator) {
@@ -181,18 +198,18 @@ public final class StringConvertors {
         };
     }
 
-    public static StringExpression forRaceAndProfessionConverter(Translator translator, Hero hero) {
-        Race race = hero.getRace();
-        Profession profession = hero.getProfession();
-        if (race == null || profession == null) {
-            return Bindings.concat();
-        }
-
-        String translatedRace = translator.getTranslationFor(Key.RACES).get(hero.getRace().ordinal());
-        String translatedProfession = translator.getTranslationFor(Key.PROFESSIONS)
-            .get(hero.getProfession().ordinal());
-        return Bindings.concat(translatedRace, " ", translatedProfession);
-    }
+//    public static StringExpression forRaceAndProfessionConverter(Translator translator, Hero hero) {
+//        Race race = hero.getRace();
+//        Profession profession = hero.getProfession();
+//        if (race == null || profession == null) {
+//            return Bindings.concat();
+//        }
+//
+//        String translatedRace = translator.getTranslationFor(Key.RACES).get(hero.getRace().ordinal());
+//        String translatedProfession = translator.getTranslationFor(Key.PROFESSIONS)
+//            .get(hero.getProfession().ordinal());
+//        return Bindings.concat(translatedRace, " ", translatedProfession);
+//    }
 
     public static StringConverter<Backpack.Size> forBackpackSize(Translator translator) {
         return new StringConverter<Size>() {
