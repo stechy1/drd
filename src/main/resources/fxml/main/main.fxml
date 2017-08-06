@@ -101,6 +101,14 @@
           </ImageView>
         </graphic>
       </MenuItem>
+      <SeparatorMenuItem/>
+      <MenuItem fx:id="menuSettings" onAction="#handleMenuSettings" text="%drd_settings">
+        <graphic>
+          <ImageView>
+            <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/settings.png"/>
+          </ImageView>
+        </graphic>
+      </MenuItem>
     </Menu>
     <Menu fx:id="menuHelp" text="%drd_main_menu_help">
       <MenuItem fx:id="menuAbout" onAction="#handleMenuAbout" text="%drd_main_menu_help_about">

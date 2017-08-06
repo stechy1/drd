@@ -294,6 +294,11 @@ public class MainController extends BaseController implements Initializable {
     }
 
     @FXML
+    private void handleMenuSettings(ActionEvent actionEvent) {
+        startNewDialog(R.FXML.SETTINGS);
+    }
+
+    @FXML
     private void handleMenuAbout(ActionEvent actionEvent) {
 
     }
@@ -324,4 +329,5 @@ public class MainController extends BaseController implements Initializable {
         newValue.levelUpProperty().addListener(levelUpListener);
         btnLevelUp.visibleProperty().bind(newValue.levelUpProperty());
     };
+
 }

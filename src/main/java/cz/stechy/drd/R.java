@@ -30,6 +30,7 @@ public final class R {
         public static final String INVENTORY = "inventory";
         public static final String MAIN = "main";
         public static final String MONEY_XP = "money_xp";
+        public static final String SETTINGS = "settings";
         public static final String ITEM_ARMOR = "item_armor";
         public static final String ITEM_BACKPACK = "item_backpack";
         public static final String ITEM_GENERAL = "item_general";
@@ -258,5 +259,6 @@ public final class R {
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";
         public static final String NOTIFY_REGISTER_FAIL = "drd_notify_register_fail";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
+        public static final String SETTINGS = "drd_settings";
     }
 }
