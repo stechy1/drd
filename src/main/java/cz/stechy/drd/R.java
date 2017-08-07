@@ -267,5 +267,6 @@ public final class R {
         public static final String OFFLINE_DATABASE_NAME = "offline_database_name";
         public static final String USE_ONLINE_DATABASE = "use_online_database";
         public static final String ONLINE_DATABASE_CREDENTIALS_PATH = "online_database_credentials_path";
+        public static final String HERO_LEVELUP_POINTS_PER_LEVEL = "hero_levelup_points_per_level";
     }
 }

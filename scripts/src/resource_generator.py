@@ -7,7 +7,7 @@ string = 'public static final String {} = "{}";\n'
 output_path = './src/main/java/cz/stechy/drd/R.java'
 
 configuration = [
-    'offline_database_name', 'use_online_database', 'online_database_credentials_path'
+    'offline_database_name', 'use_online_database', 'online_database_credentials_path', 'hero_levelup_points_per_level'
 ]
 
 def generate_resources(root_folder, requested_extension, class_name, output_file):
