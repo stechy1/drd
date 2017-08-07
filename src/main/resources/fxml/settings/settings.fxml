@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.BorderPane?>
-<BorderPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="cz.stechy.drd.controller.settings.SettingsController"/>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import cz.stechy.drd.widget.Card?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.settings.SettingsController">
+  <VBox alignment="TOP_CENTER" spacing="16">
+    <HBox styleClass="title-container">
+      <Label styleClass="title-label" text="%drd_settings" HBox.hgrow="ALWAYS" />
+    </HBox>
+    <Card caption="Online databáze">
+      <content>
+        <GridPane alignment="CENTER_LEFT" prefHeight="100">
+          <rowConstraints>
+            <RowConstraints percentHeight="50.0" valignment="CENTER" />
+                  <RowConstraints percentHeight="50.0" />
+          </rowConstraints>
+          <columnConstraints>
+            <ColumnConstraints percentWidth="50.0" />
+                  <ColumnConstraints halignment="RIGHT" percentWidth="30.0" />
+                  <ColumnConstraints halignment="RIGHT" percentWidth="40.0" />
+          </columnConstraints>
+          <Label text="Zpřístupnit online databázi" />
+          <Label text="Cesta k souboru" GridPane.rowIndex="1" />
+          <Label fx:id="lblCredentialsPath" text="Ověřovací údaje" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+          <JFXToggleButton fx:id="toggleOnlineDatabase" text="" GridPane.columnIndex="2" />
+          <JFXButton minWidth="100.0" onAction="#handleSelectCredentialsPath" styleClass="btn, btn-primary" text="Vyberte soubor" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        </GridPane>
+      </content>
+    </Card>
+  </VBox>
+</ScrollPane>
