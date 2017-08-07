@@ -292,6 +292,17 @@ public class Context {
     }
 
     /**
+     * Vrátí záznam na základě klíče.
+     * Použijte pouze v případě, že jste si jistí, že záznam opravdu existuje
+     *
+     * @param key Klič záznamu
+     * @return Hodnotu záznamu
+     */
+    public String getProperty(String key) {
+        return configuration.getProperty(key);
+    }
+
+    /**
      * Získá záznam z konfiguračního souboru na základě klíče.
      * Pokud záznam neexistuje, vytvoří se nový s výchozí hodnotou.
      *
@@ -303,6 +314,16 @@ public class Context {
         final String property = configuration.getProperty(key, defaultValue);
         configuration.setProperty(key, property);
         return property;
+    }
+
+    /**
+     * Uloží záznam
+     *
+     * @param key Klíč
+     * @param value Hodnota
+     */
+    public void setProperty(String key, String value) {
+        configuration.setProperty(key, value);
     }
 
     /**
