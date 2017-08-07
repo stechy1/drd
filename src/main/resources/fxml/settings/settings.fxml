@@ -10,29 +10,33 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-
-<ScrollPane fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.settings.SettingsController">
+<ScrollPane xmlns:fx="http://javafx.com/fxml/1" fitToWidth="true"
+  xmlns="http://javafx.com/javafx/8.0.121"
+  fx:controller="cz.stechy.drd.controller.settings.SettingsController">
   <VBox alignment="TOP_CENTER" spacing="16">
     <HBox styleClass="title-container">
-      <Label styleClass="title-label" text="%drd_settings" HBox.hgrow="ALWAYS" />
+      <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_settings"/>
     </HBox>
     <Card caption="Online databáze">
       <content>
-        <GridPane alignment="CENTER_LEFT" prefHeight="100">
+        <GridPane alignment="CENTER_LEFT" prefHeight="100" prefWidth="500.0">
           <rowConstraints>
-            <RowConstraints percentHeight="50.0" valignment="CENTER" />
-                  <RowConstraints percentHeight="50.0" />
+            <RowConstraints percentHeight="50.0" valignment="CENTER"/>
+            <RowConstraints percentHeight="50.0"/>
           </rowConstraints>
           <columnConstraints>
-            <ColumnConstraints percentWidth="50.0" />
-                  <ColumnConstraints halignment="RIGHT" percentWidth="30.0" />
-                  <ColumnConstraints halignment="RIGHT" percentWidth="40.0" />
+            <ColumnConstraints percentWidth="50.0"/>
+            <ColumnConstraints halignment="RIGHT" percentWidth="30.0"/>
+            <ColumnConstraints halignment="RIGHT" percentWidth="40.0"/>
           </columnConstraints>
-          <Label text="Zpřístupnit online databázi" />
-          <Label text="Cesta k souboru" GridPane.rowIndex="1" />
-          <Label fx:id="lblCredentialsPath" text="Ověřovací údaje" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-          <JFXToggleButton fx:id="toggleOnlineDatabase" text="" GridPane.columnIndex="2" />
-          <JFXButton minWidth="100.0" onAction="#handleSelectCredentialsPath" styleClass="btn, btn-primary" text="Vyberte soubor" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+          <Label text="Zpřístupnit online databázi"/>
+          <Label GridPane.rowIndex="1" text="Cesta k souboru"/>
+          <Label GridPane.columnIndex="1" GridPane.rowIndex="1" text="Ověřovací údaje"
+            fx:id="lblCredentialsPath"/>
+          <JFXToggleButton GridPane.columnIndex="2" text="" fx:id="toggleOnlineDatabase"/>
+          <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="1" minWidth="100.0"
+            onAction="#handleSelectCredentialsPath" styleClass="btn, btn-primary"
+            text="Vyberte soubor"/>
         </GridPane>
       </content>
     </Card>
