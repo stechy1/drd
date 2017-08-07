@@ -129,17 +129,28 @@ public class Context {
     /**
      * Inicializuje firebase databázi
      *
-     * @param credentialsPath Cesta k souboru s credentials
+     * @param credentialsPath Cesta k souboru s přístupovými údaji k databázi
+     * @throws Exception Pokud se inicializace nezdařila
      */
     public void initFirebase(String credentialsPath) throws Exception {
-        initFirebase(new FileInputStream(credentialsPath));
+        initFirebase(new File(credentialsPath));
+    }
+
+    /**
+     * Inicializuje firebase databázi
+     *
+     * @param credentialsFile Soubor s přístupovými údaji k databázi
+     * @throws Exception Pokud se inicializace nezdařila
+     */
+    public void initFirebase(File credentialsFile) throws Exception {
+        initFirebase(new FileInputStream(credentialsFile));
     }
 
     /**
      * Inicializace firebase služby
      *
-     * @throws Exception Pokud soubor neexistuje, nebo se inicializace nezdařila
-     * @param inputStream
+     * @param inputStream Stream dat s přístupovými údaji k databázi
+     * @throws Exception Pokud se inicializace nezdařila
      */
     private void initFirebase(InputStream inputStream) throws Exception {
         final Map<String, Object> auth = new HashMap<>();
