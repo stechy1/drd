@@ -108,10 +108,11 @@ public class SettingsController extends BaseController implements Initializable 
 
         try {
             context.initFirebase(file);
-            lblCredentialsPath.setText(file.getPath());
+            config.onlineDatabaseCredentials.setValue(file.getPath());
             showNotification(new Notification("Inicializace se zdařila."));
         } catch (Exception e) {
             showNotification(new Notification("Databázi se nepodařilo inicializovat", Length.LONG));
+            e.printStackTrace();
         }
     }
 

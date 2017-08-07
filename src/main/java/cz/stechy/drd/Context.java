@@ -4,6 +4,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.FirebaseDatabase;
+import cz.stechy.drd.R.Config;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseService;
@@ -45,7 +46,7 @@ public class Context {
     private static final Logger logger = LoggerFactory.getLogger(Context.class);
 
     private static final String FIREBASE_URL = "https://drd-personal-diary.firebaseio.com";
-    private static final String FIREBASE_CREDENTIALS = "/other/firebase_credentials.json";
+    private static final String FIREBASE_CREDENTIALS = "";
     private static final String CREDENTAILS_APP_NAME = "drd_helper";
     private static final String CREDENTAILS_APP_VERSION = "1.0";
     private static final String CREDENTILS_APP_AUTHOR = "stechy1";
@@ -201,6 +202,15 @@ public class Context {
         }
     }
 
+    /**
+     * Zjistí, zda-li má aplikace inicializovat firebase databázi
+     *
+     * @return True, pokud se má firebase inicializovat, jinak False
+     */
+    private boolean useOnlineDatabase() {
+        return Boolean.parseBoolean(getProperty(R.Config.USE_ONLINE_DATABASE, "false"));
+    }
+
     // endregion
 
     // region Package private methods
@@ -215,11 +225,16 @@ public class Context {
         BaseDatabaseService.setNotifier(notifier);
         userService = new UserService(firebaseWrapper);
         initServices();
-        try {
-            initFirebase(getClass().getResourceAsStream(FIREBASE_CREDENTIALS));
-        } catch (Exception ex) {
-            // Pokud se nepodaří inicializovat firebase při startu, tak se prakticky nic neděje
-            // aplikace může bez firebase běžet
+        if (useOnlineDatabase()) {
+            try {
+                initFirebase(getProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH,
+                    FIREBASE_CREDENTIALS));
+            } catch (Exception ex) {
+                // Pokud se nepodaří inicializovat firebase při startu, tak se prakticky nic neděje
+                // aplikace může bez firebase běžet
+                // Pro jistotu nastavíme, že se přiště inicializace konat nebude
+                setProperty(R.Config.USE_ONLINE_DATABASE, "false");
+            }
         }
     }
 
@@ -292,8 +307,8 @@ public class Context {
     }
 
     /**
-     * Vrátí záznam na základě klíče.
-     * Použijte pouze v případě, že jste si jistí, že záznam opravdu existuje
+     * Vrátí záznam na základě klíče. Použijte pouze v případě, že jste si jistí, že záznam opravdu
+     * existuje
      *
      * @param key Klič záznamu
      * @return Hodnotu záznamu
@@ -303,8 +318,8 @@ public class Context {
     }
 
     /**
-     * Získá záznam z konfiguračního souboru na základě klíče.
-     * Pokud záznam neexistuje, vytvoří se nový s výchozí hodnotou.
+     * Získá záznam z konfiguračního souboru na základě klíče. Pokud záznam neexistuje, vytvoří se
+     * nový s výchozí hodnotou.
      *
      * @param key Klíč záznamu
      * @param defaultValue Výchozí hodnota, která se má vrátit, kdy záznam neexistuje
@@ -334,6 +349,13 @@ public class Context {
     @Deprecated
     public Properties getConfiguration() {
         return configuration;
+    }
+
+    /**
+     * Ukončí spojení online databáze s internetem
+     */
+    public void closeFirebase() {
+        firebaseWrapper.closeDatabase();
     }
 
     // endregion

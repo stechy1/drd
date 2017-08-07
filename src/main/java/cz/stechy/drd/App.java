@@ -1,6 +1,5 @@
 package cz.stechy.drd;
 
-import com.google.firebase.database.FirebaseDatabase;
 import com.sun.javafx.application.LauncherImpl;
 import cz.stechy.drd.R.FXML;
 import cz.stechy.drd.model.MyPreloaderNotification;
@@ -78,7 +77,7 @@ public class App extends Application {
         manager.setOnCloseWindowHandler(event -> {
             logger.info("Ukončuji aplikaci");
             context.saveConfiguration();
-            FirebaseDatabase.getInstance().goOffline();
+            context.closeFirebase();
             ThreadPool.getInstance().shutDown();
         });
     }
