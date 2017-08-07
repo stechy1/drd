@@ -261,4 +261,11 @@ public final class R {
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
         public static final String SETTINGS = "drd_settings";
     }
+
+    public static class Config {
+
+        public static final String OFFLINE_DATABASE_NAME = "offline_database_name";
+        public static final String USE_ONLINE_DATABASE = "use_online_database";
+        public static final String ONLINE_DATABASE_CREDENTIALS_PATH = "online_database_credentials_path";
+    }
 }
