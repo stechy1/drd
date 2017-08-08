@@ -129,6 +129,7 @@ public class ShopWeaponRangedController implements Initializable,
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnType.setCellFactory(
             TextFieldTableCell.forTableColumn(StringConvertors.forRangedWeaponType(translator)));
+        columnWeight.setCellFactory(param -> CellUtils.forWeight());
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
     }

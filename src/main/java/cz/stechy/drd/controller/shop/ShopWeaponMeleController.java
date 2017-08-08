@@ -128,6 +128,7 @@ public class ShopWeaponMeleController implements Initializable,
             TextFieldTableCell.forTableColumn(StringConvertors.forMeleWeaponClass(translator)));
         columnType.setCellFactory(
             TextFieldTableCell.forTableColumn(StringConvertors.forMeleWeaponType(translator)));
+        columnWeight.setCellFactory(param -> CellUtils.forWeight());
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
     }

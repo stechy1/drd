@@ -105,6 +105,8 @@ public class ShopBackpackController implements Initializable, ShopItemController
         tableBackpacks.setFixedCellSize(SHOP_ROW_HEIGHT);
         sortedList.comparatorProperty().bind(tableBackpacks.comparatorProperty());
 
+        columnMaxLoad.setCellFactory(param -> CellUtils.forWeight());
+        columnWeight.setCellFactory(param -> CellUtils.forWeight());
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));

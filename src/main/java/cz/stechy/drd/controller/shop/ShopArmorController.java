@@ -133,6 +133,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         tableArmor.setFixedCellSize(SHOP_ROW_HEIGHT);
         sortedList.comparatorProperty().bind(tableArmor.comparatorProperty());
 
+        columnWeight.setCellFactory(param -> CellUtils.forWeight());
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnArmorType.setCellFactory(
             TextFieldTableCell.forTableColumn(StringConvertors.forArmorType(translator)));

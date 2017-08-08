@@ -98,4 +98,20 @@ public final class CellUtils {
         };
     }
 
+    public static <S> TableCell<S, Integer> forWeight() {
+        return new TableCell<S, Integer>() {
+            @Override
+            protected void updateItem(Integer item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item + " mn");
+                }
+            }
+        };
+    }
+
 }

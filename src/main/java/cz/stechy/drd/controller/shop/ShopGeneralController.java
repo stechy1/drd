@@ -103,6 +103,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         tableGeneralItems.setFixedCellSize(SHOP_ROW_HEIGHT);
         sortedList.comparatorProperty().bind(tableGeneralItems.comparatorProperty());
 
+        columnWeight.setCellFactory(param -> CellUtils.forWeight());
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
