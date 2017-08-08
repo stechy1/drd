@@ -2,10 +2,13 @@ package cz.stechy.drd.controller.fight;
 
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
+import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.BestiaryService;
-import cz.stechy.drd.model.user.User;
+import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.screens.BaseController;
+import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -33,9 +36,10 @@ public class FightController extends BaseController implements Initializable {
 
     // endregion
 
-    private final User user;
+    private final Hero hero;
     private final BestiaryService bestiary;
 
+    private IFightChild[] controllers;
     private String title;
 
     // endregion
@@ -43,7 +47,7 @@ public class FightController extends BaseController implements Initializable {
     // region Constructors
 
     public FightController(Context context) {
-        this.user = context.getUserService().getUser().get();
+        this.hero = ((HeroService) context.getService(Context.SERVICE_HERO)).getHero().get();
         this.bestiary = context.getService(Context.SERVICE_BESTIARY);
     }
 
@@ -52,11 +56,23 @@ public class FightController extends BaseController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.title = resources.getString(R.Translate.FIGHT_TITLE);
+
+        controllers = new IFightChild[] {
+            fightHeroController,
+            fightOpponentController
+        };
+    }
+
+    @Override
+    protected void onCreate(Bundle bundle) {
+        Arrays.stream(controllers).forEach(controller -> {
+            controller.setHero(hero);
+        });
     }
 
     @Override
     protected void onResume() {
         setTitle(title);
-        setScreenSize(600, 400);
+        setScreenSize(600, 500);
     }
 }
