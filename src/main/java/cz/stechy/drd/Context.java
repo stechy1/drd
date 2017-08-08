@@ -4,7 +4,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.FirebaseDatabase;
-import cz.stechy.drd.R.Config;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseService;
@@ -84,7 +83,7 @@ public class Context {
     private final Properties configuration = new Properties();
     // Služba obsluhující uživatele
     private UserService userService;
-
+    // Překad aplikace
     private final ResourceBundle resources;
     // Překladač aplikace
     private Translator translator;
