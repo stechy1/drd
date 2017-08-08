@@ -63,7 +63,7 @@
         </graphic>
       </MenuItem>
       <SeparatorMenuItem />
-      <MenuItem fx:id="menuCloseProgram" text="%drd_main_menu_file_close_program">
+      <MenuItem fx:id="menuCloseProgram" onAction="#handleCloseApplication" text="%drd_main_menu_file_close_program">
         <graphic>
           <ImageView>
             <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/close.png" />

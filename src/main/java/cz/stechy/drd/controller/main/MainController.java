@@ -269,6 +269,11 @@ public class MainController extends BaseController implements Initializable {
     }
 
     @FXML
+    private void handleCloseApplication(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
     private void handleMenuDice(ActionEvent actionEvent) {
         startNewDialog(R.FXML.DICE);
     }
