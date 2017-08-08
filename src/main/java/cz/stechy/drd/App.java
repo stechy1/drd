@@ -1,6 +1,5 @@
 package cz.stechy.drd;
 
-import com.google.firebase.database.FirebaseDatabase;
 import com.sun.javafx.application.LauncherImpl;
 import cz.stechy.drd.R.FXML;
 import cz.stechy.drd.model.MyPreloaderNotification;
@@ -9,10 +8,7 @@ import cz.stechy.drd.util.UTF8ResourceBundleControl;
 import cz.stechy.screens.ScreenManager;
 import cz.stechy.screens.ScreenManagerConfiguration;
 import cz.stechy.screens.base.IMainScreen;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -80,26 +76,10 @@ public class App extends Application {
         manager.addScreensToBlacklist(SCREENS_BLACKLIST);
         manager.setOnCloseWindowHandler(event -> {
             logger.info("Ukončuji aplikaci");
-            FirebaseDatabase.getInstance().goOffline();
+            context.saveConfiguration();
+            context.closeFirebase();
             ThreadPool.getInstance().shutDown();
         });
-    }
-
-    /**
-     * Vrátí konfiguraci aplikace
-     *
-     * @return {@link Properties} obsahující konfiguraci aplikace
-     */
-    private Properties getProperties() {
-        final Properties properties = new Properties();
-        try {
-            properties.load(new FileInputStream(
-                manager.getScreenManagerConfiguration().config.getPath()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return properties;
     }
 
     /**
@@ -115,7 +95,7 @@ public class App extends Application {
         initScreenManager();
         notifyPreloader(new MyPreloaderNotification("Inicializace databáze"));
         Thread.sleep(1000);
-        context = new Context(getProperties(), manager.getResources());
+        context = new Context(manager.getResources());
         notifier.increaseMaxProgress(context.getServiceCount());
         context.init(notifier);
         manager.setControllerFactory(new ControllerFactory(context));
@@ -145,7 +125,7 @@ public class App extends Application {
         notifyPreloader(new MyPreloaderNotification("Inicializace aplikace..."));
         initScreenManager();
         notifyPreloader(new MyPreloaderNotification("Inicializace databáze"));
-        context = new Context(getProperties(), manager.getResources());
+        context = new Context(manager.getResources());
         notifier.increaseMaxProgress(context.getServiceCount());
         context.init(notifier);
         manager.setControllerFactory(new ControllerFactory(context));

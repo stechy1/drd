@@ -30,6 +30,7 @@ public final class R {
         public static final String INVENTORY = "inventory";
         public static final String MAIN = "main";
         public static final String MONEY_XP = "money_xp";
+        public static final String SETTINGS = "settings";
         public static final String ITEM_ARMOR = "item_armor";
         public static final String ITEM_BACKPACK = "item_backpack";
         public static final String ITEM_GENERAL = "item_general";
@@ -258,5 +259,14 @@ public final class R {
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";
         public static final String NOTIFY_REGISTER_FAIL = "drd_notify_register_fail";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
+        public static final String SETTINGS = "drd_settings";
+    }
+
+    public static class Config {
+
+        public static final String OFFLINE_DATABASE_NAME = "offline_database_name";
+        public static final String USE_ONLINE_DATABASE = "use_online_database";
+        public static final String ONLINE_DATABASE_CREDENTIALS_PATH = "online_database_credentials_path";
+        public static final String HERO_LEVELUP_POINTS_PER_LEVEL = "hero_levelup_points_per_level";
     }
 }
