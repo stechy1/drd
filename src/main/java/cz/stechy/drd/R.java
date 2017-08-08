@@ -18,6 +18,9 @@ public final class R {
         public static final String BESTIARY_EDIT_IMAGE = "bestiary_edit_image";
         public static final String BESTIARY_EDIT_OTHER = "bestiary_edit_other";
         public static final String BESTIARY_EDIT_PROPERTIES = "bestiary_edit_properties";
+        public static final String FIGHT = "fight";
+        public static final String FIGHT_HERO = "fight_hero";
+        public static final String FIGHT_OPPONENT = "fight_opponent";
         public static final String HERO_CREATOR_1 = "hero_creator_1";
         public static final String HERO_CREATOR_2 = "hero_creator_2";
         public static final String HERO_CREATOR_3 = "hero_creator_3";
@@ -254,6 +257,7 @@ public final class R {
         public static final String ITEM_MAX_LOAD = "drd_item_max_load";
         public static final String LEVEL_UP_TITLE = "drd_level_up_title";
         public static final String LEVEL_UP_PRICE = "drd_level_up_price";
+        public static final String FIGHT_TITLE = "drd_fight_title";
         public static final String NOTIFY_LOGIN_SUCCESS = "drd_notify_login_success";
         public static final String NOTIFY_LOGIN_FAIL = "drd_notify_login_fail";
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";

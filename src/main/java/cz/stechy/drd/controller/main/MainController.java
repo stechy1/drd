@@ -298,7 +298,7 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuFight(ActionEvent actionEvent) {
-
+        startNewDialog(R.FXML.FIGHT);
     }
 
     @FXML
