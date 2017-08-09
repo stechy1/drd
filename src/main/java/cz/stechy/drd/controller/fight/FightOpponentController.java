@@ -39,7 +39,7 @@ public class FightOpponentController implements Initializable, IFightChild {
     @FXML
     private LabeledHeroProperty lblCharisma;
     @FXML
-    private LabeledHeroProperty lblAttackNumber;
+    private Label lblAttackNumber;
     @FXML
     private Label lblDefenceNumber;
     @FXML
@@ -67,15 +67,16 @@ public class FightOpponentController implements Initializable, IFightChild {
 
     @Override
     public void setHero(Hero hero) {
-
+        // Zde opravdu nic není
     }
 
     private ChangeListener<? super Mob> mobListener = (observable, oldValue, newValue) -> {
         lblName.textProperty().setValue(newValue.getName());
+        lblViability.setText(String.valueOf(newValue.getViability()));
         lblImmunity.setHeroProperty(newValue.getImmunity());
         lblIntelligence.setHeroProperty(newValue.getIntelligence());
         lblCharisma.setHeroProperty(newValue.getCharisma());
-        lblAttackNumber.setHeroProperty(newValue.getAttackNumber());
+        lblAttackNumber.setText(String.valueOf(newValue.getAttackNumber()));
         lblDefenceNumber.setText(String.valueOf(newValue.getDefenceNumber()));
         lblLive.setMaxActValue(newValue.getLive());
     };

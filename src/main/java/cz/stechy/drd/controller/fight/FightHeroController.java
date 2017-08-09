@@ -32,6 +32,10 @@ public class FightHeroController implements Initializable, IFightChild {
     private LabeledHeroProperty lblCharisma;
     @FXML
     private LabeledMaxActValue lblLive;
+    @FXML
+    private Label lblAttackNumber;
+    @FXML
+    private Label lblDefenceNumber;
 
     // endregion
 
@@ -54,5 +58,7 @@ public class FightHeroController implements Initializable, IFightChild {
         lblIntelligence.setHeroProperty(hero.getIntelligence());
         lblCharisma.setHeroProperty(hero.getCharisma());
         lblLive.setMaxActValue(hero.getLive());
+        lblAttackNumber.setText(String.valueOf(hero.getAttackNumber()));
+        lblDefenceNumber.setText(String.valueOf(hero.getDefenceNumber()));
     }
 }

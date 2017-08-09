@@ -23,7 +23,7 @@
     </top>
     <center>
       <VBox alignment="TOP_CENTER">
-        <JFXComboBox fx:id="cmbBestiary" prefWidth="250.0"/>
+        <JFXComboBox fx:id="cmbBestiary" prefWidth="250.0" prefHeight="24.0"/>
         <Card caption="Informace o oponentovi">
           <content>
             <GridPane prefHeight="150.0" prefWidth="250.0" vgap="8.0">
@@ -54,7 +54,7 @@
                 fx:id="lblIntelligence"/>
               <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="4"
                 fx:id="lblCharisma"/>
-              <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="5" fx:id="lblAttackNumber"/>
+              <Label GridPane.columnIndex="1" GridPane.rowIndex="5" fx:id="lblAttackNumber"/>
               <Label GridPane.columnIndex="1" GridPane.rowIndex="6" fx:id="lblDefenceNumber"/>
             </GridPane>
           </content>

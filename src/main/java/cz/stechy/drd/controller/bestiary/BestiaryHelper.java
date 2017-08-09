@@ -77,7 +77,7 @@ public final class BestiaryHelper {
             bundle.putInt(RULES_TYPE, mob.getRulesType().ordinal());
             bundle.putInt(CONVICTION, mob.getConviction().ordinal());
             bundle.putInt(HEIGHT, mob.getHeight().ordinal());
-            bundle.putInt(ATTACK, mob.getAttackNumber().getValue());
+            bundle.putInt(ATTACK, mob.getAttackNumber());
             bundle.putInt(DEFENCE, mob.getDefenceNumber());
             bundle.putInt(VIABILITY, mob.getViability());
             bundle.putInt(IMMUNITY, mob.getImmunity().getValue());

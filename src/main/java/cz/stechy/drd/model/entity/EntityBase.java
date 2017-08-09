@@ -3,9 +3,12 @@ package cz.stechy.drd.model.entity;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.OnlineItem;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -30,6 +33,11 @@ public abstract class EntityBase extends OnlineItem {
         Conviction.NEUTRAL);
     // Velikost
     protected final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
+    // Útočné číslo
+    protected final IntegerProperty attackNumber = new SimpleIntegerProperty();
+    // Obranné číslo
+    protected final IntegerProperty defenceNumber = new SimpleIntegerProperty(this,
+        "defenceNumber");
 
     // endregion
 
@@ -65,6 +73,32 @@ public abstract class EntityBase extends OnlineItem {
         this.mag.setActValue(mag);
         setConviction(conviction);
         setHeight(height);
+    }
+
+    // endregion
+
+    // region Public methods
+
+    @Override
+    public void update(DatabaseItem other) {
+        super.update(other);
+
+        EntityBase entity = (EntityBase) other;
+
+        setName(entity.getName());
+        setDescription(entity.getDescription());
+        this.live.setMaxValue(entity.live.getMaxValue());
+        this.live.setActValue(entity.live.getActValue());
+        this.mag.setMaxValue(entity.mag.getMaxValue());
+        this.mag.setActValue(entity.mag.getActValue());
+        setConviction(entity.getConviction());
+        setHeight(entity.getHeight());
+        if (!attackNumber.isBound()) {
+            setAttackNumber(entity.getAttackNumber());
+        }
+        if (!defenceNumber.isBound()) {
+            setDefenceNumber(entity.getDefenceNumber());
+        }
     }
 
     // endregion
@@ -127,24 +161,28 @@ public abstract class EntityBase extends OnlineItem {
         this.height.set(height);
     }
 
-    // endregion
+    public final int getAttackNumber() {
+        return attackNumber.get();
+    }
 
-    // region Public methods
+    public final ReadOnlyIntegerProperty attackNumberProperty() {
+        return attackNumber;
+    }
 
-    @Override
-    public void update(DatabaseItem other) {
-        super.update(other);
+    protected void setAttackNumber(int attackNumber) {
+        this.attackNumber.set(attackNumber);
+    }
 
-        EntityBase entity = (EntityBase) other;
+    public final int getDefenceNumber() {
+        return defenceNumber.get();
+    }
 
-        setName(entity.getName());
-        setDescription(entity.getDescription());
-        this.live.setMaxValue(entity.live.getMaxValue());
-        this.live.setActValue(entity.live.getActValue());
-        this.mag.setMaxValue(entity.mag.getMaxValue());
-        this.mag.setActValue(entity.mag.getActValue());
-        setConviction(entity.getConviction());
-        setHeight(entity.getHeight());
+    public final ReadOnlyIntegerProperty defenceNumberProperty() {
+        return defenceNumber;
+    }
+
+    protected void setDefenceNumber(int defenceNumber) {
+        this.defenceNumber.set(defenceNumber);
     }
 
     // endregion
