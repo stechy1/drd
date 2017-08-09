@@ -13,5 +13,4 @@ public interface IFightChild {
      * @param hero {@link Hero}
      */
     void setHero(Hero hero);
-
 }

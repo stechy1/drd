@@ -6,7 +6,7 @@
   xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.fight.FightController">
   <center>
-    <SplitPane dividerPositions="0.5" mouseTransparent="true">
+    <SplitPane dividerPositions="0.5">
       <fx:include source="fight_hero.fxml" fx:id="fightHero"/>
       <fx:include source="fight_opponent.fxml" fx:id="fightOpponent"/>
     </SplitPane>
