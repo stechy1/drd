@@ -106,4 +106,8 @@ public class FightOpponentController implements Initializable, IFightChild {
     }
 
     // endregion
+
+    public Mob getMob() {
+        return selectedMob.get();
+    }
 }

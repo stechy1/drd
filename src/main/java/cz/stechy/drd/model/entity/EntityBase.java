@@ -3,11 +3,14 @@ package cz.stechy.drd.model.entity;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.OnlineItem;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -38,6 +41,7 @@ public abstract class EntityBase extends OnlineItem {
     // Obranné číslo
     protected final IntegerProperty defenceNumber = new SimpleIntegerProperty(this,
         "defenceNumber");
+    protected final BooleanProperty alive = new SimpleBooleanProperty();
 
     // endregion
 
@@ -64,6 +68,8 @@ public abstract class EntityBase extends OnlineItem {
         boolean uploaded) {
         super(id, author, downloaded, uploaded);
 
+        initBindings();
+
         setId(id);
         setName(name);
         setDescription(description);
@@ -73,6 +79,15 @@ public abstract class EntityBase extends OnlineItem {
         this.mag.setActValue(mag);
         setConviction(conviction);
         setHeight(height);
+    }
+
+    // endregion
+
+    // region Private methods
+
+    private void initBindings() {
+        alive.bind(Bindings.createBooleanBinding(() -> getLive().getActValue().intValue() > 0,
+            live.actValueProperty()));
     }
 
     // endregion
@@ -183,6 +198,14 @@ public abstract class EntityBase extends OnlineItem {
 
     protected void setDefenceNumber(int defenceNumber) {
         this.defenceNumber.set(defenceNumber);
+    }
+
+    public boolean isAlive() {
+        return alive.get();
+    }
+
+    public BooleanProperty aliveProperty() {
+        return alive;
     }
 
     // endregion

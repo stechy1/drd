@@ -3,6 +3,7 @@ package cz.stechy.drd.controller.fight;
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.entity.hero.Hero;
+import cz.stechy.drd.model.fight.Battlefield;
 import cz.stechy.drd.model.persistent.BestiaryService;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.screens.BaseController;
@@ -10,6 +11,7 @@ import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
@@ -74,5 +76,10 @@ public class FightController extends BaseController implements Initializable {
     protected void onResume() {
         setTitle(title);
         setScreenSize(1050, 400);
+    }
+
+    public void handleBeginFight(ActionEvent actionEvent) {
+        Battlefield battlefield = new Battlefield(hero, fightOpponentController.getMob());
+        battlefield.fight();
     }
 }

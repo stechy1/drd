@@ -2,6 +2,8 @@
 
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import com.jfoenix.controls.JFXButton?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
   xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.fight.FightController">
@@ -11,4 +13,9 @@
       <fx:include source="fight_opponent.fxml" fx:id="fightOpponent"/>
     </SplitPane>
   </center>
+  <bottom>
+    <HBox alignment="CENTER">
+      <JFXButton text="Začít souboj" onAction="#handleBeginFight" styleClass="btn, btn-primary"/>
+    </HBox>
+  </bottom>
 </BorderPane>

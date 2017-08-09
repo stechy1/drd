@@ -17,6 +17,8 @@ public final class FightHelper {
         {-1, -4, -3, -2, -1,  0} // Obránce je E
     };
 
+
+
     private FightHelper() {
 
     }
