@@ -12,6 +12,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import com.jfoenix.controls.JFXButton?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.fight.FightOpponentController">
   <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
@@ -60,6 +62,7 @@
           </content>
         </Card>
         <LabeledMaxActValue caption="%drd_hero_lives" description="%drd_hero_live" fx:id="lblLive"/>
+        <JFXButton text="Oživit nestvůru" onAction="#handleRevive" styleClass="btn, btn-warning, btn-raised"/>
       </VBox>
     </center>
   </BorderPane>

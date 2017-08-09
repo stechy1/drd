@@ -2,6 +2,8 @@ package cz.stechy.drd.controller.fight;
 
 import com.jfoenix.controls.JFXComboBox;
 import cz.stechy.drd.Context;
+import cz.stechy.drd.controller.bestiary.BestiaryHelper;
+import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.persistent.BestiaryService;
@@ -9,10 +11,12 @@ import cz.stechy.drd.widget.LabeledHeroProperty;
 import cz.stechy.drd.widget.LabeledMaxActValue;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -61,7 +65,14 @@ public class FightOpponentController implements Initializable, IFightChild {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.cmbBestiary.setItems(mobs);
-        this.selectedMob.bind(cmbBestiary.getSelectionModel().selectedItemProperty());
+
+        this.selectedMob.bind(Bindings.createObjectBinding(() -> {
+                final Mob selectedItem = cmbBestiary.getSelectionModel().getSelectedItem();
+                if (selectedItem == null) {
+                    return null;
+                }
+                return selectedItem.duplicate();
+            }, cmbBestiary.getSelectionModel().selectedItemProperty()));
         this.selectedMob.addListener(mobListener);
     }
 
@@ -80,4 +91,15 @@ public class FightOpponentController implements Initializable, IFightChild {
         lblDefenceNumber.setText(String.valueOf(newValue.getDefenceNumber()));
         lblLive.setMaxActValue(newValue.getLive());
     };
+
+    // region Button handlers
+
+    @FXML
+    private void handleRevive(ActionEvent actionEvent) {
+        final Mob mob = selectedMob.get();
+        final int live = BestiaryHelper.getLive(mob.getViability(), mob.getImmunity());
+        selectedMob.get().getLive().update(new MaxActValue(0, live, live));
+    }
+
+    // endregion
 }
