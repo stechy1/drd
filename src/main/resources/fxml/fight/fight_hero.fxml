@@ -23,16 +23,16 @@
         <LabeledMaxActValue caption="%drd_hero_lives" description="%drd_hero_live" fx:id="lblLive"/>
         <Card caption="Informace o hrdinovi">
           <content>
-            <GridPane prefHeight="150.0" prefWidth="150.0" vgap="8.0">
+            <GridPane prefHeight="200.0" prefWidth="150.0" vgap="8.0">
               <rowConstraints>
-                <RowConstraints percentHeight="15.0" valignment="CENTER"/>
-                <RowConstraints percentHeight="15.0" valignment="CENTER"/>
-                <RowConstraints percentHeight="15.0" valignment="CENTER"/>
-                <RowConstraints percentHeight="15.0" valignment="CENTER"/>
-                <RowConstraints percentHeight="15.0" valignment="CENTER"/>
-                <RowConstraints percentHeight="15.0" valignment="CENTER"/>
-                <RowConstraints percentHeight="15.0" valignment="CENTER"/>
-                <RowConstraints percentHeight="15.0" valignment="CENTER"/>
+                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
               </rowConstraints>
               <columnConstraints>
                 <ColumnConstraints halignment="LEFT" percentWidth="70.0"/>

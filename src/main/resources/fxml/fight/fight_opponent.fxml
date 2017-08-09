@@ -25,18 +25,17 @@
     </top>
     <center>
       <HBox spacing="8.0">
-        <VBox spacing="8.0">
-          <JFXComboBox prefHeight="24.0" prefWidth="250.0" fx:id="cmbBestiary"/>
-          <Card caption="Informace o oponentovi">
+        <Card caption="Informace o oponentovi">
             <content>
-              <GridPane prefHeight="150.0" prefWidth="150.0" vgap="8.0">
+              <GridPane prefHeight="200.0" prefWidth="150.0" vgap="8.0">
                 <rowConstraints>
-                  <RowConstraints percentHeight="15.0" valignment="CENTER"/>
-                  <RowConstraints percentHeight="15.0" valignment="CENTER"/>
-                  <RowConstraints percentHeight="15.0" valignment="CENTER"/>
-                  <RowConstraints percentHeight="15.0" valignment="CENTER"/>
-                  <RowConstraints percentHeight="15.0" valignment="CENTER"/>
-                  <RowConstraints percentHeight="15.0" valignment="CENTER"/>
+                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
                 </rowConstraints>
                 <columnConstraints>
                   <ColumnConstraints halignment="LEFT" percentWidth="70.0"/>
@@ -60,16 +59,13 @@
               </GridPane>
             </content>
           </Card>
-        </VBox>
         <VBox spacing="8.0">
+          <JFXComboBox prefHeight="24.0" prefWidth="270.0" fx:id="cmbBestiary"/>
           <LabeledMaxActValue caption="%drd_hero_lives" description="%drd_hero_live"
             fx:id="lblLive"/>
           <JFXButton onAction="#handleRevive" styleClass="btn, btn-warning, btn-raised"
-            text="Oživit nestvůru" fx:id="btnRevive"/>
+            text="Oživit nestvůru" fx:id="btnRevive" prefWidth="270.0"/>
         </VBox>
-        <padding>
-          <Insets topRightBottomLeft="8.0"/>
-        </padding>
       </HBox>
     </center>
   </BorderPane>

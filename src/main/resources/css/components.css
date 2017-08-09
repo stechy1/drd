@@ -127,7 +127,6 @@
 /* Button raised */
 .btn.btn-raised {
     -jfx-button-type: RAISED;
-    -fx-pref-width: 200;
 }
 .btn.btn-raised.btn-primary {
 	-fx-text-fill: #fff;
