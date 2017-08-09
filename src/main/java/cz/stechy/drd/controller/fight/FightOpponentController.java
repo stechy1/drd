@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.fight;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import cz.stechy.drd.Context;
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
@@ -33,8 +34,6 @@ public class FightOpponentController implements Initializable, IFightChild {
     @FXML
     private JFXComboBox<Mob> cmbBestiary;
     @FXML
-    private Label lblName;
-    @FXML
     private Label lblViability;
     @FXML
     private LabeledHeroProperty lblImmunity;
@@ -48,6 +47,8 @@ public class FightOpponentController implements Initializable, IFightChild {
     private Label lblDefenceNumber;
     @FXML
     private LabeledMaxActValue lblLive;
+    @FXML
+    private JFXButton btnRevive;
 
     // endregion
 
@@ -74,6 +75,7 @@ public class FightOpponentController implements Initializable, IFightChild {
                 return selectedItem.duplicate();
             }, cmbBestiary.getSelectionModel().selectedItemProperty()));
         this.selectedMob.addListener(mobListener);
+        btnRevive.disableProperty().bind(cmbBestiary.getSelectionModel().selectedItemProperty().isNull());
     }
 
     @Override
@@ -82,7 +84,6 @@ public class FightOpponentController implements Initializable, IFightChild {
     }
 
     private ChangeListener<? super Mob> mobListener = (observable, oldValue, newValue) -> {
-        lblName.textProperty().setValue(newValue.getName());
         lblViability.setText(String.valueOf(newValue.getViability()));
         lblImmunity.setHeroProperty(newValue.getImmunity());
         lblIntelligence.setHeroProperty(newValue.getIntelligence());
@@ -97,6 +98,9 @@ public class FightOpponentController implements Initializable, IFightChild {
     @FXML
     private void handleRevive(ActionEvent actionEvent) {
         final Mob mob = selectedMob.get();
+        if (mob == null) {
+            return;
+        }
         final int live = BestiaryHelper.getLive(mob.getViability(), mob.getImmunity());
         selectedMob.get().getLive().update(new MaxActValue(0, live, live));
     }

@@ -73,6 +73,6 @@ public class FightController extends BaseController implements Initializable {
     @Override
     protected void onResume() {
         setTitle(title);
-        setScreenSize(600, 500);
+        setScreenSize(1050, 400);
     }
 }
