@@ -4,7 +4,6 @@ import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.fight.Battlefield;
-import cz.stechy.drd.model.persistent.BestiaryService;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -20,7 +19,6 @@ import javafx.scene.layout.AnchorPane;
  * Kontroler pro souboj hrdiny a protivníka
  */
 public class FightController extends BaseController implements Initializable {
-
 
     // region Variables
 
@@ -38,8 +36,8 @@ public class FightController extends BaseController implements Initializable {
 
     // endregion
 
+    private final HeroService heroService;
     private final Hero hero;
-    private final BestiaryService bestiary;
 
     private IFightChild[] controllers;
     private String title;
@@ -49,8 +47,8 @@ public class FightController extends BaseController implements Initializable {
     // region Constructors
 
     public FightController(Context context) {
-        this.hero = ((HeroService) context.getService(Context.SERVICE_HERO)).getHero().get();
-        this.bestiary = context.getService(Context.SERVICE_BESTIARY);
+        this.heroService = context.getService(Context.SERVICE_HERO);
+        this.hero = this.heroService.getHero();
     }
 
     // endregion

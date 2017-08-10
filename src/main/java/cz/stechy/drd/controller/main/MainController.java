@@ -93,7 +93,7 @@ public class MainController extends BaseController implements Initializable {
     public MainController(Context context) {
         heroManager = context.getService(Context.SERVICE_HERO);
         userService = context.getUserService();
-        hero = heroManager.getHero();
+        hero = heroManager.heroProperty();
     }
 
     @Override

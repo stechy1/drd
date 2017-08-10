@@ -271,8 +271,12 @@ public final class HeroService extends BaseDatabaseService<Hero> {
 
     // region Getters & Setters
 
-    public ReadOnlyObjectProperty<Hero> getHero() {
+    public final ReadOnlyObjectProperty<Hero> heroProperty() {
         return hero;
+    }
+
+    public final Hero getHero() {
+        return hero.get();
     }
 
     // endregion
