@@ -19,6 +19,7 @@ public final class R {
         public static final String BESTIARY_EDIT_OTHER = "bestiary_edit_other";
         public static final String BESTIARY_EDIT_PROPERTIES = "bestiary_edit_properties";
         public static final String FIGHT = "fight";
+        public static final String FIGHT_COMMENT = "fight_comment";
         public static final String FIGHT_HERO = "fight_hero";
         public static final String FIGHT_OPPONENT = "fight_opponent";
         public static final String HERO_CREATOR_1 = "hero_creator_1";

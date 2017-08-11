@@ -18,6 +18,8 @@ import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -57,6 +59,7 @@ public class FightController extends BaseController implements Initializable {
     private final Hero hero;
 
     private final BooleanProperty isFighting = new SimpleBooleanProperty();
+    private final StringProperty comment = new SimpleStringProperty();
     private IFightChild[] controllers;
     private String title;
     private Battlefield battlefield;
@@ -122,13 +125,18 @@ public class FightController extends BaseController implements Initializable {
     @FXML
     private void handleBeginFight(ActionEvent actionEvent) throws DatabaseException {
         stopFight();
+
+        Bundle bundle = new Bundle();
+        bundle.put(FightCommentController.COMMENT, comment);
+        startNewDialog(R.FXML.FIGHT_COMMENT, bundle);
+
         final Inventory inventory = heroService.getInventory()
             .select(InventoryService.EQUIP_INVENTORY_FILTER);
         final InventoryContent equipContent = heroService.getInventory()
             .getInventoryContent(inventory);
         this.battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent), fightOpponentController.getMob());
         battlefield.setFightFinishListener(() -> isFighting.set(false));
-        battlefield.setOnActionVisualizeListener(lblStatus::setText);
+        battlefield.setOnActionVisualizeListener(comment::set);
         battlefield.fight();
         isFighting.set(true);
     }
@@ -136,5 +144,6 @@ public class FightController extends BaseController implements Initializable {
     @FXML
     private void handleStopFight(ActionEvent actionEvent) {
         stopFight();
+        closeChildScreens();
     }
 }

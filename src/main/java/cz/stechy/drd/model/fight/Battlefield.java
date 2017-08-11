@@ -25,6 +25,8 @@ public final class Battlefield {
     private OnFightFinishListener fightFinishListener;
     private OnActionVisualizeListener onActionVisualizeListener;
 
+    private int turnCount;
+
     // endregion
 
     // region Constructors
@@ -39,8 +41,12 @@ public final class Battlefield {
             new KeyFrame(DELAY, event -> { // Kontrola že jsou všichni živí a zdraví
                 if (!aggressiveEntity1.isAlive() || !aggressiveEntity2.isAlive()) {
                     timeline.stop();
+                    IAggressive entity = aggressiveEntity1.isAlive() ? aggressiveEntity2 : aggressiveEntity1;
+                    visualizeAction(entity.toString() + " zemřel bolestivou smrtí");
                     callEndHandler();
                 }
+                visualizeAction(++turnCount + ". kolo");
+                visualizeAction("================================");
                 visualizeAction("Útočí: " + aggressiveEntity1.toString());
             }),
             new KeyFrame(DELAY, event -> { // Útočí první entita
@@ -49,6 +55,7 @@ public final class Battlefield {
             new KeyFrame(DELAY, event -> { // Kontrola, že druhá entita je stále na živu
                 if (!aggressiveEntity2.isAlive()) {
                     timeline.stop();
+                    visualizeAction(aggressiveEntity2.toString() + " zemřel bolestivou smrtí.");
                     callEndHandler();
                 }
                 visualizeAction("Útočí: " + aggressiveEntity2.toString());
@@ -83,8 +90,9 @@ public final class Battlefield {
             final int subtractLive = Math.max(attackNumber - defnenceNumber, 1);
             defender.subtractLive(subtractLive);
             visualizeAction(attacker.toString() + " ubírá celkem: " + subtractLive + " protivníkovi: " + defender.toString());
+        } else {
+            visualizeAction(defender.toString() + " se vyhybá útoku " + attacker.toString());
         }
-
     }
 
     /**
