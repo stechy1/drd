@@ -21,6 +21,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 
 /**
@@ -41,6 +42,9 @@ public class FightController extends BaseController implements Initializable {
     private AnchorPane fightHero;
     @FXML
     private AnchorPane fightOpponent;
+
+    @FXML
+    private Label lblStatus;
 
     @FXML
     private JFXButton btnStartFight;
@@ -124,6 +128,7 @@ public class FightController extends BaseController implements Initializable {
             .getInventoryContent(inventory);
         this.battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent), fightOpponentController.getMob());
         battlefield.setFightFinishListener(() -> isFighting.set(false));
+        battlefield.setOnActionVisualizeListener(lblStatus::setText);
         battlefield.fight();
         isFighting.set(true);
     }

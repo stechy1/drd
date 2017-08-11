@@ -117,7 +117,6 @@ public abstract class EntityBase extends OnlineItem implements IAggressive {
     @Override
     public void subtractLive(int live) {
         this.live.subtract(live);
-        System.out.println(getLive().getActValue());
     }
 
     // endregion

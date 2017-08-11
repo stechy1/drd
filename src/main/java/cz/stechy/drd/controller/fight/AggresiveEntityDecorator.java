@@ -37,4 +37,9 @@ public abstract class AggresiveEntityDecorator implements IAggressive {
     public boolean isAlive() {
         return aggressiveEntity.isAlive();
     }
+
+    @Override
+    public String toString() {
+        return aggressiveEntity.toString();
+    }
 }

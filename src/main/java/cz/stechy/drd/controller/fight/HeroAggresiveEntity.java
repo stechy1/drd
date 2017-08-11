@@ -37,9 +37,6 @@ public class HeroAggresiveEntity extends AggresiveEntityDecorator {
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
-
-        System.out.printf("Weapon strength/defence: %d/%d; armor defence: %d%n", weaponStrength,
-            weaponDefence, armorDefence);
     }
 
     // endregion

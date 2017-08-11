@@ -14,7 +14,7 @@ public final class Battlefield {
 
     // region Constants
 
-    private static final Duration DELAY = Duration.millis(750);
+    private static final Duration DELAY = Duration.seconds(2);
 
     // endregion
 
@@ -23,6 +23,7 @@ public final class Battlefield {
     final Timeline timeline = new Timeline();
 
     private OnFightFinishListener fightFinishListener;
+    private OnActionVisualizeListener onActionVisualizeListener;
 
     // endregion
 
@@ -35,24 +36,24 @@ public final class Battlefield {
      */
     public Battlefield(IAggressive aggressiveEntity1, IAggressive aggressiveEntity2) {
         timeline.getKeyFrames().setAll(
-            new KeyFrame(Duration.ZERO, event -> { // Kontrola že jsou všichni živí a zdraví
+            new KeyFrame(DELAY, event -> { // Kontrola že jsou všichni živí a zdraví
                 if (!aggressiveEntity1.isAlive() || !aggressiveEntity2.isAlive()) {
                     timeline.stop();
                     callEndHandler();
                 }
+                visualizeAction("Útočí: " + aggressiveEntity1.toString());
             }),
             new KeyFrame(DELAY, event -> { // Útočí první entita
-                System.out.println("Útočí první entita");
                 attack(aggressiveEntity1, aggressiveEntity2);
             }), // Utočí první
-            new KeyFrame(Duration.ZERO, event -> { // Kontrola, že druhá entita je stále na živu
+            new KeyFrame(DELAY, event -> { // Kontrola, že druhá entita je stále na živu
                 if (!aggressiveEntity2.isAlive()) {
                     timeline.stop();
                     callEndHandler();
                 }
+                visualizeAction("Útočí: " + aggressiveEntity2.toString());
             }),
             new KeyFrame(DELAY, event -> { // Útočí druhá entita
-                System.out.println("Útočí druhá entita");
                 attack(aggressiveEntity2, aggressiveEntity1);
             })  // Útočí druhý
         );
@@ -64,16 +65,25 @@ public final class Battlefield {
 
     // region Private methods
 
+    private void visualizeAction(String action) {
+        if (onActionVisualizeListener != null) {
+            onActionVisualizeListener.onActionVisualize(action);
+        }
+        System.out.println(action);
+    }
+
     private void attack(IAggressive attacker, IAggressive defender) {
         final int attackNumber = Math.max(Dice.K6.roll() + attacker.getAttackNumber(), 0);
+        visualizeAction(attacker.toString() + " útočí s útočným číslem: " + attackNumber);
         final int defnenceNumber = Math.max(Dice.K6.roll() + defender.getDefenceNumber(), 0);
+        visualizeAction(defender.toString() + " se brání s obranným číslem: " + defnenceNumber);
         final boolean attackSuccess = attackNumber > defnenceNumber;
 
         if (attackSuccess) { // Pokud byl útok úspěšný
-            defender.subtractLive(Math.max(attackNumber - defnenceNumber, 1));
+            final int subtractLive = Math.max(attackNumber - defnenceNumber, 1);
+            defender.subtractLive(subtractLive);
+            visualizeAction(attacker.toString() + " ubírá celkem: " + subtractLive + " protivníkovi: " + defender.toString());
         }
-
-        System.out.println("ÚČ: " + attackNumber + "; DEF: " + defnenceNumber + " delta: " + Math.max(attackNumber - defnenceNumber, 1));
 
     }
 
@@ -117,6 +127,14 @@ public final class Battlefield {
         return this;
     }
 
+    public OnActionVisualizeListener getOnActionVisualizeListener() {
+        return onActionVisualizeListener;
+    }
+
+    public void setOnActionVisualizeListener(OnActionVisualizeListener onActionVisualizeListener) {
+        this.onActionVisualizeListener = onActionVisualizeListener;
+    }
+
     // endregion
 
     public interface OnFightFinishListener {
@@ -125,5 +143,16 @@ public final class Battlefield {
          * Metoda, která se zavolá po skončení souboje
          */
         void onFightFinish();
+    }
+
+    public interface OnActionVisualizeListener {
+
+        /**
+         * Metoda je zavolána po každe, když se provede nějaká akce
+         *
+         * @param description
+         */
+        void onActionVisualize(String description);
+
     }
 }
