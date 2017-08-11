@@ -15,7 +15,8 @@
   </center>
   <bottom>
     <HBox alignment="CENTER">
-      <JFXButton text="Začít souboj" onAction="#handleBeginFight" styleClass="btn, btn-primary"/>
+      <JFXButton text="Spustit souboj" onAction="#handleBeginFight" styleClass="btn, btn-primary" fx:id="btnStartFight"/>
+      <JFXButton text="Zastavit souboj" onAction="#handleStopFight" styleClass="btn, btn-primary" fx:id="btnStopFight"/>
     </HBox>
   </bottom>
 </BorderPane>

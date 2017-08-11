@@ -110,4 +110,8 @@ public class FightOpponentController implements Initializable, IFightChild {
     public Mob getMob() {
         return selectedMob.get();
     }
+
+    ObjectProperty<Mob> selectedMobProperty() {
+        return selectedMob;
+    }
 }

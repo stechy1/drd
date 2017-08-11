@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.fight;
 
+import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -14,6 +15,9 @@ import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -38,11 +42,17 @@ public class FightController extends BaseController implements Initializable {
     @FXML
     private AnchorPane fightOpponent;
 
+    @FXML
+    private JFXButton btnStartFight;
+    @FXML
+    private JFXButton btnStopFight;
+
     // endregion
 
     private final HeroService heroService;
     private final Hero hero;
 
+    private final BooleanProperty isFighting = new SimpleBooleanProperty();
     private IFightChild[] controllers;
     private String title;
     private Battlefield battlefield;
@@ -67,6 +77,7 @@ public class FightController extends BaseController implements Initializable {
         if (this.battlefield != null) {
             battlefield.stopFight();
         }
+        isFighting.set(false);
     }
 
     // endregion
@@ -79,6 +90,11 @@ public class FightController extends BaseController implements Initializable {
             fightHeroController,
             fightOpponentController
         };
+
+        btnStartFight.disableProperty().bind(Bindings.createBooleanBinding(() ->
+            isFighting.get() || fightOpponentController.selectedMobProperty().get() == null,
+            isFighting, fightOpponentController.selectedMobProperty()));
+        btnStopFight.disableProperty().bind(isFighting.not());
     }
 
     @Override
@@ -107,6 +123,13 @@ public class FightController extends BaseController implements Initializable {
         final InventoryContent equipContent = heroService.getInventory()
             .getInventoryContent(inventory);
         this.battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent), fightOpponentController.getMob());
+        battlefield.setFightFinishListener(() -> isFighting.set(false));
         battlefield.fight();
+        isFighting.set(true);
+    }
+
+    @FXML
+    private void handleStopFight(ActionEvent actionEvent) {
+        stopFight();
     }
 }

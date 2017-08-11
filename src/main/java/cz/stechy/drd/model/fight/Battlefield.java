@@ -22,6 +22,7 @@ public final class Battlefield {
 
     final Timeline timeline = new Timeline();
 
+    private OnFightFinishListener fightFinishListener;
 
     // endregion
 
@@ -37,6 +38,7 @@ public final class Battlefield {
             new KeyFrame(Duration.ZERO, event -> { // Kontrola že jsou všichni živí a zdraví
                 if (!aggressiveEntity1.isAlive() || !aggressiveEntity2.isAlive()) {
                     timeline.stop();
+                    callEndHandler();
                 }
             }),
             new KeyFrame(DELAY, event -> { // Útočí první entita
@@ -46,6 +48,7 @@ public final class Battlefield {
             new KeyFrame(Duration.ZERO, event -> { // Kontrola, že druhá entita je stále na živu
                 if (!aggressiveEntity2.isAlive()) {
                     timeline.stop();
+                    callEndHandler();
                 }
             }),
             new KeyFrame(DELAY, event -> { // Útočí druhá entita
@@ -74,6 +77,15 @@ public final class Battlefield {
 
     }
 
+    /**
+     * Zavolá handler na obsluhu události
+     */
+    private void callEndHandler() {
+        if (fightFinishListener != null) {
+            fightFinishListener.onFightFinish();
+        }
+    }
+
     // endregion
 
     // region Public methods
@@ -93,4 +105,25 @@ public final class Battlefield {
     }
 
     // endregion
+
+    // region Getters & Setters
+
+    public OnFightFinishListener getFightFinishListener() {
+        return fightFinishListener;
+    }
+
+    public Battlefield setFightFinishListener(OnFightFinishListener fightFinishListener) {
+        this.fightFinishListener = fightFinishListener;
+        return this;
+    }
+
+    // endregion
+
+    public interface OnFightFinishListener {
+
+        /**
+         * Metoda, která se zavolá po skončení souboje
+         */
+        void onFightFinish();
+    }
 }
