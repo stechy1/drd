@@ -2,9 +2,13 @@ package cz.stechy.drd.controller.fight;
 
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
+import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.fight.Battlefield;
+import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.model.persistent.InventoryContent;
+import cz.stechy.drd.model.persistent.InventoryService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -41,6 +45,7 @@ public class FightController extends BaseController implements Initializable {
 
     private IFightChild[] controllers;
     private String title;
+    private Battlefield battlefield;
 
     // endregion
 
@@ -49,6 +54,19 @@ public class FightController extends BaseController implements Initializable {
     public FightController(Context context) {
         this.heroService = context.getService(Context.SERVICE_HERO);
         this.hero = this.heroService.getHero();
+    }
+
+    // endregion
+
+    // region Private methods
+
+    /**
+     * Ukončí souboj, pokud nějaký je
+     */
+    private void stopFight() {
+        if (this.battlefield != null) {
+            battlefield.stopFight();
+        }
     }
 
     // endregion
@@ -76,8 +94,19 @@ public class FightController extends BaseController implements Initializable {
         setScreenSize(1050, 400);
     }
 
-    public void handleBeginFight(ActionEvent actionEvent) {
-        Battlefield battlefield = new Battlefield(hero, fightOpponentController.getMob());
+    @Override
+    protected void onClose() {
+        stopFight();
+    }
+
+    @FXML
+    private void handleBeginFight(ActionEvent actionEvent) throws DatabaseException {
+        stopFight();
+        final Inventory inventory = heroService.getInventory()
+            .select(InventoryService.EQUIP_INVENTORY_FILTER);
+        final InventoryContent equipContent = heroService.getInventory()
+            .getInventoryContent(inventory);
+        this.battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent), fightOpponentController.getMob());
         battlefield.fight();
     }
 }

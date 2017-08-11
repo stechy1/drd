@@ -19,7 +19,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Základní společná třída pro všechny entity ve světě Dračího doupěte
  */
-public abstract class EntityBase extends OnlineItem {
+public abstract class EntityBase extends OnlineItem implements IAggressive {
 
     // region Variales
 
@@ -102,10 +102,8 @@ public abstract class EntityBase extends OnlineItem {
 
         setName(entity.getName());
         setDescription(entity.getDescription());
-        this.live.setMaxValue(entity.live.getMaxValue());
-        this.live.setActValue(entity.live.getActValue());
-        this.mag.setMaxValue(entity.mag.getMaxValue());
-        this.mag.setActValue(entity.mag.getActValue());
+        this.live.update(entity.live);
+        this.mag.update(entity.mag);
         setConviction(entity.getConviction());
         setHeight(entity.getHeight());
         if (!attackNumber.isBound()) {
@@ -114,6 +112,12 @@ public abstract class EntityBase extends OnlineItem {
         if (!defenceNumber.isBound()) {
             setDefenceNumber(entity.getDefenceNumber());
         }
+    }
+
+    @Override
+    public void subtractLive(int live) {
+        this.live.subtract(live);
+        System.out.println(getLive().getActValue());
     }
 
     // endregion
