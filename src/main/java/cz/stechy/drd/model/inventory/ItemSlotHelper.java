@@ -45,7 +45,7 @@ public final class ItemSlotHelper {
         ItemType.isSword(itemBase.getItemType());
 
     // Filtr pro štíty
-    private static final Predicate<ItemBase> SHIELD_FILTER = itemBase -> true;
+    private static final Predicate<ItemBase> SHIELD_FILTER = itemBase -> false;
 
     // endregion
 
