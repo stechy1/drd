@@ -5,6 +5,7 @@ public final class R {
 
     public static class FXML {
 
+        public static final String ABOUT = "about";
         public static final String CARD = "card";
         public static final String DICE = "dice";
         public static final String LABELED_MAX_ACT_VALUE = "labeled_max_act_value";
@@ -281,6 +282,7 @@ public final class R {
         public static final String NOTIFY_FIGHT_LIVE_UPDATE = "drd_notify_fight_live_update";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
         public static final String SETTINGS = "drd_settings";
+        public static final String ABOUT_CONTENT = "drd_about_content";
     }
 
     public static class Config {

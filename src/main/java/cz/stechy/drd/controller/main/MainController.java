@@ -308,7 +308,7 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuAbout(ActionEvent actionEvent) {
-
+        startNewDialog(R.FXML.ABOUT);
     }
 
     @FXML
