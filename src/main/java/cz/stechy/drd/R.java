@@ -66,6 +66,8 @@ public final class R {
         public static final String MAIN_TITLE = "drd_main_title";
         public static final String MAIN_TAB_DASHBOARD = "drd_main_tab_dashboard";
         public static final String MAIN_TAB_INVENTORY = "drd_main_tab_inventory";
+        public static final String HERO = "drd_hero";
+        public static final String HERO_ABOUT = "drd_hero_about";
         public static final String HERO_NAME = "drd_hero_name";
         public static final String HERO_RACE = "drd_hero_race";
         public static final String HERO_PROFESSION = "drd_hero_profession";
@@ -259,6 +261,11 @@ public final class R {
         public static final String LEVEL_UP_TITLE = "drd_level_up_title";
         public static final String LEVEL_UP_PRICE = "drd_level_up_price";
         public static final String FIGHT_TITLE = "drd_fight_title";
+        public static final String FIGHT_START = "drd_fight_start";
+        public static final String FIGHT_STOP = "drd_fight_stop";
+        public static final String ADVERSARY = "drd_adversary";
+        public static final String ADVERSARY_ABOUT = "drd_adversary_about";
+        public static final String ADVERSARY_REVIVE = "drd_adversary_revive";
         public static final String NOTIFY_LOGIN_SUCCESS = "drd_notify_login_success";
         public static final String NOTIFY_LOGIN_FAIL = "drd_notify_login_fail";
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";

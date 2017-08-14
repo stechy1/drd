@@ -15,13 +15,13 @@
     AnchorPane.topAnchor="0.0">
     <top>
       <HBox styleClass="title-container">
-        <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="Hrdina"/>
+        <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_hero"/>
       </HBox>
     </top>
     <center>
       <HBox alignment="TOP_CENTER">
         <LabeledMaxActValue caption="%drd_hero_lives" description="%drd_hero_live" fx:id="lblLive"/>
-        <Card caption="Informace o hrdinovi">
+        <Card caption="%drd_hero_about">
           <content>
             <GridPane prefHeight="200.0" prefWidth="150.0" vgap="8.0">
               <rowConstraints>

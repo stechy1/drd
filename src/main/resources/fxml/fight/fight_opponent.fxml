@@ -20,12 +20,12 @@
     AnchorPane.topAnchor="0.0">
     <top>
       <HBox styleClass="title-container">
-        <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="Oponent"/>
+        <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_adversary"/>
       </HBox>
     </top>
     <center>
       <HBox spacing="8.0">
-        <Card caption="Informace o oponentovi">
+        <Card caption="%drd_adversary_about">
             <content>
               <GridPane prefHeight="200.0" prefWidth="150.0" vgap="8.0">
                 <rowConstraints>
@@ -64,7 +64,7 @@
           <LabeledMaxActValue caption="%drd_hero_lives" description="%drd_hero_live"
             fx:id="lblLive"/>
           <JFXButton onAction="#handleRevive" styleClass="btn, btn-warning, btn-raised"
-            text="Oživit nestvůru" fx:id="btnRevive" prefWidth="270.0"/>
+            text="%drd_adversary_revive" fx:id="btnRevive" prefWidth="270.0"/>
         </VBox>
       </HBox>
     </center>

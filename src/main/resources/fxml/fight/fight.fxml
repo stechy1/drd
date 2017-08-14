@@ -20,8 +20,8 @@
   </center>
   <bottom>
     <HBox alignment="CENTER">
-      <JFXButton text="Spustit souboj" onAction="#handleBeginFight" styleClass="btn, btn-primary" fx:id="btnStartFight"/>
-      <JFXButton text="Zastavit souboj" onAction="#handleStopFight" styleClass="btn, btn-primary" fx:id="btnStopFight"/>
+      <JFXButton text="%drd_fight_start" onAction="#handleBeginFight" styleClass="btn, btn-primary" fx:id="btnStartFight"/>
+      <JFXButton text="%drd_fight_stop" onAction="#handleStopFight" styleClass="btn, btn-primary" fx:id="btnStopFight"/>
     </HBox>
   </bottom>
 </BorderPane>
