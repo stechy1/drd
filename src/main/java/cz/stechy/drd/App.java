@@ -164,7 +164,7 @@ public class App extends Application {
         IMainScreen controlledScreen = loader.getController();
         manager.setMainScreen(controlledScreen);
         manager.loadScreens();
-        manager.showNewDialog(parent, primaryStage, true);
+        manager.showNewDialog(parent, primaryStage, false);
         manager.showScreen(FXML.MAIN, null);
     }
 
