@@ -3,9 +3,11 @@ package cz.stechy.drd.controller.fight;
 import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.fight.Battlefield;
+import cz.stechy.drd.model.fight.Battlefield.BattlefieldAction;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.InventoryContent;
@@ -62,6 +64,7 @@ public class FightController extends BaseController implements Initializable {
     private final StringProperty comment = new SimpleStringProperty();
     private IFightChild[] controllers;
     private String title;
+    private ResourceBundle resources;
     private Battlefield battlefield;
 
     // endregion
@@ -87,11 +90,44 @@ public class FightController extends BaseController implements Initializable {
         isFighting.set(false);
     }
 
+    private String processComment(BattlefieldAction action, Object... params) {
+        String formater = "";
+        switch (action) {
+            case ATTACK:
+                formater = Translate.FIGHT_COMMENT_ACTION_ATTACK;
+                break;
+            case DEFENCE:
+                formater = R.Translate.FIGHT_COMMENT_ACTION_DEFENCE;
+                break;
+            case HEALTH:
+                formater = R.Translate.FIGHT_COMMENT_ACTION_HEALTH;
+                break;
+            case BLOCK:
+                formater = R.Translate.FIGHT_COMMENT_ACTION_BLOCK;
+                break;
+            case DEATH:
+                formater = R.Translate.FIGHT_COMMENT_ACTION_DEATH;
+                break;
+            case TURN:
+                formater = R.Translate.FIGHT_COMMENT_ACTION_TURN;
+                break;
+            case SEPARATOR:
+                formater = R.Translate.FIGHT_COMMENT_ACTION_SEPARATOR;
+                break;
+            case ATTACK_INFO:
+                formater = R.Translate.FIGHT_COMMENT_ACTION_ATTACK_INFO;
+                break;
+        }
+        formater = resources.getString(formater);
+        return String.format(formater, params);
+    }
+
     // endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.title = resources.getString(R.Translate.FIGHT_TITLE);
+        this.resources = resources;
 
         controllers = new IFightChild[] {
             fightHeroController,
@@ -136,7 +172,8 @@ public class FightController extends BaseController implements Initializable {
             .getInventoryContent(inventory);
         this.battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent), fightOpponentController.getMob());
         battlefield.setFightFinishListener(() -> isFighting.set(false));
-        battlefield.setOnActionVisualizeListener(comment::set);
+        battlefield.setOnActionVisualizeListener((action, params) ->
+            comment.setValue(processComment(action, params)));
         battlefield.fight();
         isFighting.set(true);
     }

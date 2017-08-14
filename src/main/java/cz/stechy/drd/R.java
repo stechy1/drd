@@ -266,6 +266,14 @@ public final class R {
         public static final String ADVERSARY = "drd_adversary";
         public static final String ADVERSARY_ABOUT = "drd_adversary_about";
         public static final String ADVERSARY_REVIVE = "drd_adversary_revive";
+        public static final String FIGHT_COMMENT_ACTION_ATTACK = "drd_fight_comment_action_attack";
+        public static final String FIGHT_COMMENT_ACTION_DEFENCE = "drd_fight_comment_action_defence";
+        public static final String FIGHT_COMMENT_ACTION_HEALTH = "drd_fight_comment_action_health";
+        public static final String FIGHT_COMMENT_ACTION_BLOCK = "drd_fight_comment_action_block";
+        public static final String FIGHT_COMMENT_ACTION_DEATH = "drd_fight_comment_action_death";
+        public static final String FIGHT_COMMENT_ACTION_TURN = "drd_fight_comment_action_turn";
+        public static final String FIGHT_COMMENT_ACTION_SEPARATOR = "drd_fight_comment_action_separator";
+        public static final String FIGHT_COMMENT_ACTION_ATTACK_INFO = "drd_fight_comment_action_attack_info";
         public static final String NOTIFY_LOGIN_SUCCESS = "drd_notify_login_success";
         public static final String NOTIFY_LOGIN_FAIL = "drd_notify_login_fail";
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";

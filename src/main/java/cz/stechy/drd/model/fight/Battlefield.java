@@ -42,12 +42,13 @@ public final class Battlefield {
                 if (!aggressiveEntity1.isAlive() || !aggressiveEntity2.isAlive()) {
                     timeline.stop();
                     IAggressive entity = aggressiveEntity1.isAlive() ? aggressiveEntity2 : aggressiveEntity1;
-                    visualizeAction(entity.toString() + " zemřel bolestivou smrtí");
+                    visualizeAction(BattlefieldAction.DEATH, entity.toString());
                     callEndHandler();
+                } else {
+                    visualizeAction(BattlefieldAction.TURN, ++turnCount);
+                    visualizeAction(BattlefieldAction.SEPARATOR);
+                    visualizeAction(BattlefieldAction.ATTACK_INFO, aggressiveEntity1.toString());
                 }
-                visualizeAction(++turnCount + ". kolo");
-                visualizeAction("================================");
-                visualizeAction("Útočí: " + aggressiveEntity1.toString());
             }),
             new KeyFrame(DELAY, event -> { // Útočí první entita
                 attack(aggressiveEntity1, aggressiveEntity2);
@@ -55,10 +56,11 @@ public final class Battlefield {
             new KeyFrame(DELAY, event -> { // Kontrola, že druhá entita je stále na živu
                 if (!aggressiveEntity2.isAlive()) {
                     timeline.stop();
-                    visualizeAction(aggressiveEntity2.toString() + " zemřel bolestivou smrtí.");
+                    visualizeAction(BattlefieldAction.DEATH, aggressiveEntity2.toString());
                     callEndHandler();
+                } else {
+                    visualizeAction(BattlefieldAction.ATTACK_INFO, aggressiveEntity2.toString());
                 }
-                visualizeAction("Útočí: " + aggressiveEntity2.toString());
             }),
             new KeyFrame(DELAY, event -> { // Útočí druhá entita
                 attack(aggressiveEntity2, aggressiveEntity1);
@@ -72,26 +74,25 @@ public final class Battlefield {
 
     // region Private methods
 
-    private void visualizeAction(String action) {
+    private void visualizeAction(BattlefieldAction action, Object... params) {
         if (onActionVisualizeListener != null) {
-            onActionVisualizeListener.onActionVisualize(action);
+            onActionVisualizeListener.onActionVisualize(action, params);
         }
-        System.out.println(action);
     }
 
     private void attack(IAggressive attacker, IAggressive defender) {
         final int attackNumber = Math.max(Dice.K6.roll() + attacker.getAttackNumber(), 0);
-        visualizeAction(attacker.toString() + " útočí s útočným číslem: " + attackNumber);
+        visualizeAction(BattlefieldAction.ATTACK, attacker.toString(), attackNumber);
         final int defnenceNumber = Math.max(Dice.K6.roll() + defender.getDefenceNumber(), 0);
-        visualizeAction(defender.toString() + " se brání s obranným číslem: " + defnenceNumber);
+        visualizeAction(BattlefieldAction.DEFENCE, defender.toString(), defnenceNumber);
         final boolean attackSuccess = attackNumber > defnenceNumber;
 
         if (attackSuccess) { // Pokud byl útok úspěšný
             final int subtractLive = Math.max(attackNumber - defnenceNumber, 1);
             defender.subtractLive(subtractLive);
-            visualizeAction(attacker.toString() + " ubírá celkem: " + subtractLive + " protivníkovi: " + defender.toString());
+            visualizeAction(BattlefieldAction.HEALTH, attacker.toString(), subtractLive);
         } else {
-            visualizeAction(defender.toString() + " se vyhybá útoku " + attacker.toString());
+            visualizeAction(BattlefieldAction.BLOCK, defender.toString(), attacker.toString());
         }
     }
 
@@ -130,9 +131,8 @@ public final class Battlefield {
         return fightFinishListener;
     }
 
-    public Battlefield setFightFinishListener(OnFightFinishListener fightFinishListener) {
+    public void setFightFinishListener(OnFightFinishListener fightFinishListener) {
         this.fightFinishListener = fightFinishListener;
-        return this;
     }
 
     public OnActionVisualizeListener getOnActionVisualizeListener() {
@@ -157,10 +157,13 @@ public final class Battlefield {
 
         /**
          * Metoda je zavolána po každe, když se provede nějaká akce
-         *
-         * @param description
-         */
-        void onActionVisualize(String description);
+         *  @param action
+         * @param params*/
+        void onActionVisualize(BattlefieldAction action, Object... params);
 
+    }
+
+    public enum BattlefieldAction {
+        ATTACK, DEFENCE, HEALTH, BLOCK, DEATH, TURN, SEPARATOR, ATTACK_INFO
     }
 }
