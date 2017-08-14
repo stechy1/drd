@@ -278,6 +278,7 @@ public final class R {
         public static final String NOTIFY_LOGIN_FAIL = "drd_notify_login_fail";
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";
         public static final String NOTIFY_REGISTER_FAIL = "drd_notify_register_fail";
+        public static final String NOTIFY_FIGHT_LIVE_UPDATE = "drd_notify_fight_live_update";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
         public static final String SETTINGS = "drd_settings";
     }

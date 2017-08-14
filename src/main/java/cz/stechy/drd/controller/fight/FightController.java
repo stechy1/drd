@@ -14,6 +14,7 @@ import cz.stechy.drd.model.persistent.InventoryContent;
 import cz.stechy.drd.model.persistent.InventoryService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -73,7 +74,7 @@ public class FightController extends BaseController implements Initializable {
 
     public FightController(Context context) {
         this.heroService = context.getService(Context.SERVICE_HERO);
-        this.hero = this.heroService.getHero();
+        this.hero = this.heroService.getHero().duplicate();
     }
 
     // endregion
@@ -171,7 +172,13 @@ public class FightController extends BaseController implements Initializable {
         final InventoryContent equipContent = heroService.getInventory()
             .getInventoryContent(inventory);
         this.battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent), fightOpponentController.getMob());
-        battlefield.setFightFinishListener(() -> isFighting.set(false));
+        battlefield.setFightFinishListener(() -> {
+            isFighting.set(false);
+            try {
+                heroService.update(hero);
+                showNotification(new Notification(resources.getString(R.Translate.NOTIFY_FIGHT_LIVE_UPDATE)));
+            } catch (DatabaseException e) {}
+        });
         battlefield.setOnActionVisualizeListener((action, params) ->
             comment.setValue(processComment(action, params)));
         battlefield.fight();

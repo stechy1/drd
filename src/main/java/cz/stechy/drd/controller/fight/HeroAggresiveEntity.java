@@ -33,10 +33,10 @@ public class HeroAggresiveEntity extends AggresiveEntityDecorator {
 
         try {
             initWeaponAddition(inventory);
+        } catch (DatabaseException e) {}
+        try {
             initArmorAddition(inventory);
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
+        } catch (DatabaseException e) {}
     }
 
     // endregion
