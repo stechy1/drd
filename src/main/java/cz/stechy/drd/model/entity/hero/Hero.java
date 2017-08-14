@@ -68,9 +68,6 @@ public class Hero extends EntityBase {
     private final EntityProperty intelligence = new SimpleEntityProperty();
     // Charisma
     private final EntityProperty charisma = new SimpleEntityProperty();
-    // Obranné číslo
-    private final IntegerProperty defenceNumber = new SimpleIntegerProperty(this, 
-        "defenceNumber");
     // Nosnost
     private final IntegerProperty capacity = new SimpleIntegerProperty(this, "capacity");
     // Pohyblivost
@@ -213,6 +210,11 @@ public class Hero extends EntityBase {
             final int maxExperience = this.experiences.getMaxValue().intValue();
             return experience > 0 && experience >= maxExperience;
         }, this.experiences.actValueProperty(), this.experiences.maxValueProperty()));
+
+        this.attackNumber.bind(Bindings.createIntegerBinding(() -> {
+            // TODO přidat součet ÚČ zbraně
+            return strength.getRepair();
+        }, strength.repairProperty()));
     }
 
     // endregion
@@ -320,18 +322,6 @@ public class Hero extends EntityBase {
 
     public final EntityProperty getCharisma() {
         return charisma;
-    }
-
-    public final int getDefenceNumber() {
-        return defenceNumber.get();
-    }
-
-    public final ReadOnlyIntegerProperty defenceNumberProperty() {
-        return defenceNumber;
-    }
-
-    private void setDefenceNumber(int defenceNumber) {
-        this.defenceNumber.set(defenceNumber);
     }
 
     public final int getCapacity() {

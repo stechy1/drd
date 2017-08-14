@@ -97,9 +97,9 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
         btnOpen.disableProperty().bind(selectedHero.isNull());
 
-        filteredHeroes.setPredicate(hero -> !hero.equals(heroManager.getHero().get()) &&
-            heroManager.getHero().get() != null &&
-            hero.getAuthor().equals(heroManager.getHero().get().getAuthor())
+        filteredHeroes.setPredicate(hero -> !hero.equals(heroManager.getHero()) &&
+            heroManager.heroProperty().get() != null &&
+            hero.getAuthor().equals(heroManager.heroProperty().get().getAuthor())
         );
 
         lvHeroes.setItems(filteredHeroes);

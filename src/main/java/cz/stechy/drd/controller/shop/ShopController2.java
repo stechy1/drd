@@ -98,7 +98,7 @@ public class ShopController2 extends BaseController implements Initializable {
         try {
             // Odečtení peněz
             heroManager.beginTransaction();
-            final Hero heroCopy = heroManager.getHero().get().duplicate();
+            final Hero heroCopy = heroManager.getHero().duplicate();
             heroCopy.getMoney().subtract(shoppingCart.totalPrice);
             heroManager.update(heroCopy);
 

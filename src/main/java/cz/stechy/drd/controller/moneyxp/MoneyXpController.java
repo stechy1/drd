@@ -66,7 +66,7 @@ public class MoneyXpController extends BaseController implements Initializable {
     // region Constructors
 
     public MoneyXpController(Context context) {
-        final Hero hero = ((HeroService)context.getService(Context.SERVICE_HERO)).getHero().get();
+        final Hero hero = ((HeroService)context.getService(Context.SERVICE_HERO)).getHero();
 
         this.heroMoney = new Money(hero.getMoney());
         this.heroExperience.update(hero.getExperiences());

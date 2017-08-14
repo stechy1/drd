@@ -16,7 +16,6 @@ import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
@@ -62,7 +61,7 @@ public class DiceController extends BaseController implements Initializable {
 
     private final MaxActValue diceSideCount = new MaxActValue(1, Integer.MAX_VALUE, 1);
     private final MaxActValue diceRollCount = new MaxActValue(1, Integer.MAX_VALUE, 1);
-    private final ReadOnlyObjectProperty<Hero> hero;
+    private final Hero hero;
     private final Translator translator;
 
     private DiceHelper diceHelper;
@@ -141,7 +140,7 @@ public class DiceController extends BaseController implements Initializable {
 
     @Override
     protected void onCreate(Bundle bundle) {
-        diceHelper = new DiceHelper(hero.get());
+        diceHelper = new DiceHelper(hero);
         tableAdditions.setItems(diceHelper.additions);
 
         diceHelper.rollResults.addListener((ListChangeListener<Integer>) c -> {

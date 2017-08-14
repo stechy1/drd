@@ -1,9 +1,11 @@
 package cz.stechy.drd.controller.bestiary;
 
+import cz.stechy.drd.model.Dice;
 import cz.stechy.drd.model.bestiary.MobEntry;
 import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
 import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
 import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
+import cz.stechy.drd.model.entity.EntityProperty;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.screens.Bundle;
@@ -77,7 +79,7 @@ public final class BestiaryHelper {
             bundle.putInt(RULES_TYPE, mob.getRulesType().ordinal());
             bundle.putInt(CONVICTION, mob.getConviction().ordinal());
             bundle.putInt(HEIGHT, mob.getHeight().ordinal());
-            bundle.putInt(ATTACK, mob.getAttackNumber().getValue());
+            bundle.putInt(ATTACK, mob.getAttackNumber());
             bundle.putInt(DEFENCE, mob.getDefenceNumber());
             bundle.putInt(VIABILITY, mob.getViability());
             bundle.putInt(IMMUNITY, mob.getImmunity().getValue());
@@ -212,5 +214,27 @@ public final class BestiaryHelper {
                 }
             }
         };
+    }
+
+    /**
+     * Vygeneruje počet životů nestvůry
+     * Vzorec: live = (1K10 * viability) + (immunity.getRepair() * viability)
+     * S tím, že pokud padne na K10 číslo větší rovno 8, tak se hází znovu a hod se nepočítá
+     *
+     * @param viability Životaschopnost nestvůry
+     * @param immunity Odolnost nestvůry
+     * @return Počet životů
+     */
+    public static int getLive(int viability, EntityProperty immunity) {
+        final Dice dice = Dice.K10;
+        int total = 0;
+        for (int i = 0; i < viability; i++) {
+            int rolled;
+            do {
+                rolled = dice.roll();
+            } while (rolled >=8);
+            total += rolled;
+        }
+        return total + immunity.getRepair() * viability;
     }
 }

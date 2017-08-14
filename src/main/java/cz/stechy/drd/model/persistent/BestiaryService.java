@@ -174,7 +174,7 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
             mob.getRulesType().ordinal(),
             mob.getConviction().ordinal(),
             mob.getHeight().ordinal(),
-            mob.getAttackNumber().getValue(),
+            mob.getAttackNumber(),
             mob.getDefenceNumber(),
             mob.getViability(),
             mob.getImmunity().getValue(),

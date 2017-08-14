@@ -18,6 +18,10 @@ public final class R {
         public static final String BESTIARY_EDIT_IMAGE = "bestiary_edit_image";
         public static final String BESTIARY_EDIT_OTHER = "bestiary_edit_other";
         public static final String BESTIARY_EDIT_PROPERTIES = "bestiary_edit_properties";
+        public static final String FIGHT = "fight";
+        public static final String FIGHT_COMMENT = "fight_comment";
+        public static final String FIGHT_HERO = "fight_hero";
+        public static final String FIGHT_OPPONENT = "fight_opponent";
         public static final String HERO_CREATOR_1 = "hero_creator_1";
         public static final String HERO_CREATOR_2 = "hero_creator_2";
         public static final String HERO_CREATOR_3 = "hero_creator_3";
@@ -62,6 +66,8 @@ public final class R {
         public static final String MAIN_TITLE = "drd_main_title";
         public static final String MAIN_TAB_DASHBOARD = "drd_main_tab_dashboard";
         public static final String MAIN_TAB_INVENTORY = "drd_main_tab_inventory";
+        public static final String HERO = "drd_hero";
+        public static final String HERO_ABOUT = "drd_hero_about";
         public static final String HERO_NAME = "drd_hero_name";
         public static final String HERO_RACE = "drd_hero_race";
         public static final String HERO_PROFESSION = "drd_hero_profession";
@@ -254,10 +260,25 @@ public final class R {
         public static final String ITEM_MAX_LOAD = "drd_item_max_load";
         public static final String LEVEL_UP_TITLE = "drd_level_up_title";
         public static final String LEVEL_UP_PRICE = "drd_level_up_price";
+        public static final String FIGHT_TITLE = "drd_fight_title";
+        public static final String FIGHT_START = "drd_fight_start";
+        public static final String FIGHT_STOP = "drd_fight_stop";
+        public static final String ADVERSARY = "drd_adversary";
+        public static final String ADVERSARY_ABOUT = "drd_adversary_about";
+        public static final String ADVERSARY_REVIVE = "drd_adversary_revive";
+        public static final String FIGHT_COMMENT_ACTION_ATTACK = "drd_fight_comment_action_attack";
+        public static final String FIGHT_COMMENT_ACTION_DEFENCE = "drd_fight_comment_action_defence";
+        public static final String FIGHT_COMMENT_ACTION_HEALTH = "drd_fight_comment_action_health";
+        public static final String FIGHT_COMMENT_ACTION_BLOCK = "drd_fight_comment_action_block";
+        public static final String FIGHT_COMMENT_ACTION_DEATH = "drd_fight_comment_action_death";
+        public static final String FIGHT_COMMENT_ACTION_TURN = "drd_fight_comment_action_turn";
+        public static final String FIGHT_COMMENT_ACTION_SEPARATOR = "drd_fight_comment_action_separator";
+        public static final String FIGHT_COMMENT_ACTION_ATTACK_INFO = "drd_fight_comment_action_attack_info";
         public static final String NOTIFY_LOGIN_SUCCESS = "drd_notify_login_success";
         public static final String NOTIFY_LOGIN_FAIL = "drd_notify_login_fail";
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";
         public static final String NOTIFY_REGISTER_FAIL = "drd_notify_register_fail";
+        public static final String NOTIFY_FIGHT_LIVE_UPDATE = "drd_notify_fight_live_update";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
         public static final String SETTINGS = "drd_settings";
     }

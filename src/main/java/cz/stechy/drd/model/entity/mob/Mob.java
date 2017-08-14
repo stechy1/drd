@@ -28,11 +28,6 @@ public final class Mob extends EntityBase {
     private final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>();
     // Typ pravidel, do kterých nestvůra patří
     private final ObjectProperty<Rule> rulesType = new SimpleObjectProperty<>();
-    // Útočné číslo
-    private final EntityProperty attackNumber = new SimpleEntityProperty();
-    // Obranné číslo
-    private final IntegerProperty defenceNumber = new SimpleIntegerProperty(this, 
-        "defenceNumber");
     // Životaschpnost
     private final IntegerProperty viability = new SimpleIntegerProperty(this, 
         "viability");
@@ -81,7 +76,7 @@ public final class Mob extends EntityBase {
             mob.getLive().getActValue().intValue(),
             mob.getLive().getMaxValue().intValue(), mob.getMag().getActValue().intValue(),
             mob.getMag().getMaxValue().intValue(),
-            mob.getConviction(), mob.getHeight(), mob.getAttackNumber().getValue(),
+            mob.getConviction(), mob.getHeight(), mob.getAttackNumber(),
             mob.getDefenceNumber(), mob.getViability(), mob.getImmunity().getValue(),
             mob.getMettle(),
             mob.getVulnerability().value, mob.getMobility(), mob.getPerservance(),
@@ -163,8 +158,6 @@ public final class Mob extends EntityBase {
         setImage(mob.getImage());
         setMobClass(mob.getMobClass());
         setRulesType(mob.getRulesType());
-        this.attackNumber.update(mob.getAttackNumber());
-        setDefenceNumber(mob.getDefenceNumber());
         setViability(mob.getViability());
         this.immunity.update(mob.getImmunity());
         setMettle(mob.getMettle());
@@ -224,22 +217,6 @@ public final class Mob extends EntityBase {
 
     private void setRulesType(Rule rulesType) {
         this.rulesType.set(rulesType);
-    }
-
-    public final EntityProperty getAttackNumber() {
-        return attackNumber;
-    }
-
-    public final int getDefenceNumber() {
-        return defenceNumber.get();
-    }
-
-    public final ReadOnlyIntegerProperty defenceNumberProperty() {
-        return defenceNumber;
-    }
-
-    private void setDefenceNumber(int defenceNumber) {
-        this.defenceNumber.set(defenceNumber);
     }
 
     public final int getViability() {
