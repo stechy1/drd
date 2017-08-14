@@ -10,11 +10,11 @@ Pro sestavení projektu je vyžadován Gradle.
 
 #### Firebase
 K provozování vlastní online databáze je třeba inicializovat Firebase
-databázi. Po vytvoření databáze je nutné nakopírovat iniciály získané
-po vytvoření do souboru _firebase_credentials.json_ který je umístěn ve
-složce: `src/main/resources/other/`. V této složce se již nachází
-předpřipravený soubor _firebase_credentials_default.json_, který
-slouží jako příklad.
+databázi. Inicializace databáze se provádí v nastavení aplikace.
+V nastavení přepnete přepínač pro zpřístupnění online databáze.
+Tím se aktivuje tlačítko pro výběr souboru s přístupovými údaji k Firebase.
+Po výběru správného souboru se zobrazí notifikace o (ne)úspěšném navázání spojené.
+Pokud bylo spojení úspěšné, lze začít využívat veškeré výhody online databáze.
 
 K sestavení projektu je potřeba otevřít příkazovou řádku v adresáři s projektem.
 Pomocí příkazu `./gradlew jfxJar` pro Linux, případně `gradlew.bat jfxJar` pro Windows
