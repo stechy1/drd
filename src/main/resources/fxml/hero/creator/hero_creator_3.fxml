@@ -41,13 +41,13 @@
         <TableColumn minWidth="40.0" styleClass="table-column" text="%drd_item_ammount"
           fx:id="columnItemCount">
           <cellValueFactory>
-            <PropertyValueFactory property="weight"/>
+            <PropertyValueFactory property="itemCount"/>
           </cellValueFactory>
         </TableColumn>
         <TableColumn minWidth="40.0" styleClass="table-column" text="%drd_item_weight"
           fx:id="columnWeight">
           <cellValueFactory>
-            <PropertyValueFactory property="itemCount"/>
+            <PropertyValueFactory property="weight"/>
           </cellValueFactory>
         </TableColumn>
       </columns>
