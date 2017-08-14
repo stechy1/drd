@@ -24,6 +24,9 @@ se vytvoří spustitelný Jar soubor.
 Aplikaci lze spustit dvojitým poklepáním na Jar soubor. Z příkazové řádky
 je lze aplikaci spustit příkazem `java -jar drd.jar`.
 
+S aplikací se dodává složka lib, která obsahuje veškeré knihovny, na ktefých je aplikace závislá. 
+Změnou obsahu složky může dojít k nestabilitě aplikaci či nemožnosti spustit ji.
+
 ## Ovládání aplikace
 Celé ovládání je popsané v sekci Wiki.
 
