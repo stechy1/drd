@@ -2,6 +2,7 @@ package cz.stechy.drd.controller.bestiary;
 
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.bestiary.MobEntry;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
@@ -31,6 +32,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -114,7 +116,6 @@ public class BestiaryController extends BaseController implements Initializable 
         this.service = context.getService(Context.SERVICE_BESTIARY);
         this.user = context.getUserService().getUser().get();
         this.translator = context.getTranslator();
-        ObservableMergers.mergeList(MobEntry::new, this.mobs, service.selectAll());
     }
 
     // endregion
@@ -153,6 +154,15 @@ public class BestiaryController extends BaseController implements Initializable 
             TextFieldTableCell.forTableColumn(StringConvertors.forRulesType(translator)));
         columnAction.setCellFactory(param -> BestiaryHelper
             .forActionButtons(uploadHandler, downloadHandler, deleteHandler, user, resources));
+
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                ObservableMergers.mergeList(MobEntry::new, mobs, service.selectAll());
+                return null;
+            }
+        };
+        ThreadPool.getInstance().submit(task);
     }
 
     @Override
