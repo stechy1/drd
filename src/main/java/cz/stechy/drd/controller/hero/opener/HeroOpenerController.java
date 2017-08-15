@@ -82,6 +82,17 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
     // endregion
 
+    // region Private methods
+
+    private void openHero() {
+        setResult(selectedHero.isNull().get() ? RESULT_FAIL : RESULT_SUCCESS);
+        Bundle bundle = new Bundle();
+        bundle.put(HERO, selectedHero.getValue().getId());
+        finish(bundle);
+    }
+
+    // endregion
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.OPENER_TITLE);
@@ -109,6 +120,11 @@ public class HeroOpenerController extends BaseController implements Initializabl
         );
 
         lvHeroes.setItems(filteredHeroes);
+        lvHeroes.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                openHero();
+            }
+        });
     }
 
     @Override
@@ -126,10 +142,7 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
     @FXML
     private void handleOpenHero(ActionEvent actionEvent) {
-        setResult(selectedHero.isNull().get() ? RESULT_FAIL : RESULT_SUCCESS);
-        Bundle bundle = new Bundle();
-        bundle.put(HERO, selectedHero.getValue().getId());
-        finish(bundle);
+        openHero();
     }
 
     // endregion
