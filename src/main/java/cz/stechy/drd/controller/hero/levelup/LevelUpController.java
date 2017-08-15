@@ -13,7 +13,6 @@ import cz.stechy.drd.widget.MoneyWidget;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -32,7 +31,6 @@ public class LevelUpController extends BaseController implements Initializable {
 
     // region Constants
 
-    private static final String KEY_POINTS_PER_LEVEL = "hero_levelup_points_per_level";
     private static final String DEFAULT_VALUE_POINTS_PER_LEVEL = "1";
 
     public static final String HERO = "hero";
@@ -89,8 +87,8 @@ public class LevelUpController extends BaseController implements Initializable {
     // region Constructors
 
     public LevelUpController(Context context) {
-        Properties properties = context.getConfiguration();
-        remaingPoints.setValue(Integer.parseInt(properties.getProperty(KEY_POINTS_PER_LEVEL, DEFAULT_VALUE_POINTS_PER_LEVEL)));
+        remaingPoints.setValue(Integer.parseInt(context
+            .getProperty(R.Config.HERO_LEVELUP_POINTS_PER_LEVEL, DEFAULT_VALUE_POINTS_PER_LEVEL)));
 
         rollFinish.bind(remaingPoints.greaterThan(0).not());
     }
@@ -145,7 +143,8 @@ public class LevelUpController extends BaseController implements Initializable {
     protected void onCreate(Bundle bundle) {
         this.hero = bundle.get(HERO);
         this.heroGenerator = new HeroGenerator(this.hero.getRace(), this.hero.getProfession());
-        this.money.setGold(HeroGenerator.priceForLevelUp(this.hero.getProfession(), this.hero.getLevel()));
+        this.money.setGold(
+            HeroGenerator.priceForLevelUp(this.hero.getProfession(), this.hero.getLevel()));
         this.widgetMoney.bind(this.money);
 
         model.live.setValue(hero.getLive().getMaxValue());
@@ -222,6 +221,7 @@ public class LevelUpController extends BaseController implements Initializable {
     // endregion
 
     private static final class Model {
+
         private final IntegerProperty live = new SimpleIntegerProperty();
         private final EntityProperty strength = new SimpleEntityProperty();
         private final EntityProperty dexterity = new SimpleEntityProperty();
