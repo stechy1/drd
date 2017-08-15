@@ -24,7 +24,7 @@ public class App extends Application {
 
     // region Constants
 
-    private static final Logger logger = LoggerFactory.getLogger(App.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
     private static final String FOLDER_FXML = "fxml";
     private static final String FILE_CSS = "css/style.css";
@@ -75,7 +75,7 @@ public class App extends Application {
         manager.setResources(resources);
         manager.addScreensToBlacklist(SCREENS_BLACKLIST);
         manager.setOnCloseWindowHandler(event -> {
-            logger.info("Ukončuji aplikaci");
+            LOGGER.info("Ukončuji aplikaci");
             context.saveConfiguration();
             context.closeFirebase();
             ThreadPool.getInstance().shutDown();
@@ -137,7 +137,7 @@ public class App extends Application {
     // endregion
 
     public static void main(String[] args) {
-        logger.info("Spouštím aplikaci...");
+        LOGGER.info("Spouštím aplikaci...");
 
         if (Boolean.getBoolean("quick")) {
             launch(args);

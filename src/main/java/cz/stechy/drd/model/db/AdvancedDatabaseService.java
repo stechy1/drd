@@ -32,7 +32,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(AdvancedDatabaseService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdvancedDatabaseService.class);
 
     // endregion
 
@@ -187,7 +187,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     @Override
     public void deleteRemote(T item, boolean remote) {
         if (remote) {
-            logger.trace("Odebírám online item {} z online databáze", item.toString());
+            LOGGER.trace("Odebírám online item {} z online databáze", item.toString());
             firebaseReference.child(item.getId()).removeValue();
             T itemCopy = item.duplicate();
             itemCopy.setUploaded(false);
@@ -212,7 +212,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             return;
         }
 
-        logger.trace("Nahrávám item {} do online databáze", item.toString());
+        LOGGER.trace("Nahrávám item {} do online databáze", item.toString());
         DatabaseReference newReference = firebaseReference.child(item.getId());
         newReference.setValue(toFirebaseMap(item));
         T itemCopy = item.duplicate();
@@ -286,7 +286,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             final T item = parseDataSnapshot(dataSnapshot);
-            logger.trace("Přidávám online item {} do svého povědomí.", item.toString());
+            LOGGER.trace("Přidávám online item {} do svého povědomí.", item.toString());
 
             Platform.runLater(() -> {
                 itemRegistry.getItemById(item.getId()).ifPresent(itemBase -> {
@@ -301,13 +301,13 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            logger.trace("Položka v online databázi byla změněna");
+            LOGGER.trace("Položka v online databázi byla změněna");
         }
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
             T item = parseDataSnapshot(dataSnapshot);
-            logger.trace("Položka v online databázi: {} byla odebrána", item.toString());
+            LOGGER.trace("Položka v online databázi: {} byla odebrána", item.toString());
             onlineDatabase.remove(item);
         }
 

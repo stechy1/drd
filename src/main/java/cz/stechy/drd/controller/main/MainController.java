@@ -43,7 +43,7 @@ public class MainController extends BaseController implements Initializable {
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(MainController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainController.class);
 
     private static final int ACTION_NEW_HERO = 1;
     private static final int ACTION_LOAD_HERO = 2;
@@ -153,7 +153,7 @@ public class MainController extends BaseController implements Initializable {
                     heroManager.insert(hero, itemsToInventory);
                     heroManager.load(hero.getId());
                 } catch (DatabaseException e) {
-                    logger.warn("Nepodařilo se vytvořit nového hrdinu");
+                    LOGGER.warn("Nepodařilo se vytvořit nového hrdinu");
                 }
                 break;
             case ACTION_LOAD_HERO:
@@ -165,7 +165,7 @@ public class MainController extends BaseController implements Initializable {
                 try {
                     this.heroManager.load(heroId);
                 } catch (DatabaseException e) {
-                    logger.warn(e.getMessage());
+                    LOGGER.warn(e.getMessage());
                     showNotification(new Notification("Hrdina nebyl nalezen"));
                 }
                 break;
@@ -187,7 +187,7 @@ public class MainController extends BaseController implements Initializable {
                 try {
                     heroManager.update(heroCopy);
                 } catch (DatabaseException e) {
-                    logger.warn("Hrdinu se nepodařilo aktualizovat", e);
+                    LOGGER.warn("Hrdinu se nepodařilo aktualizovat", e);
                     showNotification(new Notification(actionFailed));
                 }
                 break;
@@ -202,7 +202,7 @@ public class MainController extends BaseController implements Initializable {
                     heroManager.update(clone);
                     showNotification(new Notification("Hrdina povýšil na novou úroveň"));
                 } catch (DatabaseException e) {
-                    logger.warn("Hrdinovi se nepodařilo přejít na novou úroveň", e);
+                    LOGGER.warn("Hrdinovi se nepodařilo přejít na novou úroveň", e);
                     showNotification(new Notification(actionFailed));
                 }
                 break;

@@ -46,7 +46,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(ShopGeneralController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShopGeneralController.class);
 
     // endregion
 
@@ -161,7 +161,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
         try {
             service.insert((Backpack) item);
         } catch (DatabaseException e) {
-            logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
+            LOGGER.warn("Item {} se nepodařilo vložit do databáze", item.toString());
         }
     }
 
@@ -170,7 +170,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
         try {
             service.update((Backpack) item);
         } catch (DatabaseException e) {
-            logger.warn("Item {} se napodařilo aktualizovat", item.toString());
+            LOGGER.warn("Item {} se napodařilo aktualizovat", item.toString());
         }
     }
 
@@ -191,7 +191,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
         try {
             service.delete(entry.getId());
         } catch (DatabaseException e) {
-            logger.warn("Item {} se nepodařilo odebrat z databáze", name);
+            LOGGER.warn("Item {} se nepodařilo odebrat z databáze", name);
         }
     }
 
@@ -213,6 +213,6 @@ public class ShopBackpackController implements Initializable, ShopItemController
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName(), total ->
-            logger.info("Bylo synchronizováno celkem: " + total + " předmětů typu backpack."));
+            LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu backpack."));
     }
 }

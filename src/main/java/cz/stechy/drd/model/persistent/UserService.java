@@ -31,7 +31,7 @@ public final class UserService implements Firebase<User> {
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     private static final String FIREBASE_CHILD_NAME = "users";
 
@@ -159,19 +159,19 @@ public final class UserService implements Firebase<User> {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             final User user = parseDataSnapshot(dataSnapshot);
-            logger.trace("Přidávám uživatele {} z online databáze", user.toString());
+            LOGGER.trace("Přidávám uživatele {} z online databáze", user.toString());
             onlineDatabase.add(user);
         }
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-            logger.trace("Data uživatele byla změněna v online databázi");
+            LOGGER.trace("Data uživatele byla změněna v online databázi");
         }
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
             final User u = parseDataSnapshot(dataSnapshot);
-            logger.trace("Uživatel byl smazán z online databáze", u.toString());
+            LOGGER.trace("Uživatel byl smazán z online databáze", u.toString());
             onlineDatabase.stream()
                 .filter(u::equals)
                 .findFirst()

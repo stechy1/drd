@@ -26,7 +26,7 @@ public class LoginController extends BaseController implements Initializable {
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
     private static final int ACTION_REGISTRATION = 1;
     private static final int ACTION_LOST_PASSWORD = 2;
@@ -106,7 +106,7 @@ public class LoginController extends BaseController implements Initializable {
             setResult(RESULT_SUCCESS);
             finish();
         } catch (UserException e) {
-            logger.info("Přihlášení se nezdařilo", e);
+            LOGGER.info("Přihlášení se nezdařilo", e);
             showNotification(new Notification(loginFail));
             loginModel.valid.set(false);
         }

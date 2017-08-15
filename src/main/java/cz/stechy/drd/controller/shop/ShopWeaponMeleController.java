@@ -53,7 +53,7 @@ public class ShopWeaponMeleController implements Initializable,
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(ShopWeaponMeleController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShopWeaponMeleController.class);
 
     // endregion
 
@@ -182,7 +182,7 @@ public class ShopWeaponMeleController implements Initializable,
         try {
             service.insert((MeleWeapon) item);
         } catch (DatabaseException e) {
-            logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
+            LOGGER.warn("Item {} se nepodařilo vložit do databáze", item.toString());
         }
     }
 
@@ -191,7 +191,7 @@ public class ShopWeaponMeleController implements Initializable,
         try {
             service.update((MeleWeapon) item);
         } catch (DatabaseException e) {
-            logger.warn("Item {} se napodařilo aktualizovat", item.toString());
+            LOGGER.warn("Item {} se napodařilo aktualizovat", item.toString());
         }
     }
 
@@ -213,7 +213,7 @@ public class ShopWeaponMeleController implements Initializable,
         try {
             service.delete(entry.getId());
         } catch (DatabaseException e) {
-            logger.warn("Item {} se nepodařilo odebrat z databáze", name);
+            LOGGER.warn("Item {} se nepodařilo odebrat z databáze", name);
         }
     }
 
@@ -234,6 +234,6 @@ public class ShopWeaponMeleController implements Initializable,
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName(), total ->
-            logger.info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon mele."));
+            LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon mele."));
     }
 }

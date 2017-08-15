@@ -36,7 +36,7 @@ public class HeroOpenerController extends BaseController implements Initializabl
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(HeroOpenerController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HeroOpenerController.class);
 
     public static final String HERO = "hero";
 
@@ -162,7 +162,7 @@ public class HeroOpenerController extends BaseController implements Initializabl
         try {
             heroManager.delete(selectedHero.get().getId());
         } catch (DatabaseException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
     }
 

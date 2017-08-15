@@ -12,7 +12,7 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(ControllerFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ControllerFactory.class);
 
     // endregion
 
@@ -32,7 +32,7 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
 
     @Override
     public Object call(Class<?> clazz) {
-        logger.trace("Konstruuji kontroler třídy {}", clazz.getSimpleName());
+        LOGGER.trace("Konstruuji kontroler třídy {}", clazz.getSimpleName());
         try {
             return clazz.getConstructor(Context.class).newInstance(context);
         } catch (Exception e) {

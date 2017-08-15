@@ -26,7 +26,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(HeroService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HeroService.class);
 
     // Název tabulky
     private static final String TABLE = "hero";
@@ -238,7 +238,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
             try {
                 inventoryService.delete(recordId);
             } catch (DatabaseException e) {
-                logger.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         });
 

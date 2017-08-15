@@ -27,7 +27,7 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(InventoryService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryService.class);
 
     // Název tabulky
     private static final String TABLE = "inventory";
@@ -196,7 +196,7 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
             try {
                 inventoryContent.delete(recordId);
             } catch (DatabaseException e) {
-                logger.error(e.getMessage(), e);
+                LOGGER.error(e.getMessage(), e);
             }
         });
 

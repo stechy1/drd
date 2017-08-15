@@ -42,7 +42,7 @@ public class Context {
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(Context.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Context.class);
 
     private static final String FIREBASE_URL = "https://drd-personal-diary.firebaseio.com";
     private static final String FIREBASE_CREDENTIALS = "";
@@ -104,11 +104,11 @@ public class Context {
             .getUserDataDir(CREDENTAILS_APP_NAME, CREDENTAILS_APP_VERSION, CREDENTILS_APP_AUTHOR));
         if (!appDirectory.exists()) {
             if (!appDirectory.mkdirs()) {
-                logger.error("Nepodařilo se vytvořit složku aplikace, zavírám...");
+                LOGGER.error("Nepodařilo se vytvořit složku aplikace, zavírám...");
                 Platform.exit();
             }
         }
-        logger.info("Používám pracovní adresář: {}", appDirectory.getPath());
+        LOGGER.info("Používám pracovní adresář: {}", appDirectory.getPath());
         loadConfiguration();
         database = new SQLite(appDirectory.getPath() + SEPARATOR + getDatabaseName());
     }
@@ -195,7 +195,7 @@ public class Context {
         } catch (Exception e) {
             // nikdy by se nemělo stát
             // pokud se ale tak stane, tak aplikace není schopná běhu
-            logger.error("Chyba při inicializaci služby", e);
+            LOGGER.error("Chyba při inicializaci služby", e);
             Platform.exit();
             return null;
         }

@@ -51,7 +51,7 @@ public class BestiaryController extends BaseController implements Initializable 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(BestiaryController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BestiaryController.class);
 
     private static final int NO_SELECTED_INDEX = -1;
 
@@ -176,7 +176,7 @@ public class BestiaryController extends BaseController implements Initializable 
                     service.insert(mob);
                 } catch (DatabaseException e) {
                     e.printStackTrace();
-                    logger.warn("Nestvůru {} se nepodařilo vložit do databáze", mob.toString());
+                    LOGGER.warn("Nestvůru {} se nepodařilo vložit do databáze", mob.toString());
                 }
                 break;
 
@@ -189,7 +189,7 @@ public class BestiaryController extends BaseController implements Initializable 
                 try {
                     service.update(mob);
                 } catch (DatabaseException e) {
-                    logger.warn("Nestvůru {} se napodařilo aktualizovat", mob.toString());
+                    LOGGER.warn("Nestvůru {} se napodařilo aktualizovat", mob.toString());
                 }
                 break;
         }
@@ -210,7 +210,7 @@ public class BestiaryController extends BaseController implements Initializable 
         try {
             service.delete(entry.getMobBase().getId());
         } catch (DatabaseException e) {
-            logger.warn("Příšeru {} se nepodařilo odebrat z databáze", name);
+            LOGGER.warn("Příšeru {} se nepodařilo odebrat z databáze", name);
         }
     }
 
@@ -223,7 +223,7 @@ public class BestiaryController extends BaseController implements Initializable 
 
     public void handleSynchronize(ActionEvent actionEvent) {
         service.synchronize(user.getName(), total -> {
-            logger.info("Bylo synchronizováno celkem: " + total + " nestvůr.");
+            LOGGER.info("Bylo synchronizováno celkem: " + total + " nestvůr.");
         });
     }
 

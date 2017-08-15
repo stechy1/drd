@@ -36,7 +36,7 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(InventoryContent.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryContent.class);
 
     private static final int SLOT_OCCUPIED = 1;
     private static final int SLOT_NOT_OCCUPIED = 0;

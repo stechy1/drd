@@ -25,7 +25,7 @@ public class RegisterController extends BaseController implements Initializable 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegisterController.class);
 
     // endregion
 
@@ -82,7 +82,7 @@ public class RegisterController extends BaseController implements Initializable 
             setResult(RESULT_SUCCESS);
             finish();
         } catch (UserException e) {
-            logger.info("Registrace se nezdařila", e);
+            LOGGER.info("Registrace se nezdařila", e);
             showNotification(new Notification(registerFail));
             loginModel.valid.set(false);
         }

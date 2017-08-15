@@ -54,7 +54,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(ShopArmorController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShopArmorController.class);
 
     // endregion
 
@@ -191,7 +191,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         try {
             service.insert((Armor) item);
         } catch (DatabaseException e) {
-            logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
+            LOGGER.warn("Item {} se nepodařilo vložit do databáze", item.toString());
         }
     }
 
@@ -200,7 +200,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         try {
             service.update((Armor) item);
         } catch (DatabaseException e) {
-            logger.warn("Item {} se napodařilo aktualizovat", item.toString());
+            LOGGER.warn("Item {} se napodařilo aktualizovat", item.toString());
         }
     }
 
@@ -221,7 +221,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         try {
             service.delete(entry.getId());
         } catch (DatabaseException e) {
-            logger.warn("Item {} se nepodařilo odebrat z databáze", name);
+            LOGGER.warn("Item {} se nepodařilo odebrat z databáze", name);
         }
     }
 
@@ -243,6 +243,6 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName(), total ->
-            logger.info("Bylo synchronizováno celkem: " + total + " předmětů typu brnění."));
+            LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu brnění."));
     }
 }

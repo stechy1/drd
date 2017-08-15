@@ -32,7 +32,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(BaseDatabaseService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseDatabaseService.class);
     private static PreloaderNotifier notifier;
 
     /**
@@ -203,7 +203,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
     @Override
     public void createTable() throws DatabaseException {
-        logger.trace("Inicializuji tabulku {}", getTable());
+        LOGGER.trace("Inicializuji tabulku {}", getTable());
         if (notifier != null) {
             notifier.increaseProgress(
                 String.format("Inicializuji tabulku: %s", getTable()));
@@ -262,7 +262,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
             .format("INSERT INTO %s (%s) VALUES (%s)", getTable(), getColumnsKeys(),
                 getColumnValues());
         try {
-            logger.trace("Vkládám položku {} do databáze.", item.toString());
+            LOGGER.trace("Vkládám položku {} do databáze.", item.toString());
             db.query(query, itemToParams(item).toArray());
             final TransactionOperation<T> operation = new InsertOperation<>(item);
             if (db.isTransactional()) {
@@ -283,7 +283,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
         final List<Object> params = itemToParams(item);
         params.add(item.getId());
         try {
-            logger.trace("Aktualizuji položku {} v databázi", item.toString());
+            LOGGER.trace("Aktualizuji položku {} v databázi", item.toString());
             db.query(query, params.toArray());
             final Optional<T> result = items.stream()
                 .filter(t -> item.getId().equals(t.getId()))
@@ -307,7 +307,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
         final String query = String
             .format("DELETE FROM %s WHERE %s = ?", getTable(), getColumnWithId());
         try {
-            logger.trace("Mažu položku {} z databáze.", id);
+            LOGGER.trace("Mažu položku {} z databáze.", id);
             db.query(query, id);
             final Optional<T> result = items.stream()
                 .filter(item -> item.getId().equals(id))
