@@ -10,10 +10,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Služba spravující CRUD operace nad třídou {@link Hero}
@@ -21,6 +24,9 @@ import javafx.collections.ObservableList;
 public final class HeroService extends BaseDatabaseService<Hero> {
 
     // region Constants
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LoggerFactory.getLogger(HeroService.class);
 
     // Název tabulky
     private static final String TABLE = "hero";
@@ -223,8 +229,20 @@ public final class HeroService extends BaseDatabaseService<Hero> {
 
     @Override
     public void delete(String id) throws DatabaseException {
+        final Hero hero = select(BaseDatabaseService.ID_FILTER(id));
+        final InventoryService inventoryService = getInventory(hero);
+        final List<String> ids = inventoryService.selectAll().stream()
+            .map(inventory -> inventory.getId())
+            .collect(Collectors.toList());
+        ids.forEach(recordId -> {
+            try {
+                inventoryService.delete(recordId);
+            } catch (DatabaseException e) {
+                logger.error(e.getMessage(), e);
+            }
+        });
+
         super.delete(id);
-        inventoryManager.delete(id);
     }
 
     /**

@@ -169,6 +169,7 @@ public final class R {
         public static final String ITEM_ARMOR_TYPE_BOOTS = "drd_item_armor_type_boots";
         public static final String ITEM_ARMOR_TYPE_GLASES = "drd_item_armor_type_glases";
         public static final String OPENER_TITLE = "drd_opener_title";
+        public static final String HERO_DELETE = "drd_hero_delete";
         public static final String DICE_TITLE = "drd_dice_title";
         public static final String DICE_PROPERTY = "drd_dice_property";
         public static final String DICE_RATE_REPAIR = "drd_dice_rate_repair";

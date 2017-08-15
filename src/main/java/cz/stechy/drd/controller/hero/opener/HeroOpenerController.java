@@ -1,9 +1,12 @@
 package cz.stechy.drd.controller.hero.opener;
 
-import cz.stechy.drd.R;
+import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.Context;
+import cz.stechy.drd.R;
+import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.LabeledHeroProperty;
@@ -22,6 +25,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Kontroler pro načtení hrdiny
@@ -29,6 +34,9 @@ import javafx.scene.control.ListView;
 public class HeroOpenerController extends BaseController implements Initializable {
 
     // region Constants
+
+    @SuppressWarnings("unused")
+    private static final Logger logger = LoggerFactory.getLogger(HeroOpenerController.class);
 
     public static final String HERO = "hero";
 
@@ -60,6 +68,8 @@ public class HeroOpenerController extends BaseController implements Initializabl
     private LabeledHeroProperty lblCharisma;
     @FXML
     private Button btnOpen;
+    @FXML
+    private JFXButton btnDelete;
 
     // endregion
 
@@ -113,6 +123,7 @@ public class HeroOpenerController extends BaseController implements Initializabl
         });
 
         btnOpen.disableProperty().bind(selectedHero.isNull());
+        btnDelete.disableProperty().bind(selectedHero.isNull());
 
         filteredHeroes.setPredicate(hero -> !hero.equals(heroManager.getHero()) &&
             heroManager.heroProperty().get() != null &&
@@ -125,11 +136,8 @@ public class HeroOpenerController extends BaseController implements Initializabl
                 openHero();
             }
         });
-    }
 
-    @Override
-    protected void onCreate(Bundle bundle) {
-        heroes.setAll(heroManager.selectAll());
+        ObservableMergers.mergeList(heroes, heroManager.selectAll());
     }
 
     @Override
@@ -143,6 +151,19 @@ public class HeroOpenerController extends BaseController implements Initializabl
     @FXML
     private void handleOpenHero(ActionEvent actionEvent) {
         openHero();
+    }
+
+    @FXML
+    private void handleDeleteHero(ActionEvent actionEvent) {
+        if (selectedHero.get() == null) {
+            return;
+        }
+
+        try {
+            heroManager.delete(selectedHero.get().getId());
+        } catch (DatabaseException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     // endregion

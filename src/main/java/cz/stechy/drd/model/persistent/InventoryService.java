@@ -15,12 +15,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Služba spravující CRUD operace nad třídou {@link Inventory}
- *
  */
 public final class InventoryService extends BaseDatabaseService<Inventory> {
 
@@ -188,11 +188,19 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
 
     @Override
     public void delete(String id) throws DatabaseException {
+        final InventoryContent inventoryContent = getInventoryContentById(id);
+        final List<String> ids = inventoryContent.selectAll().stream()
+            .map(inventoryRecord -> inventoryRecord.getId())
+            .collect(Collectors.toList());
+        ids.forEach(recordId -> {
+            try {
+                inventoryContent.delete(recordId);
+            } catch (DatabaseException e) {
+                logger.error(e.getMessage(), e);
+            }
+        });
+
         super.delete(id);
-        for (Inventory inventory : items) {
-            InventoryContent inventoryContent = new InventoryContent(db, inventory);
-            inventoryContent.delete(inventory.getId());
-        }
     }
 
     public InventoryContent getInventoryContentById(final String inventoryId)
