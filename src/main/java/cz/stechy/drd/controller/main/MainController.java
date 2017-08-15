@@ -5,7 +5,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.controller.hero.levelup.LevelUpController;
-import cz.stechy.drd.controller.hero.opener.HeroOpenerHelper;
+import cz.stechy.drd.controller.hero.opener.HeroOpenerController;
 import cz.stechy.drd.controller.moneyxp.MoneyXpController;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -161,7 +161,7 @@ public class MainController extends BaseController implements Initializable {
                     return;
                 }
 
-                final String heroId = bundle.getString(HeroOpenerHelper.HERO);
+                final String heroId = bundle.getString(HeroOpenerController.HERO);
                 try {
                     this.heroManager.load(heroId);
                 } catch (DatabaseException e) {

@@ -28,6 +28,12 @@ import javafx.scene.control.ListView;
  */
 public class HeroOpenerController extends BaseController implements Initializable {
 
+    // region Constants
+
+    public static final String HERO = "hero";
+
+    // endregion
+
     // region Variables
 
     // region FXML
@@ -122,7 +128,7 @@ public class HeroOpenerController extends BaseController implements Initializabl
     private void handleOpenHero(ActionEvent actionEvent) {
         setResult(selectedHero.isNull().get() ? RESULT_FAIL : RESULT_SUCCESS);
         Bundle bundle = new Bundle();
-        bundle.put(HeroOpenerHelper.HERO, selectedHero.getValue().getId());
+        bundle.put(HERO, selectedHero.getValue().getId());
         finish(bundle);
     }
 
