@@ -23,6 +23,7 @@ public final class R {
         public static final String FIGHT_COMMENT = "fight_comment";
         public static final String FIGHT_HERO = "fight_hero";
         public static final String FIGHT_OPPONENT = "fight_opponent";
+        public static final String HELP = "help";
         public static final String HERO_CREATOR_1 = "hero_creator_1";
         public static final String HERO_CREATOR_2 = "hero_creator_2";
         public static final String HERO_CREATOR_3 = "hero_creator_3";
