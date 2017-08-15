@@ -4,6 +4,7 @@ import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
@@ -24,12 +25,14 @@ import java.net.URL;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -121,7 +124,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources, ammountEditable));
 
-        ObservableMergers.mergeList(backpack -> {
+        final Function<Backpack, BackpackEntry> mapper = backpack -> {
             final BackpackEntry entry;
             final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(backpack.getId());
             if (cartEntry.isPresent()) {
@@ -131,7 +134,16 @@ public class ShopBackpackController implements Initializable, ShopItemController
             }
 
             return entry;
-        }, backpacks, service.selectAll());
+        };
+
+        final Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                ObservableMergers.mergeList(mapper, backpacks, service.selectAll());
+                return null;
+            }
+        };
+        ThreadPool.getInstance().submit(task);
     }
 
     @Override

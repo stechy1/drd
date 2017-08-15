@@ -4,6 +4,7 @@ import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
@@ -29,6 +30,7 @@ import java.net.URL;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -37,6 +39,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -150,18 +153,26 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources, ammountEditable));
 
-        ObservableMergers.mergeList(armor -> {
-                final ArmorEntry entry;
-                final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(armor.getId());
-                if (cartEntry.isPresent()) {
-                    entry = (ArmorEntry) cartEntry.get();
-                } else {
-                    entry = new ArmorEntry(armor, height);
-                }
+        final Function<Armor, ArmorEntry> mapper = armor -> {
+            final ArmorEntry entry;
+            final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(armor.getId());
+            if (cartEntry.isPresent()) {
+                entry = (ArmorEntry) cartEntry.get();
+            } else {
+                entry = new ArmorEntry(armor, height);
+            }
 
-                return entry;
-            },
-            armors, service.selectAll());
+            return entry;
+        };
+
+        final Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                ObservableMergers.mergeList(mapper, armors, service.selectAll());
+                return null;
+            }
+        };
+        ThreadPool.getInstance().submit(task);
     }
 
     @Override

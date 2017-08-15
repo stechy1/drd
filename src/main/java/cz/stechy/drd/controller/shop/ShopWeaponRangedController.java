@@ -4,6 +4,7 @@ import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
@@ -28,12 +29,14 @@ import java.net.URL;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -143,7 +146,7 @@ public class ShopWeaponRangedController implements Initializable,
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
                 downloadHandler, deleteHandler, user, resources, ammountEditable));
 
-        ObservableMergers.mergeList(weapon -> {
+        final Function<RangedWeapon, RangedWeaponEntry> mapper = weapon -> {
             final RangedWeaponEntry entry;
             final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(weapon.getId());
             if (cartEntry.isPresent()) {
@@ -153,7 +156,16 @@ public class ShopWeaponRangedController implements Initializable,
             }
 
             return entry;
-        }, rangedWeapons, service.selectAll());
+        };
+
+        final Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                ObservableMergers.mergeList(mapper, rangedWeapons, service.selectAll());
+                return null;
+            }
+        };
+        ThreadPool.getInstance().submit(task);
     }
 
     @Override
