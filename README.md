@@ -28,7 +28,7 @@ S aplikací se dodává složka lib, která obsahuje veškeré knihovny, na ktef
 Změnou obsahu složky může dojít k nestabilitě aplikaci či nemožnosti spustit ji.
 
 ## Ovládání aplikace
-Celé ovládání je popsané v sekci Wiki.
+Celé ovládání je popsané v sekci [Wiki](https://github.com/stechy1/drd/wiki).
 
 ## Připomínky, nápady
 Své připomínky a nápady sdílejte prostřednictví issue.
