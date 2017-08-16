@@ -234,5 +234,11 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
         return map;
     }
 
+    @Override
+    public void toggleDatabase(boolean showOnline) {
+        System.out.println("Toggle");
+        super.toggleDatabase(showOnline);
+    }
+
     // endregion
 }

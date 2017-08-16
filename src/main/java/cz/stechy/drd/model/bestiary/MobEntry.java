@@ -154,4 +154,23 @@ public final class MobEntry {
     }
 
     // endregion
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        MobEntry mobEntry = (MobEntry) o;
+
+        return mobBase.equals(mobEntry.mobBase);
+    }
+
+    @Override
+    public int hashCode() {
+        return mobBase.hashCode();
+    }
 }
