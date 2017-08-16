@@ -4,6 +4,7 @@ import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.screens.Bundle;
+import java.util.Optional;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 
@@ -104,4 +105,11 @@ interface ShopItemController<T> {
      * databáze pouze v případě, se ještě tak nestalo.
      */
     void synchronizeItems();
+
+    /**
+     * Vrátí {@link Optional} který může obsahovat referenci na vybraný předmět
+     *
+     * @return {@link Optional<ItemBase>}
+     */
+    Optional<T> getSelectedItem();
 }

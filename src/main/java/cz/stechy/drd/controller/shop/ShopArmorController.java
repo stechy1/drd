@@ -250,4 +250,9 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         service.synchronize(this.user.getName(), total ->
             LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu brnění."));
     }
+
+    @Override
+    public Optional<ArmorEntry> getSelectedItem() {
+        return Optional.of(sortedList.get(selectedRowIndex.get()));
+    }
 }

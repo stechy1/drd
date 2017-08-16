@@ -217,4 +217,9 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         service.synchronize(this.user.getName(), total ->
             LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu general item."));
     }
+
+    @Override
+    public Optional<GeneralEntry> getSelectedItem() {
+        return Optional.of(sortedList.get(selectedRowIndex.get()));
+    }
 }

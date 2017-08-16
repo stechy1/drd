@@ -244,4 +244,9 @@ public class ShopWeaponRangedController implements Initializable,
         service.synchronize(this.user.getName(), total ->
             LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon ranged."));
     }
+
+    @Override
+    public Optional<RangedWeaponEntry> getSelectedItem() {
+        return Optional.of(sortedList.get(selectedRowIndex.get()));
+    }
 }

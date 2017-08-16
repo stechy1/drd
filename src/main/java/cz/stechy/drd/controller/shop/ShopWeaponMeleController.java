@@ -238,9 +238,15 @@ public class ShopWeaponMeleController implements Initializable,
     public void clearSelectedRow() {
         tableMeleWeapon.getSelectionModel().clearSelection();
     }
+
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName(), total ->
             LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon mele."));
+    }
+
+    @Override
+    public Optional<MeleWeaponEntry> getSelectedItem() {
+        return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
 }

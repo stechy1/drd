@@ -193,6 +193,19 @@ public class ShopController1 extends BaseController implements Initializable {
 
             controllers[index].clearSelectedRow();
         });
+        selectedRowIndex.addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                return;
+            }
+
+            assert selectedAccordionPaneIndex.getValue() != null;
+
+            final ShopItemController<ShopEntry> controller = controllers[selectedAccordionPaneIndex.get()];
+            controller.getSelectedItem().ifPresent(entry -> {
+
+            });
+
+        });
         lblTotalPrice.textProperty().bind(shoppingCart.totalPrice.text);
         lblTotalPrice.textFillProperty().bind(Bindings
             .when(shoppingCart.enoughtMoneyProperty())
