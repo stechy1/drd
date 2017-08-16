@@ -159,6 +159,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
         if (showOnline) {
             item.setUploaded(true);
         }
+        item.setDownloaded(true);
         super.insert(item);
     }
 

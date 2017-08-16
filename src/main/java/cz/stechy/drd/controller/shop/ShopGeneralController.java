@@ -9,9 +9,6 @@ import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
-import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
-import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
-import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.shop.IShoppingCart;
@@ -113,13 +110,10 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart,
-        OnUploadItem<GeneralEntry> uploadHandler,
-        OnDownloadItem<GeneralEntry> downloadHandler,
-        OnDeleteItem<GeneralEntry> deleteHandler) {
+    public void setShoppingCart(IShoppingCart shoppingCart) {
         columnAction.setCellFactory(param -> ShopHelper
-            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable));
+            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
+                resources, ammountEditable));
 
         final Function<GeneralItem, GeneralEntry> mapper = generalItem -> {
             final GeneralEntry entry;
@@ -222,5 +216,14 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     public void synchronizeItems() {
         service.synchronize(this.user.getName(), total ->
             LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu general item."));
+    }
+
+    @Override
+    public Optional<GeneralEntry> getSelectedItem() {
+        if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
 }

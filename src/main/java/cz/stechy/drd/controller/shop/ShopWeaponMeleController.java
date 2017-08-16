@@ -9,9 +9,6 @@ import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
-import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
-import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
-import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
@@ -137,13 +134,10 @@ public class ShopWeaponMeleController implements Initializable,
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart,
-        OnUploadItem<MeleWeaponEntry> uploadHandler,
-        OnDownloadItem<MeleWeaponEntry> downloadHandler,
-        OnDeleteItem<MeleWeaponEntry> deleteHandler) {
+    public void setShoppingCart(IShoppingCart shoppingCart) {
         columnAction.setCellFactory(param -> ShopHelper
-            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable));
+            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
+                resources, ammountEditable));
 
         Function<MeleWeapon, MeleWeaponEntry> mapper = meleWeapon -> {
             final MeleWeaponEntry entry;
@@ -244,9 +238,19 @@ public class ShopWeaponMeleController implements Initializable,
     public void clearSelectedRow() {
         tableMeleWeapon.getSelectionModel().clearSelection();
     }
+
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName(), total ->
             LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon mele."));
+    }
+
+    @Override
+    public Optional<MeleWeaponEntry> getSelectedItem() {
+        if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
 }

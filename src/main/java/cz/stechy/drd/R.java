@@ -191,6 +191,7 @@ public final class R {
         public static final String REPOSITORY_ITEM_SYNCHRONIZE = "drd_repository_item_synchronize";
         public static final String REPOSITORY_TOGGLE_ONLINE_DATABASE = "drd_repository_toggle_online_database";
         public static final String SHOP_ITEM_CART_ADD = "drd_shop_item_cart_add";
+        public static final String SHOP_ITEM_CART_REMOVE = "drd_shop_item_cart_remove";
         public static final String FIREBASE_ENTRY_REMOVE = "drd_firebase_entry_remove";
         public static final String FIREBASE_ENTRY_UPLOAD = "drd_firebase_entry_upload";
         public static final String FIREBASE_ENTRY_DOWNLOAD = "drd_firebase_entry_download";
@@ -285,6 +286,7 @@ public final class R {
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
         public static final String SETTINGS = "drd_settings";
         public static final String ABOUT_CONTENT = "drd_about_content";
+        public static final String SHOP_EDIT_MODE = "drd_shop_edit_mode";
     }
 
     public static class Config {

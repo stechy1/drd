@@ -9,9 +9,6 @@ import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
-import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
-import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
-import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
@@ -138,13 +135,10 @@ public class ShopWeaponRangedController implements Initializable,
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart,
-        OnUploadItem<RangedWeaponEntry> uploadHandler,
-        OnDownloadItem<RangedWeaponEntry> downloadHandler,
-        OnDeleteItem<RangedWeaponEntry> deleteHandler) {
+    public void setShoppingCart(IShoppingCart shoppingCart) {
         columnAction.setCellFactory(param -> ShopHelper
-            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable));
+            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
+                resources, ammountEditable));
 
         final Function<RangedWeapon, RangedWeaponEntry> mapper = weapon -> {
             final RangedWeaponEntry entry;
@@ -249,5 +243,14 @@ public class ShopWeaponRangedController implements Initializable,
     public void synchronizeItems() {
         service.synchronize(this.user.getName(), total ->
             LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon ranged."));
+    }
+
+    @Override
+    public Optional<RangedWeaponEntry> getSelectedItem() {
+        if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
 }

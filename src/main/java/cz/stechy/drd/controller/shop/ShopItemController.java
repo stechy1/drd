@@ -1,12 +1,10 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
-import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
-import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.screens.Bundle;
+import java.util.Optional;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 
@@ -17,14 +15,10 @@ interface ShopItemController<T> {
 
     /**
      * Nastaví referenci na nákupní košík
+     *  @param shoppingCart {@link IShoppingCart}
      *
-     * @param shoppingCart {@link IShoppingCart}
-     * @param uploadHandler {@link OnUploadItem}
-     * @param downloadHandler {@link OnDownloadItem}
-     * @param deleteHandler  {@link OnDeleteItem}
      */
-    void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem<T> uploadHandler,
-        OnDownloadItem<T> downloadHandler, OnDeleteItem<T> deleteHandler);
+    void setShoppingCart(IShoppingCart shoppingCart);
 
     /**
      * Předá referenci na {@link IntegerProperty} představující vybraný index řádku v tabulce
@@ -111,4 +105,11 @@ interface ShopItemController<T> {
      * databáze pouze v případě, se ještě tak nestalo.
      */
     void synchronizeItems();
+
+    /**
+     * Vrátí {@link Optional} který může obsahovat referenci na vybraný předmět
+     *
+     * @return {@link Optional<ItemBase>}
+     */
+    Optional<T> getSelectedItem();
 }
