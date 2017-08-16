@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.Separator?>
 <BorderPane prefWidth="900" prefHeight="500" xmlns="http://javafx.com/javafx/8.0.112"
   xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="cz.stechy.drd.controller.bestiary.BestiaryController">
@@ -49,7 +49,6 @@
             <PropertyValueFactory property="viability"/>
           </cellValueFactory>
         </TableColumn>
-        <TableColumn fx:id="columnAction" minWidth="135.0" text="%drd_bestiary_action"/>
       </columns>
     </TableView>
   </center>
@@ -58,47 +57,47 @@
       <padding>
         <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
       </padding>
-      <Button fx:id="btnAddItem" onAction="#handleAddItem">
-        <styleClass>
-          <String fx:value="sidebar-button"/>
-          <String fx:value="icon-add"/>
-        </styleClass>
-      </Button>
-      <Button fx:id="btnRemoveItem" onAction="#handleRemoveItem">
+      <JFXButton fx:id="btnAddItem" styleClass="sidebar-button, icon-add" onAction="#handleAddItem">
+      </JFXButton>
+      <JFXButton fx:id="btnRemoveItem" styleClass="sidebar-button, icon-subtract" onAction="#handleRemoveItem">
         <tooltip>
           <Tooltip text="%drd_repository_item_remove"/>
         </tooltip>
-        <styleClass>
-          <String fx:value="sidebar-button"/>
-          <String fx:value="icon-subtract"/>
-        </styleClass>
-      </Button>
-      <Button fx:id="btnEditItem" onAction="#handleEditItem">
+      </JFXButton>
+      <JFXButton fx:id="btnEditItem" styleClass="sidebar-button, icon-edit" onAction="#handleEditItem">
         <tooltip>
           <Tooltip text="%drd_repository_item_edit"/>
         </tooltip>
-        <styleClass>
-          <String fx:value="sidebar-button"/>
-          <String fx:value="icon-edit"/>
-        </styleClass>
-      </Button>
-      <Button fx:id="btnSynchronize" onAction="#handleSynchronize">
+      </JFXButton>
+      <Separator />
+      <JFXButton onAction="#handleUploadItem" styleClass="sidebar-button, icon-upload"
+        fx:id="btnUploadItem">
+        <tooltip>
+          <Tooltip text="%drd_firebase_entry_upload"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton onAction="#handleDownloadItem" styleClass="sidebar-button, icon-download"
+        fx:id="btnDownloadItem">
+        <tooltip>
+          <Tooltip text="%drd_firebase_entry_download"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton onAction="#handleRemoveOnlineItem" styleClass="sidebar-button, icon-remove-online"
+        fx:id="btnRemoveOnlineItem">
+        <tooltip>
+          <Tooltip text="%drd_firebase_entry_remove"/>
+        </tooltip>
+      </JFXButton>
+      <Separator/>
+      <JFXButton fx:id="btnSynchronize" onAction="#handleSynchronize" styleClass="sidebar-button, icon-synchronize">
         <tooltip>
           <Tooltip text="%drd_repository_item_synchronize"/>
         </tooltip>
-        <styleClass>
-          <String fx:value="sidebar-button"/>
-          <String fx:value="icon-synchronize"/>
-        </styleClass>
-      </Button>
-      <ToggleButton fx:id="btnToggleOnline">
+      </JFXButton>
+      <ToggleButton fx:id="btnToggleOnline" styleClass="sidebar-button, icon-online">
         <tooltip>
           <Tooltip text="%drd_repository_toggle_online_database"/>
         </tooltip>
-        <styleClass>
-          <String fx:value="sidebar-button"/>
-          <String fx:value="icon-online"/>
-        </styleClass>
       </ToggleButton>
     </VBox>
   </right>

@@ -77,8 +77,6 @@ public class BestiaryController extends BaseController implements Initializable 
     private TableColumn<MobEntry, Rule> columnRulesType;
     @FXML
     private TableColumn<MobEntry, Integer> columnViability;
-    @FXML
-    private TableColumn<MobEntry, ?> columnAction;
 
     @FXML
     private Button btnAddItem;
@@ -86,6 +84,12 @@ public class BestiaryController extends BaseController implements Initializable 
     private Button btnRemoveItem;
     @FXML
     private Button btnEditItem;
+    @FXML
+    private Button btnUploadItem;
+    @FXML
+    private Button btnDownloadItem;
+    @FXML
+    private Button btnRemoveOnlineItem;
     @FXML
     private Button btnSynchronize;
     @FXML
@@ -100,13 +104,18 @@ public class BestiaryController extends BaseController implements Initializable 
         this, "selectedRowIndex");
     private final BooleanProperty showOnlineDatabase = new SimpleBooleanProperty(this,
         "showOnlineDatabase, false");
+    private final BooleanProperty disableDownloadBtn = new SimpleBooleanProperty(this,
+        "disableDownloadBtn", true);
+    private final BooleanProperty disableUploadBtn = new SimpleBooleanProperty(this,
+        "disableUploadBtn", true);
+    private final BooleanProperty disableRemoveOnlineBtn = new SimpleBooleanProperty(this,
+        "disableRemoveOnlineBtn", true);
     private final User user;
     private final Translator translator;
 
     private AdvancedDatabaseService<Mob> service;
 
     private String title;
-    private ResourceBundle resources;
 
     // endregion
 
@@ -122,7 +131,6 @@ public class BestiaryController extends BaseController implements Initializable 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.resources = resources;
         this.title = resources.getString(R.Translate.BESTIARY_TITLE);
 
         tableBestiary.setItems(sortedList);
@@ -137,8 +145,39 @@ public class BestiaryController extends BaseController implements Initializable 
         btnEditItem.disableProperty().bind(Bindings.or(
             selectedRowBinding,
             showOnlineDatabase));
+        btnDownloadItem.disableProperty().bind(
+            user.loggedProperty().not().or(
+                    disableDownloadBtn.or(
+                        showOnlineDatabase.not())));
+        btnUploadItem.disableProperty().bind(
+            user.loggedProperty().not().or(
+                    disableUploadBtn.or(
+                        showOnlineDatabase)));
+        btnRemoveOnlineItem.disableProperty().bind(
+            user.loggedProperty().not().or(
+                    disableRemoveOnlineBtn.or(
+                        showOnlineDatabase.not())));
+
         btnSynchronize.disableProperty().bind(user.loggedProperty().not());
 
+        selectedRowIndex.addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                disableDownloadBtn.unbind();
+                disableUploadBtn.unbind();
+                disableRemoveOnlineBtn.unbind();
+
+                disableDownloadBtn.set(true);
+                disableUploadBtn.set(true);
+                disableRemoveOnlineBtn.set(true);
+
+                return;
+            }
+
+            final MobEntry entry = sortedList.get(newValue.intValue());
+            disableDownloadBtn.bind(entry.downloadedProperty());
+            disableUploadBtn.bind(entry.uploadedProperty().or(entry.authorProperty().isNotEqualTo(user.nameProperty())));
+            disableRemoveOnlineBtn.bind(entry.authorProperty().isNotEqualTo(user.nameProperty()));
+        });
         showOnlineDatabase.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 return;
@@ -152,8 +191,6 @@ public class BestiaryController extends BaseController implements Initializable 
             TextFieldTableCell.forTableColumn(StringConvertors.forMobClass(translator)));
         columnRulesType.setCellFactory(
             TextFieldTableCell.forTableColumn(StringConvertors.forRulesType(translator)));
-        columnAction.setCellFactory(param -> BestiaryHelper
-            .forActionButtons(uploadHandler, downloadHandler, deleteHandler, user, resources));
 
         Task<Void> task = new Task<Void>() {
             @Override
@@ -229,6 +266,21 @@ public class BestiaryController extends BaseController implements Initializable 
         final Bundle bundle = BestiaryHelper.mobToBundle(entry.getMobBase());
         bundle.putInt(BestiaryHelper.MOB_ACTION, BestiaryHelper.MOB_ACTION_UPDATE);
         startNewDialogForResult(R.FXML.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_UPDATE, bundle);
+    }
+
+    @FXML
+    private void handleUploadItem(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void handleDownloadItem(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void handleRemoveOnlineItem(ActionEvent actionEvent) {
+
     }
 
     public void handleSynchronize(ActionEvent actionEvent) {
