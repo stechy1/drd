@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Separator?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="500" prefWidth="900"
   xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.shop.ShopController1">
@@ -58,6 +59,26 @@
           <Tooltip text="%drd_repository_item_edit"/>
         </tooltip>
       </JFXButton>
+      <Separator />
+      <JFXButton onAction="#handleUploadItem" styleClass="sidebar-button, icon-export"
+        fx:id="btnUploadItem">
+        <tooltip>
+          <Tooltip text="%drd_firebase_entry_upload"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton onAction="#handleDownloadItem" styleClass="sidebar-button, icon-import"
+        fx:id="btnDownloadItem">
+        <tooltip>
+          <Tooltip text="%drd_firebase_entry_download"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton onAction="#handleRemoveOnlineItem" styleClass="sidebar-button, icon-subtract"
+        fx:id="btmRemoveOnlineItem">
+        <tooltip>
+          <Tooltip text="%drd_firebase_entry_remove"/>
+        </tooltip>
+      </JFXButton>
+      <Separator />
       <JFXButton onAction="#handleSynchronize" styleClass="sidebar-button, icon-synchronize"
         fx:id="btnSynchronize">
         <tooltip>

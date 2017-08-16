@@ -122,8 +122,8 @@ public class ShopBackpackController implements Initializable, ShopItemController
         OnDownloadItem<BackpackEntry> downloadHandler,
         OnDeleteItem<BackpackEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
-            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable, editMode));
+            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
+                resources, ammountEditable));
 
         final Function<Backpack, BackpackEntry> mapper = backpack -> {
             final BackpackEntry entry;

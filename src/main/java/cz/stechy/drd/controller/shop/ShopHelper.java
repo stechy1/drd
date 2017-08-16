@@ -1,12 +1,8 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
-import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
-import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.shop.OnAddItemToCart;
 import cz.stechy.drd.model.shop.OnRemoveItemFromCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
-import cz.stechy.drd.model.user.User;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -47,19 +43,13 @@ final class ShopHelper {
 
     public static <S extends ShopEntry, T> TableCell<S, T> forActionButtons(
         final OnAddItemToCart<S> addHandler, final OnRemoveItemFromCart<S> removeHandler,
-        final OnUploadItem<S> uploadHandler, final OnDownloadItem<S> downloadHandler,
-        final OnDeleteItem<S> deleteHandler, User user, ResourceBundle resources,
-        BooleanProperty cartEditable, BooleanProperty editMode) {
+        ResourceBundle resources, BooleanProperty cartEditable) {
         final String resourceAdd = resources.getString("drd_shop_item_cart_add");
         final String resourceRemove = resources.getString("drd_firebase_entry_remove");
-        final String resourceUpload = resources.getString("drd_firebase_entry_upload");
-        final String resourceDownload = resources.getString("drd_firebase_entry_download");
-        final String noAction = resources.getString("drd_no_action");
 
         return new TableCell<S, T>() {
             final Button btnAddRemove = new Button();
-            final Button btnRemote = new Button();
-            final HBox container = new HBox(btnAddRemove, btnRemote);
+            final HBox container = new HBox(btnAddRemove);
 
             {
                 container.setSpacing(8.0);
@@ -67,9 +57,6 @@ final class ShopHelper {
 
                 btnAddRemove.setPrefHeight(15);
                 btnAddRemove.setFont(Font.font(10));
-
-                btnRemote.setPrefHeight(15);
-                btnRemote.setFont(Font.font(10));
             }
 
             @Override
@@ -83,10 +70,6 @@ final class ShopHelper {
                     final S entry = getTableView().getItems().get(getIndex());
                     final ObjectProperty<EventHandler<ActionEvent>> addHandlerInternal = new SimpleObjectProperty<>();
                     final ObjectProperty<EventHandler<ActionEvent>> removeHandlerInternal = new SimpleObjectProperty<>();
-                    final ObjectProperty<EventHandler<ActionEvent>> downloadHandlerInternal = new SimpleObjectProperty<>();
-                    final ObjectProperty<EventHandler<ActionEvent>> uploadHandlerInternal = new SimpleObjectProperty<>();
-                    final ObjectProperty<EventHandler<ActionEvent>> deleteFromLocalDatabaseInternal = new SimpleObjectProperty<>();
-                    final ObjectProperty<EventHandler<ActionEvent>> deleteFromRemoteDatabaseInternal = new SimpleObjectProperty<>();
 
                     addHandlerInternal.setValue(event -> {
                         if (addHandler != null) {
@@ -99,30 +82,6 @@ final class ShopHelper {
                             removeHandler.onRemove(entry);
                         }
                         entry.getAmmount().setActValue(0);
-                    });
-
-                    downloadHandlerInternal.setValue(event -> {
-                        if (downloadHandler != null) {
-                            downloadHandler.onDownloadRequest(entry);
-                        }
-                    });
-
-                    uploadHandlerInternal.setValue(event -> {
-                        if (uploadHandler != null) {
-                            uploadHandler.onUploadRequest(entry);
-                        }
-                    });
-
-                    deleteFromLocalDatabaseInternal.setValue(event -> {
-                        if (deleteHandler != null) {
-                            deleteHandler.onDeleteRequest(entry, false);
-                        }
-                    });
-
-                    deleteFromRemoteDatabaseInternal.setValue(event -> {
-                        if (deleteHandler != null) {
-                            deleteHandler.onDeleteRequest(entry, true);
-                        }
                     });
 
                     BooleanBinding addRemoveCondition = Bindings
@@ -143,39 +102,6 @@ final class ShopHelper {
                         .then(removeHandlerInternal)
                         .otherwise(addHandlerInternal));
 
-                    btnRemote.textProperty().bind(Bindings
-                        .when(entry.authorProperty()
-                            .isEqualTo(user.nameProperty())) // Autor jsem já
-                        .then(Bindings
-                            .when(entry.uploadedProperty())
-                            .then(Bindings
-                                .when(entry.downloadedProperty())
-                                .then(resourceRemove)
-                                .otherwise(resourceDownload))
-                            .otherwise(resourceUpload))
-                        .otherwise(Bindings
-                            .when(entry.downloadedProperty())
-                            .then(noAction)
-                            .otherwise(resourceDownload)));
-                    btnRemote.onActionProperty().bind(Bindings
-                        .when(entry.authorProperty()
-                            .isEqualTo(user.nameProperty())) // Autor jsem já
-                        .then(Bindings
-                            .when(entry.uploadedProperty())
-                            .then(Bindings
-                                .when(entry.downloadedProperty())
-                                .then(deleteFromRemoteDatabaseInternal)
-                                .otherwise(downloadHandlerInternal))
-                            .otherwise(uploadHandlerInternal))
-                        .otherwise(Bindings
-                            .when(entry.downloadedProperty())
-                            .then(deleteFromLocalDatabaseInternal)
-                            .otherwise(downloadHandlerInternal)));
-                    btnRemote.disableProperty().bind(Bindings
-                        .or(user.loggedProperty().not(),
-                            Bindings.and(
-                                entry.authorProperty().isNotEqualTo(user.nameProperty()),
-                                entry.downloadedProperty())));
                     setGraphic(container);
                 }
             }

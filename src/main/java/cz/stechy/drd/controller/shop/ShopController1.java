@@ -270,6 +270,21 @@ public class ShopController1 extends BaseController implements Initializable {
     }
 
     @FXML
+    private void handleUploadItem(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void handleDownloadItem(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void handleRemoveOnlineItem(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
     private void handleContinueShopping(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
         bundle.put(ShopController2.HERO_ID, hero.getId());

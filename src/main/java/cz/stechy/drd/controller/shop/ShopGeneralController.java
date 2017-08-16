@@ -119,8 +119,8 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         OnDownloadItem<GeneralEntry> downloadHandler,
         OnDeleteItem<GeneralEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
-            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable, editMode));
+            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
+                resources, ammountEditable));
 
         final Function<GeneralItem, GeneralEntry> mapper = generalItem -> {
             final GeneralEntry entry;

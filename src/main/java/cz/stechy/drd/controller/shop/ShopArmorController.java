@@ -151,8 +151,8 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         OnDownloadItem<ArmorEntry> downloadHandler,
         OnDeleteItem<ArmorEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
-            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable, editMode));
+            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
+                resources, ammountEditable));
 
         final Function<Armor, ArmorEntry> mapper = armor -> {
             final ArmorEntry entry;

@@ -71,6 +71,9 @@
 .icon-import {
     -fx-background-image: url("../images/icon/import.png");
 }
+.icon-export {
+    -fx-background-image: url("../images/icon/export.png");
+}
 .icon-login {
     -fx-background-image: url("../images/icon/login.png");
 }
@@ -80,6 +83,7 @@
 .icon-synchronize {
     -fx-background-image: url("../images/icon/synchronize.png");
 }
+
 
 .table-column {
     -fx-alignment: CENTER-LEFT;

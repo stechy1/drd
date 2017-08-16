@@ -143,8 +143,8 @@ public class ShopWeaponMeleController implements Initializable,
         OnDownloadItem<MeleWeaponEntry> downloadHandler,
         OnDeleteItem<MeleWeaponEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
-            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable, editMode));
+            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
+                resources, ammountEditable));
 
         Function<MeleWeapon, MeleWeaponEntry> mapper = meleWeapon -> {
             final MeleWeaponEntry entry;

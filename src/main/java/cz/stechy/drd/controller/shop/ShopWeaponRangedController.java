@@ -144,8 +144,8 @@ public class ShopWeaponRangedController implements Initializable,
         OnDownloadItem<RangedWeaponEntry> downloadHandler,
         OnDeleteItem<RangedWeaponEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
-            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable, editMode));
+            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
+                resources, ammountEditable));
 
         final Function<RangedWeapon, RangedWeaponEntry> mapper = weapon -> {
             final RangedWeaponEntry entry;
