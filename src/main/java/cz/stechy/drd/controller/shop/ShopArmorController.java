@@ -9,9 +9,6 @@ import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
-import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
-import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
-import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.Armor.ArmorType;
@@ -94,7 +91,6 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     private final SortedList<ArmorEntry> sortedList = new SortedList<>(armors,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
-    private final BooleanProperty editMode = new SimpleBooleanProperty();
     private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
     private final AdvancedDatabaseService<Armor> service;
     private final Translator translator;
@@ -146,10 +142,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart,
-        OnUploadItem<ArmorEntry> uploadHandler,
-        OnDownloadItem<ArmorEntry> downloadHandler,
-        OnDeleteItem<ArmorEntry> deleteHandler) {
+    public void setShoppingCart(IShoppingCart shoppingCart) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
                 resources, ammountEditable));
@@ -191,11 +184,6 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
             service.toggleDatabase(newValue);
         });
         ammountEditable.bind(showOnlineDatabase);
-    }
-
-    @Override
-    public void setEditModeProperty(BooleanProperty editMode) {
-        this.editMode.bind(editMode);
     }
 
     @Override

@@ -87,6 +87,12 @@ public class ShopController1 extends BaseController implements Initializable {
     @FXML
     private Button btnEditItem;
     @FXML
+    private Button btnUploadItem;
+    @FXML
+    private Button btnDownloadItem;
+    @FXML
+    private Button btnRemoveOnlineItem;
+    @FXML
     private ToggleButton btnToggleOnline;
     @FXML
     private Label lblTotalPrice;
@@ -179,7 +185,6 @@ public class ShopController1 extends BaseController implements Initializable {
                 Bindings.equal(
                     "", hero.nameProperty()),
                 shoppingCart.enoughtMoneyProperty().not())));
-
         selectedAccordionPaneIndex.addListener((observable, oldValue, newValue) -> {
             int index = newValue.intValue();
             if (index < 0) {
@@ -196,8 +201,7 @@ public class ShopController1 extends BaseController implements Initializable {
         showOnlineDatabase.bindBidirectional(btnToggleOnline.selectedProperty());
 
         for (ShopItemController controller : controllers) {
-            controller.setEditModeProperty(editMode);
-            controller.setShoppingCart(shoppingCart, uploadHandler, downloadHandler, deleteHandler);
+            controller.setShoppingCart(shoppingCart);
             controller.setRowSelectedIndexProperty(selectedRowIndex);
             controller.setShowOnlineDatabase(showOnlineDatabase);
         }

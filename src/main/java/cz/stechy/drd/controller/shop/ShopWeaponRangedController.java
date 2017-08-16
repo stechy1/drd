@@ -9,9 +9,6 @@ import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
-import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
-import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
-import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
@@ -99,7 +96,6 @@ public class ShopWeaponRangedController implements Initializable,
     private final SortedList<RangedWeaponEntry> sortedList = new SortedList<>(rangedWeapons,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
-    private final BooleanProperty editMode = new SimpleBooleanProperty();
     private final AdvancedDatabaseService<RangedWeapon> service;
     private final Translator translator;
     private final User user;
@@ -139,10 +135,7 @@ public class ShopWeaponRangedController implements Initializable,
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart,
-        OnUploadItem<RangedWeaponEntry> uploadHandler,
-        OnDownloadItem<RangedWeaponEntry> downloadHandler,
-        OnDeleteItem<RangedWeaponEntry> deleteHandler) {
+    public void setShoppingCart(IShoppingCart shoppingCart) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
                 resources, ammountEditable));
@@ -184,11 +177,6 @@ public class ShopWeaponRangedController implements Initializable,
             service.toggleDatabase(newValue);
         });
         ammountEditable.bind(showOnlineDatabase);
-    }
-
-    @Override
-    public void setEditModeProperty(BooleanProperty editMode) {
-        this.editMode.bind(editMode);
     }
 
     @Override

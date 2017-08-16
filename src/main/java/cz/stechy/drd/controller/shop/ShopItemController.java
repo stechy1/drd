@@ -1,8 +1,5 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
-import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
-import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
@@ -17,14 +14,10 @@ interface ShopItemController<T> {
 
     /**
      * Nastaví referenci na nákupní košík
+     *  @param shoppingCart {@link IShoppingCart}
      *
-     * @param shoppingCart {@link IShoppingCart}
-     * @param uploadHandler {@link OnUploadItem}
-     * @param downloadHandler {@link OnDownloadItem}
-     * @param deleteHandler  {@link OnDeleteItem}
      */
-    void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem<T> uploadHandler,
-        OnDownloadItem<T> downloadHandler, OnDeleteItem<T> deleteHandler);
+    void setShoppingCart(IShoppingCart shoppingCart);
 
     /**
      * Předá referenci na {@link IntegerProperty} představující vybraný index řádku v tabulce
@@ -40,14 +33,6 @@ interface ShopItemController<T> {
      * @param showOnlineDatabase True pro online itemy, jinak offline itemy
      */
     void setShowOnlineDatabase(BooleanProperty showOnlineDatabase);
-
-    /**
-     * Předá referenci na {@link BooleanProperty} indikující, zda-li se nacházím v editačním modu
-     * Pokud se nacházím v editačním módu, tak nelze přidávat předměty do košíku
-     *
-     * @param editMode True, pokud jsem v edit modu, jinak False
-     */
-    void setEditModeProperty(BooleanProperty editMode);
 
     /**
      * @return Vrátí název screenu pro editaci itemu / přidání nového itemu

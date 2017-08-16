@@ -73,7 +73,7 @@
         </tooltip>
       </JFXButton>
       <JFXButton onAction="#handleRemoveOnlineItem" styleClass="sidebar-button, icon-subtract"
-        fx:id="btmRemoveOnlineItem">
+        fx:id="btnRemoveOnlineItem">
         <tooltip>
           <Tooltip text="%drd_firebase_entry_remove"/>
         </tooltip>

@@ -9,9 +9,6 @@ import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
-import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
-import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
-import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.shop.IShoppingCart;
@@ -82,7 +79,6 @@ public class ShopBackpackController implements Initializable, ShopItemController
     private final SortedList<BackpackEntry> sortedList = new SortedList<>(backpacks,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
-    private final BooleanProperty editMode = new SimpleBooleanProperty();
     private final AdvancedDatabaseService<Backpack> service;
     private final User user;
 
@@ -117,10 +113,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart,
-        OnUploadItem<BackpackEntry> uploadHandler,
-        OnDownloadItem<BackpackEntry> downloadHandler,
-        OnDeleteItem<BackpackEntry> deleteHandler) {
+    public void setShoppingCart(IShoppingCart shoppingCart) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
                 resources, ammountEditable));
@@ -162,11 +155,6 @@ public class ShopBackpackController implements Initializable, ShopItemController
             service.toggleDatabase(newValue);
         });
         ammountEditable.bind(showOnlineDatabase);
-    }
-
-    @Override
-    public void setEditModeProperty(BooleanProperty editMode) {
-        this.editMode.bind(editMode);
     }
 
     @Override
