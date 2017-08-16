@@ -22,6 +22,7 @@ import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -125,6 +126,23 @@ public class BestiaryController extends BaseController implements Initializable 
         this.service = context.getService(Context.SERVICE_BESTIARY);
         this.user = context.getUserService().getUser().get();
         this.translator = context.getTranslator();
+    }
+
+    // endregion
+
+    // region Private methods
+
+    /**
+     * Vrátí {@link Optional} obsahující vybranou nestvůru, nebo prázdnou hodnotu
+     *
+     * @return {@link Optional<Mob>}
+     */
+    private Optional<Mob> getSelectedEntry() {
+        if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(sortedList.get(selectedRowIndex.get()).getMobBase());
     }
 
     // endregion
@@ -244,13 +262,15 @@ public class BestiaryController extends BaseController implements Initializable 
 
     // region Button handlers
 
-    public void handleAddItem(ActionEvent actionEvent) {
+    @FXML
+    private void handleAddItem(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
         bundle.putInt(BestiaryHelper.MOB_ACTION, BestiaryHelper.MOB_ACTION_ADD);
         startNewDialogForResult(R.FXML.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_ADD, bundle);
     }
 
-    public void handleRemoveItem(ActionEvent actionEvent) {
+    @FXML
+    private void handleRemoveItem(ActionEvent actionEvent) {
         final int rowIndex = selectedRowIndex.get();
         final MobEntry entry = sortedList.get(rowIndex);
         final String name = entry.getName();
@@ -261,7 +281,8 @@ public class BestiaryController extends BaseController implements Initializable 
         }
     }
 
-    public void handleEditItem(ActionEvent actionEvent) {
+    @FXML
+    private void handleEditItem(ActionEvent actionEvent) {
         final MobEntry entry = sortedList.get(selectedRowIndex.get());
         final Bundle bundle = BestiaryHelper.mobToBundle(entry.getMobBase());
         bundle.putInt(BestiaryHelper.MOB_ACTION, BestiaryHelper.MOB_ACTION_UPDATE);
@@ -270,20 +291,27 @@ public class BestiaryController extends BaseController implements Initializable 
 
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
-
+        getSelectedEntry().ifPresent(service::upload);
     }
 
     @FXML
     private void handleDownloadItem(ActionEvent actionEvent) {
-
+        getSelectedEntry().ifPresent(item -> {
+            try {
+                service.insert(item);
+            } catch (DatabaseException e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        });
     }
 
     @FXML
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
-
+        getSelectedEntry().ifPresent(mob -> service.deleteRemote(mob, true));
     }
 
-    public void handleSynchronize(ActionEvent actionEvent) {
+    @FXML
+    private void handleSynchronize(ActionEvent actionEvent) {
         service.synchronize(user.getName(), total -> {
             LOGGER.info("Bylo synchronizováno celkem: " + total + " nestvůr.");
         });
