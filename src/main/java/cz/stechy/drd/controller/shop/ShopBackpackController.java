@@ -224,6 +224,10 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     @Override
     public Optional<BackpackEntry> getSelectedItem() {
+        if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
+            return Optional.empty();
+        }
+
         return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
 }

@@ -220,6 +220,10 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
     @Override
     public Optional<GeneralEntry> getSelectedItem() {
+        if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
+            return Optional.empty();
+        }
+
         return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
 }

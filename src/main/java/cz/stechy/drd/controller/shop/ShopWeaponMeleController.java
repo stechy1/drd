@@ -247,6 +247,10 @@ public class ShopWeaponMeleController implements Initializable,
 
     @Override
     public Optional<MeleWeaponEntry> getSelectedItem() {
+        if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
+            return Optional.empty();
+        }
+
         return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
 }

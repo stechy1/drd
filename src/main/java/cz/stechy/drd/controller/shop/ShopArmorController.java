@@ -253,6 +253,10 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
     @Override
     public Optional<ArmorEntry> getSelectedItem() {
+        if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
+            return Optional.empty();
+        }
+
         return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
 }

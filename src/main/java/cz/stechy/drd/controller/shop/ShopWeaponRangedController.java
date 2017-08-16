@@ -247,6 +247,10 @@ public class ShopWeaponRangedController implements Initializable,
 
     @Override
     public Optional<RangedWeaponEntry> getSelectedItem() {
+        if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
+            return Optional.empty();
+        }
+
         return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
 }
