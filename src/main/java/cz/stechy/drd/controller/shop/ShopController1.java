@@ -204,7 +204,7 @@ public class ShopController1 extends BaseController implements Initializable {
                         showOnlineDatabase.not()))));
 
         btnContinueShopping.disableProperty().bind(Bindings.or(
-            editMode.not(),
+            editMode,
             Bindings.or(
                 Bindings.equal(
                     "", hero.nameProperty()),
