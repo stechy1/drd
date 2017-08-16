@@ -60,19 +60,19 @@
         </tooltip>
       </JFXButton>
       <Separator />
-      <JFXButton onAction="#handleUploadItem" styleClass="sidebar-button, icon-export"
+      <JFXButton onAction="#handleUploadItem" styleClass="sidebar-button, icon-upload"
         fx:id="btnUploadItem">
         <tooltip>
           <Tooltip text="%drd_firebase_entry_upload"/>
         </tooltip>
       </JFXButton>
-      <JFXButton onAction="#handleDownloadItem" styleClass="sidebar-button, icon-import"
+      <JFXButton onAction="#handleDownloadItem" styleClass="sidebar-button, icon-download"
         fx:id="btnDownloadItem">
         <tooltip>
           <Tooltip text="%drd_firebase_entry_download"/>
         </tooltip>
       </JFXButton>
-      <JFXButton onAction="#handleRemoveOnlineItem" styleClass="sidebar-button, icon-subtract"
+      <JFXButton onAction="#handleRemoveOnlineItem" styleClass="sidebar-button, icon-remove-online"
         fx:id="btnRemoveOnlineItem">
         <tooltip>
           <Tooltip text="%drd_firebase_entry_remove"/>

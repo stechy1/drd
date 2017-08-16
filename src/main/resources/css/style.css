@@ -74,6 +74,15 @@
 .icon-export {
     -fx-background-image: url("../images/icon/export.png");
 }
+.icon-download {
+    -fx-background-image: url("../images/icon/download.png");
+}
+.icon-upload {
+    -fx-background-image: url("../images/icon/upload.png");
+}
+.icon-remove-online {
+    -fx-background-image: url("../images/icon/remove_online.png");
+}
 .icon-login {
     -fx-background-image: url("../images/icon/login.png");
 }
