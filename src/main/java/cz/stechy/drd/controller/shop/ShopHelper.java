@@ -45,7 +45,7 @@ final class ShopHelper {
         final OnAddItemToCart<S> addHandler, final OnRemoveItemFromCart<S> removeHandler,
         ResourceBundle resources, BooleanProperty cartEditable) {
         final String resourceAdd = resources.getString("drd_shop_item_cart_add");
-        final String resourceRemove = resources.getString("drd_firebase_entry_remove");
+        final String resourceRemove = resources.getString("drd_shop_item_cart_remove");
 
         return new TableCell<S, T>() {
             final Button btnAddRemove = new Button();
