@@ -82,6 +82,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
     private final SortedList<BackpackEntry> sortedList = new SortedList<>(backpacks,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
+    private final BooleanProperty editMode = new SimpleBooleanProperty();
     private final AdvancedDatabaseService<Backpack> service;
     private final User user;
 
@@ -122,7 +123,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
         OnDeleteItem<BackpackEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable));
+                downloadHandler, deleteHandler, user, resources, ammountEditable, editMode));
 
         final Function<Backpack, BackpackEntry> mapper = backpack -> {
             final BackpackEntry entry;
@@ -161,6 +162,11 @@ public class ShopBackpackController implements Initializable, ShopItemController
             service.toggleDatabase(newValue);
         });
         ammountEditable.bind(showOnlineDatabase);
+    }
+
+    @Override
+    public void setEditModeProperty(BooleanProperty editMode) {
+        this.editMode.bind(editMode);
     }
 
     @Override

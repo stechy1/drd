@@ -80,6 +80,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     private final SortedList<GeneralEntry> sortedList = new SortedList<>(generalItems,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
+    private final BooleanProperty editMode = new SimpleBooleanProperty();
     private final AdvancedDatabaseService<GeneralItem> service;
     private final User user;
 
@@ -119,7 +120,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         OnDeleteItem<GeneralEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable));
+                downloadHandler, deleteHandler, user, resources, ammountEditable, editMode));
 
         final Function<GeneralItem, GeneralEntry> mapper = generalItem -> {
             final GeneralEntry entry;
@@ -157,6 +158,11 @@ public class ShopGeneralController implements Initializable, ShopItemController<
             service.toggleDatabase(newValue);
         });
         ammountEditable.bind(showOnlineDatabase);
+    }
+
+    @Override
+    public void setEditModeProperty(BooleanProperty editMode) {
+        this.editMode.bind(editMode);
     }
 
     @Override

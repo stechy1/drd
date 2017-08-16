@@ -99,6 +99,7 @@ public class ShopWeaponRangedController implements Initializable,
     private final SortedList<RangedWeaponEntry> sortedList = new SortedList<>(rangedWeapons,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
+    private final BooleanProperty editMode = new SimpleBooleanProperty();
     private final AdvancedDatabaseService<RangedWeapon> service;
     private final Translator translator;
     private final User user;
@@ -144,7 +145,7 @@ public class ShopWeaponRangedController implements Initializable,
         OnDeleteItem<RangedWeaponEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable));
+                downloadHandler, deleteHandler, user, resources, ammountEditable, editMode));
 
         final Function<RangedWeapon, RangedWeaponEntry> mapper = weapon -> {
             final RangedWeaponEntry entry;
@@ -183,6 +184,11 @@ public class ShopWeaponRangedController implements Initializable,
             service.toggleDatabase(newValue);
         });
         ammountEditable.bind(showOnlineDatabase);
+    }
+
+    @Override
+    public void setEditModeProperty(BooleanProperty editMode) {
+        this.editMode.bind(editMode);
     }
 
     @Override

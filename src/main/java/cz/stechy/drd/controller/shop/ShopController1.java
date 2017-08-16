@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.shop;
 
+import com.jfoenix.controls.JFXToggleButton;
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
@@ -48,7 +49,6 @@ public class ShopController1 extends BaseController implements Initializable {
     private static final int ACTION_ADD_ITEM = 1;
     private static final int ACTION_UPDATE_ITEM = 2;
 
-
     // endregion
 
     // region Variables
@@ -92,6 +92,8 @@ public class ShopController1 extends BaseController implements Initializable {
     private Label lblTotalPrice;
     @FXML
     private Button btnContinueShopping;
+    @FXML
+    private JFXToggleButton btnToggleEditMode;
 
     // endregion
 
@@ -102,6 +104,8 @@ public class ShopController1 extends BaseController implements Initializable {
         NO_SELECTED_INDEX);
     private final IntegerProperty selectedRowIndex = new SimpleIntegerProperty(NO_SELECTED_INDEX);
     private final BooleanProperty showOnlineDatabase = new SimpleBooleanProperty(false);
+    // Indikuje, zda-li se nacházím v edit modu
+    private final BooleanProperty editMode = new SimpleBooleanProperty(this, "editMode", false);
     private final User user;
     private final Hero hero;
 
@@ -145,25 +149,36 @@ public class ShopController1 extends BaseController implements Initializable {
                 selectedAccordionPaneIndex.setValue(translatedItemType.indexOf(newValue.getText()));
             });
 
+        editMode.bindBidirectional(btnToggleEditMode.selectedProperty());
+
         final BooleanBinding selectedRowBinding = selectedRowIndex.isEqualTo(NO_SELECTED_INDEX);
+        final BooleanBinding selectedAccordionPane = selectedAccordionPaneIndex
+            .isNotEqualTo(NO_SELECTED_INDEX).not();
         btnAddItem.disableProperty().bind(Bindings.or(
-            selectedAccordionPaneIndex.isNotEqualTo(NO_SELECTED_INDEX).not(),
-            showOnlineDatabase));
+            editMode.not(),
+            Bindings.or(
+                selectedAccordionPane,
+                showOnlineDatabase)));
         btnRemoveItem.disableProperty().bind(Bindings.or(
-            selectedRowBinding,
+            editMode.not(),
             Bindings.or(
-                selectedAccordionPaneIndex.isNotEqualTo(NO_SELECTED_INDEX).not(),
-                showOnlineDatabase)));
+                selectedRowBinding,
+                Bindings.or(
+                    selectedAccordionPane,
+                    showOnlineDatabase))));
         btnEditItem.disableProperty().bind(Bindings.or(
-            selectedRowBinding,
+            editMode.not(),
             Bindings.or(
-                selectedAccordionPaneIndex.isNotEqualTo(NO_SELECTED_INDEX).not(),
-                showOnlineDatabase)));
-        btnContinueShopping.disableProperty().bind(
+                selectedRowBinding,
+                Bindings.or(
+                    selectedAccordionPane,
+                    showOnlineDatabase))));
+        btnContinueShopping.disableProperty().bind(Bindings.or(
+            editMode.not(),
             Bindings.or(
                 Bindings.equal(
-                    "", hero.nameProperty()
-                ), shoppingCart.enoughtMoneyProperty().not()));
+                    "", hero.nameProperty()),
+                shoppingCart.enoughtMoneyProperty().not())));
 
         selectedAccordionPaneIndex.addListener((observable, oldValue, newValue) -> {
             int index = newValue.intValue();
@@ -175,12 +190,13 @@ public class ShopController1 extends BaseController implements Initializable {
         });
         lblTotalPrice.textProperty().bind(shoppingCart.totalPrice.text);
         lblTotalPrice.textFillProperty().bind(Bindings
-                .when(shoppingCart.enoughtMoneyProperty())
-                .then(Color.GREEN)
-                .otherwise(Color.RED));
+            .when(shoppingCart.enoughtMoneyProperty())
+            .then(Color.GREEN)
+            .otherwise(Color.RED));
         showOnlineDatabase.bindBidirectional(btnToggleOnline.selectedProperty());
 
         for (ShopItemController controller : controllers) {
+            controller.setEditModeProperty(editMode);
             controller.setShoppingCart(shoppingCart, uploadHandler, downloadHandler, deleteHandler);
             controller.setRowSelectedIndexProperty(selectedRowIndex);
             controller.setShowOnlineDatabase(showOnlineDatabase);

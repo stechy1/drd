@@ -97,6 +97,7 @@ public class ShopWeaponMeleController implements Initializable,
     private final SortedList<MeleWeaponEntry> sortedList = new SortedList<>(meleWeapons,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
+    private final BooleanProperty editMode = new SimpleBooleanProperty();
     private final AdvancedDatabaseService<MeleWeapon> service;
     private final Translator translator;
     private final User user;
@@ -143,7 +144,7 @@ public class ShopWeaponMeleController implements Initializable,
         OnDeleteItem<MeleWeaponEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable));
+                downloadHandler, deleteHandler, user, resources, ammountEditable, editMode));
 
         Function<MeleWeapon, MeleWeaponEntry> mapper = meleWeapon -> {
             final MeleWeaponEntry entry;
@@ -183,6 +184,11 @@ public class ShopWeaponMeleController implements Initializable,
             service.toggleDatabase(newValue);
         });
         ammountEditable.bind(showOnlineDatabase);
+    }
+
+    @Override
+    public void setEditModeProperty(BooleanProperty editMode) {
+        this.editMode.bind(editMode);
     }
 
     @Override

@@ -94,6 +94,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     private final SortedList<ArmorEntry> sortedList = new SortedList<>(armors,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
+    private final BooleanProperty editMode = new SimpleBooleanProperty();
     private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
     private final AdvancedDatabaseService<Armor> service;
     private final Translator translator;
@@ -151,7 +152,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         OnDeleteItem<ArmorEntry> deleteHandler) {
         columnAction.setCellFactory(param -> ShopHelper
             .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources, ammountEditable));
+                downloadHandler, deleteHandler, user, resources, ammountEditable, editMode));
 
         final Function<Armor, ArmorEntry> mapper = armor -> {
             final ArmorEntry entry;
@@ -190,6 +191,11 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
             service.toggleDatabase(newValue);
         });
         ammountEditable.bind(showOnlineDatabase);
+    }
+
+    @Override
+    public void setEditModeProperty(BooleanProperty editMode) {
+        this.editMode.bind(editMode);
     }
 
     @Override

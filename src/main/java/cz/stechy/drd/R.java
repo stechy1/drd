@@ -285,6 +285,7 @@ public final class R {
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
         public static final String SETTINGS = "drd_settings";
         public static final String ABOUT_CONTENT = "drd_about_content";
+        public static final String SHOP_EDIT_MODE = "drd_shop_edit_mode";
     }
 
     public static class Config {

@@ -42,6 +42,14 @@ interface ShopItemController<T> {
     void setShowOnlineDatabase(BooleanProperty showOnlineDatabase);
 
     /**
+     * Předá referenci na {@link BooleanProperty} indikující, zda-li se nacházím v editačním modu
+     * Pokud se nacházím v editačním módu, tak nelze přidávat předměty do košíku
+     *
+     * @param editMode True, pokud jsem v edit modu, jinak False
+     */
+    void setEditModeProperty(BooleanProperty editMode);
+
+    /**
      * @return Vrátí název screenu pro editaci itemu / přidání nového itemu
      */
     String getEditScreenName();

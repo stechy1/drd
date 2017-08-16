@@ -49,7 +49,7 @@ final class ShopHelper {
         final OnAddItemToCart<S> addHandler, final OnRemoveItemFromCart<S> removeHandler,
         final OnUploadItem<S> uploadHandler, final OnDownloadItem<S> downloadHandler,
         final OnDeleteItem<S> deleteHandler, User user, ResourceBundle resources,
-        BooleanProperty cartEditable) {
+        BooleanProperty cartEditable, BooleanProperty editMode) {
         final String resourceAdd = resources.getString("drd_shop_item_cart_add");
         final String resourceRemove = resources.getString("drd_firebase_entry_remove");
         final String resourceUpload = resources.getString("drd_firebase_entry_upload");
