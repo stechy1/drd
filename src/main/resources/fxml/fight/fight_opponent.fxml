@@ -5,7 +5,7 @@
 <?import cz.stechy.drd.widget.Card?>
 <?import cz.stechy.drd.widget.LabeledHeroProperty?>
 <?import cz.stechy.drd.widget.LabeledMaxActValue?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -68,5 +68,11 @@
         </VBox>
       </HBox>
     </center>
+    <bottom>
+      <HBox spacing="8.0" alignment="CENTER">
+        <Label text="Poklad" prefHeight="15.0"/>
+        <Hyperlink fx:id="lblPrice" onAction="#handleShowMoneyPopup" prefHeight="15.0"/>
+      </HBox>
+    </bottom>
   </BorderPane>
 </AnchorPane>

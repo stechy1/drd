@@ -3,13 +3,18 @@ package cz.stechy.drd.controller.fight;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import cz.stechy.drd.Context;
+import cz.stechy.drd.controller.InjectableChild;
+import cz.stechy.drd.controller.MoneyController;
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.persistent.BestiaryService;
 import cz.stechy.drd.widget.LabeledHeroProperty;
 import cz.stechy.drd.widget.LabeledMaxActValue;
+import cz.stechy.screens.BaseController;
+import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -20,12 +25,16 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 
 /**
  * Kontroler pro ovládání pravé částireprezentující protivníka
  */
-public class FightOpponentController implements Initializable, IFightChild {
+public class FightOpponentController implements Initializable, IFightChild, InjectableChild {
+
+    private static final int ACTION_MONEY = 1;
 
     // region Variables
 
@@ -48,6 +57,8 @@ public class FightOpponentController implements Initializable, IFightChild {
     @FXML
     private LabeledMaxActValue lblLive;
     @FXML
+    private Hyperlink lblPrice;
+    @FXML
     private JFXButton btnRevive;
 
     // endregion
@@ -55,6 +66,8 @@ public class FightOpponentController implements Initializable, IFightChild {
     private final ObservableList<Mob> mobs;
     private final BestiaryService bestiary;
     private final ObjectProperty<Mob> selectedMob = new SimpleObjectProperty<>();
+    private final Money treasure = new Money();
+    private BaseController parent;
 
     // endregion
 
@@ -76,6 +89,25 @@ public class FightOpponentController implements Initializable, IFightChild {
             }, cmbBestiary.getSelectionModel().selectedItemProperty()));
         this.selectedMob.addListener(mobListener);
         btnRevive.disableProperty().bind(cmbBestiary.getSelectionModel().selectedItemProperty().isNull());
+        lblPrice.textProperty().bind(treasure.text);
+    }
+
+    @Override
+    public void injectParent(BaseController parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public void onScreenResult(int statusCode, int actionId, Bundle bundle) {
+        switch (actionId) {
+            case ACTION_MONEY:
+                if (statusCode != BaseController.RESULT_SUCCESS) {
+                    return;
+                }
+
+                treasure.setRaw(bundle.getInt(MoneyController.MONEY));
+                break;
+        }
     }
 
     @Override
@@ -105,13 +137,27 @@ public class FightOpponentController implements Initializable, IFightChild {
         selectedMob.get().getLive().update(new MaxActValue(0, live, live));
     }
 
+    @FXML
+    private void handleShowMoneyPopup(ActionEvent actionEvent) {
+        Bundle bundle = new Bundle().put(MoneyController.MONEY, treasure.getRaw());
+        parent.startNewPopupWindowForResult("money", ACTION_MONEY, bundle, (Node) actionEvent.getSource());
+    }
+
     // endregion
 
-    public Mob getMob() {
+    // region Getters & Setters
+
+    Mob getMob() {
         return selectedMob.get();
     }
 
     ObjectProperty<Mob> selectedMobProperty() {
         return selectedMob;
     }
+
+    Money getTreasure() {
+        return treasure;
+    }
+
+    // endregion
 }

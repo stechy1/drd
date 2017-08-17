@@ -123,6 +123,8 @@ public class FightController extends BaseController implements Initializable {
             fightOpponentController
         };
 
+        fightOpponentController.injectParent(this);
+
         btnStartFight.disableProperty().bind(Bindings.createBooleanBinding(() ->
             isFighting.get() || fightOpponentController.selectedMobProperty().get() == null,
             isFighting, fightOpponentController.selectedMobProperty()));
@@ -140,6 +142,11 @@ public class FightController extends BaseController implements Initializable {
     protected void onResume() {
         setTitle(title);
         setScreenSize(800, 580);
+    }
+
+    @Override
+    protected void onScreenResult(int statusCode, int actionId, Bundle bundle) {
+        fightOpponentController.onScreenResult(statusCode, actionId, bundle);
     }
 
     @Override
