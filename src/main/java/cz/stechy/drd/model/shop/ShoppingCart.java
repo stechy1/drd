@@ -20,8 +20,6 @@ import javafx.collections.SetChangeListener;
  */
 public class ShoppingCart implements IShoppingCart {
 
-    // TODO optimalizovat přičítání a odečítání násobků peněz
-
     // region Variables
 
     private final Map<ShopEntry, AmmountListener> ammountListeners = new HashMap<>();
@@ -79,18 +77,22 @@ public class ShoppingCart implements IShoppingCart {
             final AmmountListener listener = new AmmountListener(price);
             ammountListeners.put(entry, listener);
             ammount.actValueProperty().addListener(listener);
-            for (int i = 0; i < ammount.getActValue().intValue(); i++) {
-                totalPrice.add(price);
-            }
+            final Money priceDuplicate = new Money(price);
+            priceDuplicate.multiply(ammount.getActValue().intValue());
+            totalPrice.add(priceDuplicate);
         }
         if (change.wasRemoved()) {
             final ShopEntry entry = change.getElementRemoved();
             final Money price = entry.getPrice();
             final MaxActValue ammount = entry.getAmmount();
             ammount.actValueProperty().removeListener(ammountListeners.get(entry));
-            for (int i = 0; i < ammount.getActValue().intValue(); i++) {
-                totalPrice.subtract(price);
+            if (ammount.getActValue() == null) {
+                return;
             }
+
+            final Money priceDuplicate = new Money(price);
+            priceDuplicate.multiply(ammount.getActValue().intValue());
+            totalPrice.subtract(priceDuplicate);
         }
         enoughtMoney.set(hero.getMoney().getRaw() >= totalPrice.getRaw());
     };
@@ -107,15 +109,15 @@ public class ShoppingCart implements IShoppingCart {
         public void changed(ObservableValue<? extends Number> observable, Number oldValue,
             Number newValue) {
             if (oldValue != null) {
-                for (int i = 0; i < oldValue.intValue(); i++) {
-                    totalPrice.subtract(price);
-                }
+                final Money priceDuplicate = new Money(price);
+                priceDuplicate.multiply(oldValue.intValue());
+                totalPrice.subtract(priceDuplicate);
             }
 
             if (newValue != null) {
-                for (int i = 0; i < newValue.intValue(); i++) {
-                    totalPrice.add(price);
-                }
+                final Money priceDuplicate = new Money(price);
+                priceDuplicate.multiply(newValue.intValue());
+                totalPrice.add(priceDuplicate);
             }
         }
     }

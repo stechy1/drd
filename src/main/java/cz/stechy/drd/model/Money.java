@@ -176,6 +176,20 @@ public final class Money {
     }
 
     /**
+     * Vynásobí každou část peněz konstantou
+     *
+     * @param constant Konstanta, kterou se bude násobit
+     * @return {@link Money}
+     */
+    public Money multiply(int constant) {
+        setGold(getGold() * constant);
+        setSilver(getSilver() * constant);
+        setCopper(getCopper() * constant);
+
+        return this;
+    }
+
+    /**
      * Nastaví počet zlaťáků
      *
      * @param gold Počet zlaťáků
