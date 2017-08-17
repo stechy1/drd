@@ -20,6 +20,8 @@ import javafx.collections.SetChangeListener;
  */
 public class ShoppingCart implements IShoppingCart {
 
+    // TODO optimalizovat přičítání a odečítání násobků peněz
+
     // region Variables
 
     private final Map<ShopEntry, AmmountListener> ammountListeners = new HashMap<>();
@@ -77,14 +79,18 @@ public class ShoppingCart implements IShoppingCart {
             final AmmountListener listener = new AmmountListener(price);
             ammountListeners.put(entry, listener);
             ammount.actValueProperty().addListener(listener);
-            totalPrice.add(new Money(ammount.getActValue().intValue() * price.getRaw()));
+            for (int i = 0; i < ammount.getActValue().intValue(); i++) {
+                totalPrice.add(price);
+            }
         }
         if (change.wasRemoved()) {
             final ShopEntry entry = change.getElementRemoved();
             final Money price = entry.getPrice();
             final MaxActValue ammount = entry.getAmmount();
             ammount.actValueProperty().removeListener(ammountListeners.get(entry));
-            totalPrice.subtract(new Money(ammount.getActValue().intValue() * price.getRaw()));
+            for (int i = 0; i < ammount.getActValue().intValue(); i++) {
+                totalPrice.subtract(price);
+            }
         }
         enoughtMoney.set(hero.getMoney().getRaw() >= totalPrice.getRaw());
     };
@@ -103,10 +109,12 @@ public class ShoppingCart implements IShoppingCart {
             if (oldValue.intValue() == newValue.intValue()) {
                 return;
             }
-            int rawTotalPrice = totalPrice.getRaw();
-            rawTotalPrice -= oldValue.intValue() * price.getRaw();
-            rawTotalPrice += newValue.intValue() * price.getRaw();
-            totalPrice.setRaw(rawTotalPrice);
+            for (int i = 0; i < oldValue.intValue(); i++) {
+                totalPrice.subtract(price);
+            }
+            for (int i = 0; i < newValue.intValue(); i++) {
+                totalPrice.add(price);
+            }
         }
     }
 
