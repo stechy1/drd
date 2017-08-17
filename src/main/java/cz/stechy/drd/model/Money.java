@@ -154,8 +154,9 @@ public final class Money {
      * @return {@link Money}
      */
     public Money add(Money other) {
-        final int rawValue = getRaw();
-        this.raw.setValue(rawValue + other.getRaw());
+        this.addGold(other.getGold());
+        this.addSilver(other.getSilver());
+        this.addCopper(other.getCopper());
 
         return this;
     }
@@ -167,8 +168,9 @@ public final class Money {
      * @return {@link Money}
      */
     public Money subtract(Money other) {
-        final int rawValue = getRaw();
-        this.raw.setValue(rawValue - other.raw.intValue());
+        this.subtractCopper(other.getCopper());
+        this.subtractSilver(other.getSilver());
+        this.subtractGold(other.getGold());
 
         return this;
     }
