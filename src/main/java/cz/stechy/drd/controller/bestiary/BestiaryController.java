@@ -179,7 +179,7 @@ public class BestiaryController extends BaseController implements Initializable 
         btnSynchronize.disableProperty().bind(user.loggedProperty().not());
 
         selectedRowIndex.addListener((observable, oldValue, newValue) -> {
-            if (newValue == null) {
+            if (newValue == null || newValue.intValue() < 0) {
                 disableDownloadBtn.unbind();
                 disableUploadBtn.unbind();
                 disableRemoveOnlineBtn.unbind();
