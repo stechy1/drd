@@ -157,6 +157,10 @@ public final class MaxActValue {
     // endregion
 
     private final ChangeListener<Number> valueListener = (observable, oldValue, newValue) -> {
+        if (newValue == null) {
+            return;
+        }
+
         int value = newValue.intValue();
         if (value > maxValue.get().doubleValue() && !canOverflow()) {
             actValue.setValue(maxValue.get());
