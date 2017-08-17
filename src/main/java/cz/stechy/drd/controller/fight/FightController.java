@@ -170,6 +170,7 @@ public class FightController extends BaseController implements Initializable {
         battlefield.setFightFinishListener(() -> {
             isFighting.set(false);
             try {
+                hero.getMoney().add(fightOpponentController.getTreasure());
                 heroService.update(hero);
                 showNotification(new Notification(resources.getString(R.Translate.NOTIFY_FIGHT_LIVE_UPDATE)));
             } catch (DatabaseException e) {}
