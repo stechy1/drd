@@ -106,16 +106,17 @@ public class ShoppingCart implements IShoppingCart {
         @Override
         public void changed(ObservableValue<? extends Number> observable, Number oldValue,
             Number newValue) {
-            if (oldValue.intValue() == newValue.intValue()) {
-                return;
+            if (oldValue != null) {
+                for (int i = 0; i < oldValue.intValue(); i++) {
+                    totalPrice.subtract(price);
+                }
             }
-            for (int i = 0; i < oldValue.intValue(); i++) {
-                totalPrice.subtract(price);
-            }
-            for (int i = 0; i < newValue.intValue(); i++) {
-                totalPrice.add(price);
+
+            if (newValue != null) {
+                for (int i = 0; i < newValue.intValue(); i++) {
+                    totalPrice.add(price);
+                }
             }
         }
     }
-
 }
