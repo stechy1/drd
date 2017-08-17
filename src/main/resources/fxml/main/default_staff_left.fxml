@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<Card caption="%drd_hero_main_properties" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.main.DefaultStaffLeftController">
+<Card caption="%drd_hero_main_properties" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.main.defaultstaff.DefaultStaffLeftController">
   <content>
     <GridPane prefHeight="300.0" prefWidth="250.0">
       <columnConstraints>

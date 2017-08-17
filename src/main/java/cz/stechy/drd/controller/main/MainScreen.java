@@ -6,7 +6,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 /**
  * Rozhraní pro komunikaci s kontrolery z třídy {@link MainController}
  */
-interface MainScreen {
+public interface MainScreen {
 
     /**
      * Nastaví referenci na hrdinu

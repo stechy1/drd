@@ -1,6 +1,7 @@
-package cz.stechy.drd.controller.main;
+package cz.stechy.drd.controller.main.defaultstaff;
 
 import cz.stechy.drd.Context;
+import cz.stechy.drd.controller.main.MainScreen;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;

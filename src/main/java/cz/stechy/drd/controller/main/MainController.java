@@ -6,6 +6,8 @@ import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.controller.hero.levelup.LevelUpController;
 import cz.stechy.drd.controller.hero.opener.HeroOpenerController;
+import cz.stechy.drd.controller.main.defaultstaff.DefaultStaffController;
+import cz.stechy.drd.controller.main.inventory.InventoryController;
 import cz.stechy.drd.controller.moneyxp.MoneyXpController;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;

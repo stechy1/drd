@@ -1,4 +1,4 @@
-package cz.stechy.drd.controller.main;
+package cz.stechy.drd.controller.main.defaultstaff;
 
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.widget.LabeledHeroProperty;
