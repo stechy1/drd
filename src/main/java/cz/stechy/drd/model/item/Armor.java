@@ -2,6 +2,7 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.IClonable;
+import cz.stechy.drd.model.ITranslatedEnum;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Height;
@@ -247,8 +248,23 @@ public final class Armor extends ItemBase {
     // endregion
 
     // Typ části brnění
-    public enum ArmorType {
-        HELM, BODY, LEGS, BOTS, GLOVES
+    public enum ArmorType implements ITranslatedEnum {
+        HELM(R.Translate.ITEM_ARMOR_TYPE_HELM),
+        BODY(R.Translate.ITEM_ARMOR_TYPE_BODY),
+        LEGS(R.Translate.ITEM_ARMOR_TYPE_LEGS),
+        BOTS(R.Translate.ITEM_ARMOR_TYPE_BOOTS),
+        GLOVES(R.Translate.ITEM_ARMOR_TYPE_GLASES);
+
+        private final String key;
+
+        ArmorType(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public String getKeyForTranslation() {
+            return key;
+        }
     }
 
     public static class Builder {

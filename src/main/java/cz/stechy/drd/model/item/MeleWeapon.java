@@ -2,6 +2,7 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.IClonable;
+import cz.stechy.drd.model.ITranslatedEnum;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import java.util.Map;
 import javafx.beans.property.IntegerProperty;
@@ -92,8 +93,8 @@ public final class MeleWeapon extends WeaponBase {
     public Map<String, String> getMapDescription() {
         final Map<String, String> map = super.getMapDescription();
         map.put(R.Translate.ITEM_WEAPON_MELE_ARMOR_DEFENCE_NUMBER, String.valueOf(getDefence()));
-        map.put(R.Translate.ITEM_WEAPON_MELE_CLASS, getWeaponClass().name());
-        map.put(R.Translate.ITEM_WEAPON_MELE_RANGED_TYPE, getWeaponType().name());
+        map.put(R.Translate.ITEM_WEAPON_MELE_CLASS, getWeaponClass().getKeyForTranslation());
+        map.put(R.Translate.ITEM_WEAPON_MELE_RANGED_TYPE, getWeaponType().getKeyForTranslation());
 
         return map;
     }
@@ -152,20 +153,45 @@ public final class MeleWeapon extends WeaponBase {
     // endregion
 
     // Třída zbraně
-    public enum MeleWeaponClass {
-        LIGHT, MEDIUM, HEAVY;
+    public enum MeleWeaponClass implements ITranslatedEnum {
+        LIGHT(R.Translate.ITEM_WEAPON_MELE_CLASS_LIGHT),
+        MEDIUM(R.Translate.ITEM_WEAPON_MELE_CLASS_MEDIUM),
+        HEAVY(R.Translate.ITEM_WEAPON_MELE_CLASS_HEAVY);
+
+        private final String key;
 
         public static MeleWeaponClass valueOf(int index) {
             return MeleWeaponClass.values()[index];
         }
+
+        MeleWeaponClass(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public String getKeyForTranslation() {
+            return key;
+        }
     }
 
     // Typ zbraně
-    public enum MeleWeaponType {
-        ONE_HAND, DOUBLE_HAND;
+    public enum MeleWeaponType implements ITranslatedEnum {
+        ONE_HAND(R.Translate.ITEM_WEAPON_MELE_TYPE_ONE_HAND),
+        DOUBLE_HAND(R.Translate.ITEM_WEAPON_MELE_TYPE_DOUBLE_HAND);
+
+        private final String key;
 
         public static MeleWeaponType valueOf(int index) {
             return MeleWeaponType.values()[index];
+        }
+
+        MeleWeaponType(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public String getKeyForTranslation() {
+            return key;
         }
     }
 

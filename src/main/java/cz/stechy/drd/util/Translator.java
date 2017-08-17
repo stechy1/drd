@@ -184,8 +184,10 @@ public final class Translator {
      */
     public void translateTooltipKeys(Map<String, String> tooltipMap) {
         final Map<String, String> dummy = new LinkedHashMap<>(tooltipMap.size());
-        tooltipMap.entrySet().forEach(entry ->
-            dummy.put(resources.getString(entry.getKey()), entry.getValue()));
+        tooltipMap.entrySet().forEach(entry -> {
+            String value = entry.getValue();
+            dummy.put(resources.getString(entry.getKey()), resources.containsKey(value) ? resources.getString(value) : value);
+        });
         tooltipMap.clear();
         tooltipMap.putAll(dummy);
     }

@@ -2,6 +2,7 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.IClonable;
+import cz.stechy.drd.model.ITranslatedEnum;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import java.util.Map;
 import javafx.beans.property.IntegerProperty;
@@ -96,7 +97,7 @@ public final class RangedWeapon extends WeaponBase {
     @Override
     public Map<String, String> getMapDescription() {
         final Map<String, String> map = super.getMapDescription();
-        map.put(R.Translate.ITEM_WEAPON_MELE_RANGED_TYPE, getWeaponType().name());
+        map.put(R.Translate.ITEM_WEAPON_MELE_RANGED_TYPE, getWeaponType().getKeyForTranslation());
         map.put(R.Translate.ITEM_WEAPON_RANGED_RANGE_LOW, String.valueOf(getRangeLow()));
         map.put(R.Translate.ITEM_WEAPON_RANGED_RANGE_MEDIUM, String.valueOf(getRangeMedium()));
         map.put(R.Translate.ITEM_WEAPON_RANGED_RANGE_LONG, String.valueOf(getRangeLong()));
@@ -170,11 +171,23 @@ public final class RangedWeapon extends WeaponBase {
     // endregion
 
     // Typ zbraně
-    public enum RangedWeaponType {
-        FIRE, PROJECTILE;
+    public enum RangedWeaponType implements ITranslatedEnum {
+        FIRE(R.Translate.ITEM_WEAPON_RANGED_TYPE_FIRE),
+        PROJECTILE(R.Translate.ITEM_WEAPON_RANGED_TYPE_PROJECTILE);
+
+        private final String key;
 
         public static RangedWeaponType valueOf(int index) {
             return RangedWeaponType.values()[index];
+        }
+
+        RangedWeaponType(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public String getKeyForTranslation() {
+            return key;
         }
     }
 
