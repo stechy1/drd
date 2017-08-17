@@ -5,64 +5,60 @@
 <?import cz.stechy.drd.widget.LabeledMaxActValue?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
-<AnchorPane prefWidth="275.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.121" fx:controller="cz.stechy.drd.controller.fight.FightHeroController">
-  <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+<?import javafx.scene.layout.VBox?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefWidth="275.0"
+  xmlns="http://javafx.com/javafx/8.0.121"
+  fx:controller="cz.stechy.drd.controller.fight.FightHeroController">
+  <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
     AnchorPane.topAnchor="0.0">
-    <top>
-      <HBox styleClass="title-container">
-        <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_hero"/>
-      </HBox>
-    </top>
-    <center>
-      <HBox alignment="TOP_CENTER">
-        <LabeledMaxActValue caption="%drd_hero_lives" description="%drd_hero_live" fx:id="lblLive"/>
-        <Card caption="%drd_hero_about">
-          <content>
-            <GridPane prefHeight="200.0" prefWidth="150.0" vgap="8.0">
-              <rowConstraints>
-                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
-                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
-                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
-                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
-                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
-                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
-                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
-                <RowConstraints percentHeight="12.5" valignment="CENTER"/>
-              </rowConstraints>
-              <columnConstraints>
-                <ColumnConstraints halignment="LEFT" percentWidth="70.0"/>
-                <ColumnConstraints halignment="CENTER" percentWidth="30.0"/>
-              </columnConstraints>
-              <Label text="%drd_hero_name"/>
-              <Label GridPane.rowIndex="1" text="%drd_hero_strength"/>
-              <Label GridPane.rowIndex="2" text="%drd_hero_dexterity"/>
-              <Label GridPane.rowIndex="3" text="%drd_bestiary_immunity"/>
-              <Label GridPane.rowIndex="4" text="%drd_hero_intelligence"/>
-              <Label GridPane.rowIndex="5" text="%drd_hero_charisma"/>
-              <Label GridPane.rowIndex="6" text="%drd_bestiary_attack_number"/>
-              <Label GridPane.rowIndex="7" text="%drd_bestiary_defence_number"/>
-              <Label GridPane.columnIndex="1" fx:id="lblName"/>
-              <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="1"
-                fx:id="lblStrength"/>
-              <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="2"
-                fx:id="lblDexterity"/>
-              <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="3"
-                fx:id="lblImmunity"/>
-              <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="4"
-                fx:id="lblIntelligence"/>
-              <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="5"
-                fx:id="lblCharisma"/>
-              <Label GridPane.columnIndex="1" GridPane.rowIndex="6" fx:id="lblAttackNumber"/>
-              <Label GridPane.columnIndex="1" GridPane.rowIndex="7" fx:id="lblDefenceNumber"/>
-            </GridPane>
-          </content>
-        </Card>
-      </HBox>
-    </center>
-  </BorderPane>
+    <HBox styleClass="title-container">
+      <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_hero"/>
+    </HBox>
+    <LabeledMaxActValue caption="%drd_hero_lives" description="%drd_hero_live" fx:id="lblLive"/>
+    <Card caption="%drd_hero_about">
+      <content>
+        <GridPane prefHeight="200.0" prefWidth="255.0" vgap="8.0">
+          <rowConstraints>
+            <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+            <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+            <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+            <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+            <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+            <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+            <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+            <RowConstraints percentHeight="12.5" valignment="CENTER"/>
+          </rowConstraints>
+          <columnConstraints>
+            <ColumnConstraints halignment="LEFT" percentWidth="70.0"/>
+            <ColumnConstraints halignment="CENTER" percentWidth="30.0"/>
+          </columnConstraints>
+          <Label text="%drd_hero_name"/>
+          <Label GridPane.rowIndex="1" text="%drd_hero_strength"/>
+          <Label GridPane.rowIndex="2" text="%drd_hero_dexterity"/>
+          <Label GridPane.rowIndex="3" text="%drd_bestiary_immunity"/>
+          <Label GridPane.rowIndex="4" text="%drd_hero_intelligence"/>
+          <Label GridPane.rowIndex="5" text="%drd_hero_charisma"/>
+          <Label GridPane.rowIndex="6" text="%drd_bestiary_attack_number"/>
+          <Label GridPane.rowIndex="7" text="%drd_bestiary_defence_number"/>
+          <Label GridPane.columnIndex="1" fx:id="lblName"/>
+          <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="1"
+            fx:id="lblStrength"/>
+          <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="2"
+            fx:id="lblDexterity"/>
+          <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="3"
+            fx:id="lblImmunity"/>
+          <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="4"
+            fx:id="lblIntelligence"/>
+          <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="5"
+            fx:id="lblCharisma"/>
+          <Label GridPane.columnIndex="1" GridPane.rowIndex="6" fx:id="lblAttackNumber"/>
+          <Label GridPane.columnIndex="1" GridPane.rowIndex="7" fx:id="lblDefenceNumber"/>
+        </GridPane>
+      </content>
+    </Card>
+  </VBox>
 </AnchorPane>
