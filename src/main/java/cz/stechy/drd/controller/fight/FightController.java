@@ -3,7 +3,6 @@ package cz.stechy.drd.controller.fight;
 import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
-import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.fight.Battlefield;
@@ -33,6 +32,22 @@ import javafx.scene.layout.AnchorPane;
  * Kontroler pro souboj hrdiny a protivníka
  */
 public class FightController extends BaseController implements Initializable {
+
+    // region Constants
+
+    // Konstanty komentářů
+    private static final String[] COMMENTS = {
+        R.Translate.FIGHT_COMMENT_ACTION_ATTACK,
+        R.Translate.FIGHT_COMMENT_ACTION_DEFENCE,
+        R.Translate.FIGHT_COMMENT_ACTION_HEALTH,
+        R.Translate.FIGHT_COMMENT_ACTION_BLOCK,
+        R.Translate.FIGHT_COMMENT_ACTION_DEATH,
+        R.Translate.FIGHT_COMMENT_ACTION_TURN,
+        R.Translate.FIGHT_COMMENT_ACTION_SEPARATOR,
+        R.Translate.FIGHT_COMMENT_ACTION_ATTACK_INFO
+    };
+
+    // endregion
 
     // region Variables
 
@@ -92,34 +107,7 @@ public class FightController extends BaseController implements Initializable {
     }
 
     private String processComment(BattlefieldAction action, Object... params) {
-        String formater = "";
-        switch (action) {
-            case ATTACK:
-                formater = Translate.FIGHT_COMMENT_ACTION_ATTACK;
-                break;
-            case DEFENCE:
-                formater = R.Translate.FIGHT_COMMENT_ACTION_DEFENCE;
-                break;
-            case HEALTH:
-                formater = R.Translate.FIGHT_COMMENT_ACTION_HEALTH;
-                break;
-            case BLOCK:
-                formater = R.Translate.FIGHT_COMMENT_ACTION_BLOCK;
-                break;
-            case DEATH:
-                formater = R.Translate.FIGHT_COMMENT_ACTION_DEATH;
-                break;
-            case TURN:
-                formater = R.Translate.FIGHT_COMMENT_ACTION_TURN;
-                break;
-            case SEPARATOR:
-                formater = R.Translate.FIGHT_COMMENT_ACTION_SEPARATOR;
-                break;
-            case ATTACK_INFO:
-                formater = R.Translate.FIGHT_COMMENT_ACTION_ATTACK_INFO;
-                break;
-        }
-        formater = resources.getString(formater);
+        String formater = resources.getString(COMMENTS[action.ordinal()]);
         return String.format(formater, params);
     }
 
