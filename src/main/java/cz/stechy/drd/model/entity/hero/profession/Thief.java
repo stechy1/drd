@@ -5,7 +5,7 @@ import cz.stechy.drd.model.entity.hero.Hero;
 /**
  * Třída obsahující dovednosti, která dokáže zloděj na 1. až 5. úrovní
  */
-public final class Thief {
+public  class Thief {
 
     // region Constants
 
@@ -27,7 +27,7 @@ public final class Thief {
 
     // region Variables
 
-    private final Hero hero;
+    protected final Hero hero;
 
     // endregion
 
@@ -70,7 +70,7 @@ public final class Thief {
         JUMP_FROM_ABOVE(new DexterityModifier(1)), // Skok z výšky
         SILENT_MOTION(new DexterityModifier(1)), // Tichý pohyb
         HIDE_IN_THE_SHADOW(new DexterityModifier(2)), // Schování se ve stínu
-        PICKING_POCKETS(new CharismaModifier(new DexterityModifier(1), 1)); // Vybírání kapes ; ;
+        PICKING_POCKETS(new CharismaModifier(new DexterityModifier(1), 1)); // Vybírání kapes
 
         private final AbilityModifier modifier;
 

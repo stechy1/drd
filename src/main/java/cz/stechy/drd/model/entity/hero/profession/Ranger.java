@@ -9,7 +9,7 @@ import java.util.Arrays;
 /**
  * Třída obsahující dovednosti, která dokáže hraničář na 1. až 5. úrovní
  */
-public final class Ranger {
+public class Ranger {
 
     // region Constants
 
@@ -52,7 +52,7 @@ public final class Ranger {
 
     // region Variables
 
-    private final Hero hero;
+    protected final Hero hero;
 
     // endregion
 
@@ -80,16 +80,10 @@ public final class Ranger {
      */
     public static int getMaxMag(EntityProperty intelligence, int level) {
         // Normalizace úrovně a inteligence abych nevylezl mimo hranice pole
-        final int levelIndex = Math.min(level, 5);
-        final int intelligenceIndex = Math.min(intelligence.getValue(), 19);
-        return BASIC_MAGENERGY[levelIndex][intelligenceIndex];
+        final int levelIndex = Math.max(1, Math.min(level, 5));
+        final int intelligenceIndex = Math.max(1, Math.min(intelligence.getValue() - 6, 14));
+        return BASIC_MAGENERGY[levelIndex - 1][intelligenceIndex - 1];
     }
-
-    // endregion
-
-    // region Private methods
-
-
 
     // endregion
 
@@ -130,9 +124,9 @@ public final class Ranger {
         // TODO vymyslet kam uložit stupeň vlastnosti telekineze hraničáře
         final int property = 1;
         // Normalizace na index abych neutekl mimo hranici pole
-        final int index = Math.min(property - 1, MAX_LEVEL);
+        final int index = Math.max(1, Math.min(property, MAX_LEVEL));
 
-        return distance * weight <= TELEKINESIS_TABLE[index];
+        return distance * weight <= TELEKINESIS_TABLE[index - 1];
     }
 
     /**
@@ -144,8 +138,8 @@ public final class Ranger {
     public int pyrokinesis(int distance) {
         final int property = 1;
         // Normalizace na index abych neutekl mimo hranici pole
-        final int index = Math.min(property - 1, MAX_LEVEL);
-        final int product = PYROKINESIS_TABLE[index];
+        final int index = Math.max(1, Math.min(property, MAX_LEVEL));
+        final int product = PYROKINESIS_TABLE[index - 1];
         return product / distance;
     }
 
@@ -159,12 +153,12 @@ public final class Ranger {
     public boolean canReadMind(int distance, MindMaterialWall ...walls) {
         final int property = 1;
         // Normalizace na index abych neutekl mimo hranici pole
-        final int index = Math.min(property - 1, MAX_LEVEL);
+        final int index = Math.max(1, Math.min(property, MAX_LEVEL));
         int basicDistance = TELEPATY_TABLE[index][TELEPATY_INDEX_BASIC_DISTANCE];
         int modifier = Arrays.stream(walls)
             // Protože ordinal() vrací hodnotu od 0, je třeba přičíst 1 abych se dostal na správný
             // index
-            .mapToInt(value -> TELEPATY_TABLE[index][value.wallType.ordinal() + 1] * value.thickness)
+            .mapToInt(value -> TELEPATY_TABLE[index - 1][value.wallType.ordinal() + 1] * value.thickness)
             .sum();
         basicDistance -= modifier;
 

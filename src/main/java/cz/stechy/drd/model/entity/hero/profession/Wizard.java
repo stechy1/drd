@@ -5,7 +5,7 @@ import cz.stechy.drd.model.entity.hero.Hero;
 /**
  * Třída obsahující dovednosti, která dokáže kouzelník na 1. až 5. úrovní
  */
-public final class Wizard {
+public class Wizard {
 
     // region Constants
 
@@ -38,7 +38,7 @@ public final class Wizard {
 
     // region Variables
 
-    private final Hero hero;
+    protected final Hero hero;
 
     // endregion
 
@@ -65,8 +65,8 @@ public final class Wizard {
      */
     public int getMaxMag() {
         // Normalizace úrovně a obratnosti, abych nevylezl mimo hranice pole
-        final int level = Math.min(hero.getLevel(), 5);
-        final int intelligence = Math.min(hero.getIntelligence().getValue(), 21);
+        final int level = Math.max(1, Math.min(hero.getLevel(), 5));
+        final int intelligence = Math.max(1, Math.min(hero.getIntelligence().getValue() - 8, 14));
 
         return BASIC_MAGENERGY[level - 1][intelligence - 1];
     }
@@ -90,10 +90,10 @@ public final class Wizard {
     }
 
     public int getProbabilityOfAvoidInvisibility(int typeOfInvisible) {
-        final int level = Math.min(hero.getLevel(), 5);
-        final int index = Math.min(typeOfInvisible, 6);
+        final int level = Math.max(1, Math.min(hero.getLevel(), 5));
+        final int index = Math.max(0, Math.min(typeOfInvisible, 6));
 
-        return INVISIBLE_MOBS[level - 1][index - 1];
+        return INVISIBLE_MOBS[level - 1][index];
     }
 
     // endregion

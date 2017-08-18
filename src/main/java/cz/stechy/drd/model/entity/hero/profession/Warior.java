@@ -7,7 +7,7 @@ import cz.stechy.drd.model.entity.hero.Hero;
 /**
  * Třída obsahující dovednosti, která dokáže válečník na 1. až 5. úrovní
  */
-public final class Warior {
+public class Warior {
 
     // region Constants
 
@@ -46,7 +46,7 @@ public final class Warior {
 
     // region Variables
 
-    private final Hero hero;
+    protected final Hero hero;
 
     // endregion
 
@@ -130,7 +130,7 @@ public final class Warior {
     public boolean intimidation(int mettle, int enemyCount) {
         mettle = Math.max(INTIMIDATION_MIN_METTLE, Math.min(INTIMIDATION_MAX_METTLE, mettle));
         final int roll = Dice.K100.roll() * enemyCount - INTIMIDATION_HERO_LEVEL_MULTIPLIER * hero.getLevel();
-        return roll <= INTIMIDATION_TABLE[hero.getCharisma().getValue()][mettle];
+        return roll <= INTIMIDATION_TABLE[hero.getCharisma().getValue() - 1][mettle];
     }
 
     /**

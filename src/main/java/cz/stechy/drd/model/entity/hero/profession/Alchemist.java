@@ -5,7 +5,7 @@ import cz.stechy.drd.model.entity.hero.Hero;
 /**
  * Třída obsahující dovednosti, která dokáže alchymista na 1. až 5. úrovní
  */
-public final class Alchemist {
+public class Alchemist {
 
     // region Constants
 
@@ -30,7 +30,7 @@ public final class Alchemist {
 
     // region Variables
 
-    private final Hero hero;
+    protected final Hero hero;
 
     // endregion
 
@@ -83,10 +83,10 @@ public final class Alchemist {
      */
     public int getMaxMag() {
         // Normalizace úrovně a obratnosti, abych nevylezl mimo hranice pole
-        final int level = Math.min(hero.getLevel(), 5);
-        final int dexterity = Math.min(hero.getDexterity().getValue(), 20);
+        final int level = Math.max(1, Math.min(hero.getLevel(), 5));
+        final int dexterity = Math.max(1, Math.min(hero.getDexterity().getValue() - 8, 13));
 
-        return BASIC_MAGENERGY[level][dexterity];
+        return BASIC_MAGENERGY[level - 1][dexterity - 1];
     }
 
     /**
@@ -95,7 +95,7 @@ public final class Alchemist {
      * @param count Množství magenergie, které se zkoumá
      * @return Pravděpodobnost, že alchymista objeví zadaný počet magenergie
      */
-    public final int findMagEnergy(int count) {
+    public int findMagEnergy(int count) {
         final int index = Alchemist.findIndexForProbabilityOfMagenergy(count);
 
         return PROBABILITY_OF_FIND_MAGENERGY[hero.getLevel() - 1 + index];
@@ -107,7 +107,7 @@ public final class Alchemist {
      * @return Pravděpodobnost úspěchu
      */
     public int getProbabilityOfSuccess() {
-        return PROBABILITY_OF_SUCCESS[hero.getDexterity().getValue()];
+        return PROBABILITY_OF_SUCCESS[hero.getDexterity().getValue() - 1];
     }
 
     // endregion
