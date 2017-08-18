@@ -73,20 +73,20 @@
   </right>
   <bottom>
     <HBox alignment="CENTER_LEFT" styleClass="separator-line, line-top">
-      <JFXButton onAction="#handleBack" styleClass="toolbar-button, icon-previous">
+      <JFXButton onAction="#handleBack" styleClass="btn, btn-warning" text="%drd_back">
         <tooltip>
           <Tooltip text="%drd_back"/>
         </tooltip>
       </JFXButton>
       <Region HBox.hgrow="ALWAYS"/>
       <JFXButton HBox.hgrow="ALWAYS" onAction="#handleReset"
-        styleClass="btn, btn-raised, btn-danger" text="%drd_reset">
+        styleClass="btn, btn-danger" text="%drd_reset">
         <tooltip>
           <Tooltip text="%drd_reset"/>
         </tooltip>
       </JFXButton>
       <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton onAction="#handleFinish" styleClass="toolbar-button, icon-confirm">
+      <JFXButton onAction="#handleFinish" styleClass="btn, btn-raised, btn-primary" text="%drd_finish">
         <tooltip>
           <Tooltip text="%drd_finish"/>
         </tooltip>

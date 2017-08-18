@@ -97,7 +97,7 @@
   </center>
   <bottom>
     <HBox spacing="8">
-      <JFXButton onAction="#handleBack" styleClass="toolbar-button, icon-previous">
+      <JFXButton onAction="#handleBack" styleClass="btn, btn-warning" text="%drd_back">
         <tooltip>
           <Tooltip text="%drd_back"/>
         </tooltip>
@@ -109,7 +109,7 @@
         </tooltip>
       </JFXButton>
       <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton onAction="#handleNext" styleClass="toolbar-button, icon-next" fx:id="btnNext">
+      <JFXButton onAction="#handleNext" styleClass="btn, btn-info" text="%drd_next" fx:id="btnNext">
         <tooltip>
           <Tooltip text="%drd_next"/>
         </tooltip>

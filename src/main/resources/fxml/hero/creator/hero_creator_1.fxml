@@ -45,19 +45,19 @@
   </center>
   <bottom>
     <HBox alignment="CENTER" spacing="8">
-      <JFXButton onAction="#handleCancel" styleClass="toolbar-button, icon-cancel">
+      <JFXButton onAction="#handleCancel" styleClass="btn, btn-warning" text="%drd_cancel">
         <tooltip>
           <Tooltip text="%drd_cancel"/>
         </tooltip>
       </JFXButton>
       <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton onAction="#handleReset" styleClass="btn, btn-raised, btn-danger" text="%drd_reset">
+      <JFXButton onAction="#handleReset" styleClass="btn, btn-danger" text="%drd_reset">
         <tooltip>
           <Tooltip text="%drd_reset"/>
         </tooltip>
       </JFXButton>
       <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton fx:id="btnNext" onAction="#handleNext" styleClass="toolbar-button, icon-next">
+      <JFXButton fx:id="btnNext" onAction="#handleNext" styleClass="btn, btn-info" text="%drd_next">
         <tooltip>
           <Tooltip text="%drd_next"/>
         </tooltip>

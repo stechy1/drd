@@ -66,7 +66,7 @@
       <Label prefHeight="34.0" text="%drd_level_up_price"/>
       <MoneyWidget prefHeight="34.0" fx:id="widgetMoney"/>
       <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton onAction="#handleFinish" prefHeight="34.0" styleClass="btn, btn-success"
+      <JFXButton onAction="#handleFinish" prefHeight="34.0" styleClass="btn, btn-primary"
         text="%drd_finish" fx:id="btnFinish"/>
       <padding>
         <Insets topRightBottomLeft="8.0"/>

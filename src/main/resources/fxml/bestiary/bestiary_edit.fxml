@@ -42,7 +42,7 @@
       </padding>
       <JFXButton onAction="#handleCancel" text="%drd_cancel" styleClass="btn, btn-danger"/>
       <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton onAction="#handleFinish" text="%drd_finish" styleClass="btn, btn-success"/>
+      <JFXButton onAction="#handleFinish" text="%drd_finish" styleClass="btn, btn-primary, btn-raised"/>
     </HBox>
   </bottom>
 </BorderPane>

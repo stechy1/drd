@@ -67,7 +67,7 @@
       <JFXButton onAction="#handleDeleteHero" styleClass="btn, btn-danger" text="%drd_hero_delete"
         fx:id="btnDelete"/>
       <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton onAction="#handleOpenHero" styleClass="btn, btn-primary" text="%drd_opener_title"
+      <JFXButton onAction="#handleOpenHero" styleClass="btn, btn-primary, btn-raised" text="%drd_opener_title"
         fx:id="btnOpen"/>
       <padding>
         <Insets topRightBottomLeft="8.0"/>

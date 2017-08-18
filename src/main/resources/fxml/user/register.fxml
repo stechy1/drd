@@ -19,8 +19,8 @@
     fx:id="txtLogin"/>
   <JFXPasswordField labelFloat="true" prefWidth="150.0" promptText="%drd_user_password"
     fx:id="txtPassword"/>
-  <JFXButton onAction="#handleRegister" styleClass="btn, btn-info" text="%drd_user_go_registration"
-    fx:id="btnRegister"/>
+  <JFXButton onAction="#handleRegister" styleClass="btn, btn-primary, btn-raised"
+    text="%drd_user_go_registration" fx:id="btnRegister"/>
   <padding>
     <Insets bottom="8.0" left="32.0" right="32.0" top="8.0"/>
   </padding>
