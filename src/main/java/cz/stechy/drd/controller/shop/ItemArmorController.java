@@ -156,7 +156,7 @@ public class ItemArmorController extends BaseController implements Initializable
     }
 
     public static void toBundle(Bundle bundle, Armor armor) {
-        bundle.getString(ID, armor.getId());
+        bundle.putString(ID, armor.getId());
         bundle.putString(NAME, armor.getName());
         bundle.putString(DESCRIPTION, armor.getDescription());
         bundle.putString(AUTHOR, armor.getAuthor());
