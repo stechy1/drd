@@ -4,6 +4,7 @@ import cz.stechy.drd.controller.dice.DiceHelper;
 import cz.stechy.drd.controller.dice.DiceHelper.AdditionType;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.entity.Conviction;
+import cz.stechy.drd.model.entity.Vulnerabilities.VulnerabilityType;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
 import cz.stechy.drd.model.entity.hero.Hero.Race;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
@@ -198,19 +199,6 @@ public final class StringConvertors {
         };
     }
 
-//    public static StringExpression forRaceAndProfessionConverter(Translator translator, Hero hero) {
-//        Race race = hero.getRace();
-//        Profession profession = hero.getProfession();
-//        if (race == null || profession == null) {
-//            return Bindings.concat();
-//        }
-//
-//        String translatedRace = translator.getTranslationFor(Key.RACES).get(hero.getRace().ordinal());
-//        String translatedProfession = translator.getTranslationFor(Key.PROFESSIONS)
-//            .get(hero.getProfession().ordinal());
-//        return Bindings.concat(translatedRace, " ", translatedProfession);
-//    }
-
     public static StringConverter<Backpack.Size> forBackpackSize(Translator translator) {
         return new StringConverter<Size>() {
             @Override
@@ -261,6 +249,24 @@ public final class StringConvertors {
             @Override
             public MobClass fromString(String string) {
                 return MobClass.valueOf(string);
+            }
+        };
+    }
+
+    public static StringConverter<VulnerabilityType> forVulnerabilities(Translator translator) {
+        return new StringConverter<VulnerabilityType>() {
+            @Override
+            public String toString(VulnerabilityType object) {
+                if (object == null) {
+                    return "";
+                }
+
+                return translator.getTranslationFor(Key.VULNERABILITIES).get(object.ordinal());
+            }
+
+            @Override
+            public VulnerabilityType fromString(String string) {
+                return VulnerabilityType.valueOf(string);
             }
         };
     }

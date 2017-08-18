@@ -28,6 +28,7 @@ public final class Translator {
     private static final String[] BACKPACK_SIZES_VALUES;
     private static final String[] RULES_VALUES;
     private static final String[] MOB_CLASSES_VALUES;
+    private static final String[] VULNERABILITIES_VALUES;
 
     public enum Key {
         CONVICTIONS(CONVICTIONS_VALUES),
@@ -41,7 +42,8 @@ public final class Translator {
         SHOP_ITEMS(SHOP_ITEMS_VALUES),
         BACKPACK_SIZES(BACKPACK_SIZES_VALUES),
         RULES(RULES_VALUES),
-        MOB_CLASSES(MOB_CLASSES_VALUES);
+        MOB_CLASSES(MOB_CLASSES_VALUES),
+        VULNERABILITIES(VULNERABILITIES_VALUES);
 
         private final String[] values;
 
@@ -133,6 +135,15 @@ public final class Translator {
             R.Translate.ITEM_ARMOR_TYPE_LEGS,
             R.Translate.ITEM_ARMOR_TYPE_BOOTS,
             R.Translate.ITEM_ARMOR_TYPE_GLASES
+        };
+        VULNERABILITIES_VALUES = new String[]{
+            R.Translate.VULNERABILITY_ANIMAL,
+            R.Translate.VULNERABILITY_HUMANOID,
+            R.Translate.VULNERABILITY_DRAGON,
+            R.Translate.VULNERABILITY_LYCANTHROPE,
+            R.Translate.VULNERABILITY_UNDEATH,
+            R.Translate.VULNERABILITY_INVISIBLE,
+            R.Translate.VULNERABILITY_CUSTOM
         };
     }
 

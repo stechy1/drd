@@ -243,6 +243,13 @@ public final class R {
         public static final String BESTIARY_CONTROL_ABILITY = "drd_bestiary_control_ability";
         public static final String BESTIARY_BASIC_POWER_OF_MIND = "drd_bestiary_basic_power_of_mind";
         public static final String BESTIARY_DOMESTICATION = "drd_bestiary_domestication";
+        public static final String VULNERABILITY_ANIMAL = "drd_vulnerability_animal";
+        public static final String VULNERABILITY_HUMANOID = "drd_vulnerability_humanoid";
+        public static final String VULNERABILITY_DRAGON = "drd_vulnerability_dragon";
+        public static final String VULNERABILITY_LYCANTHROPE = "drd_vulnerability_lycanthrope";
+        public static final String VULNERABILITY_UNDEATH = "drd_vulnerability_undeath";
+        public static final String VULNERABILITY_INVISIBLE = "drd_vulnerability_invisible";
+        public static final String VULNERABILITY_CUSTOM = "drd_vulnerability_custom";
         public static final String RULES_PPZ = "drd_rules_ppz";
         public static final String RULES_PPP = "drd_rules_ppp";
         public static final String RULES_PPE = "drd_rules_ppe";

@@ -84,7 +84,7 @@ public final class BestiaryHelper {
             bundle.putInt(VIABILITY, mob.getViability());
             bundle.putInt(IMMUNITY, mob.getImmunity().getValue());
             bundle.putInt(METTLE, mob.getMettle());
-            bundle.putInt(VULNERABILITY, mob.getVulnerability().value);
+            bundle.putInt(VULNERABILITY, mob.getVulnerability());
             bundle.putInt(MOBILITY, mob.getMobility());
             bundle.putInt(PERSERVANCE, mob.getPerservance());
             bundle.putInt(CONTROL_ABILITY, mob.getControlAbility());

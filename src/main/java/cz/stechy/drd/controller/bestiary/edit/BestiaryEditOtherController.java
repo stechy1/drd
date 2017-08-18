@@ -5,14 +5,13 @@ import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.VulnerabilityController;
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
 import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.entity.Vulnerability;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -73,8 +72,7 @@ public class BestiaryEditOtherController implements InjectableChild, IEditContro
                     return;
                 }
 
-                model.vulnerability.setValue(
-                    new Vulnerability(bundle.getInt(VulnerabilityController.VULNERABILITY)));
+                model.vulnerability.setValue(bundle.getInt(VulnerabilityController.VULNERABILITY));
                 break;
         }
     }
@@ -87,7 +85,7 @@ public class BestiaryEditOtherController implements InjectableChild, IEditContro
     @Override
     public void loadMobPropertiesFromBundle(Bundle bundle) {
         model.vulnerability
-            .setValue(new Vulnerability(bundle.getInt(BestiaryHelper.VULNERABILITY)));
+            .setValue(bundle.getInt(BestiaryHelper.VULNERABILITY));
         model.mobility.setActValue(bundle.getInt(BestiaryHelper.MOBILITY));
         model.perservance.setActValue(bundle.getInt(BestiaryHelper.PERSERVANCE));
         model.controlAbility.setActValue(bundle.getInt(BestiaryHelper.CONTROL_ABILITY));
@@ -97,7 +95,7 @@ public class BestiaryEditOtherController implements InjectableChild, IEditContro
 
     @Override
     public void saveMobPropertiesToBundle(Bundle bundle) {
-        bundle.putInt(BestiaryHelper.VULNERABILITY, model.vulnerability.getValue().value);
+        bundle.putInt(BestiaryHelper.VULNERABILITY, model.vulnerability.getValue());
         bundle.putInt(BestiaryHelper.MOBILITY, model.mobility.getActValue().intValue());
         bundle.putInt(BestiaryHelper.PERSERVANCE, model.perservance.getActValue().intValue());
         bundle
@@ -112,7 +110,7 @@ public class BestiaryEditOtherController implements InjectableChild, IEditContro
     @FXML
     private void handleShowVulnerabilityPopup(ActionEvent actionEvent) {
         Bundle bundle = new Bundle()
-            .putInt(VulnerabilityController.VULNERABILITY, model.vulnerability.getValue().value);
+            .putInt(VulnerabilityController.VULNERABILITY, model.vulnerability.getValue());
         baseController.startNewPopupWindowForResult(R.FXML.VULNERABILITY, ACTION_VULNERABILITY,
             bundle, (Node) actionEvent.getSource());
     }
@@ -121,7 +119,7 @@ public class BestiaryEditOtherController implements InjectableChild, IEditContro
 
     private static final class Model {
 
-        final ObjectProperty<Vulnerability> vulnerability = new SimpleObjectProperty<>();
+        final IntegerProperty vulnerability = new SimpleIntegerProperty();
         final MaxActValue mobility = new MaxActValue(Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
         final MaxActValue perservance = new MaxActValue(Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
         final MaxActValue controlAbility = new MaxActValue(Integer.MIN_VALUE, Integer.MAX_VALUE, 0);

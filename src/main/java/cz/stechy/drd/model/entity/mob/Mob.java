@@ -8,7 +8,6 @@ import cz.stechy.drd.model.entity.EntityBase;
 import cz.stechy.drd.model.entity.EntityProperty;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.SimpleEntityProperty;
-import cz.stechy.drd.model.entity.Vulnerability;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -36,7 +35,7 @@ public final class Mob extends EntityBase {
     // Bojovnost
     private final IntegerProperty mettle = new SimpleIntegerProperty(this, "mettle");
     // Zranitenost
-    private final ObjectProperty<Vulnerability> vulnerability = new SimpleObjectProperty<>();
+    private final IntegerProperty vulnerability = new SimpleIntegerProperty();
     // Pohyblivost
     private final IntegerProperty mobility = new SimpleIntegerProperty(this, 
         "mobility");
@@ -79,7 +78,7 @@ public final class Mob extends EntityBase {
             mob.getConviction(), mob.getHeight(), mob.getAttackNumber(),
             mob.getDefenceNumber(), mob.getViability(), mob.getImmunity().getValue(),
             mob.getMettle(),
-            mob.getVulnerability().value, mob.getMobility(), mob.getPerservance(),
+            mob.getVulnerability(), mob.getMobility(), mob.getPerservance(),
             mob.getControlAbility(), mob.getIntelligence().getValue(), mob.getCharisma().getValue(),
             mob.getBasicPowerOfMind(), mob.getExperience(), mob.getDomestication(),
             mob.isDownloaded(), mob.isUploaded());
@@ -135,7 +134,7 @@ public final class Mob extends EntityBase {
         setViability(viability);
         this.immunity.setValue(immunity);
         setMettle(mettle);
-        setVulnerability(new Vulnerability(vulnerability));
+        setVulnerability(vulnerability);
         setMobility(mobility);
         setPerservance(perservance);
         setControlAbility(controlAbility);
@@ -247,15 +246,15 @@ public final class Mob extends EntityBase {
         this.mettle.set(mettle);
     }
 
-    public final Vulnerability getVulnerability() {
+    public final int getVulnerability() {
         return vulnerability.get();
     }
 
-    public final ReadOnlyObjectProperty<Vulnerability> vulnerabilityProperty() {
+    public final ReadOnlyIntegerProperty vulnerabilityProperty() {
         return vulnerability;
     }
 
-    private void setVulnerability(Vulnerability vulnerability) {
+    private void setVulnerability(int vulnerability) {
         this.vulnerability.set(vulnerability);
     }
 

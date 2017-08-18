@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Zranitelnost entity
  */
-public class Vulnerability {
+public class Vulnerabilities {
 
     // region Constants
 
@@ -51,39 +51,29 @@ public class Vulnerability {
         put("Pplus", Pplus);
     }});
 
-    public static final Vulnerability ANIMAL = new Vulnerability(
-        B | C | D | G | H | I | J | K | L
-    );
-
-    public static final Vulnerability HUMANOID = new Vulnerability(
-        A | B | C | D | G | H | I | J | K | L | M | O
-    );
-
-    public static final Vulnerability DRAGON = new Vulnerability(
-        B | C | D | G | H | I | J | K | P
-    );
-
-    public static final Vulnerability LYCANTHROPE = new Vulnerability(
-        A | B | C | D | F | G | H | I | J | K | L | M
-    );
-
-    public static final Vulnerability UNDEATH = new Vulnerability(
-        E | I | J | K | L | N | P
-    );
-
-    public static final Vulnerability INVISIBLE = new Vulnerability(
-        C | I | J | N | Pplus
-    );
-
     // endregion
 
-    // region Variables
+    private Vulnerabilities() {}
 
-    public final int value;
+    public enum VulnerabilityType {
+        ANIMAL(B | C | D | G | H | I | J | K | L),
+        HUMANOID(A | B | C | D | G | H | I | J | K | L | M | O),
+        DRAGON(B | C | D | G | H | I | J | K | P),
+        LYCANTHROPE(A | B | C | D | F | G | H | I | J | K | L | M),
+        UNDEATH(E | I | J | K | L | N | P),
+        INVISIBLE(C | I | J | N | Pplus),
+        CUSTOM(0);
 
-    // endregion
+        private final int vulnerability;
 
-    public Vulnerability(int value) {
-        this.value = value;
+        VulnerabilityType(int vulnerability) {
+            this.vulnerability = vulnerability;
+        }
+
+        public int getVulnerability() {
+            return vulnerability;
+        }
     }
+
+
 }
