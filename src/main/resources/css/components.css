@@ -159,6 +159,16 @@
 	-fx-border-color: #e11b0c;
 }
 
+.btn.btn-small {
+    -fx-padding: 0 0.5em;
+}
+.btn.btn-medium {
+    -fx-padding: 0.5em 0.37em;
+}
+.btn.btn-large {
+    -fx-padding: 1 1.5em;
+}
+
 /* FAB */
 .fab {
     -fx-padding: 0.7em;
