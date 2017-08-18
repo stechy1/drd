@@ -1,12 +1,13 @@
-package cz.stechy.drd.model.entity.hero;
+package cz.stechy.drd.model.entity.hero.profession;
 
 import cz.stechy.drd.model.Dice;
 import cz.stechy.drd.model.Trap;
 import cz.stechy.drd.model.entity.EntityProperty;
+import cz.stechy.drd.model.entity.hero.Hero;
 import java.util.Arrays;
 
 /**
- * Třída reprezentující hraničáře od 1. do 5. úrovně
+ * Třída obsahující dovednosti, která dokáže hraničář na 1. až 5. úrovní
  */
 public final class Ranger {
 

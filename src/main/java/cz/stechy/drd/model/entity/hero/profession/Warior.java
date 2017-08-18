@@ -1,10 +1,11 @@
-package cz.stechy.drd.model.entity.hero;
+package cz.stechy.drd.model.entity.hero.profession;
 
 import cz.stechy.drd.model.Dice;
 import cz.stechy.drd.model.Trap;
+import cz.stechy.drd.model.entity.hero.Hero;
 
 /**
- * Třída reprezentující válečníka od 1 do 5 úrovně
+ * Třída obsahující dovednosti, která dokáže válečník na 1. až 5. úrovní
  */
 public final class Warior {
 
