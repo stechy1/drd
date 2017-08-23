@@ -8,6 +8,7 @@ import cz.stechy.drd.controller.hero.levelup.LevelUpController;
 import cz.stechy.drd.controller.hero.opener.HeroOpenerController;
 import cz.stechy.drd.controller.main.defaultstaff.DefaultStaffController;
 import cz.stechy.drd.controller.main.inventory.InventoryController;
+import cz.stechy.drd.controller.main.profession.ProfessionController;
 import cz.stechy.drd.controller.moneyxp.MoneyXpController;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -30,6 +31,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -66,16 +69,25 @@ public class MainController extends BaseController implements Initializable {
     private InventoryController inventoryController;
 
     @FXML
+    private ProfessionController professionController;
+
+    @FXML
     private VBox defaultStaff;
 
     @FXML
     private BorderPane inventory;
 
     @FXML
+    private AnchorPane profession;
+
+    @FXML
     private MenuItem menuLogin;
 
     @FXML
     private Button btnLevelUp;
+
+    @FXML
+    private Tab tabProfession;
 
     // endregion
 
@@ -109,7 +121,8 @@ public class MainController extends BaseController implements Initializable {
 
         this.controllers = new MainScreen[]{
             defaultStaffController,
-            inventoryController
+            inventoryController,
+            professionController
         };
 
         for (MainScreen controller : controllers) {

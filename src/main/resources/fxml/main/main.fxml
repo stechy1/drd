@@ -187,5 +187,11 @@
         <Tooltip text="Inventář hrdiny" />
       </tooltip>
     </Tab>
+    <Tab fx:id="tabProfession" text="%drd_hero_profession">
+      <fx:include fx:id="profession" source="profession/profession.fxml"/>
+      <tooltip>
+        <Tooltip text="Schopnosti dle profese"/>
+      </tooltip>
+    </Tab>
   </JFXTabPane>
 </VBox>

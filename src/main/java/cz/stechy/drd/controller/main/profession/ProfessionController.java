@@ -1,0 +1,97 @@
+package cz.stechy.drd.controller.main.profession;
+
+import cz.stechy.drd.controller.main.MainScreen;
+import cz.stechy.drd.model.entity.hero.Hero;
+import cz.stechy.drd.model.entity.hero.Hero.Profession;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.layout.AnchorPane;
+
+public class ProfessionController implements MainScreen, IProfessionController, Initializable {
+
+    // region Variables
+
+    // region FXMl
+
+    @FXML
+    private AnchorPane container;
+
+    // endregion
+
+    private IProfessionController professionController;
+    private ResourceBundle resources;
+
+    // endregion
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.resources = resources;
+    }
+
+    @Override
+    public void setHero(ReadOnlyObjectProperty<Hero> hero) {
+        hero.addListener((observable, oldValue, newValue) -> {
+            container.getChildren().clear();
+            if (newValue == null || newValue.getName().isEmpty()) {
+                return;
+            }
+
+            try {
+                loadProfession(newValue);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    /**
+     * Načte správný kontroler podle profese hrdiny
+     *
+     * @param hero {@link Hero}
+     */
+    private void loadProfession(Hero hero) throws IOException {
+        System.out.println("Načítám profesi");
+        final String fxml = getFxmlName(hero.getProfession());
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("/fxml/main/profession/" + fxml + ".fxml"));
+        loader.setResources(resources);
+        final Node node = loader.load();
+        professionController = loader.getController();
+        container.getChildren().setAll(node);
+        AnchorPane.setTopAnchor(node, 0.0);
+        AnchorPane.setRightAnchor(node, 0.0);
+        AnchorPane.setBottomAnchor(node, 0.0);
+        AnchorPane.setLeftAnchor(node, 0.0);
+    }
+
+    /**
+     * Vytvoří instanci kontroleru a vrátí název FXML dokumentu, který se spáruje s touto instancí
+     *
+     * @param profession {@link Profession}
+     * @return Název FXML dokumentu pro spárování s instanci kontroleru
+     */
+    private String getFxmlName(Profession profession) {
+        String fxmlName = "";
+        switch (profession) {
+            case WARIOR:
+                break;
+            case RANGER:
+                break;
+            case ALCHEMIST:
+                break;
+            case MAGICIAN:
+                break;
+            case THIEF:
+                break;
+        }
+
+        return fxmlName;
+    }
+}
