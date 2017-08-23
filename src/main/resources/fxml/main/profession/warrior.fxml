@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import cz.stechy.drd.widget.Card?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import com.jfoenix.controls.JFXTextField?>
+<VBox xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.121"
+  fx:controller="cz.stechy.drd.controller.main.profession.WarriorController">
+  <Card caption="Zastrašení">
+    <content>
+      <VBox prefWidth="300.0" spacing="16.0">
+        <JFXComboBox GridPane.columnIndex="1" GridPane.hgrow="ALWAYS"
+          fx:id="cmbBestiaryIntimidation" labelFloat="true" promptText="Nestvůra" prefWidth="300.0"/>
+        <JFXTextField fx:id="txtEnemyCountIntimidation" labelFloat="true" promptText="Počet nestvůr"/>
+        <JFXButton GridPane.columnIndex="1" GridPane.rowIndex="1"
+          styleClass="btn, btn-primary, btn-raised" text="%drd_dice_roll" fx:id="btnIntimidation"
+          onAction="#btnHandleIntimidation"/>
+      </VBox>
+    </content>
+  </Card>
+</VBox>

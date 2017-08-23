@@ -1,5 +1,8 @@
 package cz.stechy.drd.controller.main.profession;
 
+import cz.stechy.drd.Context;
+import cz.stechy.drd.ControllerFactory;
+import cz.stechy.drd.R;
 import cz.stechy.drd.controller.main.MainScreen;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
@@ -13,7 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
-public class ProfessionController implements MainScreen, IProfessionController, Initializable {
+public class ProfessionController implements MainScreen, Initializable {
 
     // region Variables
 
@@ -24,11 +27,20 @@ public class ProfessionController implements MainScreen, IProfessionController, 
 
     // endregion
 
+    private final Context context;
+
     private IProfessionController professionController;
     private ResourceBundle resources;
 
     // endregion
 
+    // region Constructors
+
+    public ProfessionController(Context context) {
+        this.context = context;
+    }
+
+    // endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -61,9 +73,11 @@ public class ProfessionController implements MainScreen, IProfessionController, 
         final String fxml = getFxmlName(hero.getProfession());
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("/fxml/main/profession/" + fxml + ".fxml"));
+        loader.setControllerFactory(new ControllerFactory(context));
         loader.setResources(resources);
         final Node node = loader.load();
         professionController = loader.getController();
+        professionController.setHero(hero);
         container.getChildren().setAll(node);
         AnchorPane.setTopAnchor(node, 0.0);
         AnchorPane.setRightAnchor(node, 0.0);
@@ -81,6 +95,7 @@ public class ProfessionController implements MainScreen, IProfessionController, 
         String fxmlName = "";
         switch (profession) {
             case WARIOR:
+                fxmlName = R.FXML.WARRIOR;
                 break;
             case RANGER:
                 break;
