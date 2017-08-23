@@ -17,7 +17,7 @@
   </Pane>
   <StackPane fx:id="container">
     <padding>
-      <Insets top="16.0" right="8.0" bottom="8.0" left="8.0"/>
+      <Insets top="32.0" right="8.0" bottom="8.0" left="8.0"/>
     </padding>
   </StackPane>
 </AnchorPane>
