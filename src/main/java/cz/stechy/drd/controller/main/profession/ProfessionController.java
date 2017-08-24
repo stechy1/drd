@@ -99,6 +99,7 @@ public class ProfessionController implements MainScreen, Initializable {
             case ALCHEMIST:
                 break;
             case MAGICIAN:
+                fxmlName = R.FXML.WIZARD;
                 break;
             case THIEF:
                 break;
