@@ -32,8 +32,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -78,7 +78,7 @@ public class MainController extends BaseController implements Initializable {
     private BorderPane inventory;
 
     @FXML
-    private AnchorPane profession;
+    private StackPane profession;
 
     @FXML
     private MenuItem menuLogin;

@@ -14,7 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 
 public class ProfessionController implements MainScreen, Initializable {
 
@@ -23,7 +23,7 @@ public class ProfessionController implements MainScreen, Initializable {
     // region FXMl
 
     @FXML
-    private AnchorPane container;
+    private StackPane container;
 
     // endregion
 
@@ -79,10 +79,6 @@ public class ProfessionController implements MainScreen, Initializable {
         professionController = loader.getController();
         professionController.setHero(hero);
         container.getChildren().setAll(node);
-        AnchorPane.setTopAnchor(node, 0.0);
-        AnchorPane.setRightAnchor(node, 0.0);
-        AnchorPane.setBottomAnchor(node, 0.0);
-        AnchorPane.setLeftAnchor(node, 0.0);
     }
 
     /**
