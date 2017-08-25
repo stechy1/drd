@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import cz.stechy.drd.widget.Card?>
+<?import java.lang.Double?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+<ScrollPane xmlns:fx="http://javafx.com/fxml/1"
+  fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.121"
+  fx:controller="cz.stechy.drd.controller.main.profession.AlchemistController">
+  <fx:define>
+    <Double fx:id="CARD_WIDTH" fx:value="250.0"/>
+    <Double fx:id="CARD_HEIGHT" fx:value="130.0"/>
+  </fx:define>
+  <FlowPane prefHeight="450.0" prefWidth="600.0">
+    <Card caption="Základ pravděpodobnosti úspěchu">
+      <content>
+        <HBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH">
+          <Label fx:id="lblProbabilityOfSuccess">
+            <font>
+              <Font name="Roboto" size="24"/>
+            </font>
+          </Label>
+        </HBox>
+      </content>
+    </Card>
+    <Card caption="Hledání magenergie">
+      <content>
+        <HBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH">
+          <Label text="Již brzy...">
+            <font>
+              <Font name="Roboto" size="24"/>
+            </font>
+          </Label>
+        </HBox>
+      </content>
+    </Card>
+  </FlowPane>
+</ScrollPane>

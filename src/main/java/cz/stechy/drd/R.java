@@ -35,6 +35,7 @@ public final class R {
         public static final String DEFAULT_STAFF_RIGHT = "default_staff_right";
         public static final String INVENTORY = "inventory";
         public static final String MAIN = "main";
+        public static final String ALCHEMIST = "alchemist";
         public static final String PROFESSION = "profession";
         public static final String RANGER = "ranger";
         public static final String WARRIOR = "warrior";
