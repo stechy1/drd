@@ -38,6 +38,7 @@ public final class R {
         public static final String ALCHEMIST = "alchemist";
         public static final String PROFESSION = "profession";
         public static final String RANGER = "ranger";
+        public static final String THIEF = "thief";
         public static final String WARRIOR = "warrior";
         public static final String WIZARD = "wizard";
         public static final String MONEY_XP = "money_xp";

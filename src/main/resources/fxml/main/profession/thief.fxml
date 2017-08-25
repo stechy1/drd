@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import cz.stechy.drd.widget.Card?>
+<?import java.lang.Double?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<ScrollPane xmlns:fx="http://javafx.com/fxml/1"
+  fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.121"
+  fx:controller="cz.stechy.drd.controller.main.profession.ThiefController">
+  <fx:define>
+    <Double fx:id="CARD_WIDTH" fx:value="400.0"/>
+    <Double fx:id="CARD_HEIGHT" fx:value="130.0"/>
+  </fx:define>
+  <FlowPane prefHeight="450.0" prefWidth="600.0" fx:id="container">
+    <Card caption="Schopnosti">
+      <content>
+        <VBox spacing="16.0" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH">
+          <JFXComboBox labelFloat="true" promptText="Použitá schopnost" fx:id="cmbAbilities"
+            prefWidth="$CARD_WIDTH"/>
+          <TextFlow>
+            <Text text="Pravděpodobnost úspěšnosti: "/>
+            <Text fx:id="txtSuccess"/>
+          </TextFlow>
+          <JFXButton onAction="#handleUseAbility" styleClass="btn, btn-raised, btn-primary"
+            text="Použít schopnost" fx:id="btnUseAbility"/>
+        </VBox>
+      </content>
+    </Card>
+  </FlowPane>
+</ScrollPane>

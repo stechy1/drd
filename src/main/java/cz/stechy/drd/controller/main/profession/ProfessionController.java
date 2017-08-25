@@ -103,6 +103,7 @@ public class ProfessionController implements MainScreen, Initializable {
                 fxmlName = R.FXML.WIZARD;
                 break;
             case THIEF:
+                fxmlName = R.FXML.THIEF;
                 break;
         }
 
