@@ -130,6 +130,17 @@ public final class R {
         public static final String PROFESSION_ALCHEMIST = "drd_profession_alchemist";
         public static final String PROFESSION_MAGICIAN = "drd_profession_magician";
         public static final String PROFESSION_THIEF = "drd_profession_thief";
+        public static final String ABILITY_THIEF_DISGUISES = "drd_ability_thief_disguises";
+        public static final String ABILITY_THIEF_CONFIDENCE = "drd_ability_thief_confidence";
+        public static final String ABILITY_THIEF_DISCOVERY_MECHANISM = "drd_ability_thief_discovery_mechanism";
+        public static final String ABILITY_THIEF_DISCOVERY_OBJECTS = "drd_ability_thief_discovery_objects";
+        public static final String ABILITY_THIEF_DESTROY_MECHANISM = "drd_ability_thief_destroy_mechanism";
+        public static final String ABILITY_THIEF_OPEN_OBJECTS = "drd_ability_thief_open_objects";
+        public static final String ABILITY_THIEF_CLIMBING = "drd_ability_thief_climbing";
+        public static final String ABILITY_THIEF_JUMP_FROM_ABOVE = "drd_ability_thief_jump_from_above";
+        public static final String ABILITY_THIEF_SILENT_MOTION = "drd_ability_thief_silent_motion";
+        public static final String ABILITY_THIEF_HIDE_IN_THE_SHADOW = "drd_ability_thief_hide_in_the_shadow";
+        public static final String ABILITY_THIEF_PICKING_POCKETS = "drd_ability_thief_picking_pockets";
         public static final String MAIN_MENU_FILE = "drd_main_menu_file";
         public static final String MAIN_MENU_FILE_NEW_HERO = "drd_main_menu_file_new_hero";
         public static final String MAIN_MENU_FILE_LOAD_HERO = "drd_main_menu_file_load_hero";

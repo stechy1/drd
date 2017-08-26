@@ -7,6 +7,7 @@ import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.Vulnerabilities.VulnerabilityType;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
 import cz.stechy.drd.model.entity.hero.Hero.Race;
+import cz.stechy.drd.model.entity.hero.profession.Thief.Ability;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
 import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.model.item.Backpack;
@@ -267,6 +268,24 @@ public final class StringConvertors {
             @Override
             public VulnerabilityType fromString(String string) {
                 return VulnerabilityType.valueOf(string);
+            }
+        };
+    }
+
+    public static StringConverter<Ability> forAbilities(Translator translator) {
+        return new StringConverter<Ability>() {
+            @Override
+            public String toString(Ability object) {
+                if (object == null) {
+                    return "";
+                }
+
+                return translator.getTranslationFor(Key.THIEF_ABILITIES).get(object.ordinal());
+            }
+
+            @Override
+            public Ability fromString(String string) {
+                return Ability.valueOf(string);
             }
         };
     }

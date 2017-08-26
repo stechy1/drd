@@ -29,6 +29,7 @@ public final class Translator {
     private static final String[] RULES_VALUES;
     private static final String[] MOB_CLASSES_VALUES;
     private static final String[] VULNERABILITIES_VALUES;
+    private static final String[] THIEF_ABILITY_VALUES;
 
     public enum Key {
         CONVICTIONS(CONVICTIONS_VALUES),
@@ -43,7 +44,8 @@ public final class Translator {
         BACKPACK_SIZES(BACKPACK_SIZES_VALUES),
         RULES(RULES_VALUES),
         MOB_CLASSES(MOB_CLASSES_VALUES),
-        VULNERABILITIES(VULNERABILITIES_VALUES);
+        VULNERABILITIES(VULNERABILITIES_VALUES),
+        THIEF_ABILITIES(THIEF_ABILITY_VALUES);
 
         private final String[] values;
 
@@ -71,6 +73,7 @@ public final class Translator {
             R.Translate.RACE_BARBAR,
             R.Translate.RACE_KROLL
         };
+
         PROFESSIONS_VALUES = new String[]{
             R.Translate.PROFESSION_WARIOR,
             R.Translate.PROFESSION_RANGER,
@@ -84,10 +87,12 @@ public final class Translator {
             R.Translate.ITEM_WEAPON_MELE_CLASS_MEDIUM,
             R.Translate.ITEM_WEAPON_MELE_CLASS_HEAVY
         };
+
         WEAPON_MELE_TYPES_VALUES = new String[]{
             R.Translate.ITEM_WEAPON_MELE_TYPE_ONE_HAND,
             R.Translate.ITEM_WEAPON_MELE_TYPE_DOUBLE_HAND
         };
+
         WEAPON_RANGED_TYPES_VALUES = new String[]{
             R.Translate.ITEM_WEAPON_RANGED_TYPE_FIRE,
             R.Translate.ITEM_WEAPON_RANGED_TYPE_PROJECTILE
@@ -114,11 +119,13 @@ public final class Translator {
             R.Translate.ITEM_BACKPACK_SIZE_MEDIUM,
             R.Translate.ITEM_BACKPACK_SIZE_LARGE
         };
+
         RULES_VALUES = new String[]{
             R.Translate.RULES_PPZ,
             R.Translate.RULES_PPP,
             R.Translate.RULES_PPE
         };
+
         MOB_CLASSES_VALUES = new String[]{
             R.Translate.BESTIARY_TYPE_DRAGON,
             R.Translate.BESTIARY_TYPE_SNAKE,
@@ -129,6 +136,7 @@ public final class Translator {
             R.Translate.BESTIARY_TYPE_SPIDER,
             R.Translate.BESTIARY_TYPE_OTHER,
         };
+
         ARMOR_TYPES_VALUES = new String[]{
             R.Translate.ITEM_ARMOR_TYPE_HELM,
             R.Translate.ITEM_ARMOR_TYPE_BODY,
@@ -136,6 +144,7 @@ public final class Translator {
             R.Translate.ITEM_ARMOR_TYPE_BOOTS,
             R.Translate.ITEM_ARMOR_TYPE_GLASES
         };
+
         VULNERABILITIES_VALUES = new String[]{
             R.Translate.VULNERABILITY_ANIMAL,
             R.Translate.VULNERABILITY_HUMANOID,
@@ -144,6 +153,20 @@ public final class Translator {
             R.Translate.VULNERABILITY_UNDEATH,
             R.Translate.VULNERABILITY_INVISIBLE,
             R.Translate.VULNERABILITY_CUSTOM
+        };
+
+        THIEF_ABILITY_VALUES = new String[]{
+            R.Translate.ABILITY_THIEF_DISGUISES,
+            R.Translate.ABILITY_THIEF_CONFIDENCE,
+            R.Translate.ABILITY_THIEF_DISCOVERY_MECHANISM,
+            R.Translate.ABILITY_THIEF_DISCOVERY_OBJECTS,
+            R.Translate.ABILITY_THIEF_DESTROY_MECHANISM,
+            R.Translate.ABILITY_THIEF_OPEN_OBJECTS,
+            R.Translate.ABILITY_THIEF_CLIMBING,
+            R.Translate.ABILITY_THIEF_JUMP_FROM_ABOVE,
+            R.Translate.ABILITY_THIEF_SILENT_MOTION,
+            R.Translate.ABILITY_THIEF_HIDE_IN_THE_SHADOW,
+            R.Translate.ABILITY_THIEF_PICKING_POCKETS
         };
     }
 
