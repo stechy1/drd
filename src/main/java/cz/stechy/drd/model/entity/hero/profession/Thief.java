@@ -54,7 +54,7 @@ public  class Thief {
      */
     public int getProbabilityOfSuccessForAction(Ability ability) {
         final int level = Math.min(hero.getLevel(), 5);
-        return TABLE_OF_PROBABILITY_SUCCESS[level - 1][ability.ordinal()] + ability.getModifier().getModifiers(hero);
+        return TABLE_OF_PROBABILITY_SUCCESS[ability.ordinal()][level - 1] + ability.getModifier().getModifiers(hero);
     }
 
     // endregion

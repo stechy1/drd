@@ -173,7 +173,7 @@ public final class HeroGenerator {
         int left, right;
         int raceOrdinal = race.ordinal();
         int professionOrdinal = profession.ordinal();
-        if (profession == Profession.RANGER || profession == Profession.MAGICIAN) {
+        if (profession == Profession.RANGER || profession == Profession.WIZARD) {
             final int repair = REPAIRS_BY_RACE[raceOrdinal][INDEX_INTELLIGENCE];
             left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_INTELLIGENCE] + repair;
             right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_INTELLIGENCE + 1] + repair;
@@ -193,7 +193,7 @@ public final class HeroGenerator {
         int left, right;
         int raceOrdinal = race.ordinal();
         int professionOrdinal = profession.ordinal();
-        if (profession == Profession.MAGICIAN || profession == Profession.THIEF) {
+        if (profession == Profession.WIZARD || profession == Profession.THIEF) {
             final int repair = REPAIRS_BY_RACE[raceOrdinal][INDEX_CHARISMA];
             left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_CHARISMA] + repair;
             right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_CHARISMA + 1] + repair;

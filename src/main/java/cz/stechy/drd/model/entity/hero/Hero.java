@@ -385,7 +385,7 @@ public class Hero extends EntityBase {
 
     // Výčet povolání
     public enum Profession {
-        WARIOR, RANGER, ALCHEMIST, MAGICIAN, THIEF;
+        WARIOR, RANGER, ALCHEMIST, WIZARD, THIEF;
 
         public static Profession valueOf(int index) {
             if (index < 0) {
