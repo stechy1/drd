@@ -150,7 +150,7 @@ public abstract class ItemBase extends OnlineItem implements IDescriptable {
         setName(item.getName());
         setDescription(item.getDescription());
         setWeight(item.getWeight());
-        this.price.setRaw(price.getRaw());
+        this.price.setRaw(item.getPrice().getRaw());
         setAuthor(item.getAuthor());
         setImage(item.getImage());
     }
