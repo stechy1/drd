@@ -1,9 +1,5 @@
 package cz.stechy.drd;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseCredentials;
-import com.google.firebase.database.FirebaseDatabase;
 import cz.stechy.drd.di.DiContainer;
 import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -21,9 +17,6 @@ import cz.stechy.drd.model.persistent.RangedWeaponService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import net.harawata.appdirs.AppDirs;
@@ -41,7 +34,6 @@ public class Context {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(Context.class);
 
-    private static final String FIREBASE_URL = "https://drd-personal-diary.firebaseio.com";
     private static final String FIREBASE_CREDENTIALS = "";
     private static final String CREDENTAILS_APP_NAME = "drd_helper";
     private static final String CREDENTAILS_APP_VERSION = "1.0";
@@ -132,26 +124,6 @@ public class Context {
     }
 
     /**
-     * Inicializace firebase služby
-     *
-     * @param inputStream Stream dat s přístupovými údaji k databázi
-     * @throws Exception Pokud se inicializace nezdařila
-     */
-    private void initFirebase(InputStream inputStream) throws Exception {
-        final Map<String, Object> auth = new HashMap<>();
-        auth.put("uid", "my_resources");
-
-        final FirebaseOptions options = new FirebaseOptions.Builder()
-            .setCredential(FirebaseCredentials.fromCertificate(inputStream))
-            .setDatabaseUrl(FIREBASE_URL)
-            .setDatabaseAuthVariableOverride(auth)
-            .build();
-
-        FirebaseApp.initializeApp(options);
-        firebaseWrapper.setFirebase(FirebaseDatabase.getInstance());
-    }
-
-    /**
      * Inicializace všech správců předmětů
      */
     private void initServices() {
@@ -173,6 +145,16 @@ public class Context {
      */
     private boolean useOnlineDatabase() {
         return Boolean.parseBoolean(settings.getProperty(R.Config.USE_ONLINE_DATABASE, "false"));
+    }
+
+    /**
+     * Inicializuje firebase databázi
+     *
+     * @param credentialsPath Cesta k souboru s přístupovými údaji k databázi
+     * @throws Exception Pokud se inicializace nezdařila
+     */
+    private void initFirebase(String credentialsPath) throws Exception {
+        firebaseWrapper.initDatabase(new FileInputStream(new File(credentialsPath)));
     }
 
     // endregion
@@ -213,26 +195,6 @@ public class Context {
     // endregion
 
     // region Public methods
-
-    /**
-     * Inicializuje firebase databázi
-     *
-     * @param credentialsPath Cesta k souboru s přístupovými údaji k databázi
-     * @throws Exception Pokud se inicializace nezdařila
-     */
-    public void initFirebase(String credentialsPath) throws Exception {
-        initFirebase(new File(credentialsPath));
-    }
-
-    /**
-     * Inicializuje firebase databázi
-     *
-     * @param credentialsFile Soubor s přístupovými údaji k databázi
-     * @throws Exception Pokud se inicializace nezdařila
-     */
-    public void initFirebase(File credentialsFile) throws Exception {
-        initFirebase(new FileInputStream(credentialsFile));
-    }
 
     /**
      * Uloží aktuální konfiguraci do souboru

@@ -3,6 +3,7 @@ package cz.stechy.drd.di;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -52,7 +53,13 @@ public final class DiContainer {
         return instance;
     }
 
-    private <T> void insertDependencies(Class klass, T instance) throws IllegalAccessException {
+    private <T> void insertDependencies(Class klass, T instance)
+        throws IllegalAccessException, InvocationTargetException {
+        final Class superclass = klass.getSuperclass();
+        if (superclass != null) {
+            insertDependencies(superclass, instance);
+        }
+        // Field injection
         final Field[] fields = klass.getDeclaredFields();
         for (Field field : fields) {
             if (field.isAnnotationPresent(Inject.class)) {
@@ -61,6 +68,24 @@ public final class DiContainer {
             }
         }
 
+        // Setter injection
+        final Method[] methods = klass.getDeclaredMethods();
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(Inject.class) && method.getName().startsWith("set")) {
+                final Class[] types = method.getParameterTypes();
+                final Object[] instancedParameters = instantiateParams(types);
+                method.invoke(instance, instancedParameters);
+            }
+        }
+    }
+
+    private Object[] instantiateParams(Class[] parameters) {
+        final Object[] instancedParameters = new Object[parameters.length];
+        for (int i = 0; i < parameters.length; i++) {
+            instancedParameters[i] = getInstance(parameters[i]);
+        }
+
+        return instancedParameters;
     }
 
     // endregion
@@ -89,10 +114,7 @@ public final class DiContainer {
             final Constructor<T>[] constructors = klass.getConstructors();
             for (Constructor<T> constructor : constructors) {
                 final Class[] parameterTypes = constructor.getParameterTypes();
-                final Object[] instancedParameters = new Object[parameterTypes.length];
-                for (int i = 0; i < parameterTypes.length; i++) {
-                    instancedParameters[i] = getInstance(parameterTypes[i]);
-                }
+                final Object[] instancedParameters = instantiateParams(parameterTypes);
 
                 T instance = getInstance(constructor, instancedParameters);
                 // Pokud se nepodaří instancovat, zkusím další konstruktor
@@ -102,7 +124,7 @@ public final class DiContainer {
 
                 try {
                     insertDependencies(klass, instance);
-                } catch (IllegalAccessException e) {
+                } catch (IllegalAccessException|InvocationTargetException e) {
                     continue;
                 }
 

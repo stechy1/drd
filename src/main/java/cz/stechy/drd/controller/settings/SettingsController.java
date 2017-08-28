@@ -1,12 +1,14 @@
 package cz.stechy.drd.controller.settings;
 
-import cz.stechy.drd.Context;
+import cz.stechy.drd.AppSettings;
 import cz.stechy.drd.R;
+import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
 import cz.stechy.screens.Notification.Length;
 import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
@@ -43,7 +45,8 @@ public class SettingsController extends BaseController implements Initializable 
 
     // endregion
 
-    private final Context context;
+    private final AppSettings settings;
+    private final FirebaseWrapper firebaseWrapper;
 
     private String title;
     private Config config = new Config();
@@ -52,8 +55,9 @@ public class SettingsController extends BaseController implements Initializable 
 
     // region Constructors
 
-    public SettingsController(Context context) {
-        this.context = context;
+    public SettingsController(AppSettings settings, FirebaseWrapper firebaseWrapper) {
+        this.settings = settings;
+        this.firebaseWrapper = firebaseWrapper;
     }
 
     // endregion
@@ -76,9 +80,11 @@ public class SettingsController extends BaseController implements Initializable 
 
     @Override
     protected void onCreate(Bundle bundle) {
-        config.offlineDatabasePath.setValue(context.getProperty(R.Config.OFFLINE_DATABASE_NAME));
-        config.useOnlineDatabase.setValue(Boolean.parseBoolean(context.getProperty(R.Config.USE_ONLINE_DATABASE, "false")));
-        config.onlineDatabaseCredentials.setValue(context.getProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH, ""));
+        config.offlineDatabasePath.setValue(settings.getProperty(R.Config.OFFLINE_DATABASE_NAME));
+        config.useOnlineDatabase.setValue(Boolean.parseBoolean(
+            settings.getProperty(R.Config.USE_ONLINE_DATABASE, "false")));
+        config.onlineDatabaseCredentials.setValue(
+            settings.getProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH, ""));
     }
 
     @Override
@@ -88,9 +94,9 @@ public class SettingsController extends BaseController implements Initializable 
 
     @Override
     protected void onClose() {
-        context.setProperty(R.Config.OFFLINE_DATABASE_NAME, config.offlineDatabasePath.getValue());
-        context.setProperty(R.Config.USE_ONLINE_DATABASE, Boolean.toString(config.useOnlineDatabase.getValue() && !config.onlineDatabaseCredentials.get().isEmpty()));
-        context.setProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH, config.onlineDatabaseCredentials.getValue());
+        settings.setProperty(R.Config.OFFLINE_DATABASE_NAME, config.offlineDatabasePath.getValue());
+        settings.setProperty(R.Config.USE_ONLINE_DATABASE, Boolean.toString(config.useOnlineDatabase.getValue() && !config.onlineDatabaseCredentials.get().isEmpty()));
+        settings.setProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH, config.onlineDatabaseCredentials.getValue());
     }
 
     // region Button handlers
@@ -107,7 +113,7 @@ public class SettingsController extends BaseController implements Initializable 
         }
 
         try {
-            context.initFirebase(file);
+            firebaseWrapper.initDatabase(new FileInputStream(file));
             config.onlineDatabaseCredentials.setValue(file.getPath());
             showNotification(new Notification("Inicializace se zdařila."));
         } catch (Exception e) {

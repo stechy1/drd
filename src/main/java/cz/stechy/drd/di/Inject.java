@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * Značkovací anotace pro atributy, které se mají injektnout
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.METHOD})
 public @interface Inject {
 
 }
