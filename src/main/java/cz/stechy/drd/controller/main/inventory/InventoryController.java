@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.main.inventory;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.inventory.BackpackController;
@@ -63,9 +62,9 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
 
     // region Constructors
 
-    public InventoryController(Context context) {
-        this.heroManager = context.getService(Context.SERVICE_HERO);
-        this.translator = context.getTranslator();
+    public InventoryController(Translator translator, HeroService heroManager) {
+        this.translator = translator;
+        this.heroManager = heroManager;
 
         mainItemContainer.setItemClickListener(itemClickListener);
         equipItemContainer.setItemClickListener(itemClickListener);

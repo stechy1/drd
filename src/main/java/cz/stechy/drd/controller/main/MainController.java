@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.main;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.hero.HeroHelper;
@@ -92,7 +91,7 @@ public class MainController extends BaseController implements Initializable {
     // endregion
 
     private final ReadOnlyObjectProperty<Hero> hero;
-    private final HeroService heroManager;
+    private final HeroService heroService;
     private final UserService userService;
 
     private MainScreen[] controllers;
@@ -104,10 +103,10 @@ public class MainController extends BaseController implements Initializable {
 
     // endregion
 
-    public MainController(Context context) {
-        heroManager = context.getService(Context.SERVICE_HERO);
-        userService = context.getUserService();
-        hero = heroManager.heroProperty();
+    public MainController(HeroService heroService, UserService userService) {
+        this.heroService = heroService;
+        this.userService = userService;
+        this.hero = heroService.heroProperty();
     }
 
     @Override
@@ -134,7 +133,7 @@ public class MainController extends BaseController implements Initializable {
 
         this.userService.loggedProperty().addListener((observable, oldValue, newValue) -> {
             closeChildScreens();
-            heroManager.resetHero();
+            heroService.resetHero();
         });
 
         this.hero.addListener(heroListener);
@@ -142,7 +141,7 @@ public class MainController extends BaseController implements Initializable {
 
     @Override
     protected void onCreate(Bundle bundle) {
-        heroManager.resetHero();
+        heroService.resetHero();
     }
 
     @Override
@@ -165,8 +164,8 @@ public class MainController extends BaseController implements Initializable {
                 ObservableList<InventoryHelper.ItemRecord> itemsToInventory = bundle
                     .get(HeroHelper.INVENTORY);
                 try {
-                    heroManager.insert(hero, itemsToInventory);
-                    heroManager.load(hero.getId());
+                    heroService.insert(hero, itemsToInventory);
+                    heroService.load(hero.getId());
                 } catch (DatabaseException e) {
                     LOGGER.warn("Nepodařilo se vytvořit nového hrdinu");
                 }
@@ -178,7 +177,7 @@ public class MainController extends BaseController implements Initializable {
 
                 final String heroId = bundle.getString(HeroOpenerController.HERO);
                 try {
-                    this.heroManager.load(heroId);
+                    this.heroService.load(heroId);
                 } catch (DatabaseException e) {
                     LOGGER.warn(e.getMessage());
                     showNotification(new Notification("Hrdina nebyl nalezen"));
@@ -189,7 +188,7 @@ public class MainController extends BaseController implements Initializable {
                     return;
                 }
 
-                heroManager.resetHero();
+                heroService.resetHero();
                 showNotification(new Notification(loginSuccess));
                 break;
             case ACTION_MONEY_EXPERIENCE:
@@ -200,7 +199,7 @@ public class MainController extends BaseController implements Initializable {
                 heroCopy.getMoney().setRaw(bundle.getInt(MoneyXpController.MONEY));
                 heroCopy.getExperiences().setActValue(bundle.getInt(MoneyXpController.EXPERIENCE));
                 try {
-                    heroManager.update(heroCopy);
+                    heroService.update(heroCopy);
                 } catch (DatabaseException e) {
                     LOGGER.warn("Hrdinu se nepodařilo aktualizovat", e);
                     showNotification(new Notification(actionFailed));
@@ -214,7 +213,7 @@ public class MainController extends BaseController implements Initializable {
                 final Hero clone = this.hero.get().duplicate();
                 HeroHelper.levelUp(clone, bundle);
                 try {
-                    heroManager.update(clone);
+                    heroService.update(clone);
                     showNotification(new Notification("Hrdina povýšil na novou úroveň"));
                 } catch (DatabaseException e) {
                     LOGGER.warn("Hrdinovi se nepodařilo přejít na novou úroveň", e);
@@ -272,7 +271,7 @@ public class MainController extends BaseController implements Initializable {
     @FXML
     private void handleMenuCloseHero(ActionEvent actionEvent) {
         closeChildScreens();
-        heroManager.resetHero();
+        heroService.resetHero();
     }
 
     @FXML

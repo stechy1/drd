@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.main.profession;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.main.MainScreen;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -24,18 +23,12 @@ public class ProfessionController implements MainScreen, Initializable {
 
     // endregion
 
-    private final Context context;
-
     private IProfessionController professionController;
     private ResourceBundle resources;
 
     // endregion
 
     // region Constructors
-
-    public ProfessionController(Context context) {
-        this.context = context;
-    }
 
     // endregion
 
