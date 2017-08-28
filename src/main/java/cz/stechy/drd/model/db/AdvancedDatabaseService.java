@@ -271,7 +271,6 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
      */
     @Inject
     public void setFirebaseDatabase(FirebaseWrapper wrapper) {
-        System.out.println("Settings firebase wrapper");
         wrapper.firebaseProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 firebaseReference = newValue.getReference(getFirebaseChildName());
