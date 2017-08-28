@@ -14,6 +14,7 @@ import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.HashGenerator;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -134,6 +135,8 @@ public class ShopController1 extends BaseController implements Initializable {
         this.hero = heroService.getHero();
         this.translator = translator;
         this.shoppingCart = shoppingCart;
+
+        this.translatedItemType.addAll(translator.getTranslationFor(Key.SHOP_ITEMS));
     }
 
     // endregion
