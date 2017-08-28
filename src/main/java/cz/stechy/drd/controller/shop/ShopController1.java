@@ -219,7 +219,7 @@ public class ShopController1 extends BaseController implements Initializable {
             controllers[index].clearSelectedRow();
         });
         selectedRowIndex.addListener((observable, oldValue, newValue) -> {
-            if (newValue == null) {
+            if (newValue == null || selectedAccordionPaneIndex.get() < 0) {
                 return;
             }
 
