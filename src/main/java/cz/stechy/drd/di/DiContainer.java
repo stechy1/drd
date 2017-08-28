@@ -25,7 +25,6 @@ public final class DiContainer {
     }
 
     public <T> T getInstance(Class klass) {
-        System.out.println("Hledám instance pro třídu: " + klass.getName());
         if (!instances.containsKey(klass)) {
             final Constructor<T>[] constructors = klass.getConstructors();
             for (Constructor<T> constructor : constructors) {
@@ -76,7 +75,6 @@ public final class DiContainer {
     private <T> void insertDependencies(Class klass, T instance) throws IllegalAccessException {
         final Field[] fields = klass.getDeclaredFields();
         for (Field field : fields) {
-            System.out.println("Vkládám závislost do fieldu: " + field.getName());
             if (field.isAnnotationPresent(Inject.class)) {
                 field.setAccessible(true);
                 field.set(instance, getInstance(field.getType()));
