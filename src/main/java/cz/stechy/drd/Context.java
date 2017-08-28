@@ -21,12 +21,9 @@ import cz.stechy.drd.model.persistent.RangedWeaponService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import net.harawata.appdirs.AppDirs;
@@ -78,9 +75,6 @@ public class Context {
     private final FirebaseWrapper firebaseWrapper = new FirebaseWrapper();
     // Pracovní adresář, kam můžu ukládat potřebné soubory
     private final File appDirectory;
-    // Nastavení aplikace
-    @Deprecated
-    private final Properties configuration = new Properties();
     // Nastavení aplikace
     private final AppSettings settings;
 
@@ -134,7 +128,7 @@ public class Context {
      * @return Název databáze
      */
     private String getDatabaseName() {
-        return getProperty(R.Config.OFFLINE_DATABASE_NAME, DEFAULT_VALUE_DATABASE);
+        return settings.getProperty(R.Config.OFFLINE_DATABASE_NAME, DEFAULT_VALUE_DATABASE);
     }
 
     /**
@@ -178,7 +172,7 @@ public class Context {
      * @return True, pokud se má firebase inicializovat, jinak False
      */
     private boolean useOnlineDatabase() {
-        return Boolean.parseBoolean(getProperty(R.Config.USE_ONLINE_DATABASE, "false"));
+        return Boolean.parseBoolean(settings.getProperty(R.Config.USE_ONLINE_DATABASE, "false"));
     }
 
     // endregion
@@ -196,13 +190,13 @@ public class Context {
         initServices();
         if (useOnlineDatabase()) {
             try {
-                initFirebase(getProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH,
+                initFirebase(settings.getProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH,
                     FIREBASE_CREDENTIALS));
             } catch (Exception ex) {
                 // Pokud se nepodaří inicializovat firebase při startu, tak se prakticky nic neděje
                 // aplikace může bez firebase běžet
                 // Pro jistotu nastavíme, že se přiště inicializace konat nebude
-                setProperty(R.Config.USE_ONLINE_DATABASE, "false");
+                settings.setProperty(R.Config.USE_ONLINE_DATABASE, "false");
             }
         }
     }
@@ -214,18 +208,6 @@ public class Context {
      */
     int getServiceCount() {
         return SERVICES_COUNT;
-    }
-
-    /**
-     * Uloží aktuální konfiguraci do souboru
-     */
-    @Deprecated
-    void saveConfiguration() {
-        try {
-            configuration.store(new FileOutputStream(getConfigFile()), "");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     // endregion
@@ -252,57 +234,15 @@ public class Context {
         initFirebase(new FileInputStream(credentialsFile));
     }
 
+    /**
+     * Uloží aktuální konfiguraci do souboru
+     */
+    void saveConfiguration() {
+        settings.save();
+    }
     // endregion
 
     // region Getters & Setters
-
-    /**
-     * Vrátí záznam na základě klíče. Použijte pouze v případě, že jste si jistí, že záznam opravdu
-     * existuje
-     *
-     * @param key Klič záznamu
-     * @return Hodnotu záznamu
-     */
-    @Deprecated
-    public String getProperty(String key) {
-        return configuration.getProperty(key);
-    }
-
-    /**
-     * Získá záznam z konfiguračního souboru na základě klíče. Pokud záznam neexistuje, vytvoří se
-     * nový s výchozí hodnotou.
-     *
-     * @param key Klíč záznamu
-     * @param defaultValue Výchozí hodnota, která se má vrátit, kdy záznam neexistuje
-     * @return {@link String}
-     */
-    @Deprecated
-    public String getProperty(String key, String defaultValue) {
-        final String property = configuration.getProperty(key, defaultValue);
-        configuration.setProperty(key, property);
-        return property;
-    }
-
-    /**
-     * Uloží záznam
-     *
-     * @param key Klíč
-     * @param value Hodnota
-     */
-    @Deprecated
-    public void setProperty(String key, String value) {
-        configuration.setProperty(key, value);
-    }
-
-    /**
-     * Vrátí konfiguraci aplikace s důležitými konstantami
-     *
-     * @return {@link Properties}
-     */
-    @Deprecated
-    public Properties getConfiguration() {
-        return configuration;
-    }
 
     /**
      * Ukončí spojení online databáze s internetem
