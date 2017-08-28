@@ -36,6 +36,7 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
     private static final String COLUMN_STRENGTH = TABLE + "_strength";
     private static final String COLUMN_RAMPANCY = TABLE + "_rampancy";
     private static final String COLUMN_DEFENCE = TABLE + "_defence";
+    private static final String COLUMN_RENOWN = TABLE + "_renown";
     private static final String COLUMN_CLASS = TABLE + "_class";
     private static final String COLUMN_TYPE = TABLE + "_type";
     private static final String COLUMN_IMAGE = TABLE + "_image";
@@ -43,7 +44,7 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
     private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY,
-        COLUMN_DEFENCE, COLUMN_CLASS, COLUMN_TYPE, COLUMN_IMAGE, COLUMN_STACK_SIZE,
+        COLUMN_DEFENCE, COLUMN_RENOWN, COLUMN_CLASS, COLUMN_TYPE, COLUMN_IMAGE, COLUMN_STACK_SIZE,
         COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
@@ -58,14 +59,15 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
             + "%s INT NOT NULL,"                                // strength
             + "%s INT NOT NULL,"                                // rampancy
             + "%s INT NOT NULL,"                                // defence
+            + "%s INT NOT NULL,"                                // renown
             + "%s INT NOT NULL,"                                // class
             + "%s INT NOT NULL,"                                // type
             + "%s BLOB,"                                        // image
             + "%s INT NOT NULL,"                                // stack size
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
             + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
-        COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY, COLUMN_DEFENCE, COLUMN_CLASS, COLUMN_TYPE,
-        COLUMN_IMAGE, COLUMN_STACK_SIZE, COLUMN_UPLOADED);
+        COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY, COLUMN_DEFENCE, COLUMN_RENOWN, COLUMN_CLASS,
+        COLUMN_TYPE, COLUMN_IMAGE, COLUMN_STACK_SIZE, COLUMN_UPLOADED);
 
     // endregion
 
@@ -104,6 +106,7 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
             .strength(snapshot.child(COLUMN_STRENGTH).getValue(Integer.class))
             .rampancy(snapshot.child(COLUMN_RAMPANCY).getValue(Integer.class))
             .defence(snapshot.child(COLUMN_DEFENCE).getValue(Integer.class))
+            .renown(snapshot.child(COLUMN_RENOWN).getValue(Integer.class))
             .weaponClass(snapshot.child(COLUMN_CLASS).getValue(Integer.class))
             .weaponType(snapshot.child(COLUMN_TYPE).getValue(Integer.class))
             .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
@@ -123,6 +126,7 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
             .strength(resultSet.getInt(COLUMN_STRENGTH))
             .rampancy(resultSet.getInt(COLUMN_RAMPANCY))
             .defence(resultSet.getInt(COLUMN_DEFENCE))
+            .renown(resultSet.getInt(COLUMN_RENOWN))
             .weaponClass(resultSet.getInt(COLUMN_CLASS))
             .weaponType(resultSet.getInt(COLUMN_TYPE))
             .image(readBlob(resultSet, COLUMN_IMAGE))
@@ -144,6 +148,7 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
             weapon.getStrength(),
             weapon.getRampancy(),
             weapon.getDefence(),
+            weapon.getRenown(),
             weapon.getWeaponClass().ordinal(),
             weapon.getWeaponType().ordinal(),
             weapon.getImage(),

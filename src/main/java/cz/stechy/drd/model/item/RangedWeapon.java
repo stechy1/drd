@@ -42,14 +42,13 @@ public final class RangedWeapon extends WeaponBase {
         this(weapon.getId(), weapon.getName(), weapon.getDescription(), weapon.getAuthor(),
             weapon.getWeight(), weapon.getPrice().getRaw(), weapon.getStrength(),
             weapon.getRampancy(), weapon.getWeaponType(), weapon.getRangeLow(),
-            weapon.getRangeMedium(), weapon.getRangeLong(), weapon.getImage(), weapon.getStackSize(),
-            weapon.isDownloaded(), weapon.isUploaded());
+            weapon.getRangeMedium(), weapon.getRangeLong(), weapon.getRenown(), weapon.getImage(),
+            weapon.getStackSize(), weapon.isDownloaded(), weapon.isUploaded());
     }
 
     /**
      * Konstruktor pro zbraně na dálku
-     *
-     * @param id Id zbraně
+     *  @param id Id zbraně
      * @param name Název zbraně
      * @param description Popis zbraně
      * @param author Autor zbraně
@@ -61,16 +60,17 @@ public final class RangedWeapon extends WeaponBase {
      * @param rangeLow Dostřel - malý
      * @param rangeMedium Dostřel - střední
      * @param rangeLong Dostřel - velký
+     * @param renown Sláva/známost zbraně
      * @param image Obrázek zbraně
      * @param downloaded Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
     private RangedWeapon(String id, String name, String description, String author, int weight,
         int price, int strength, int rampancy, RangedWeaponType weaponType, int rangeLow,
-        int rangeMedium, int rangeLong, byte[] image, int stackSize, boolean downloaded,
+        int rangeMedium, int rangeLong, int renown, byte[] image, int stackSize, boolean downloaded,
         boolean uploaded) {
-        super(id, name, description, weight, price, strength, rampancy, author, image, stackSize,
-            downloaded, uploaded);
+        super(id, name, description, weight, price, strength, rampancy, renown, author, image,
+            stackSize, downloaded, uploaded);
 
         setWeaponType(weaponType);
         setRangeLow(rangeLow);
@@ -205,6 +205,7 @@ public final class RangedWeapon extends WeaponBase {
         private int rangeMedium;
         private int rangeHigh;
         private String author;
+        private int renown;
         private byte[] image;
         private int stackSize;
         private boolean uploaded;
@@ -270,6 +271,11 @@ public final class RangedWeapon extends WeaponBase {
             return this;
         }
 
+        public Builder renown(int renown) {
+            this.renown = renown;
+            return this;
+        }
+
         public Builder image(byte[] image) {
             this.image = image;
             return this;
@@ -292,8 +298,8 @@ public final class RangedWeapon extends WeaponBase {
 
         public RangedWeapon build() {
             return new RangedWeapon(id, name, description, author, weight, price, strength,
-                rampancy,
-                weaponType, rangeLow, rangeMedium, rangeHigh, image, stackSize, downloaded, uploaded);
+                rampancy, weaponType, rangeLow, rangeMedium, rangeHigh, renown, image, stackSize,
+                downloaded, uploaded);
         }
     }
 }

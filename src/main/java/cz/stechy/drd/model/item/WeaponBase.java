@@ -1,7 +1,6 @@
 package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import java.util.Map;
 import javafx.beans.property.IntegerProperty;
@@ -19,6 +18,8 @@ public abstract class WeaponBase extends ItemBase {
     protected final IntegerProperty strength = new SimpleIntegerProperty(this, "strength");
     // Útočnost zbraně
     protected final IntegerProperty rampancy = new SimpleIntegerProperty(this, "rampancy");
+    // Sláva/známost zbraně
+    protected final IntegerProperty renown = new SimpleIntegerProperty(this, "renown");
 
     // endregion
 
@@ -26,13 +27,14 @@ public abstract class WeaponBase extends ItemBase {
 
     /**
      * Konstruktor pro všechny zbraně
-     *  @param id Id zbraně
+     * @param id Id zbraně
      * @param name Název zbraně
      * @param description Popis zbraně
      * @param weight Váha zbraně
      * @param price Cena zbraně
      * @param strength Síla zbraně
      * @param rampancy Útočnost zbraně
+     * @param renown Sláva/známost zbraně
      * @param author Autor zbraně
      * @param image Obrázek zbraně
      * @param stackSize Maximální počet zbraní, který může být v jednom stacku ve slotu inventáře
@@ -40,12 +42,14 @@ public abstract class WeaponBase extends ItemBase {
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
     protected WeaponBase(String id, String name, String description, int weight, int price,
-        int strength, int rampancy, String author, byte[] image, int stackSize, boolean downloaded,
+        int strength, int rampancy, int renown, String author, byte[] image, int stackSize,
+        boolean downloaded,
         boolean uploaded) {
         super(id, author, name, description, weight, price, image, stackSize, downloaded, uploaded);
 
         setStrength(strength);
         setRampancy(rampancy);
+        setRenown(renown);
     }
 
     // endregion
@@ -59,6 +63,7 @@ public abstract class WeaponBase extends ItemBase {
         WeaponBase weapon = (WeaponBase) other;
         setStrength(weapon.getStrength());
         setRampancy(weapon.getRampancy());
+        setRenown(weapon.getRenown());
     }
 
     @Override
@@ -96,6 +101,18 @@ public abstract class WeaponBase extends ItemBase {
 
     private void setRampancy(int rampancy) {
         this.rampancy.set(rampancy);
+    }
+
+    public final int getRenown() {
+        return renown.get();
+    }
+
+    public final ReadOnlyIntegerProperty renownProperty() {
+        return renown;
+    }
+
+    private void setRenown(int renown) {
+        this.renown.set(renown);
     }
 
     // endregion

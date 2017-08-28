@@ -39,13 +39,14 @@ public final class RangedWeaponService extends AdvancedDatabaseService<RangedWea
     private static final String COLUMN_RANGE_LOW = TABLE + "_range_low";
     private static final String COLUMN_RANGE_MEDIUM = TABLE + "_range_medium";
     private static final String COLUMN_RANGE_LONG = TABLE + "_range_long";
+    private static final String COLUMN_RENOWN = TABLE + "_renown";
     private static final String COLUMN_IMAGE = TABLE + "_image";
     private static final String COLUMN_STACK_SIZE = TABLE + "_stack_size";
     private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY,
-        COLUMN_TYPE, COLUMN_RANGE_LOW, COLUMN_RANGE_MEDIUM, COLUMN_RANGE_LONG, COLUMN_IMAGE,
-        COLUMN_STACK_SIZE, COLUMN_UPLOADED};
+        COLUMN_TYPE, COLUMN_RANGE_LOW, COLUMN_RANGE_MEDIUM, COLUMN_RANGE_LONG, COLUMN_RENOWN,
+        COLUMN_IMAGE, COLUMN_STACK_SIZE, COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -62,12 +63,14 @@ public final class RangedWeaponService extends AdvancedDatabaseService<RangedWea
             + "%s INT NOT NULL,"                                // range_low
             + "%s INT NOT NULL,"                                // range_medium
             + "%s INT NOT NULL,"                                // range_high
+            + "%s INT NOT NULL,"                                // renown
             + "%s BLOB,"                                        // image
             + "%s INT NOT NULL,"                                // stack size
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
             + ");", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
         COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY, COLUMN_TYPE, COLUMN_RANGE_LOW,
-        COLUMN_RANGE_MEDIUM, COLUMN_RANGE_LONG, COLUMN_IMAGE, COLUMN_STACK_SIZE, COLUMN_UPLOADED);
+        COLUMN_RANGE_MEDIUM, COLUMN_RANGE_LONG, COLUMN_RENOWN, COLUMN_IMAGE, COLUMN_STACK_SIZE,
+        COLUMN_UPLOADED);
 
     // endregion
 
@@ -109,6 +112,7 @@ public final class RangedWeaponService extends AdvancedDatabaseService<RangedWea
             .rangeLow(snapshot.child(COLUMN_RANGE_LOW).getValue(Integer.class))
             .rangeMedium(snapshot.child(COLUMN_RANGE_MEDIUM).getValue(Integer.class))
             .rangeLong(snapshot.child(COLUMN_RANGE_LONG).getValue(Integer.class))
+            .renown(snapshot.child(COLUMN_RENOWN).getValue(Integer.class))
             .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
             .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
             .build();
@@ -129,6 +133,7 @@ public final class RangedWeaponService extends AdvancedDatabaseService<RangedWea
             .rangeLow(resultSet.getInt(COLUMN_RANGE_LOW))
             .rangeMedium(resultSet.getInt(COLUMN_RANGE_MEDIUM))
             .rangeLong(resultSet.getInt(COLUMN_RANGE_LONG))
+            .renown(resultSet.getInt(COLUMN_RENOWN))
             .image(readBlob(resultSet, COLUMN_IMAGE))
             .stackSize(resultSet.getInt(COLUMN_STACK_SIZE))
             .downloaded(true)
@@ -151,6 +156,7 @@ public final class RangedWeaponService extends AdvancedDatabaseService<RangedWea
             weapon.getRangeLow(),
             weapon.getRangeMedium(),
             weapon.getRangeLong(),
+            weapon.getRenown(),
             weapon.getImage(),
             weapon.getStackSize(),
             weapon.isUploaded()
