@@ -18,7 +18,6 @@ import cz.stechy.drd.model.persistent.GeneralItemService;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.MeleWeaponService;
 import cz.stechy.drd.model.persistent.RangedWeaponService;
-import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
 import java.io.FileInputStream;
@@ -69,15 +68,6 @@ public class Context {
         BestiaryService.class
     };
 
-    // Názvy jednotlivých služeb
-    public static final String SERVICE_HERO = "hero";
-    public static final String SERVICE_WEAPON_MELE = "mele";
-    public static final String SERVICE_WEAPON_RANGED = "ranged";
-    public static final String SERVICE_ARMOR = "armor";
-    public static final String SERVICE_GENERAL = "general";
-    public static final String SERVICE_BACKPACK = "backpack";
-    public static final String SERVICE_BESTIARY = "bestiary";
-
     // endregion
 
     // region Variables
@@ -86,20 +76,13 @@ public class Context {
     private final DiContainer container = new DiContainer();
     // Pomocný wrapper na pozdější inicializaci firebase databáze
     private final FirebaseWrapper firebaseWrapper = new FirebaseWrapper();
-    // Databáze
-    private final Database database;
     // Pracovní adresář, kam můžu ukládat potřebné soubory
     private final File appDirectory;
-    // Mapa obsahující všechny služby
-    private final Map<String, DatabaseService> serviceMap = new HashMap<>(SERVICES_COUNT);
     // Nastavení aplikace
+    @Deprecated
     private final Properties configuration = new Properties();
-    // Služba obsluhující uživatele
-    private UserService userService;
-    // Překad aplikace
-    private final ResourceBundle resources;
-    // Překladač aplikace
-    private Translator translator;
+    // Nastavení aplikace
+    private final AppSettings settings;
 
     // endregion
 
@@ -112,7 +95,6 @@ public class Context {
      * @throws Exception Pokud se inicializace kontextu nezdaří
      */
     Context(ResourceBundle resources) throws Exception {
-        this.resources = resources;
         this.appDirectory = new File(appDirs
             .getUserDataDir(CREDENTAILS_APP_NAME, CREDENTAILS_APP_VERSION, CREDENTILS_APP_AUTHOR));
         if (!appDirectory.exists()) {
@@ -122,8 +104,11 @@ public class Context {
             }
         }
         LOGGER.info("Používám pracovní adresář: {}", appDirectory.getPath());
-        loadConfiguration();
-        database = new SQLite(appDirectory.getPath() + SEPARATOR + getDatabaseName());
+
+        settings = new AppSettings(getConfigFile());
+        container.addService(AppSettings.class, settings);
+
+        Database database = new SQLite(appDirectory.getPath() + SEPARATOR + getDatabaseName());
         container.addService(Database.class, database);
         container.addService(Translator.class, new Translator(resources));
         container.addService(Context.class, this);
@@ -141,18 +126,6 @@ public class Context {
      */
     private File getConfigFile() {
         return new File(appDirectory, CONFIG_FILE_NAME);
-    }
-
-    /**
-     * Načte konfiguraci ze souboru
-     */
-    private void loadConfiguration() {
-        final File configFile = getConfigFile();
-        try {
-            configuration.load(new FileInputStream(configFile));
-        } catch (IOException e) {
-            // TODO založit nový soubor s konfigurací
-        }
     }
 
     /**
@@ -220,7 +193,6 @@ public class Context {
      */
     void init(PreloaderNotifier notifier) throws Exception {
         BaseDatabaseService.setNotifier(notifier);
-        userService = new UserService(firebaseWrapper);
         initServices();
         if (useOnlineDatabase()) {
             try {
@@ -247,6 +219,7 @@ public class Context {
     /**
      * Uloží aktuální konfiguraci do souboru
      */
+    @Deprecated
     void saveConfiguration() {
         try {
             configuration.store(new FileOutputStream(getConfigFile()), "");
@@ -283,28 +256,6 @@ public class Context {
 
     // region Getters & Setters
 
-    @SuppressWarnings("unchecked")
-    @Deprecated
-    public <T> T getService(String name) {
-        return (T) serviceMap.get(name);
-    }
-
-    /**
-     * @return {@link Translator}
-     */
-    @Deprecated
-    public Translator getTranslator() {
-        if (translator == null) {
-            translator = new Translator(resources);
-        }
-
-        return translator;
-    }
-
-    public UserService getUserService() {
-        return userService;
-    }
-
     /**
      * Vrátí záznam na základě klíče. Použijte pouze v případě, že jste si jistí, že záznam opravdu
      * existuje
@@ -312,6 +263,7 @@ public class Context {
      * @param key Klič záznamu
      * @return Hodnotu záznamu
      */
+    @Deprecated
     public String getProperty(String key) {
         return configuration.getProperty(key);
     }
@@ -324,6 +276,7 @@ public class Context {
      * @param defaultValue Výchozí hodnota, která se má vrátit, kdy záznam neexistuje
      * @return {@link String}
      */
+    @Deprecated
     public String getProperty(String key, String defaultValue) {
         final String property = configuration.getProperty(key, defaultValue);
         configuration.setProperty(key, property);
@@ -336,6 +289,7 @@ public class Context {
      * @param key Klíč
      * @param value Hodnota
      */
+    @Deprecated
     public void setProperty(String key, String value) {
         configuration.setProperty(key, value);
     }
