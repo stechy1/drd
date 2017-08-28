@@ -5,8 +5,8 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.FirebaseDatabase;
 import cz.stechy.drd.di.DiContainer;
-import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.BaseDatabaseService;
+import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.DatabaseService;
 import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.drd.model.db.SQLite;
@@ -58,6 +58,16 @@ public class Context {
 
     // Pomocná reference pro žískání uživatelských složek v různých systémech
     private static final AppDirs appDirs = AppDirsFactory.getInstance();
+
+    private static final Class[] services = new Class[] {
+        HeroService.class,
+        MeleWeaponService.class,
+        RangedWeaponService.class,
+        ArmorService.class,
+        GeneralItemService.class,
+        BackpackService.class,
+        BestiaryService.class
+    };
 
     // Názvy jednotlivých služeb
     public static final String SERVICE_HERO = "hero";
@@ -117,6 +127,7 @@ public class Context {
         container.addService(Database.class, database);
         container.addService(Translator.class, new Translator(resources));
         container.addService(Context.class, this);
+        container.addService(FirebaseWrapper.class, firebaseWrapper);
     }
 
     // endregion
@@ -177,33 +188,14 @@ public class Context {
      * Inicializace všech správců předmětů
      */
     private void initServices() {
-        serviceMap.put(SERVICE_HERO, initService(HeroService.class));
-        serviceMap.put(SERVICE_WEAPON_MELE, initService(MeleWeaponService.class));
-        serviceMap.put(SERVICE_WEAPON_RANGED, initService(RangedWeaponService.class));
-        serviceMap.put(SERVICE_ARMOR, initService(ArmorService.class));
-        serviceMap.put(SERVICE_GENERAL, initService(GeneralItemService.class));
-        serviceMap.put(SERVICE_BACKPACK, initService(BackpackService.class));
-        serviceMap.put(SERVICE_BESTIARY, initService(BestiaryService.class));
-    }
-
-    @SuppressWarnings("unchecked")
-    private DatabaseService initService(Class clazz) {
-        try {
-            DatabaseService service = (DatabaseService) clazz.getConstructor(Database.class)
-                .newInstance(database);
-            if (service instanceof AdvancedDatabaseService) {
-                ((AdvancedDatabaseService) service)
-                    .setFirebaseDatabase(firebaseWrapper);
+        for (Class service : services) {
+            final DatabaseService instance = container.getInstance(service);
+            try {
+                instance.createTable();
+                instance.selectAll();
+            } catch (DatabaseException e) {
+                e.printStackTrace();
             }
-            service.createTable();
-            service.selectAll();
-            return service;
-        } catch (Exception e) {
-            // nikdy by se nemělo stát
-            // pokud se ale tak stane, tak aplikace není schopná běhu
-            LOGGER.error("Chyba při inicializaci služby", e);
-            Platform.exit();
-            return null;
         }
     }
 
