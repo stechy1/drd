@@ -39,6 +39,7 @@
             labelFloat="true" promptText="%drd_item_weapon_mele_ranged_type" fx:id="cmbWeaponType"/>
         </VBox>
         <VBox HBox.hgrow="ALWAYS" spacing="16.0">
+          <JFXTextField labelFloat="true" promptText="%drd_item_weapon_renown" fx:id="txtRenown"/>
           <JFXTextField labelFloat="true" promptText="%drd_item_weight" fx:id="txtWeight"/>
           <Hyperlink onAction="#handleShowMoneyPopup" text="%drd_item_price" fx:id="lblPrice"/>
           <JFXTextField labelFloat="true" promptText="%drd_item_stack_size" fx:id="txtStackSize"/>

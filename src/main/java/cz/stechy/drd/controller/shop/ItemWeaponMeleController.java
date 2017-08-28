@@ -66,6 +66,7 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
     private static final String WEAPON_CLASS = "weapon_class";
     private static final String WEAPON_TYPE = "weapon_type";
     private static final String AUTHOR = "author";
+    private static final String RENOWN = "renown";
     private static final String IMAGE = "image";
     private static final String STACK_SIZE = "stack_size";
     private static final String UPLOADED = "uploaded";
@@ -93,6 +94,8 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
     private ComboBox<MeleWeaponClass> cmbWeaponClass;
     @FXML
     private ComboBox<MeleWeapon.MeleWeaponType> cmbWeaponType;
+    @FXML
+    private TextField txtRenown;
     @FXML
     private TextField txtWeight;
     @FXML
@@ -140,6 +143,7 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
             .weaponClass(bundle.getInt(WEAPON_CLASS))
             .weaponType(bundle.getInt(WEAPON_TYPE))
             .author(bundle.getString(AUTHOR))
+            .renown(bundle.getInt(RENOWN))
             .image(bundle.getByteArray(IMAGE))
             .stackSize(bundle.getInt(STACK_SIZE))
             .uploaded(bundle.getBoolean(UPLOADED))
@@ -159,6 +163,7 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         bundle.putInt(WEAPON_CLASS, weapon.getWeaponClass().ordinal());
         bundle.putInt(WEAPON_TYPE, weapon.getWeaponType().ordinal());
         bundle.putString(AUTHOR, weapon.getAuthor());
+        bundle.putInt(RENOWN, weapon.getRenown());
         bundle.putByteArray(IMAGE, weapon.getImage());
         bundle.putInt(STACK_SIZE, weapon.getStackSize());
         bundle.putBoolean(UPLOADED, weapon.isUploaded());
@@ -185,6 +190,7 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         FormUtils.initTextFormater(txtStrength, model.strength);
         FormUtils.initTextFormater(txtRampancy, model.rampancy);
         FormUtils.initTextFormater(txtDefenceNumber, model.defence);
+        FormUtils.initTextFormater(txtRenown, model.renown);
         FormUtils.initTextFormater(txtWeight, model.weight);
         lblPrice.textProperty().bind(model.price.text);
         FormUtils.initTextFormater(txtStackSize, model.stackSize);
@@ -214,6 +220,7 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         model.weaponClass.setValue(MeleWeaponClass.valueOf(bundle.getInt(WEAPON_CLASS)));
         model.weaponType.setValue(MeleWeaponType.valueOf(bundle.getInt(WEAPON_TYPE)));
         model.author.setValue(bundle.getString(AUTHOR));
+        model.renown.setActValue(bundle.getInt(RENOWN));
         model.imageRaw.setValue(bundle.getByteArray(IMAGE));
         model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
         model.uploaded.setValue(bundle.getBoolean(UPLOADED));
@@ -256,6 +263,7 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         bundle.putInt(DEFENCE, model.defence.getActValue().intValue());
         bundle.putInt(WEAPON_CLASS, model.weaponClass.getValue().ordinal());
         bundle.putInt(WEAPON_TYPE, model.weaponType.getValue().ordinal());
+        bundle.putInt(RENOWN, model.renown.getActValue().intValue());
         bundle.putString(AUTHOR, model.author.getValue());
         bundle.putByteArray(IMAGE, model.imageRaw.getValue());
         bundle.putInt(STACK_SIZE, model.stackSize.getActValue().intValue());
@@ -308,6 +316,7 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
             MeleWeaponType.ONE_HAND);
         final StringProperty author = new SimpleStringProperty();
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
+        final MaxActValue renown = new MaxActValue(Integer.MAX_VALUE);
         final ObjectProperty<Image> image = new SimpleObjectProperty<>();
         final MaxActValue stackSize = new MaxActValue(1, Integer.MAX_VALUE, 1);
         final BooleanProperty uploaded = new SimpleBooleanProperty();

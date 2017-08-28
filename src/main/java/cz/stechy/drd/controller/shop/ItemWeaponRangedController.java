@@ -63,12 +63,12 @@ public class ItemWeaponRangedController extends BaseController implements Initia
     private static final String RANGE_LOW = "range_low";
     private static final String RANGE_MEDIUM = "range_medium";
     private static final String RANGE_LONG = "range_long";
+    private static final String RENOWN = "renown";
     private static final String AUTHOR = "author";
     private static final String IMAGE = "image";
     private static final String STACK_SIZE = "stack_size";
     private static final String UPLOADED = "uploaded";
     private static final String DOWNLOADED = "downloaded";
-
 
     // endregion
 
@@ -80,7 +80,6 @@ public class ItemWeaponRangedController extends BaseController implements Initia
     private Label lblTitle;
     @FXML
     private TextField txtName;
-
     @FXML
     private TextArea txtDescription;
     @FXML
@@ -95,6 +94,8 @@ public class ItemWeaponRangedController extends BaseController implements Initia
     private TextField txtRangeLong;
     @FXML
     private ComboBox<RangedWeaponType> cmbWeaponType;
+    @FXML
+    private TextField txtRenown;
     @FXML
     private TextField txtWeight;
     @FXML
@@ -133,6 +134,7 @@ public class ItemWeaponRangedController extends BaseController implements Initia
             .rangeMedium(bundle.getInt(RANGE_MEDIUM))
             .rangeLong(bundle.getInt(RANGE_LONG))
             .author(bundle.getString(AUTHOR))
+            .renown(bundle.getInt(RENOWN))
             .image(bundle.getByteArray(IMAGE))
             .stackSize(bundle.getInt(STACK_SIZE))
             .uploaded(bundle.getBoolean(UPLOADED))
@@ -153,6 +155,7 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         bundle.putInt(RANGE_LONG, weapon.getRangeLong());
         bundle.putInt(WEAPON_TYPE, weapon.getWeaponType().ordinal());
         bundle.putString(AUTHOR, weapon.getAuthor());
+        bundle.putInt(RENOWN, weapon.getRenown());
         bundle.putByteArray(IMAGE, weapon.getImage());
         bundle.putInt(STACK_SIZE, weapon.getStackSize());
         bundle.putBoolean(UPLOADED, weapon.isUploaded());
@@ -187,6 +190,7 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         FormUtils.initTextFormater(txtRangeLow, model.rangeLow);
         FormUtils.initTextFormater(txtRangeMedium, model.rangeMedium);
         FormUtils.initTextFormater(txtRangeLong, model.rangeLong);
+        FormUtils.initTextFormater(txtRenown, model.renown);
         FormUtils.initTextFormater(txtWeight, model.weight);
         lblPrice.textProperty().bind(model.price.text);
         FormUtils.initTextFormater(txtStackSize, model.stackSize);
@@ -212,6 +216,7 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         model.rangeMedium.setActValue(bundle.getInt(RANGE_MEDIUM));
         model.rangeLong.setActValue(bundle.getInt(RANGE_LONG));
         model.author.setValue(bundle.getString(AUTHOR));
+        model.renown.setActValue(bundle.getInt(RENOWN));
         model.imageRaw.setValue(bundle.getByteArray(IMAGE));
         model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
         model.uploaded.setValue(bundle.getBoolean(UPLOADED));
@@ -256,6 +261,7 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         bundle.putInt(RANGE_LONG, model.rangeLong.getActValue().intValue());
         bundle.putInt(WEAPON_TYPE, model.weaponType.getValue().ordinal());
         bundle.putString(AUTHOR, model.author.getValue());
+        bundle.putInt(RENOWN, model.renown.getActValue().intValue());
         bundle.putByteArray(IMAGE, model.imageRaw.getValue());
         bundle.putInt(STACK_SIZE, model.stackSize.getActValue().intValue());
         bundle.putBoolean(UPLOADED, model.uploaded.getValue());
@@ -306,6 +312,7 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         final ObjectProperty<RangedWeaponType> weaponType = new SimpleObjectProperty<>(
             RangedWeaponType.FIRE);
         final StringProperty author = new SimpleStringProperty();
+        final MaxActValue renown = new MaxActValue(Integer.MAX_VALUE);
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
         final ObjectProperty<Image> image = new SimpleObjectProperty<>();
         final MaxActValue stackSize = new MaxActValue(1, Integer.MAX_VALUE, 1);

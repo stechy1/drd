@@ -37,11 +37,12 @@
             fx:id="txtRangeMedium"/>
           <JFXTextField labelFloat="true" promptText="%drd_item_weapon_ranged_range_long"
             fx:id="txtRangeLong"/>
-        </VBox>
-        <VBox spacing="16.0" HBox.hgrow="ALWAYS">
           <EnumComboBox labelFloat="true" promptText="%drd_item_weapon_mele_ranged_type"
             fx:id="cmbWeaponType"
             enumType="cz.stechy.drd.model.item.RangedWeapon$RangedWeaponType"/>
+        </VBox>
+        <VBox spacing="16.0" HBox.hgrow="ALWAYS">
+          <JFXTextField labelFloat="true" promptText="%drd_item_weapon_renown" fx:id="txtRenown"/>
           <JFXTextField labelFloat="true" promptText="%drd_item_weight" fx:id="txtWeight"/>
           <Hyperlink text="%drd_item_price" fx:id="lblPrice" onAction="#handleShowMoneyPopup"/>
           <JFXTextField labelFloat="true" promptText="%drd_item_stack_size" fx:id="txtStackSize"/>
