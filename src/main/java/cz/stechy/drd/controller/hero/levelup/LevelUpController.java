@@ -86,6 +86,7 @@ public class LevelUpController extends BaseController implements Initializable {
 
     // region Constructors
 
+    // TODO vytvořit třídu pro správu konfigurace aplikace
     public LevelUpController(Context context) {
         remaingPoints.setValue(Integer.parseInt(context
             .getProperty(R.Config.HERO_LEVELUP_POINTS_PER_LEVEL, DEFAULT_VALUE_POINTS_PER_LEVEL)));
