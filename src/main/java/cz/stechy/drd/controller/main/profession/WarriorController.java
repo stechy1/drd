@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.main.profession;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.profession.Warior;
@@ -68,8 +67,8 @@ public class WarriorController implements IProfessionController, Initializable {
 
     // region Constructors
 
-    public WarriorController(Context context) {
-        this.bestiary = context.getService(Context.SERVICE_BESTIARY);
+    public WarriorController(BestiaryService bestiaryService) {
+        this.bestiary = bestiaryService;
     }
 
     // endregion

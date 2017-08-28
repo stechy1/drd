@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.main.profession;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.model.Dice;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.profession.Thief;
@@ -53,8 +52,8 @@ public class ThiefController implements IProfessionController, Initializable {
 
     // region Constructors
 
-    public ThiefController(Context context) {
-        this.translator = context.getTranslator();
+    public ThiefController(Translator translator) {
+        this.translator = translator;
     }
 
     // endregion
