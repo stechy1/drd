@@ -168,6 +168,7 @@ public final class R {
         public static final String ITEM_TYPE_ARMOR = "drd_item_type_armor";
         public static final String ITEM_TYPE_GENERAL = "drd_item_type_general";
         public static final String ITEM_TYPE_BACKPACK = "drd_item_type_backpack";
+        public static final String ITEM_WEAPON_RENOWN = "drd_item_weapon_renown";
         public static final String ITEM_WEAPON_MELE_CLASS_LIGHT = "drd_item_weapon_mele_class_light";
         public static final String ITEM_WEAPON_MELE_CLASS_MEDIUM = "drd_item_weapon_mele_class_medium";
         public static final String ITEM_WEAPON_MELE_CLASS_HEAVY = "drd_item_weapon_mele_class_heavy";
