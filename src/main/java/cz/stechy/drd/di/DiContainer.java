@@ -5,14 +5,67 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Třída reprezentující DI kontejner se službami
  */
 public final class DiContainer {
 
+    // region Constants
+
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger(DiContainer.class);
+
+    // endregion
+
+    // region Variables
+
     // Mapa instancí
     private final Map<Class<?>, Object> instances = new HashMap<>();
+
+    // endregion
+
+    // region Private methods
+
+    /**
+     * Pokusí se zkonstruovat instanci z předaného konstruktoru a parametrů
+     *
+     * @param constructor Konstruktor
+     * @param params Parametry konstruktoru
+     * @param <T> Datový typ instance
+     * @return Novou instanci požadovaného typu, nebo null
+     */
+    private <T> T getInstance(Constructor<T> constructor, final Object[] params) {
+        T instance = null;
+        try {
+            instance = constructor.newInstance(params);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        return instance;
+    }
+
+    private <T> void insertDependencies(Class klass, T instance) throws IllegalAccessException {
+        final Field[] fields = klass.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Inject.class)) {
+                field.setAccessible(true);
+                field.set(instance, getInstance(field.getType()));
+            }
+        }
+
+    }
+
+    // endregion
+
+    // region Public methods
 
     /**
      * Přidá službu do mapy instancí
@@ -24,6 +77,13 @@ public final class DiContainer {
         instances.put(klass, instance);
     }
 
+    /**
+     * Vytvoří a vrátí požadovanou instanci
+     *
+     * @param klass Třída, která se ma instancovat
+     * @param <T> Datový typ, který se vrátí
+     * @return Instance třídy
+     */
     public <T> T getInstance(Class klass) {
         if (!instances.containsKey(klass)) {
             final Constructor<T>[] constructors = klass.getConstructors();
@@ -57,29 +117,5 @@ public final class DiContainer {
         return (T) instances.get(klass);
     }
 
-    private <T> T getInstance(Constructor<T> constructor, final Object[] params) {
-        T instance = null;
-        try {
-            instance = constructor.newInstance(params);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
-
-        return instance;
-    }
-
-    private <T> void insertDependencies(Class klass, T instance) throws IllegalAccessException {
-        final Field[] fields = klass.getDeclaredFields();
-        for (Field field : fields) {
-            if (field.isAnnotationPresent(Inject.class)) {
-                field.setAccessible(true);
-                field.set(instance, getInstance(field.getType()));
-            }
-        }
-
-    }
+    // endregion
 }
