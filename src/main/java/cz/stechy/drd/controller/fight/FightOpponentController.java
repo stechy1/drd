@@ -2,7 +2,6 @@ package cz.stechy.drd.controller.fight;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.MoneyController;
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
@@ -71,8 +70,8 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
 
     // endregion
 
-    public FightOpponentController(Context context) {
-        this.bestiary = context.getService(Context.SERVICE_BESTIARY);
+    public FightOpponentController(BestiaryService bestiaryService) {
+        this.bestiary = bestiaryService;
         this.mobs = bestiary.selectAll();
     }
 

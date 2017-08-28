@@ -1,7 +1,6 @@
 package cz.stechy.drd.controller.hero.creator;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -65,8 +64,8 @@ public class HeroCreatorController1 extends BaseController implements Initializa
 
     // endregion
 
-    public HeroCreatorController1(Context context) {
-        translator = context.getTranslator();
+    public HeroCreatorController1(Translator translator) {
+        this.translator = translator;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package cz.stechy.drd.controller.hero.opener;
 
 import com.jfoenix.controls.JFXButton;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -85,9 +84,9 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
     // region Constructors
 
-    public HeroOpenerController(Context context) {
-        heroManager = context.getService(Context.SERVICE_HERO);
-        translator = context.getTranslator();
+    public HeroOpenerController(HeroService heroManager, Translator translator) {
+        this.heroManager = heroManager;
+        this.translator = translator;
     }
 
     // endregion

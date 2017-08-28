@@ -1,13 +1,11 @@
 package cz.stechy.drd.controller.dice;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.dice.DiceHelper.AdditionType;
 import cz.stechy.drd.controller.dice.DiceHelper.DiceAddition;
 import cz.stechy.drd.controller.dice.DiceHelper.DiceType;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
@@ -71,9 +69,9 @@ public class DiceController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public DiceController(Context context) {
-        this.translator = context.getTranslator();
-        this.hero = ((HeroService) context.getService(Context.SERVICE_HERO)).getHero();
+    public DiceController(Hero hero, Translator translator) {
+        this.hero = hero;
+        this.translator = translator;
     }
 
     // endregion

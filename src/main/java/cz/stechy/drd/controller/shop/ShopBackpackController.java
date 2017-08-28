@@ -2,7 +2,6 @@ package cz.stechy.drd.controller.shop;
 
 import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.MaxActValue;
@@ -11,6 +10,8 @@ import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.model.persistent.BackpackService;
+import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.BackpackEntry;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
@@ -89,11 +90,10 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     // region Constrollers
 
-    public ShopBackpackController(Context context) {
-        this.service = context.getService(Context.SERVICE_BACKPACK);
-        this.user = context.getUserService().getUser().get();
+    public ShopBackpackController(UserService userService, BackpackService backpackService) {
+        this.service = backpackService;
+        this.user = userService.getUser().get();
     }
-
     // endregion
 
     @Override

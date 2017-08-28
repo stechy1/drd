@@ -1,6 +1,6 @@
 package cz.stechy.drd.controller.hero.levelup;
 
-import cz.stechy.drd.Context;
+import cz.stechy.drd.AppSettings;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.model.Money;
@@ -86,8 +86,8 @@ public class LevelUpController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public LevelUpController(Context context) {
-        remaingPoints.setValue(Integer.parseInt(context
+    public LevelUpController(AppSettings settings) {
+        remaingPoints.setValue(Integer.parseInt(settings
             .getProperty(R.Config.HERO_LEVELUP_POINTS_PER_LEVEL, DEFAULT_VALUE_POINTS_PER_LEVEL)));
 
         rollFinish.bind(remaingPoints.greaterThan(0).not());

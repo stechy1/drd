@@ -2,7 +2,6 @@ package cz.stechy.drd.controller.shop;
 
 import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.MaxActValue;
@@ -12,6 +11,8 @@ import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
+import cz.stechy.drd.model.persistent.RangedWeaponService;
+import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.RangedWeaponEntry;
@@ -108,11 +109,10 @@ public class ShopWeaponRangedController implements Initializable,
     // region Constructors
 
     @SuppressWarnings("unchecked")
-    public ShopWeaponRangedController(Context context) {
-        this.service = context
-            .getService(Context.SERVICE_WEAPON_RANGED);
-        this.translator = context.getTranslator();
-        this.user = context.getUserService().getUser().get();
+    public ShopWeaponRangedController(UserService userService, RangedWeaponService rangedWeaponService, Translator translator) {
+        this.service = rangedWeaponService;
+        this.translator = translator;
+        this.user = userService.getUser().get();
     }
 
     // endregion

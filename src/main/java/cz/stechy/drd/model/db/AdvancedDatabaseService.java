@@ -6,6 +6,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import cz.stechy.drd.ThreadPool;
+import cz.stechy.drd.di.Inject;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.Firebase;
 import cz.stechy.drd.model.db.base.OnlineItem;
@@ -268,14 +269,15 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
      *
      * @param wrapper {@link FirebaseDatabase}
      */
+    @Inject
     public void setFirebaseDatabase(FirebaseWrapper wrapper) {
+        System.out.println("Settings firebase wrapper");
         wrapper.firebaseProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 firebaseReference = newValue.getReference(getFirebaseChildName());
                 firebaseReference.addChildEventListener(childEventListener);
             }
         });
-
     }
 
     // endregion

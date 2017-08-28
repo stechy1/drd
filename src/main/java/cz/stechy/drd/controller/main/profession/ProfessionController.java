@@ -1,7 +1,5 @@
 package cz.stechy.drd.controller.main.profession;
 
-import cz.stechy.drd.Context;
-import cz.stechy.drd.ControllerFactory;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.main.MainScreen;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -11,9 +9,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 
 public class ProfessionController implements MainScreen, Initializable {
@@ -27,18 +23,12 @@ public class ProfessionController implements MainScreen, Initializable {
 
     // endregion
 
-    private final Context context;
-
     private IProfessionController professionController;
     private ResourceBundle resources;
 
     // endregion
 
     // region Constructors
-
-    public ProfessionController(Context context) {
-        this.context = context;
-    }
 
     // endregion
 
@@ -70,15 +60,15 @@ public class ProfessionController implements MainScreen, Initializable {
      */
     private void loadProfession(Hero hero) throws IOException {
         System.out.println("Načítám profesi");
-        final String fxml = getFxmlName(hero.getProfession());
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("/fxml/main/profession/" + fxml + ".fxml"));
-        loader.setControllerFactory(new ControllerFactory(context));
-        loader.setResources(resources);
-        final Node node = loader.load();
-        professionController = loader.getController();
-        professionController.setHero(hero);
-        container.getChildren().setAll(node);
+//        final String fxml = getFxmlName(hero.getProfession());
+//        FXMLLoader loader = new FXMLLoader();
+//        loader.setLocation(getClass().getResource("/fxml/main/profession/" + fxml + ".fxml"));
+//        loader.setControllerFactory(new ControllerFactory());
+//        loader.setResources(resources);
+//        final Node node = loader.load();
+//        professionController = loader.getController();
+//        professionController.setHero(hero);
+//        container.getChildren().setAll(node);
     }
 
     /**

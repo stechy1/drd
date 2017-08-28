@@ -1,6 +1,7 @@
 package cz.stechy.drd.model.persistent;
 
 import com.google.firebase.database.DataSnapshot;
+import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
@@ -16,6 +17,7 @@ import java.util.Map;
 /**
  * Služba spravující CRUD operace nad třídou {@link Backpack}
  */
+@Singleton
 public final class BackpackService extends AdvancedDatabaseService<Backpack> {
 
     // region Constants

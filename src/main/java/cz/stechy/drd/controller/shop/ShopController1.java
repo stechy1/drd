@@ -1,7 +1,6 @@
 package cz.stechy.drd.controller.shop;
 
 import com.jfoenix.controls.JFXToggleButton;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
 import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
@@ -9,12 +8,12 @@ import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.shop.ShoppingCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.HashGenerator;
 import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -130,12 +129,11 @@ public class ShopController1 extends BaseController implements Initializable {
 
     // region Constructors
 
-    public ShopController1(Context context) {
-        this.translator = context.getTranslator();
-        this.translatedItemType.addAll(translator.getTranslationFor(Key.SHOP_ITEMS));
-        this.user = context.getUserService().getUser().get();
-        this.hero = ((HeroService) context.getService(Context.SERVICE_HERO)).getHero();
-        this.shoppingCart = new ShoppingCart(hero);
+    public ShopController1(UserService userService, HeroService heroService, Translator translator, ShoppingCart shoppingCart) {
+        this.user = userService.getUser().get();
+        this.hero = heroService.getHero();
+        this.translator = translator;
+        this.shoppingCart = shoppingCart;
     }
 
     // endregion

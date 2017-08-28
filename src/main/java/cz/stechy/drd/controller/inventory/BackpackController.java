@@ -1,7 +1,6 @@
 package cz.stechy.drd.controller.inventory;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
@@ -65,9 +64,9 @@ public class BackpackController extends BaseController implements TooltipTransla
 
     // region Constructors
 
-    public BackpackController(Context context) {
-        this.heroManager = context.getService(Context.SERVICE_HERO);
-        this.translator = context.getTranslator();
+    public BackpackController(HeroService heroManager, Translator translator) {
+        this.heroManager = heroManager;
+        this.translator = translator;
     }
 
     // endregion

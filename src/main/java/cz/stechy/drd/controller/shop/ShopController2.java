@@ -1,7 +1,6 @@
 package cz.stechy.drd.controller.shop;
 
 import cz.stechy.drd.model.Money;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
@@ -55,7 +54,7 @@ public class ShopController2 extends BaseController implements Initializable {
     // endregion
 
     private final ObservableList<ItemResultEntry> items = FXCollections.observableArrayList();
-    private final HeroService heroManager;
+    private final HeroService heroService;
 
     private ShoppingCart shoppingCart;
 
@@ -63,8 +62,8 @@ public class ShopController2 extends BaseController implements Initializable {
 
     // region Constructors
 
-    public ShopController2(Context context) {
-        this.heroManager = context.getService(Context.SERVICE_HERO);
+    public ShopController2(HeroService heroService) {
+        this.heroService = heroService;
     }
 
     // endregion
@@ -97,20 +96,20 @@ public class ShopController2 extends BaseController implements Initializable {
     private void handleFinishShopping(ActionEvent actionEvent) {
         try {
             // Odečtení peněz
-            heroManager.beginTransaction();
-            final Hero heroCopy = heroManager.getHero().duplicate();
+            heroService.beginTransaction();
+            final Hero heroCopy = heroService.getHero().duplicate();
             heroCopy.getMoney().subtract(shoppingCart.totalPrice);
-            heroManager.update(heroCopy);
+            heroService.update(heroCopy);
 
-            final InventoryService inventoryManager = heroManager.getInventory();
+            final InventoryService inventoryManager = heroService.getInventory();
             InventoryHelper.insertItemsToInventory(inventoryManager, items);
 
-            heroManager.commit();
+            heroService.commit();
 
         } catch (DatabaseException e) {
             e.printStackTrace();
             try {
-                heroManager.rollback();
+                heroService.rollback();
             } catch (DatabaseException e1) {
                 e1.printStackTrace();
             }

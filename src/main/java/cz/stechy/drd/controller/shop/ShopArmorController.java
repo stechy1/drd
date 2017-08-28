@@ -2,7 +2,6 @@ package cz.stechy.drd.controller.shop;
 
 import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.MaxActValue;
@@ -13,6 +12,8 @@ import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.model.persistent.ArmorService;
+import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.ArmorEntry;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
@@ -103,10 +104,10 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
     // region Constructors
 
-    public ShopArmorController(Context context) {
-        this.service = context.getService(Context.SERVICE_ARMOR);
-        this.translator = context.getTranslator();
-        this.user = context.getUserService().getUser().get();
+    public ShopArmorController(UserService userService, ArmorService armorService, Translator translator) {
+        this.service = armorService;
+        this.translator = translator;
+        this.user = userService.getUser().get();
     }
 
     // endregion

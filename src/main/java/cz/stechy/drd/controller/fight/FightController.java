@@ -1,7 +1,6 @@
 package cz.stechy.drd.controller.fight;
 
 import com.jfoenix.controls.JFXButton;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -87,8 +86,8 @@ public class FightController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public FightController(Context context) {
-        this.heroService = context.getService(Context.SERVICE_HERO);
+    public FightController(HeroService heroService) {
+        this.heroService = heroService;
         this.hero = this.heroService.getHero().duplicate();
     }
 

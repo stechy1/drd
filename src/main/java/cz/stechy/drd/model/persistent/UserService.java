@@ -5,6 +5,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.drd.model.db.base.Firebase;
 import cz.stechy.drd.model.user.User;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Služba spravující CRUD operace nad třídou {@link User}
  */
+@Singleton
 public final class UserService implements Firebase<User> {
 
     // region Constants

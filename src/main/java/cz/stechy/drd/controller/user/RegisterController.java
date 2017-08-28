@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.user;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.persistent.UserService.UserException;
@@ -52,8 +51,8 @@ public class RegisterController extends BaseController implements Initializable 
 
     // region Constructors
 
-    public RegisterController(Context context) {
-        userService = context.getUserService();
+    public RegisterController(UserService userService) {
+        this.userService = userService;
     }
 
     // endregion

@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.main.defaultstaff;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.controller.main.MainScreen;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.util.StringConvertors;
@@ -55,8 +54,8 @@ public class DefaultStaffController implements MainScreen {
 
     // region Constructors
 
-    public DefaultStaffController(Context context) {
-        translator = context.getTranslator();
+    public DefaultStaffController(Translator translator) {
+        this.translator = translator;
     }
 
     // endregion

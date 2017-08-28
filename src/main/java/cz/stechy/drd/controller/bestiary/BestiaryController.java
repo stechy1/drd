@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.bestiary;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.Rule;
@@ -12,6 +11,8 @@ import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
 import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
+import cz.stechy.drd.model.persistent.BestiaryService;
+import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.HashGenerator;
@@ -122,10 +123,10 @@ public class BestiaryController extends BaseController implements Initializable 
 
     // region Constructors
 
-    public BestiaryController(Context context) {
-        this.service = context.getService(Context.SERVICE_BESTIARY);
-        this.user = context.getUserService().getUser().get();
-        this.translator = context.getTranslator();
+    public BestiaryController(UserService userService, BestiaryService bestiaryService, Translator translator) {
+        this.service = bestiaryService;
+        this.translator = translator;
+        this.user = userService.getUser().get();
     }
 
     // endregion

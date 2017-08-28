@@ -1,14 +1,13 @@
 package cz.stechy.drd.controller.moneyxp;
 
-import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
-import cz.stechy.drd.Context;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.widget.LabeledProgressBar;
 import cz.stechy.drd.widget.LabeledMoney;
+import cz.stechy.drd.widget.LabeledProgressBar;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -65,8 +64,8 @@ public class MoneyXpController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public MoneyXpController(Context context) {
-        final Hero hero = ((HeroService)context.getService(Context.SERVICE_HERO)).getHero();
+    public MoneyXpController(HeroService heroService) {
+        final Hero hero = heroService.getHero();
 
         this.heroMoney = new Money(hero.getMoney());
         this.heroExperience.update(hero.getExperiences());

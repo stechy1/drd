@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.MoneyController;
 import cz.stechy.drd.model.MaxActValue;
@@ -110,8 +109,8 @@ public class ItemBackpackController extends BaseController implements Initializa
 
     // region Constructors
 
-    public ItemBackpackController(Context context) {
-        this.translator = context.getTranslator();
+    public ItemBackpackController(Translator translator) {
+        this.translator = translator;
     }
 
     // endregion
