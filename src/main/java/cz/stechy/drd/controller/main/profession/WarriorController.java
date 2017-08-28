@@ -6,6 +6,8 @@ import cz.stechy.drd.model.entity.hero.profession.Warior;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.item.ItemType;
+import cz.stechy.drd.model.item.WeaponBase;
 import cz.stechy.drd.model.persistent.BestiaryService;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ObservableMergers;
@@ -49,7 +51,7 @@ public class WarriorController implements IProfessionController, Initializable {
     private Button btnIntimidation;
 
     @FXML
-    private ComboBox<ItemBase> cmbItemsDetectArtefact;
+    private ComboBox<WeaponBase> cmbItemsDetectArtefact;
 
     @FXML
     private Button btnDetectArtefact;
@@ -57,7 +59,7 @@ public class WarriorController implements IProfessionController, Initializable {
     // endregion
 
     private final ObservableList<Mob> mobs = FXCollections.observableArrayList();
-    private final ObservableList<ItemBase> items = FXCollections.observableArrayList();
+    private final ObservableList<WeaponBase> items = FXCollections.observableArrayList();
     private final BestiaryService bestiary;
 
     private Hero hero;
@@ -79,7 +81,7 @@ public class WarriorController implements IProfessionController, Initializable {
         cmbBestiaryIntimidation.setCellFactory(param -> new BestiaryCell());
 
         cmbItemsDetectArtefact.setItems(items);
-        cmbItemsDetectArtefact.setCellFactory(param -> new ItemCell());
+        cmbItemsDetectArtefact.setCellFactory(param -> new WeaponCell());
 
         btnIntimidation.disableProperty().bind(
             cmbBestiaryIntimidation.getSelectionModel().selectedItemProperty().isNull()
@@ -93,8 +95,9 @@ public class WarriorController implements IProfessionController, Initializable {
             new MaxActValue(1, Integer.MAX_VALUE, 1));
 
         ObservableMergers.mergeList(mobs, bestiary.selectAll());
-        final List<ItemBase> list = ItemRegistry.getINSTANCE().getRegistry().values().stream()
-            .map(databaseItem -> (ItemBase) databaseItem).collect(
+        final List<WeaponBase> list = ItemRegistry.getINSTANCE().getRegistry().values().stream()
+            .filter(databaseItem -> ItemType.isSword(((ItemBase) databaseItem).getItemType()))
+            .map(databaseItem -> (WeaponBase) databaseItem).collect(
                 Collectors.toList());
         items.setAll(list);
     }
@@ -128,9 +131,8 @@ public class WarriorController implements IProfessionController, Initializable {
 
     @FXML
     private void handleDetectArtefact(ActionEvent actionEvent) {
-        final ItemBase itemBase = cmbItemsDetectArtefact.getValue();
-        // TODO implementovat věhlas do každého předmětu
-        final int fame = (int) Math.round(Math.random() * 10);
+        final WeaponBase weaponBase = cmbItemsDetectArtefact.getValue();
+        final int fame = weaponBase.getRenown();
 
         final Alert alert = new Alert(AlertType.INFORMATION);
         alert.setHeaderText("Header");
@@ -175,7 +177,7 @@ public class WarriorController implements IProfessionController, Initializable {
         }
     }
 
-    private static final class ItemCell extends ListCell<ItemBase> {
+    private static final class WeaponCell extends ListCell<WeaponBase> {
         final ImageView imageView = new ImageView();
         final Label label = new Label();
         final HBox container = new HBox(imageView, label);
@@ -193,7 +195,7 @@ public class WarriorController implements IProfessionController, Initializable {
         }
 
         @Override
-        protected void updateItem(ItemBase item, boolean empty) {
+        protected void updateItem(WeaponBase item, boolean empty) {
             super.updateItem(item, empty);
 
             if (empty) {
