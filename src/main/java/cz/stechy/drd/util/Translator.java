@@ -1,6 +1,7 @@
 package cz.stechy.drd.util;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.di.Singleton;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Pomocní knihovní třída pro překládání textů
  */
+@Singleton
 public final class Translator {
 
     // region Constants

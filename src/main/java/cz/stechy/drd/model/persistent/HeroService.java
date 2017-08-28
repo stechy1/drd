@@ -1,5 +1,6 @@
 package cz.stechy.drd.model.persistent;
 
+import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
@@ -21,6 +22,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Služba spravující CRUD operace nad třídou {@link Hero}
  */
+@Singleton
 public final class HeroService extends BaseDatabaseService<Hero> {
 
     // region Constants
