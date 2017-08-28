@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import cz.stechy.drd.widget.Card?>
+<?import java.lang.Double?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
+<ScrollPane xmlns:fx="http://javafx.com/fxml/1" fitToWidth="true"
+  xmlns="http://javafx.com/javafx/8.0.121"
+  fx:controller="cz.stechy.drd.controller.settings.SettingsController">
+  <VBox alignment="TOP_CENTER" spacing="16">
+    <fx:define>
+      <Double fx:id="width" fx:value="500.0"/>
+    </fx:define>
+    <HBox styleClass="title-container">
+      <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_settings"/>
+    </HBox>
+    <Card caption="Offline databáze">
+      <content>
+        <HBox alignment="CENTER_LEFT" prefHeight="50" prefWidth="$width">
+          <Label text="Název souboru s databází"/>
+          <Region HBox.hgrow="ALWAYS"/>
+          <Label fx:id="lblOfflineDatabasePath"/>
+        </HBox>
+      </content>
+    </Card>
+    <Card caption="Online databáze">
+      <content>
+        <GridPane alignment="CENTER_LEFT" prefHeight="100" prefWidth="$width">
+          <rowConstraints>
+            <RowConstraints percentHeight="50.0" valignment="CENTER"/>
+            <RowConstraints percentHeight="50.0"/>
+          </rowConstraints>
+          <columnConstraints>
+            <ColumnConstraints percentWidth="30.0"/>
+            <ColumnConstraints halignment="RIGHT" percentWidth="30.0"/>
+            <ColumnConstraints halignment="RIGHT" percentWidth="40.0"/>
+          </columnConstraints>
+          <Label text="Zpřístupnit online databázi"/>
+          <Label GridPane.rowIndex="1" text="Cesta k souboru"/>
+          <Label GridPane.columnIndex="1" GridPane.rowIndex="1" text="Ověřovací údaje"
+            fx:id="lblCredentialsPath"/>
+          <JFXToggleButton GridPane.columnIndex="2" text="" fx:id="toggleOnlineDatabase"/>
+          <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="1" minWidth="100.0"
+            onAction="#handleSelectCredentialsPath" styleClass="btn, btn-primary"
+            text="Vyberte soubor" fx:id="btnSelectCredentials"/>
+        </GridPane>
+      </content>
+    </Card>
+  </VBox>
+</ScrollPane>

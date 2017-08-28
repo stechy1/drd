@@ -1,21 +1,21 @@
 package cz.stechy.drd.controller.hero.creator;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.controller.hero.creator.HeroCreatorHelper.ItemEntry;
+import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
-import cz.stechy.drd.model.item.ItemRegistry.ItemException;
 import cz.stechy.drd.util.CellUtils;
-import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -35,7 +35,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -44,12 +43,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
 /**
- * Třetí kontroler z průvodce vytvoření postavy
- * Nastavení základních předmětů a zbraní
+ * Třetí kontroler z průvodce vytvoření postavy Nastavení základních předmětů a zbraní
  */
 public class HeroCreatorController3 extends BaseController implements Initializable {
-
-
 
     // region Variables
 
@@ -62,7 +58,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
     @FXML
     private TableColumn<ItemEntry, String> columnName;
     @FXML
-    private TableColumn<ItemEntry, MaxActValue> columnAmmount;
+    private TableColumn<ItemEntry, MaxActValue> columnItemCount;
     @FXML
     private TableColumn<ItemEntry, Integer> columnWeight;
 
@@ -74,7 +70,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
     // endregion
 
     private final ObservableList<ItemEntry> items = FXCollections.observableArrayList();
-    private final ObservableList<ChoiceEntry> item_registry = FXCollections.observableArrayList();
+    private final ObservableList<ChoiceEntry> itemRegistry = FXCollections.observableArrayList();
     private final IntegerProperty selectedItem = new SimpleIntegerProperty();
 
     private String title;
@@ -88,15 +84,14 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         tableItems.setItems(items);
         selectedItem.bind(tableItems.getSelectionModel().selectedIndexProperty());
 
-        columnImage.setCellValueFactory(new PropertyValueFactory<>("image"));
         columnImage.setCellFactory(param -> CellUtils.forImage());
-        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        columnWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
-        columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
-        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
+        columnItemCount.setCellFactory(param -> CellUtils.forMaxActValue());
 
-        ObservableMergers.mergeList(databaseItem -> new ChoiceEntry(databaseItem), item_registry,
-            ItemRegistry.getINSTANCE().getRegistry());
+        final List<ChoiceEntry> items = ItemRegistry.getINSTANCE().getRegistry().entrySet()
+            .stream()
+            .map(entry -> new ChoiceEntry(entry.getValue()))
+            .collect(Collectors.toList());
+        itemRegistry.setAll(items);
 
         btnRemoveItem.disableProperty().bind(selectedItem.lessThan(0));
     }
@@ -109,36 +104,42 @@ public class HeroCreatorController3 extends BaseController implements Initializa
     @Override
     protected void onResume() {
         setTitle(title);
-        setScreenSize(400, 200);
+        setScreenSize(600, 400);
     }
 
     // region Button handles
 
-    public void handleBack(ActionEvent actionEvent) {
+    @FXML
+    private void handleBack(ActionEvent actionEvent) {
         back();
     }
 
-    public void handleCancel(ActionEvent actionEvent) {
+    @FXML
+    private void handleCancel(ActionEvent actionEvent) {
         finish();
     }
 
-    public void handleReset(ActionEvent actionEvent) {
+    @FXML
+    private void handleReset(ActionEvent actionEvent) {
         items.clear();
     }
 
-    public void handleFinish(ActionEvent actionEvent) {
+    @FXML
+    private void handleFinish(ActionEvent actionEvent) {
         setResult(RESULT_SUCCESS);
-        bundle.put(HeroCreatorHelper.INVENTORY, items);
+        bundle.put(HeroHelper.INVENTORY, items);
         finish(bundle);
     }
 
-    public void handleAddItem(ActionEvent actionEvent) {
-        ChoiceDialog<ChoiceEntry> dialog = new ChoiceDialog<>(null, item_registry);
+    @FXML
+    private void handleAddItem(ActionEvent actionEvent) {
+        final ChoiceDialog<ChoiceEntry> dialog = new ChoiceDialog<>(null, itemRegistry);
         dialog.setTitle("Přidat item");
         dialog.setHeaderText("Výběr itemu");
         dialog.setContentText("Vyberte...");
         // Trocha čarování k získání reference na combobox abych ho mohl upravit
-        final ComboBox<ChoiceEntry> comboBox = (ComboBox) (((GridPane) dialog.getDialogPane()
+        @SuppressWarnings("unchecked") final ComboBox<ChoiceEntry> comboBox = (ComboBox) (((GridPane) dialog
+            .getDialogPane()
             .getContent())
             .getChildren().get(1));
         comboBox.setPrefWidth(100);
@@ -146,22 +147,19 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         comboBox.setCellFactory(param -> new ChoiceEntryCell());
         comboBox.setMinWidth(200);
         comboBox.setMinHeight(40);
-        Optional<ChoiceEntry> result = dialog.showAndWait();
+        final Optional<ChoiceEntry> result = dialog.showAndWait();
         result.ifPresent(choiceEntry -> {
-            try {
-                final Optional<ItemEntry> entry = items.stream()
-                    .filter(itemEntry -> itemEntry.getId().equals(choiceEntry.id.get()))
-                    .findFirst();
-                if (!entry.isPresent()) {
-                    items.add(new ItemEntry(choiceEntry));
-                }
-            } catch (ItemException e) {
-                e.printStackTrace();
+            final Optional<ItemEntry> entry = items.stream()
+                .filter(itemEntry -> itemEntry.getId().equals(choiceEntry.id.get()))
+                .findFirst();
+            if (!entry.isPresent()) {
+                items.add(new ItemEntry(choiceEntry));
             }
         });
     }
 
-    public void handleRemoveItem(ActionEvent actionEvent) {
+    @FXML
+    private void handleRemoveItem(ActionEvent actionEvent) {
         items.remove(selectedItem.get());
     }
 
@@ -175,7 +173,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
 
         public ChoiceEntry(DatabaseItem databaseItem) {
             assert databaseItem instanceof ItemBase;
-            ItemBase itemBase = (ItemBase) databaseItem;
+            final ItemBase itemBase = (ItemBase) databaseItem;
             this.id.setValue(itemBase.getId());
             this.name.setValue(itemBase.getName());
             final ByteArrayInputStream inputStream = new ByteArrayInputStream(itemBase.getImage());

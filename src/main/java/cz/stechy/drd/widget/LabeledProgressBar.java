@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 /**
  * Kontrolka pro grafické zobrazení životů a magů
@@ -17,7 +18,7 @@ public class LabeledProgressBar extends VBox {
     private static final int DEFAULT_LABEL_PADDING = 5;
 
     private static final String[] COLORS = new String[]{
-        "-fx-accent: red", "-fx-accent: blue"
+        "-fx-accent: red", "-fx-accent: blue", "-fx-accent: #FEFF8A"
     };
 
     // endregion
@@ -29,6 +30,8 @@ public class LabeledProgressBar extends VBox {
     private final Label progressLabel = new Label("0 / 0");
     private final StackPane container = new StackPane(progressBar, progressLabel);
     private DisplayMode displayMode;
+    private int actValue = 1;
+    private int maxValue = 1;
 
     // endregion
 
@@ -37,7 +40,8 @@ public class LabeledProgressBar extends VBox {
     public LabeledProgressBar() {
         setDisplayMode(DisplayMode.LIVE);
 
-        progressLabel.setStyle("-fx-text-fill: black; -fx-background-color: rgba(0, 0, 0, 0.1)");
+        progressLabel.setStyle("-fx-text-fill: black; -fx-background-color: rgba(0, 0, 0, 0.1); -fx-font-size: 12;");
+        label.setFont(Font.font(10));
 
         progressBar.setPrefWidth(Double.MAX_VALUE);
         getChildren().setAll(label, container);
@@ -50,13 +54,17 @@ public class LabeledProgressBar extends VBox {
     // region Private methods
 
     private void sync(int actValue, int maxValue) {
-        progressBar.setProgress(Math.round(actValue / (double) maxValue));
+        progressBar.setProgress(actValue / (double) maxValue);
         progressLabel.setText(String.format("%d / %d", actValue, maxValue));
 
         progressBar.setMinHeight(
             progressLabel.getBoundsInLocal().getHeight() + DEFAULT_LABEL_PADDING * 2);
         progressBar.setMinWidth(
             progressLabel.getBoundsInLocal().getWidth() + DEFAULT_LABEL_PADDING * 2);
+
+        // Uložení nových hodnot do pomocných proměnných pro pozdější využití
+        this.actValue = actValue;
+        this.maxValue = maxValue;
     }
 
     // endregion
@@ -64,9 +72,12 @@ public class LabeledProgressBar extends VBox {
     // region Public methods
 
     public void setMaxActValue(final MaxActValue maxActValue) {
-        final int maxValue = maxActValue.getMaxValue().intValue();
-        maxActValue.actValueProperty().addListener((observable, oldValue, newValue) ->
-            sync(newValue.intValue(), maxValue));
+        maxActValue.actValueProperty().addListener((observable, oldValue, newValue) -> {
+            sync(newValue.intValue(), maxValue);
+        });
+        maxActValue.maxValueProperty().addListener((observable, oldValue, newValue) -> {
+            sync(this.actValue, newValue.intValue());
+        });
 
         sync(maxActValue.getActValue().intValue(), maxActValue.getMaxValue().intValue());
     }
@@ -99,6 +110,6 @@ public class LabeledProgressBar extends VBox {
     // endregion
 
     public enum DisplayMode {
-        LIVE, MAG
+        LIVE, MAG, EXPERIENCE
     }
 }

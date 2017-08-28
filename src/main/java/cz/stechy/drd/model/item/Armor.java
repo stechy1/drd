@@ -1,26 +1,45 @@
 package cz.stechy.drd.model.item;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.IClonable;
+import cz.stechy.drd.model.ITranslatedEnum;
+import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Height;
+import java.util.Map;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Třída představující brnění
  */
-public class Armor extends ItemBase {
+public final class Armor extends ItemBase {
 
     // region Variables
 
-    private final IntegerProperty defenceNumber = new SimpleIntegerProperty();
-    private final IntegerProperty weightA = new SimpleIntegerProperty();
-    private final IntegerProperty weightB = new SimpleIntegerProperty();
-    private final IntegerProperty weightC = new SimpleIntegerProperty();
+    // Obranné číslo zbroje
+    private final IntegerProperty defenceNumber = new SimpleIntegerProperty(this, "defenceNumber");
+    // Váha zbroje pro postavy velikosti A
+    private final IntegerProperty weightA = new SimpleIntegerProperty(this, "weightA");
+    // Váha zbroje pro postavy velikosti B
+    private final IntegerProperty weightB = new SimpleIntegerProperty(this, "weightB");
+    // Váha zbroje pro postavy velikosti C
+    private final IntegerProperty weightC = new SimpleIntegerProperty(this, "weightC");
+    // Cena zbroje pro ostavy velikosti A
     private final Money priceA = new Money();
+    // Cena zbroje pro ostavy velikosti B
     private final Money priceB = new Money();
+    // Cena zbroje pro ostavy velikosti C
     private final Money priceC = new Money();
-    private final IntegerProperty minimumStrength = new SimpleIntegerProperty();
+    // Minimální sila, kterou musí postava mít, aby zbroj unesla
+    private final IntegerProperty minimumStrength = new SimpleIntegerProperty(this,
+        "minimumStrength");
+    private final ObjectProperty<ArmorType> type = new SimpleObjectProperty<>(this,
+        "type");
 
     // endregion
 
@@ -31,21 +50,20 @@ public class Armor extends ItemBase {
      *
      * @param armor Brnění, které se má nakopírovat
      */
-    public Armor(Armor armor) {
+    private Armor(Armor armor) {
         this(armor.getId(), armor.getName(), armor.getDescription(), armor.getAuthor(),
             armor.getDefenceNumber(), armor.getMinimumStrength(), armor.getWeightA(),
             armor.getWeightB(), armor.getWeightC(), armor.getPriceA().getRaw(),
-            armor.getPriceB().getRaw(), armor.getPriceC().getRaw(), armor.getImage(),
-            armor.isDownloaded(), armor.isUploaded());
+            armor.getPriceB().getRaw(), armor.getPriceC().getRaw(), armor.getType(),
+            armor.getImage(), armor.getStackSize(), armor.isDownloaded(), armor.isUploaded());
     }
 
     /**
      * Konstruktor zbroje
-     *
-     * @param id Id zbroje
-     * @param author Autor brnění
+     *  @param id Id zbroje
      * @param name Název zbroje
      * @param description Popis zbroje
+     * @param author Autor brnění
      * @param defenceNumber Obranné číslo brnění
      * @param weightA Váha pro bytosti velikosti A
      * @param weightB Váha pro bytosti velikosti B
@@ -53,23 +71,29 @@ public class Armor extends ItemBase {
      * @param priceA Cena pro bytosti velikosti A
      * @param priceB Cena pro bytosti velikosti B
      * @param priceC Cena pro bytosti velikosti C
+     * @param minimumStrength Minimální potřebná síla k nošení brnění
+     * @param type Typ části brnění
      * @param image Obrázek zbroje
+     * @param stackSize Maximální počet předmětů, který může být v jednom stacku ve slotu inventáře
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public Armor(String id, String author, String name, String description, int defenceNumber,
+    private Armor(String id, String name, String description, String author, int defenceNumber,
         int weightA, int weightB, int weightC, int priceA, int priceB, int priceC,
-        int minimumStrength, byte[] image, boolean downloaded, boolean uploaded) {
-        super(id, author, name, description, weightB, priceB, image, downloaded, uploaded);
+        int minimumStrength, ArmorType type, byte[] image,
+        int stackSize, boolean downloaded, boolean uploaded) {
+        super(id, author, name, description, weightB, priceB, image, stackSize, downloaded,
+            uploaded);
 
-        this.defenceNumber.setValue(defenceNumber);
-        this.weightA.setValue(weightA);
-        this.weightB.setValue(weightB);
-        this.weightC.setValue(weightC);
+        setDefenceNumber(defenceNumber);
+        setWeightA(weightA);
+        setWeightB(weightB);
+        setWeightC(weightC);
         this.priceA.setRaw(priceA);
         this.priceB.setRaw(priceB);
         this.priceC.setRaw(priceC);
-        this.minimumStrength.setValue(minimumStrength);
+        setMinimumStrength(minimumStrength);
+        setType(type);
     }
 
     // endregion
@@ -99,6 +123,30 @@ public class Armor extends ItemBase {
     }
 
     @Override
+    public void update(DatabaseItem other) {
+        super.update(other);
+
+        Armor armor = (Armor) other;
+        setDefenceNumber(armor.getDefenceNumber());
+        setWeightA(armor.getWeightA());
+        setWeightB(armor.getWeightB());
+        setWeightC(armor.getWeightC());
+        this.priceA.setRaw(armor.getPriceA().getRaw());
+        this.priceB.setRaw(armor.getPriceB().getRaw());
+        this.priceC.setRaw(armor.getPriceC().getRaw());
+        setMinimumStrength(armor.getMinimumStrength());
+    }
+
+    @Override
+    public Map<String, String> getMapDescription() {
+        final Map<String, String> map = super.getMapDescription();
+        map.put(R.Translate.ITEM_WEAPON_MELE_ARMOR_DEFENCE_NUMBER, String.valueOf(getDefenceNumber()));
+        map.put(R.Translate.ITEM_ARMOR_MINIMUM_STRENGTH, String.valueOf(getMinimumStrength()));
+
+        return map;
+    }
+
+    @Override
     public ItemType getItemType() {
         return ItemType.ARMOR;
     }
@@ -113,83 +161,116 @@ public class Armor extends ItemBase {
 
     // region Getters & Setters
 
-    public int getDefenceNumber() {
+    public final int getDefenceNumber() {
         return defenceNumber.get();
     }
 
-    public IntegerProperty defenceNumberProperty() {
+    public final ReadOnlyIntegerProperty defenceNumberProperty() {
         return defenceNumber;
     }
 
-    public void setDefenceNumber(int defenceNumber) {
+    private void setDefenceNumber(int defenceNumber) {
         this.defenceNumber.set(defenceNumber);
     }
 
-    public int getWeightA() {
+    public final int getWeightA() {
         return weightA.get();
     }
 
-    public IntegerProperty weightAProperty() {
+    public final ReadOnlyIntegerProperty weightAProperty() {
         return weightA;
     }
 
-    public void setWeightA(int weightA) {
+    private void setWeightA(int weightA) {
         this.weightA.set(weightA);
     }
 
-    public int getWeightB() {
+    public final int getWeightB() {
         return weightB.get();
     }
 
-    public IntegerProperty weightBProperty() {
+    public final ReadOnlyIntegerProperty weightBProperty() {
         return weightB;
     }
 
-    public void setWeightB(int weightB) {
+    private void setWeightB(int weightB) {
         this.weightB.set(weightB);
     }
 
-    public int getWeightC() {
+    public final int getWeightC() {
         return weightC.get();
     }
 
-    public IntegerProperty weightCProperty() {
+    public final ReadOnlyIntegerProperty weightCProperty() {
         return weightC;
     }
 
-    public void setWeightC(int weightC) {
+    private void setWeightC(int weightC) {
         this.weightC.set(weightC);
     }
 
-    public int getMinimumStrength() {
-        return minimumStrength.get();
-    }
-
-    public IntegerProperty minimumStrengthProperty() {
-        return minimumStrength;
-    }
-
-    public void setMinimumStrength(int minimumStrength) {
-        this.minimumStrength.set(minimumStrength);
-    }
-
-    public Money getPriceA() {
+    public final Money getPriceA() {
         return priceA;
     }
 
-    public Money getPriceB() {
+    public final Money getPriceB() {
         return priceB;
     }
 
-    public Money getPriceC() {
+    public final Money getPriceC() {
         return priceC;
+    }
+
+    public final int getMinimumStrength() {
+        return minimumStrength.get();
+    }
+
+    public final ReadOnlyIntegerProperty minimumStrengthProperty() {
+        return minimumStrength;
+    }
+
+    private void setMinimumStrength(int minimumStrength) {
+        this.minimumStrength.set(minimumStrength);
+    }
+
+    public final ArmorType getType() {
+        return type.get();
+    }
+
+    public final ReadOnlyObjectProperty<ArmorType> typeProperty() {
+        return type;
+    }
+
+    private void setType(ArmorType type) {
+        this.type.set(type);
     }
 
     // endregion
 
+    // Typ části brnění
+    public enum ArmorType implements ITranslatedEnum {
+        HELM(R.Translate.ITEM_ARMOR_TYPE_HELM),
+        BODY(R.Translate.ITEM_ARMOR_TYPE_BODY),
+        LEGS(R.Translate.ITEM_ARMOR_TYPE_LEGS),
+        BOTS(R.Translate.ITEM_ARMOR_TYPE_BOOTS),
+        GLOVES(R.Translate.ITEM_ARMOR_TYPE_GLASES);
+
+        private final String key;
+
+        ArmorType(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public String getKeyForTranslation() {
+            return key;
+        }
+    }
+
     public static class Builder {
 
         private String id;
+        private String author;
         private String name;
         private String description;
         private int defenceNumber;
@@ -200,8 +281,9 @@ public class Armor extends ItemBase {
         private int priceB;
         private int priceC;
         private int minimumStrength;
-        private String author;
+        private ArmorType type;
         private byte[] image;
+        private int stackSize;
         private boolean uploaded;
         private boolean downloaded;
 
@@ -260,6 +342,16 @@ public class Armor extends ItemBase {
             return this;
         }
 
+        public Builder type(ArmorType type) {
+            this.type = type;
+            return this;
+        }
+
+        public Builder type(int type) {
+            this.type = ArmorType.values()[type];
+            return this;
+        }
+
         public Builder author(String author) {
             this.author = author;
             return this;
@@ -267,6 +359,11 @@ public class Armor extends ItemBase {
 
         public Builder image(byte[] image) {
             this.image = image;
+            return this;
+        }
+
+        public Builder stackSize(int stackSize) {
+            this.stackSize = stackSize;
             return this;
         }
 
@@ -281,9 +378,9 @@ public class Armor extends ItemBase {
         }
 
         public Armor build() {
-            return new Armor(id, author, name, description, defenceNumber, weightA, weightB,
-                weightC,
-                priceA, priceB, priceC, minimumStrength, image, downloaded, uploaded);
+            return new Armor(id, name, description, author, defenceNumber, weightA, weightB,
+                weightC, priceA, priceB, priceC, minimumStrength, type, image, stackSize,
+                downloaded, uploaded);
         }
     }
 }

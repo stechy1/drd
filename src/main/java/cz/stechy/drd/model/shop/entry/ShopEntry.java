@@ -1,6 +1,6 @@
 package cz.stechy.drd.model.shop.entry;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.item.ItemBase;
@@ -29,7 +29,7 @@ public abstract class ShopEntry {
     protected final StringProperty author = new SimpleStringProperty();
     protected final StringProperty description = new SimpleStringProperty();
     protected final Money price;
-    protected final MaxActValue ammount = new MaxActValue(1000);
+    protected final MaxActValue ammount = new MaxActValue(Integer.MAX_VALUE);
     protected final IntegerProperty weight = new SimpleIntegerProperty();
     protected final BooleanProperty inShoppingCart = new SimpleBooleanProperty();
     protected final BooleanProperty downloaded = new SimpleBooleanProperty();
@@ -44,7 +44,7 @@ public abstract class ShopEntry {
     /**
      * Vytvoří novou abstrakní nákupní položku
      */
-    public ShopEntry(ItemBase itemBase) {
+    ShopEntry(ItemBase itemBase) {
         ammount.minValueProperty().bind(Bindings
             .when(inShoppingCart)
             .then(1)
@@ -59,11 +59,11 @@ public abstract class ShopEntry {
         this.id.bind(itemBase.idProperty());
         this.name.bind(itemBase.nameProperty());
         this.description.bind(itemBase.descriptionProperty());
-        this.price = itemBase.getPrice();
+        this.price = new Money(itemBase.getPrice());
         this.weight.bind(itemBase.weightProperty());
         this.author.bind(itemBase.authorProperty());
-        this.downloaded.bindBidirectional(itemBase.downloadedProperty());
-        this.uploaded.bindBidirectional(itemBase.uploadedProperty());
+        this.downloaded.bind(itemBase.downloadedProperty());
+        this.uploaded.bind(itemBase.uploadedProperty());
         this.imageRaw.bind(itemBase.imageProperty());
     }
 

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Separator?>
+<BorderPane prefWidth="900" prefHeight="500" xmlns="http://javafx.com/javafx/8.0.112"
+  xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="cz.stechy.drd.controller.bestiary.BestiaryController">
+  <center>
+    <TableView fx:id="tableBestiary" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <columnResizePolicy>
+        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+      </columnResizePolicy>
+      <columns>
+        <TableColumn fx:id="columnImage" prefWidth="75.0" text="%drd_item_image">
+          <cellValueFactory>
+            <PropertyValueFactory property="image"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnName" prefWidth="75.0" text="%drd_bestiary_name">
+          <cellValueFactory>
+            <PropertyValueFactory property="name"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnAuthor" prefWidth="75.0" text="%drd_bestiary_author">
+          <cellValueFactory>
+            <PropertyValueFactory property="author"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnMobClass" prefWidth="75.0" text="%drd_bestiary_mob_class">
+          <cellValueFactory>
+            <PropertyValueFactory property="mobClass"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnRulesType" prefWidth="75.0" text="%drd_bestiary_rules_type">
+          <cellValueFactory>
+            <PropertyValueFactory property="rulesType"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnViability" prefWidth="75.0" text="%drd_bestiary_viability">
+          <cellValueFactory>
+            <PropertyValueFactory property="viability"/>
+          </cellValueFactory>
+        </TableColumn>
+      </columns>
+    </TableView>
+  </center>
+  <right>
+    <VBox prefWidth="50.0" spacing="8.0">
+      <padding>
+        <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
+      </padding>
+      <JFXButton fx:id="btnAddItem" styleClass="sidebar-button, icon-add" onAction="#handleAddItem">
+      </JFXButton>
+      <JFXButton fx:id="btnRemoveItem" styleClass="sidebar-button, icon-subtract" onAction="#handleRemoveItem">
+        <tooltip>
+          <Tooltip text="%drd_repository_item_remove"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton fx:id="btnEditItem" styleClass="sidebar-button, icon-edit" onAction="#handleEditItem">
+        <tooltip>
+          <Tooltip text="%drd_repository_item_edit"/>
+        </tooltip>
+      </JFXButton>
+      <Separator />
+      <JFXButton onAction="#handleUploadItem" styleClass="sidebar-button, icon-upload"
+        fx:id="btnUploadItem">
+        <tooltip>
+          <Tooltip text="%drd_firebase_entry_upload"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton onAction="#handleDownloadItem" styleClass="sidebar-button, icon-download"
+        fx:id="btnDownloadItem">
+        <tooltip>
+          <Tooltip text="%drd_firebase_entry_download"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton onAction="#handleRemoveOnlineItem" styleClass="sidebar-button, icon-remove-online"
+        fx:id="btnRemoveOnlineItem">
+        <tooltip>
+          <Tooltip text="%drd_firebase_entry_remove"/>
+        </tooltip>
+      </JFXButton>
+      <Separator/>
+      <JFXButton fx:id="btnSynchronize" onAction="#handleSynchronize" styleClass="sidebar-button, icon-synchronize">
+        <tooltip>
+          <Tooltip text="%drd_repository_item_synchronize"/>
+        </tooltip>
+      </JFXButton>
+      <ToggleButton fx:id="btnToggleOnline" styleClass="sidebar-button, icon-online">
+        <tooltip>
+          <Tooltip text="%drd_repository_toggle_online_database"/>
+        </tooltip>
+      </ToggleButton>
+    </VBox>
+  </right>
+</BorderPane>

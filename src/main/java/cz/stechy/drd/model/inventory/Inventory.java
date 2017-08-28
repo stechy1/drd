@@ -5,15 +5,18 @@ import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.util.HashGenerator;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- *
+ * Třída reprezentující záznam v databázi o jednom inventáři
  */
-public class Inventory extends DatabaseItem {
+public final class Inventory extends DatabaseItem {
 
     // region Variables
     // Id hrdiny, kterému patří inventář
@@ -32,8 +35,9 @@ public class Inventory extends DatabaseItem {
      *
      * @param inventory Kopírovaný inventář
      */
-    public Inventory(Inventory inventory) {
-        this(inventory.getId(), inventory.getHeroId(), inventory.getInventoryType(), inventory.getCapacity());
+    private Inventory(Inventory inventory) {
+        this(inventory.getId(), inventory.getHeroId(), inventory.getInventoryType(),
+            inventory.getCapacity());
     }
 
     /**
@@ -44,7 +48,7 @@ public class Inventory extends DatabaseItem {
      * @param inventoryType Typ inventáře
      * @param capacity Kapacita inventáře
      */
-    public Inventory(String id, String heroId, InventoryType inventoryType, int capacity) {
+    private Inventory(String id, String heroId, InventoryType inventoryType, int capacity) {
         super(id);
 
         this.heroId.set(heroId);
@@ -61,9 +65,9 @@ public class Inventory extends DatabaseItem {
         super.update(other);
 
         Inventory inventory = (Inventory) other;
-        this.heroId.setValue(inventory.getHeroId());
-        this.inventoryType.setValue(inventory.getInventoryType());
-        this.capacity.setValue(inventory.getCapacity());
+        setHeroId(inventory.getHeroId());
+        setInventoryType(inventory.getInventoryType());
+        setCapacity(inventory.getCapacity());
     }
 
     @Override
@@ -76,39 +80,39 @@ public class Inventory extends DatabaseItem {
 
     // region Getters & Setters
 
-    public String getHeroId() {
+    public final String getHeroId() {
         return heroId.get();
     }
 
-    public StringProperty heroIdProperty() {
+    public final ReadOnlyStringProperty heroIdProperty() {
         return heroId;
     }
 
-    public void setHeroId(String heroId) {
+    private void setHeroId(String heroId) {
         this.heroId.set(heroId);
     }
 
-    public InventoryType getInventoryType() {
+    public final InventoryType getInventoryType() {
         return inventoryType.get();
     }
 
-    public ObjectProperty<InventoryType> inventoryTypeProperty() {
+    public final ReadOnlyObjectProperty<InventoryType> inventoryTypeProperty() {
         return inventoryType;
     }
 
-    public void setInventoryType(InventoryType inventoryType) {
+    private void setInventoryType(InventoryType inventoryType) {
         this.inventoryType.set(inventoryType);
     }
 
-    public int getCapacity() {
+    public final int getCapacity() {
         return capacity.get();
     }
 
-    public IntegerProperty capacityProperty() {
+    public final ReadOnlyIntegerProperty capacityProperty() {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
+    private void setCapacity(int capacity) {
         this.capacity.set(capacity);
     }
 
@@ -128,7 +132,8 @@ public class Inventory extends DatabaseItem {
 
         Inventory inventory = (Inventory) o;
 
-        if (getHeroId() != null ? !getHeroId().equals(inventory.getHeroId()) : inventory.getHeroId() != null) {
+        if (getHeroId() != null ? !getHeroId().equals(inventory.getHeroId())
+            : inventory.getHeroId() != null) {
             return false;
         }
         if (getInventoryType() != null ? !getInventoryType().equals(inventory.getInventoryType())

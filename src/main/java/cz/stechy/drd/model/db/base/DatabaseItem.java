@@ -1,6 +1,7 @@
 package cz.stechy.drd.model.db.base;
 
 import cz.stechy.drd.model.IClonable;
+import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -12,7 +13,7 @@ public abstract class DatabaseItem implements IClonable {
     // region Variables
 
     // Id
-    protected final StringProperty id = new SimpleStringProperty();
+    protected final StringProperty id = new SimpleStringProperty(this, "id");
 
     // endregion
 
@@ -23,26 +24,10 @@ public abstract class DatabaseItem implements IClonable {
      *
      * @param id Id předmětu
      */
-    public DatabaseItem(String id) {
-        this.id.set(id);
+    protected DatabaseItem(String id) {
+        setId(id);
     }
-
-    // endregion
-
-    // region Getters & Setters
-
-    public String getId() {
-        return id.get();
-    }
-
-    public StringProperty idProperty() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id.set(id);
-    }
-
+;
     // endregion
 
     // region Public methods
@@ -54,6 +39,22 @@ public abstract class DatabaseItem implements IClonable {
      */
     public void update(DatabaseItem other) {
         this.id.setValue(other.getId());
+    }
+
+    // endregion
+
+    // region Getters & Setters
+
+    public String getId() {
+        return id.get();
+    }
+
+    public ReadOnlyStringProperty idProperty() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id.set(id);
     }
 
     // endregion

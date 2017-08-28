@@ -19,6 +19,7 @@ public class SimpleEntityProperty extends EntityProperty {
 
     public SimpleEntityProperty() {
         super(MIN_VALUE, MAX_VALUE);
+
         value.addListener((observable, oldValue, newValue) -> {
             int index = limit(newValue).intValue();
             int repairValue = REPAIRS[index - 1];

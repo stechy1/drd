@@ -10,9 +10,10 @@ import java.sql.SQLException;
 public interface OnRowHandler {
 
     /**
-     * Metoda je zavolána pro každý řádek z výsledku selectu z databáze
+     * Metoda je zavolána pro každý řádek z výsledku selectu z databáze.
      *
      * @param resultSet {@link ResultSet}
+     * @throws SQLException Pokud se špatně zpracuje aktuální řádek
      */
     void onRow(ResultSet resultSet) throws SQLException;
 

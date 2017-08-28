@@ -1,14 +1,15 @@
 package cz.stechy.drd.model.inventory;
 
-import cz.stechy.drd.model.db.BaseDatabaseManager.UpdateListener;
 import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
+import cz.stechy.drd.model.inventory.ItemSlot.ClickListener;
 import cz.stechy.drd.model.inventory.ItemSlot.DragDropHandlers;
 import cz.stechy.drd.model.inventory.ItemSlot.HighlightState;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
-import cz.stechy.drd.model.item.ItemRegistry.ItemException;
 import cz.stechy.drd.model.persistent.InventoryContent;
-import cz.stechy.drd.model.persistent.InventoryManager;
+import cz.stechy.drd.model.persistent.InventoryService;
+import java.util.Optional;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -22,29 +23,34 @@ import javafx.scene.Node;
  */
 public abstract class ItemContainer {
 
-    // region Variables
+    // region Constsnts
+
+    public static final int SLOT_SPACING = 1;
 
     // Globální informace obsahující přesouvaný item
-    private static ObjectProperty<DragInformations> dragInformations = new SimpleObjectProperty<>();
+    private static final ObjectProperty<DragInformations> dragInformations = new SimpleObjectProperty<>();
+    // endregion
 
-    private InventoryManager inventoryManager;
-    protected InventoryContent inventoryContent;
+    // region Variables
+
     protected final int capacity;
+    private final TooltipTranslator tooltipTranslator;
+
+    private InventoryService inventoryManager;
+    private InventoryContent inventoryContent;
     private ObservableList<InventoryRecord> oldRecords;
+    private ItemClickListener itemClickListener;
     // Kolekce slotů pro itemy v inventáři
-    public final ObservableList<ItemSlot> itemSlots = FXCollections.observableArrayList();
+    protected final ObservableList<ItemSlot> itemSlots = FXCollections.observableArrayList();
 
     // endregion
 
     // region Constructors
 
-    public ItemContainer(int capacity) {
+    protected ItemContainer(TooltipTranslator tooltipTranslator, int capacity) {
         this.capacity = capacity;
-    }
+        this.tooltipTranslator = tooltipTranslator;
 
-    // endregion
-
-    {
         dragInformations.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 cancelSlotHighlight();
@@ -54,18 +60,31 @@ public abstract class ItemContainer {
         });
     }
 
+    // endregion
+
     // region Private methods
 
     /**
      * Vloží item z {@link InventoryRecord} do správného slotu
      *
      * @param record {@link InventoryRecord}
-     * @throws ItemException Pokud se item nepodaří vložit
      */
-    private void insertItemToContainer(InventoryRecord record) throws ItemException {
-        insert(ItemRegistry.getINSTANCE().getItem(
-            databaseItem -> databaseItem.getId().equals(record.getItemId())),
-            record.getAmmount(), record.getSlotId());
+    private void insert(final InventoryRecord record) {
+        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
+            .getItemById(record.getItemId());
+        itemOptional.ifPresent(itemBase -> {
+            final ItemBase item = itemBase;
+            final int ammount = record.getAmmount();
+            final int slotIndex = record.getSlotId();
+            final Metadata metadata = record.getMetadata();
+            final ItemSlot itemSlot = itemSlots.get(slotIndex);
+            if (itemSlot.isEmpty()) {
+                itemSlot.setClickListener(clickListener);
+                itemSlot.setTooltipTranslator(tooltipTranslator);
+            }
+
+            itemSlot.addItem(new ItemStack(item, ammount, metadata));
+        });
     }
 
     /**
@@ -73,51 +92,62 @@ public abstract class ItemContainer {
      *
      * @param record {@link InventoryRecord}
      */
-    private void removeItemFromContainer(InventoryRecord record) {
-        try {
-            remove(record.getSlotId(), record.getAmmount());
-        } catch (ItemException e) {
-            e.printStackTrace();
+    private void remove(final InventoryRecord record) {
+        final int ammount = record.getAmmount();
+        final int slotIndex = record.getSlotId();
+        final ItemSlot itemSlot = itemSlots.get(slotIndex);
+        if (itemSlot.isEmpty()) {
+            return;
         }
+
+        itemSlot.removeItems(ammount);
     }
 
     /**
      * Zajištění přesunu itemu
      *
+     * @param sourceInventoryId
+     * @param sourceSlot
      * @param destinationSlot {@link ItemSlot} Cílový slot, do kterého se má vložit item
+     * @param transferAmmount
      */
-    private void handleDragEnd(final ItemSlot destinationSlot) {
+    private void handleDragEnd(final String sourceInventoryId, final ItemSlot sourceSlot,
+        final ItemSlot destinationSlot, final int transferAmmount) {
         try {
             final InventoryContent sourceInventoryContent = inventoryManager
-                .getInventoryContentById(dragInformations.get().sourceInventoryId);
+                .getInventoryContentById(sourceInventoryId);
             final InventoryRecord sourceInventoryRecord = sourceInventoryContent
-                .select(record -> record.getSlotId() == dragInformations.get().sourceSlot.getId());
-            final int sourceAmmount = dragInformations.get().sourceSlot.getItemStack().getAmmount();
-            final int transferAmmount = dragInformations.get().draggedStack.getAmmount();
+                .select(record -> record.getSlotId() == sourceSlot.getId());
+            final int sourceAmmount = sourceSlot.getItemStack().getAmmount();
             final int sourceAmmountResult = sourceAmmount - transferAmmount;
 
             try {
                 final InventoryRecord destinationInventoryRecord = inventoryContent
                     .select(record -> record.getSlotId() == destinationSlot.getId());
-                final InventoryRecord destinationInventoryRecordCopy = destinationInventoryRecord.duplicate();
-                destinationInventoryRecordCopy.setAmmount(destinationInventoryRecord.getAmmount() + transferAmmount);
+                final InventoryRecord destinationInventoryRecordCopy = destinationInventoryRecord
+                    .duplicate();
+                destinationInventoryRecordCopy.addAmmount(transferAmmount);
                 inventoryContent.update(destinationInventoryRecordCopy);
+                destinationSlot.getItemStack().addAmmount(transferAmmount);
             } catch (DatabaseException e) {
-                InventoryRecord destinationInventoryRecord = new InventoryRecord.Builder()
+                final InventoryRecord destinationInventoryRecord = new InventoryRecord.Builder()
                     .inventoryId(inventoryContent.getInventory().getId())
                     .ammount(transferAmmount)
                     .itemId(sourceInventoryRecord.getItemId())
                     .slotId(destinationSlot.getId())
                     .build();
                 inventoryContent.insert(destinationInventoryRecord);
+                // Zde nemusím volat insert nad destinationSlotem, protože se zavolá automaticky
             }
 
             if (sourceAmmountResult > 0) {
-                InventoryRecord recordCopy = sourceInventoryRecord.duplicate();
-                recordCopy.setAmmount(sourceAmmountResult);
+                final InventoryRecord recordCopy = sourceInventoryRecord.duplicate();
+                recordCopy.subtractAmmount(transferAmmount);
                 sourceInventoryContent.update(recordCopy);
+                sourceSlot.getItemStack().subtractAmmount(transferAmmount);
             } else {
                 sourceInventoryContent.delete(sourceInventoryRecord.getId());
+                // Zde nemusím volat delete nad sourceSlotem, protože se zavolá automaticky
             }
         } catch (DatabaseException e) {
             e.printStackTrace();
@@ -171,13 +201,9 @@ public abstract class ItemContainer {
     private void initInventoryContent(InventoryContent inventoryContent) {
         clear();
 
-        inventoryContent.setUpdateListener(inventoryUpdateListener);
-        inventoryContent.getWeight().addListener(weightListener);
+        InventoryContent.getWeight().addListener(weightListener);
         final ObservableList<InventoryRecord> inventoryRecords = inventoryContent.selectAll();
-        inventoryRecords.forEach(record -> insert(ItemRegistry.getINSTANCE()
-                .getItem(databaseItem -> databaseItem.getId().equals(record.getItemId())),
-            record.getAmmount(),
-            record.getSlotId()));
+        inventoryRecords.forEach(this::insert);
         inventoryRecords.addListener(inventoryRecordListener);
         this.inventoryContent = inventoryContent;
         this.oldRecords = inventoryRecords;
@@ -196,41 +222,13 @@ public abstract class ItemContainer {
             oldRecords.removeListener(inventoryRecordListener);
             oldRecords = null;
         }
-        if (inventoryContent != null) {
-            inventoryContent.setUpdateListener(null);
-        }
-    }
-
-    /**
-     * Vloži item do slotu
-     *
-     * @param item {@link ItemBase}
-     * @param ammount Počet itemů
-     * @param slotIndex Index slotu, do kterého se má vložit item
-     */
-    public void insert(ItemBase item, int ammount, int slotIndex) {
-        itemSlots.get(slotIndex).addItem(item, ammount);
-    }
-
-    /**
-     * Odebere ze slotu item
-     *
-     * @param slotIndex Index slotu, ze kterého se má odebrat item
-     * @param ammount Počet itemů, který se má odebrat
-     */
-    public void remove(int slotIndex, int ammount) throws ItemException {
-        final ItemSlot itemSlot = itemSlots.get(slotIndex);
-        if (!itemSlot.containsItem()) {
-            return;
-        }
-        itemSlot.removeItems(ammount);
     }
 
     // endregion
 
     // region Getters & Setters
 
-    public void setInventoryManager(InventoryManager inventoryManager, Inventory inventory)
+    public void setInventoryManager(InventoryService inventoryManager, Inventory inventory)
         throws DatabaseException {
         this.inventoryManager = inventoryManager;
         initInventoryContent(inventoryManager.getInventoryContent(inventory));
@@ -242,6 +240,10 @@ public abstract class ItemContainer {
      * @return {@link Node}
      */
     public abstract Node getGraphics();
+
+    public void setItemClickListener(ItemClickListener listener) {
+        this.itemClickListener = listener;
+    }
 
     // endregion
 
@@ -260,46 +262,39 @@ public abstract class ItemContainer {
 
         @Override
         public void onDragDrop(ItemSlot destinationSlot) {
-            handleDragEnd(destinationSlot);
+            final DragInformations dragInformations = ItemContainer.dragInformations.get();
+            handleDragEnd(dragInformations.sourceInventoryId, dragInformations.sourceSlot,
+                destinationSlot, dragInformations.draggedStack.getAmmount());
         }
 
         @Override
         public void onDragEnd() {
             dragInformations.setValue(null);
-            //cancelSlotHighlight();
         }
     };
 
     // Listener pro změnu obsahu inventáře
     private final ListChangeListener<? super InventoryRecord> inventoryRecordListener = (ListChangeListener<InventoryRecord>) c -> {
         while (c.next()) {
-            if (c.wasAdded()) {
-                for (InventoryRecord record : c.getAddedSubList()) {
-                    try {
-                        insertItemToContainer(record);
-                    } catch (ItemException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            if (c.wasRemoved()) {
-                for (InventoryRecord record : c.getRemoved()) {
-                    removeItemFromContainer(record);
-                }
-            }
+            c.getAddedSubList().forEach(this::insert);
+            c.getRemoved().forEach(this::remove);
         }
     };
 
-    // Listener pro správnou vizualizaci počtu itemů ve slotu
-    private final UpdateListener<InventoryRecord> inventoryUpdateListener = item ->
-        itemSlots.get(item.getSlotId()).getItemStack().setAmmount(item.getAmmount());
-
     // Listener pro změnu váhy inventáře
-    private ChangeListener<? super Number> weightListener = (observable, oldValue, newValue) -> {
+    private final ChangeListener<? super Number> weightListener = (observable, oldValue, newValue) -> {
 
     };
 
+    // Listener pro kliknutí na položku v inventáři
+    private final ClickListener clickListener = itemSlot -> {
+        if (itemClickListener != null) {
+            itemClickListener.onClick(itemSlot);
+        }
+    };
+
     private static final class DragInformations {
+
         final String sourceInventoryId;
         final ItemSlot sourceSlot;
         final ItemStack draggedStack;

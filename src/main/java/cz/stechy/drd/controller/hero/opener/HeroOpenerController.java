@@ -1,11 +1,13 @@
 package cz.stechy.drd.controller.hero.opener;
 
+import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.model.persistent.HeroManager;
-import cz.stechy.drd.model.persistent.UserManager;
+import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.LabeledHeroProperty;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -22,13 +24,22 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Kontroler pro načtení hrdiny
  */
 public class HeroOpenerController extends BaseController implements Initializable {
 
+    // region Constants
 
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger(HeroOpenerController.class);
+
+    public static final String HERO = "hero";
+
+    // endregion
 
     // region Variables
 
@@ -56,25 +67,37 @@ public class HeroOpenerController extends BaseController implements Initializabl
     private LabeledHeroProperty lblCharisma;
     @FXML
     private Button btnOpen;
+    @FXML
+    private JFXButton btnDelete;
 
     // endregion
 
     private final ObservableList<Hero> heroes = FXCollections.observableArrayList();
     private final FilteredList<Hero> filteredHeroes = new FilteredList<>(heroes);
     private final ObjectProperty<Hero> selectedHero = new SimpleObjectProperty<>();
-    private final HeroManager heroManager;
-    private final UserManager userManager;
-    private Translator translator;
+    private final HeroService heroManager;
+    private final Translator translator;
+
     private String title;
 
     // endregion
 
     // region Constructors
 
-    public HeroOpenerController(Context context) {
-        heroManager = context.getManager(Context.MANAGER_HERO);
-        userManager = context.getUserManager();
-        translator = context.getTranslator();
+    public HeroOpenerController(HeroService heroManager, Translator translator) {
+        this.heroManager = heroManager;
+        this.translator = translator;
+    }
+
+    // endregion
+
+    // region Private methods
+
+    private void openHero() {
+        setResult(selectedHero.isNull().get() ? RESULT_FAIL : RESULT_SUCCESS);
+        Bundle bundle = new Bundle();
+        bundle.put(HERO, selectedHero.getValue().getId());
+        finish(bundle);
     }
 
     // endregion
@@ -86,11 +109,11 @@ public class HeroOpenerController extends BaseController implements Initializabl
         selectedHero.addListener((observable, oldValue, newValue) -> {
             lblName.textProperty().setValue(newValue.getName());
             lblConviction.textProperty()
-                .setValue(translator.getConvictionList().get(newValue.getConviction().ordinal()));
+                .setValue(translator.getTranslationFor(Key.CONVICTIONS).get(newValue.getConviction().ordinal()));
             lblRace.textProperty()
-                .setValue(translator.getRaceList().get(newValue.getRace().ordinal()));
+                .setValue(translator.getTranslationFor(Key.RACES).get(newValue.getRace().ordinal()));
             lblProfession.textProperty()
-                .setValue(translator.getProfessionList().get(newValue.getProfession().ordinal()));
+                .setValue(translator.getTranslationFor(Key.PROFESSIONS).get(newValue.getProfession().ordinal()));
             lblStrength.setHeroProperty(newValue.getStrength());
             lblDexterity.setHeroProperty(newValue.getDexterity());
             lblImmunity.setHeroProperty(newValue.getImmunity());
@@ -99,30 +122,48 @@ public class HeroOpenerController extends BaseController implements Initializabl
         });
 
         btnOpen.disableProperty().bind(selectedHero.isNull());
+        btnDelete.disableProperty().bind(selectedHero.isNull());
 
-        filteredHeroes.setPredicate(hero -> !hero.equals(heroManager.getHero().get()) &&
-                heroManager.getHero().get() != null &&
-                hero.getAuthor().equals(heroManager.getHero().get().getAuthor())
-            );
+        filteredHeroes.setPredicate(hero -> !hero.equals(heroManager.getHero()) &&
+            heroManager.heroProperty().get() != null &&
+            hero.getAuthor().equals(heroManager.heroProperty().get().getAuthor())
+        );
 
         lvHeroes.setItems(filteredHeroes);
-    }
+        lvHeroes.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                openHero();
+            }
+        });
 
-    @Override
-    protected void onCreate(Bundle bundle) {
-        heroes.setAll(heroManager.selectAll());
+        ObservableMergers.mergeList(heroes, heroManager.selectAll());
     }
 
     @Override
     protected void onResume() {
-        setScreenSize(400, 250);
+        setScreenSize(400, 400);
         setTitle(title);
     }
 
-    public void handleOpenHero(ActionEvent actionEvent) {
-        setResult(selectedHero.isNull().get() ? RESULT_FAIL : RESULT_SUCCESS);
-        Bundle bundle = new Bundle();
-        bundle.put(HeroOpenerHelper.HERO, selectedHero.getValue());
-        finish(bundle);
+    // region Buton handlers
+
+    @FXML
+    private void handleOpenHero(ActionEvent actionEvent) {
+        openHero();
     }
+
+    @FXML
+    private void handleDeleteHero(ActionEvent actionEvent) {
+        if (selectedHero.get() == null) {
+            return;
+        }
+
+        try {
+            heroManager.delete(selectedHero.get().getId());
+        } catch (DatabaseException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+    }
+
+    // endregion
 }

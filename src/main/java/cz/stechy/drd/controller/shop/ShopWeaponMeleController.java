@@ -1,18 +1,20 @@
 package cz.stechy.drd.controller.shop;
 
+import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
+
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.db.AdvancedDatabaseManager;
+import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponType;
+import cz.stechy.drd.model.persistent.MeleWeaponService;
+import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.shop.IShoppingCart;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.MeleWeaponEntry;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
@@ -23,16 +25,21 @@ import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import org.slf4j.Logger;
@@ -41,12 +48,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Pomocný kontroler pro obchod se zbraněmi na blízko
  */
-public class ShopWeaponMeleController implements Initializable, ShopItemController {
+public class ShopWeaponMeleController implements Initializable,
+    ShopItemController<MeleWeaponEntry> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(ShopWeaponMeleController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShopWeaponMeleController.class);
 
     // endregion
 
@@ -75,7 +83,7 @@ public class ShopWeaponMeleController implements Initializable, ShopItemControll
     @FXML
     private TableColumn<MeleWeaponEntry, Integer> columnWeight;
     @FXML
-    private TableColumn<MeleWeaponEntry, Integer> columnPrice;
+    private TableColumn<MeleWeaponEntry, Money> columnPrice;
     @FXML
     private TableColumn<MeleWeaponEntry, MaxActValue> columnAmmount;
     @FXML
@@ -84,7 +92,10 @@ public class ShopWeaponMeleController implements Initializable, ShopItemControll
     // endregion
 
     private final ObservableList<MeleWeaponEntry> meleWeapons = FXCollections.observableArrayList();
-    private final AdvancedDatabaseManager<MeleWeapon> manager;
+    private final SortedList<MeleWeaponEntry> sortedList = new SortedList<>(meleWeapons,
+        Comparator.comparing(ShopEntry::getName));
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
+    private final AdvancedDatabaseService<MeleWeapon> service;
     private final Translator translator;
     private final User user;
 
@@ -95,11 +106,10 @@ public class ShopWeaponMeleController implements Initializable, ShopItemControll
 
     // region Constructors
 
-    public ShopWeaponMeleController(Context context) {
-        this.manager = context
-            .getManager(Context.MANAGER_WEAPON_MELE);
-        this.translator = context.getTranslator();
-        this.user = context.getUserManager().getUser().get();
+    public ShopWeaponMeleController(UserService userService, MeleWeaponService meleWeaponService, Translator translator) {
+        this.service = meleWeaponService;
+        this.translator = translator;
+        this.user = userService.getUser().get();
     }
 
     // endregion
@@ -107,37 +117,49 @@ public class ShopWeaponMeleController implements Initializable, ShopItemControll
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
-        tableMeleWeapon.setItems(meleWeapons);
+        tableMeleWeapon.setItems(sortedList);
         tableMeleWeapon.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
+        tableMeleWeapon.setFixedCellSize(SHOP_ROW_HEIGHT);
+        sortedList.comparatorProperty().bind(tableMeleWeapon.comparatorProperty());
 
-        columnImage.setCellValueFactory(new PropertyValueFactory<>("image"));
         columnImage.setCellFactory(param -> CellUtils.forImage());
-        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        columnAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
-        columnStrength.setCellValueFactory(new PropertyValueFactory<>("strength"));
-        columnRampancy.setCellValueFactory(new PropertyValueFactory<>("rampancy"));
-        columnDefence.setCellValueFactory(new PropertyValueFactory<>("defence"));
-        columnClass.setCellValueFactory(new PropertyValueFactory<>("weaponClass"));
         columnClass.setCellFactory(
             TextFieldTableCell.forTableColumn(StringConvertors.forMeleWeaponClass(translator)));
-        columnType.setCellValueFactory(new PropertyValueFactory<>("weaponType"));
         columnType.setCellFactory(
             TextFieldTableCell.forTableColumn(StringConvertors.forMeleWeaponType(translator)));
-        columnWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
-        columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
-        columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
-        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
-
-        ObservableMergers.mergeList(MeleWeaponEntry::new, meleWeapons, manager.selectAll());
+        columnWeight.setCellFactory(param -> CellUtils.forWeight());
+        columnPrice.setCellFactory(param -> CellUtils.forMoney());
+        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem uploadHandler,
-        OnDownloadItem downloadHandler, OnDeleteItem deleteHandler) {
-        columnAction.setCellFactory(param -> CellUtils
-            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources));
+    public void setShoppingCart(IShoppingCart shoppingCart) {
+        columnAction.setCellFactory(param -> ShopHelper
+            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
+                resources, ammountEditable));
+
+        Function<MeleWeapon, MeleWeaponEntry> mapper = meleWeapon -> {
+            final MeleWeaponEntry entry;
+            final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(meleWeapon.getId());
+            if (cartEntry.isPresent()) {
+                entry = (MeleWeaponEntry) cartEntry.get();
+            } else {
+                entry = new MeleWeaponEntry(meleWeapon);
+            }
+
+            return entry;
+        };
+
+        final Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                ObservableMergers.mergeList(mapper, meleWeapons, service.selectAll());
+                return null;
+            }
+        };
+
+        ThreadPool.getInstance().submit(task);
     }
 
     @Override
@@ -152,8 +174,9 @@ public class ShopWeaponMeleController implements Initializable, ShopItemControll
                 return;
             }
 
-            manager.toggleDatabase(newValue);
+            service.toggleDatabase(newValue);
         });
+        ammountEditable.bind(showOnlineDatabase);
     }
 
     @Override
@@ -164,32 +187,25 @@ public class ShopWeaponMeleController implements Initializable, ShopItemControll
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            manager.insert((MeleWeapon) item);
-            if (remote) {
-                meleWeapons.get(
-                    meleWeapons.indexOf(
-                        new MeleWeaponEntry((MeleWeapon) item)))
-                    .setDownloaded(true);
-            }
-
+            service.insert((MeleWeapon) item);
         } catch (DatabaseException e) {
-            logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
+            LOGGER.warn("Item {} se nepodařilo vložit do databáze", item.toString());
         }
     }
 
     @Override
     public void onUpdateItem(ItemBase item) {
         try {
-            manager.update((MeleWeapon) item);
+            service.update((MeleWeapon) item);
         } catch (DatabaseException e) {
-            logger.warn("Item {} se napodařilo aktualizovat", item.toString());
+            LOGGER.warn("Item {} se napodařilo aktualizovat", item.toString());
         }
     }
 
     @Override
     public void insertItemToBundle(Bundle bundle, int index) {
         ItemWeaponMeleController
-            .toBundle(bundle, (MeleWeapon) meleWeapons.get(index).getItemBase());
+            .toBundle(bundle, (MeleWeapon) sortedList.get(index).getItemBase());
     }
 
     @Override
@@ -199,23 +215,23 @@ public class ShopWeaponMeleController implements Initializable, ShopItemControll
 
     @Override
     public void requestRemoveItem(int index) {
-        final MeleWeaponEntry entry = meleWeapons.get(index);
+        final MeleWeaponEntry entry = sortedList.get(index);
         final String name = entry.getName();
         try {
-            manager.delete(entry.getId());
+            service.delete(entry.getId());
         } catch (DatabaseException e) {
-            logger.warn("Item {} se nepodařilo odebrat z databáze", name);
+            LOGGER.warn("Item {} se nepodařilo odebrat z databáze", name);
         }
     }
 
     @Override
     public void requestRemoveItem(ShopEntry item, boolean remote) {
-        manager.deleteRemote((MeleWeapon) item.getItemBase(), remote);
+        service.deleteRemote((MeleWeapon) item.getItemBase(), remote);
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        manager.upload((MeleWeapon) item);
+        service.upload((MeleWeapon) item);
     }
 
     @Override
@@ -224,7 +240,17 @@ public class ShopWeaponMeleController implements Initializable, ShopItemControll
     }
 
     @Override
-    public void onClose() {
-        manager.toggleDatabase(false);
+    public void synchronizeItems() {
+        service.synchronize(this.user.getName(), total ->
+            LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon mele."));
+    }
+
+    @Override
+    public Optional<MeleWeaponEntry> getSelectedItem() {
+        if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
 }

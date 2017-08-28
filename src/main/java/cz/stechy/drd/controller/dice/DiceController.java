@@ -4,9 +4,9 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.controller.dice.DiceHelper.AdditionType;
 import cz.stechy.drd.controller.dice.DiceHelper.DiceAddition;
 import cz.stechy.drd.controller.dice.DiceHelper.DiceType;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.model.persistent.HeroManager;
+import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
@@ -14,9 +14,6 @@ import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
@@ -25,12 +22,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Spinner;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 
 /**
@@ -53,29 +49,29 @@ public class DiceController extends BaseController implements Initializable {
     @FXML
     private TableColumn<DiceAddition, Boolean> columnUseSubtract;
     @FXML
-    private Spinner<Integer> spinnerDiceSideCount;
+    private TextField txtDiceSideCount;
     @FXML
-    private Spinner<Integer> spinnerRollCount;
+    private TextField txtRollCount;
     @FXML
     private Label lblRollResult;
 
     // endregion
 
-    private final IntegerProperty diceSideCount = new SimpleIntegerProperty();
-    private final IntegerProperty diceRollCount = new SimpleIntegerProperty();
-    private final ObjectProperty<Hero> hero;
+    private final MaxActValue diceSideCount = new MaxActValue(1, Integer.MAX_VALUE, 1);
+    private final MaxActValue diceRollCount = new MaxActValue(1, Integer.MAX_VALUE, 1);
+    private final Hero hero;
+    private final Translator translator;
 
     private DiceHelper diceHelper;
     private String title;
-    private Translator translator;
 
     // endregion
 
     // region Constructors
 
-    public DiceController(Context context) {
-        this.translator = context.getTranslator();
-        this.hero = ((HeroManager) context.getManager(Context.MANAGER_HERO)).getHero();
+    public DiceController(Hero hero, Translator translator) {
+        this.hero = hero;
+        this.translator = translator;
     }
 
     // endregion
@@ -106,17 +102,15 @@ public class DiceController extends BaseController implements Initializable {
                 return cell;
             }
         });
-        spinnerDiceSideCount.disableProperty().bind(
+        txtDiceSideCount.disableProperty().bind(
             lvDices.getFocusModel().focusedIndexProperty().isEqualTo(0).not());
-        // TODO vymyslet lepší způsob
-        spinnerDiceSideCount.valueProperty().addListener((observable, oldValue, newValue) -> {
-            diceSideCount.setValue(newValue);
-        });
+
+        FormUtils.initTextFormater(txtDiceSideCount, diceSideCount);
+        FormUtils.initTextFormater(txtRollCount, diceRollCount);
+
         lvDices.getFocusModel().focusedItemProperty()
-            .addListener((observable, oldValue, newValue) -> {
-                diceSideCount.setValue(newValue.getSideCount());
-            });
-        diceRollCount.bind(spinnerRollCount.valueProperty());
+            .addListener((observable, oldValue, newValue) ->
+                diceSideCount.setActValue(newValue.getSideCount()));
 
         initTable();
     }
@@ -125,20 +119,17 @@ public class DiceController extends BaseController implements Initializable {
      * Inicializuje tabulku pro přidávání konstant k hodu kostkou
      */
     private void initTable() {
-        columnAdditionType.setCellValueFactory(new PropertyValueFactory<>("additionType"));
         columnAdditionType.setCellFactory(ComboBoxTableCell
             .forTableColumn(StringConvertors.forAdditionType(translator), AdditionType.values()));
         columnAdditionType.setOnEditCommit(
             event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
                 .setAdditionType(event.getNewValue()));
 
-        columnUseRepair.setCellValueFactory(new PropertyValueFactory<>("useRepair"));
         columnUseRepair.setCellFactory(CheckBoxTableCell.forTableColumn(columnUseRepair));
         columnUseRepair.setOnEditCommit(
             event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
                 .setUseRepair(event.getNewValue()));
 
-        columnUseSubtract.setCellValueFactory(new PropertyValueFactory<>("useSubtract"));
         columnUseSubtract.setCellFactory(CheckBoxTableCell.forTableColumn(columnUseSubtract));
         columnUseSubtract.setOnEditCommit(
             event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
@@ -147,18 +138,17 @@ public class DiceController extends BaseController implements Initializable {
 
     @Override
     protected void onCreate(Bundle bundle) {
-        diceHelper = new DiceHelper(hero.get());
+        diceHelper = new DiceHelper(hero);
         tableAdditions.setItems(diceHelper.additions);
 
         diceHelper.rollResults.addListener((ListChangeListener<Integer>) c -> {
-            String rolls = c.getList().stream().map(o -> {
-                int value = o.intValue();
-                if (value >= 0) {
-                    return String.valueOf(value);
+            String result = c.getList().stream().map(o -> {
+                int value1 = o.intValue();
+                if (value1 >= 0) {
+                    return String.valueOf(value1);
                 }
-                return "(" + value + ")";
+                return "(" + value1 + ")";
             }).collect(Collectors.joining(" + "));
-            String result = rolls;
             if (c.getList().size() > 1) {
                 result += " = " + c.getList().stream().mapToInt(value -> value).sum();
             }
@@ -174,16 +164,19 @@ public class DiceController extends BaseController implements Initializable {
 
     // region Button handles
 
-    public void handleAddAddition(ActionEvent actionEvent) {
+    @FXML
+    private void handleAddAddition(ActionEvent actionEvent) {
         diceHelper.additions.add(new DiceAddition());
     }
 
-    public void handleRemoveAddition(ActionEvent actionEvent) {
+    @FXML
+    private void handleRemoveAddition(ActionEvent actionEvent) {
         diceHelper.additions.removeAll(tableAdditions.getSelectionModel().getSelectedItems());
     }
 
-    public void handleRoll(ActionEvent actionEvent) {
-        diceHelper.roll(diceSideCount.getValue(), diceRollCount.getValue());
+    @FXML
+    private void handleRoll(ActionEvent actionEvent) {
+        diceHelper.roll(diceSideCount.getActValue().intValue(), diceRollCount.getActValue().intValue());
     }
 
     // endregion

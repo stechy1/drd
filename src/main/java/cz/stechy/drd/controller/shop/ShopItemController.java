@@ -2,28 +2,23 @@ package cz.stechy.drd.controller.shop;
 
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.shop.IShoppingCart;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.screens.Bundle;
+import java.util.Optional;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 
 /**
  * Rozhraní pro definici kontroleru, který zprostředkovává nakupování
  */
-public interface ShopItemController {
+interface ShopItemController<T> {
 
     /**
      * Nastaví referenci na nákupní košík
+     *  @param shoppingCart {@link IShoppingCart}
      *
-     * @param shoppingCart {@link IShoppingCart}
-     * @param uploadHandler {@link OnUploadItem}
-     * @param downloadHandler {@link OnDownloadItem}
      */
-    void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem uploadHandler,
-        OnDownloadItem downloadHandler, OnDeleteItem deleteHandler);
+    void setShoppingCart(IShoppingCart shoppingCart);
 
     /**
      * Předá referenci na {@link IntegerProperty} představující vybraný index řádku v tabulce
@@ -105,7 +100,16 @@ public interface ShopItemController {
     void clearSelectedRow();
 
     /**
-     * Metoda se zavolá při zavření okna s obchodem
+     * Synchronizuje online předměty s offline databází podle přihlášeného uživatele.
+     * Všechny předměty, které uživatel nahrál do online databáze se uloží do offline
+     * databáze pouze v případě, se ještě tak nestalo.
      */
-    void onClose();
+    void synchronizeItems();
+
+    /**
+     * Vrátí {@link Optional} který může obsahovat referenci na vybraný předmět
+     *
+     * @return {@link Optional<ItemBase>}
+     */
+    Optional<T> getSelectedItem();
 }

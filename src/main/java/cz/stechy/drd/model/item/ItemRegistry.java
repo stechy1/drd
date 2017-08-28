@@ -2,10 +2,11 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 
 /**
  * Registr všech offline itemů
@@ -16,13 +17,14 @@ public final class ItemRegistry {
 
     private static ItemRegistry INSTANCE;
 
-    private final ObservableList<DatabaseItem> registry = FXCollections.observableArrayList();
+    private final ObservableMap<String, DatabaseItem> registry = FXCollections.observableHashMap();
 
     // endregion
 
     // region Constructors
 
-    private ItemRegistry() {}
+    private ItemRegistry() {
+    }
 
     // endregion
 
@@ -48,17 +50,18 @@ public final class ItemRegistry {
     public void addColection(ObservableList<? extends DatabaseItem> items) {
         items.addListener((ListChangeListener<DatabaseItem>) c -> {
             while (c.next()) {
-                if (c.wasAdded()) {
-                    this.registry.addAll(c.getAddedSubList());
-                }
-                if (c.wasRemoved()) {
-                    this.registry.removeAll(c.getRemoved());
-                }
+                this.registry.putAll(
+                    c.getAddedSubList()
+                        .stream()
+                        .collect(Collectors
+                            .toMap(DatabaseItem::getId, databaseItem -> databaseItem)));
+                c.getRemoved().forEach(o -> this.registry.remove(o.getId()));
             }
         });
-        for (DatabaseItem item : items) {
-            this.registry.add(item);
-        }
+        this.registry.putAll(
+            items.stream()
+                .collect(Collectors
+                    .toMap(DatabaseItem::getId, databaseItem -> databaseItem)));
     }
 
     /**
@@ -67,25 +70,11 @@ public final class ItemRegistry {
      * @param id Id itemu
      * @return {@link ItemBase}
      */
-    public <T extends DatabaseItem> T getItemById(String id) {
-        return (T) getItem(databaseItem -> id.equals(databaseItem.getId()));
+    public Optional<ItemBase> getItemById(String id) {
+        return Optional.ofNullable((ItemBase) registry.get(id));
     }
 
-    /**
-     * Získá item z registrů
-     *
-     * @param filter Filter
-     * @return {@link ItemBase}
-     */
-    public <T extends DatabaseItem> T getItem(Predicate<DatabaseItem> filter) {
-        final Optional<? super DatabaseItem> item = registry.stream()
-            .filter(filter)
-            .findFirst();
-
-        return (T) item.get();
-    }
-
-    public ObservableList<DatabaseItem> getRegistry() {
+    public ObservableMap<String, DatabaseItem> getRegistry() {
         return registry;
     }
 

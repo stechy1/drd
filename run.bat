@@ -1,0 +1,1 @@
+python scripts/src/resource_generator.py

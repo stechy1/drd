@@ -1,9 +1,11 @@
 package cz.stechy.drd.controller.hero.creator;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.hero.Hero;
+import cz.stechy.drd.model.entity.hero.Hero.Profession;
+import cz.stechy.drd.model.entity.hero.Hero.Race;
 import cz.stechy.drd.util.BitUtils;
 import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
@@ -20,7 +22,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -47,39 +48,36 @@ public class HeroCreatorController1 extends BaseController implements Initializa
     @FXML
     private ComboBox<Conviction> cmbConviction;
     @FXML
-    private ComboBox<Hero.Race> cmbRace;
+    private ComboBox<Race> cmbRace;
     @FXML
-    private ComboBox<Hero.Profession> cmbProfession;
+    private ComboBox<Profession> cmbProfession;
     @FXML
     private TextArea txtDescription;
 
     // endregion
 
-    private NewHeroModel1 model = new NewHeroModel1();
+    private final NewHeroModel1 model = new NewHeroModel1();
+    private final Translator translator;
 
     private String title;
-    private Translator translator;
     private Bundle bundle;
 
     // endregion
 
-    public HeroCreatorController1(Context context) {
-        translator = context.getTranslator();
+    public HeroCreatorController1(Translator translator) {
+        this.translator = translator;
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.GUIDE_NEW_HERO_1_TITLE);
 
-        cmbConviction.setItems(FXCollections.observableArrayList(Conviction.values()));
-        cmbRace.setItems(FXCollections.observableArrayList(Hero.Race.values()));
-        cmbProfession.setItems(FXCollections.observableArrayList(Hero.Profession.values()));
-
-        cmbConviction.converterProperty()
-            .setValue(StringConvertors.forConvictionConverter(translator));
-        cmbRace.converterProperty().setValue(StringConvertors.forRaceConverter(translator));
-        cmbProfession.converterProperty()
-            .setValue(StringConvertors.forProfessionConverter(translator));
+        cmbConviction.converterProperty().setValue(
+            StringConvertors.forConvictionConverter(translator));
+        cmbRace.converterProperty().setValue(
+            StringConvertors.forRaceConverter(translator));
+        cmbProfession.converterProperty().setValue(
+            StringConvertors.forProfessionConverter(translator));
 
         txtName.textProperty().bindBidirectional(model.name);
         txtDescription.textProperty().bindBidirectional(model.description);
@@ -93,47 +91,51 @@ public class HeroCreatorController1 extends BaseController implements Initializa
     protected void onCreate(Bundle bundle) {
         this.bundle = bundle;
 
-        model.name.setValue(bundle.getString(HeroCreatorHelper.NAME));
+        model.name.setValue(bundle.getString(HeroHelper.NAME));
         model.conviction.setValue(
-            Conviction.valueOf(bundle.getInt(HeroCreatorHelper.CONVICTION, -1)));
-        model.race.setValue(Hero.Race.valueOf(bundle.getInt(HeroCreatorHelper.RACE, -1)));
-        model.profession
-            .setValue(Hero.Profession.valueOf(bundle.getInt(HeroCreatorHelper.PROFESSION, -1)));
-        model.description.setValue(bundle.getString(HeroCreatorHelper.DESCRIPTION));
+            Conviction.valueOf(bundle.getInt(HeroHelper.CONVICTION, -1)));
+        model.race.setValue(Hero.Race.valueOf(bundle.getInt(HeroHelper.RACE, -1)));
+        model.profession.setValue(
+            Hero.Profession.valueOf(bundle.getInt(HeroHelper.PROFESSION, -1)));
+        model.description.setValue(bundle.getString(HeroHelper.DESCRIPTION));
     }
 
     @Override
     protected void onResume() {
-        setScreenSize(400, 250);
+        setScreenSize(600, 400);
         setTitle(title);
     }
 
     // region Button handles
 
-    public void handleBack(ActionEvent actionEvent) {
+    @FXML
+    private void handleBack(ActionEvent actionEvent) {
         back();
     }
 
-    public void handleCancel(ActionEvent actionEvent) {
+    @FXML
+    private void handleCancel(ActionEvent actionEvent) {
         finish();
     }
 
-    public void handleReset(ActionEvent actionEvent) {
+    @FXML
+    private void handleReset(ActionEvent actionEvent) {
         model.resetValues();
-        bundle.remove(HeroCreatorHelper.NAME);
-        bundle.remove(HeroCreatorHelper.CONVICTION);
-        bundle.remove(HeroCreatorHelper.RACE);
-        bundle.remove(HeroCreatorHelper.PROFESSION);
-        bundle.remove(HeroCreatorHelper.DESCRIPTION);
+        bundle.remove(HeroHelper.NAME);
+        bundle.remove(HeroHelper.CONVICTION);
+        bundle.remove(HeroHelper.RACE);
+        bundle.remove(HeroHelper.PROFESSION);
+        bundle.remove(HeroHelper.DESCRIPTION);
     }
 
-    public void handleNext(ActionEvent actionEvent) {
-        bundle.putString(HeroCreatorHelper.NAME, model.name.getValue());
-        bundle.putInt(HeroCreatorHelper.CONVICTION, model.conviction.getValue().ordinal());
-        bundle.putInt(HeroCreatorHelper.RACE, model.race.getValue().ordinal());
-        bundle.putInt(HeroCreatorHelper.PROFESSION, model.profession.getValue().ordinal());
-        bundle.putString(HeroCreatorHelper.DESCRIPTION, model.description.getValue());
-        startScreen(R.FXML.NEW_HERO_2, bundle);
+    @FXML
+    private void handleNext(ActionEvent actionEvent) {
+        bundle.putString(HeroHelper.NAME, model.name.getValue());
+        bundle.putInt(HeroHelper.CONVICTION, model.conviction.getValue().ordinal());
+        bundle.putInt(HeroHelper.RACE, model.race.getValue().ordinal());
+        bundle.putInt(HeroHelper.PROFESSION, model.profession.getValue().ordinal());
+        bundle.putString(HeroHelper.DESCRIPTION, model.description.getValue());
+        startScreen(R.FXML.HERO_CREATOR_2, bundle);
     }
 
     // endregion

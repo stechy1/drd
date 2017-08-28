@@ -18,12 +18,12 @@ public final class Base64Util {
 
     // region Public static methods
 
-    public static final String encode(byte[] data) {
+    public static String encode(byte[] data) {
         String result = encoder.encodeToString(data);
         return result.replaceAll("/", SLASH_REPLACE);
     }
 
-    public static final byte[] decode(String data) {
+    public static byte[] decode(String data) {
         String toDecode = data.replaceAll(SLASH_REPLACE, "/");
         return decoder.decode(toDecode);
     }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXProgressBar?>
+<?import cz.stechy.drd.widget.MaxActWidget?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.Image?>
+<Pane layoutX="6.0" layoutY="39.0" maxHeight="135.0" maxWidth="263.0" minHeight="135.0" minWidth="263.0" prefHeight="135.0" prefWidth="263.0" style="-fx-background-color: white; -fx-background-radius: 4; -fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.1), 6.0, 0.7, 0.0,1.5);" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
+    <Pane layoutX="19.0" layoutY="-29.0" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: #1564C0; -fx-background-radius: 4; -fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.1), 6.0, 0.7, 0.0,1.5);">
+      <ImageView fx:id="imageView" fitHeight="80.0" fitWidth="80.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+        <image>
+          <Image url="@../images/icon/wip.png"/>
+        </image>
+      </ImageView>
+    </Pane>
+    <Label fx:id="lblCaption" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="126.0" layoutY="4.0" prefHeight="22.0" prefWidth="122.0" textFill="#8d8b8b">
+      <font>
+        <Font name="Roboto Black" size="14.0" />
+      </font>
+    </Label>
+    <MaxActWidget fx:id="lblValue" alignment="TOP_RIGHT" layoutX="125.0" layoutY="41.0" prefHeight="30.0" prefWidth="122.0">
+      <font>
+        <Font name="Roboto Black" size="24.0" />
+      </font>
+    </MaxActWidget>
+    <JFXProgressBar fx:id="bar" layoutX="11.0" layoutY="86.0" minHeight="5.0" prefHeight="5.0" prefWidth="238.0" progress="0" />
+    <Label fx:id="lblDescription" layoutX="19.0" layoutY="104.0" prefHeight="22.0" prefWidth="229.0">
+      <font>
+        <Font name="Roboto Regular" size="14.0" />
+      </font>
+    </Label>
+  </Pane>

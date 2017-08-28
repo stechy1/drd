@@ -1,24 +1,25 @@
 package cz.stechy.drd.model.entity;
 
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
 
 /**
  * Třída představující jednu vlastnost entity a její opravu
  */
 public abstract class EntityProperty {
 
-
     // region Variables
 
     // Samotná hodnota vlaastnosti
-    protected final IntegerProperty value = new SimpleIntegerProperty(0);
+    protected final IntegerProperty value = new SimpleIntegerProperty(this, "value", 0);
     // Oprava hodnoty vlastnosti
-    protected final IntegerProperty repair = new SimpleIntegerProperty(0);
+    protected final IntegerProperty repair = new SimpleIntegerProperty(this, "value", 0);
     // Spodní hranice intervalu hodnoty vlastnosti
-    protected final int minValue;
+    protected int minValue;
     // Horní hranice intervalu hodnoty valstnosti
-    protected final int maxValue;
+    protected int maxValue;
 
     // endregion
 
@@ -51,13 +52,37 @@ public abstract class EntityProperty {
 
     // endregion
 
+    // region Public methods
+
+    /**
+     * Aktualizuje všechny hodnoty
+     *
+     * @param entityProperty {@link EntityProperty}
+     */
+    public void update(EntityProperty entityProperty) {
+        this.minValue = entityProperty.minValue;
+        this.maxValue = entityProperty.maxValue;
+        setValue(entityProperty.getValue());
+    }
+
+    /**
+     * Nabinduje hodnotu
+     *
+     * @param binding {@link ObservableValue}
+     */
+    public void bindTo(ObservableValue<Number> binding) {
+        this.value.bind(binding);
+    }
+
+    // endregion
+
     // region Getters & Setters
 
     public int getValue() {
         return value.get();
     }
 
-    public IntegerProperty valueProperty() {
+    public ReadOnlyIntegerProperty valueProperty() {
         return value;
     }
 
@@ -69,7 +94,7 @@ public abstract class EntityProperty {
         return repair.get();
     }
 
-    public IntegerProperty repairProperty() {
+    public ReadOnlyIntegerProperty repairProperty() {
         return repair;
     }
 

@@ -1,7 +1,8 @@
 package cz.stechy.drd.model.entity.hero;
 
-import cz.stechy.drd.Money;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.IClonable;
+import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.EntityBase;
@@ -11,8 +12,13 @@ import cz.stechy.drd.model.entity.SimpleEntityProperty;
 import cz.stechy.drd.util.HashGenerator;
 import java.util.regex.Pattern;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
@@ -43,47 +49,47 @@ public class Hero extends EntityBase {
     // region Variables
 
     // Rasa
-    protected final ObjectProperty<Race> race = new SimpleObjectProperty<>();
+    private final ObjectProperty<Race> race = new SimpleObjectProperty<>(this, "race");
     // Profece
-    protected final ObjectProperty<Profession> profession = new SimpleObjectProperty<>();
+    private final ObjectProperty<Profession> profession = new SimpleObjectProperty<>(this, "profession");
     // Úroveň
-    protected final IntegerProperty level = new SimpleIntegerProperty();
+    private final IntegerProperty level = new SimpleIntegerProperty(this, "level");
     // Peníze
-    protected final Money money = new Money();
+    private final Money money = new Money();
     // Zkušenosti
-    protected final IntegerProperty experiences = new SimpleIntegerProperty();
+    private final MaxActValue experiences = new MaxActValue();
     // Síla
-    protected final EntityProperty strength = new SimpleEntityProperty();
+    private final EntityProperty strength = new SimpleEntityProperty();
     // Obratnost
-    protected final EntityProperty dexterity = new SimpleEntityProperty();
+    private final EntityProperty dexterity = new SimpleEntityProperty();
     // Odolnost
-    protected final EntityProperty immunity = new SimpleEntityProperty();
+    private final EntityProperty immunity = new SimpleEntityProperty();
     // Inteligence
-    protected final EntityProperty intelligence = new SimpleEntityProperty();
+    private final EntityProperty intelligence = new SimpleEntityProperty();
     // Charisma
-    protected final EntityProperty charisma = new SimpleEntityProperty();
-    // Obranné číslo
-    protected final IntegerProperty defenceNumber = new SimpleIntegerProperty();
+    private final EntityProperty charisma = new SimpleEntityProperty();
     // Nosnost
-    protected final IntegerProperty capacity = new SimpleIntegerProperty();
+    private final IntegerProperty capacity = new SimpleIntegerProperty(this, "capacity");
     // Pohyblivost
-    protected final EntityProperty agility = new SimpleEntityProperty();
+    private final EntityProperty agility = new SimpleEntityProperty();
     // Mírné naložení
-    protected final EntityProperty lowLoad = new SimpleEntityProperty();
+    private final EntityProperty lowLoad = new SimpleEntityProperty();
     // Střední naložení
-    protected final EntityProperty mediumLoad = new SimpleEntityProperty();
+    private final EntityProperty mediumLoad = new SimpleEntityProperty();
     // Velké naložení
-    protected final EntityProperty highLoad = new SimpleEntityProperty();
+    private final EntityProperty highLoad = new SimpleEntityProperty();
     // Postřeh
-    protected final EntityProperty observationObjects = new SimpleEntityProperty();
+    private final EntityProperty observationObjects = new SimpleEntityProperty();
     // Postřeh na mechanické předměty
-    protected final EntityProperty observationMechanics = new SimpleEntityProperty();
+    private final EntityProperty observationMechanics = new SimpleEntityProperty();
+
+    private final BooleanProperty levelUp = new SimpleBooleanProperty(this, "levelUp");
 
     // endregion
 
     // region Constructors
 
-    public Hero(Hero hero) {
+    private Hero(Hero hero) {
         this(hero.getId(),
             hero.getName(),
             hero.getDescription(),
@@ -93,7 +99,7 @@ public class Hero extends EntityBase {
             hero.getProfession(),
             hero.getLevel(),
             hero.getMoney().getRaw(),
-            hero.getExperiences(),
+            hero.getExperiences().getActValue().intValue(),
             hero.getStrength().getValue(),
             hero.getDexterity().getValue(),
             hero.getImmunity().getValue(),
@@ -110,7 +116,8 @@ public class Hero extends EntityBase {
 
     /**
      * Vytvoří nového hrdinu
-     *  @param id Id hrdiny
+     *
+     * @param id Id hrdiny
      * @param name Jméno hrdiny
      * @param description Popis hrdiny
      * @param author Autor hrdiny
@@ -134,27 +141,31 @@ public class Hero extends EntityBase {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public Hero(String id, String name, String description, String author,
+    private Hero(String id, String name, String description, String author,
         Conviction conviction, Race race, Profession profession,
         int level, int money, int experiences, int strength, int dexterity, int immunity,
         int intelligence, int charisma, Height height, int defenceNumber, int live,
         int maxLive, int mag, int maxMag, boolean downloaded, boolean uploaded) {
         super(id, author, name, description, live, maxLive, mag, maxMag, conviction, height,
             downloaded, uploaded);
-
+        // Hodnota zkušeností může přetýct přes horní hranici
+        // Při získání nové úrovně lze stále získávat nové zkušenosti
+        this.experiences.setOverflow(true);
         initBindings();
 
-        this.race.setValue(race);
-        this.profession.setValue(profession);
-        this.level.setValue(level);
+        setRace(race);
+        setProfession(profession);
+        setLevel(level);
         this.money.setRaw(money);
-        this.experiences.setValue(experiences);
+        this.experiences.setActValue(experiences);
         this.strength.setValue(strength);
         this.dexterity.setValue(dexterity);
         this.immunity.setValue(immunity);
         this.intelligence.setValue(intelligence);
         this.charisma.setValue(charisma);
         this.defenceNumber.setValue(defenceNumber);
+
+
     }
 
     // endregion
@@ -166,7 +177,7 @@ public class Hero extends EntityBase {
      */
     private void initBindings() {
         // Nastavení pohyblivosti
-        this.agility.valueProperty().bind(
+        this.agility.bindTo(
             Bindings
                 .add(race.get() == null ? 0 : AGILITY_BY_RACE[race.get().ordinal()], Bindings.add(
                     dexterity.repairProperty(), Bindings.multiply(
@@ -175,14 +186,14 @@ public class Hero extends EntityBase {
                 ));
 
         // Nastavení nosnosti
-        this.strength.repairProperty().addListener((observable, oldValue, newValue) ->
-            setCapacity(CAPACITY_BY_STRENGTH[newValue.intValue() + 5]));
+        this.capacity.bind(Bindings.createIntegerBinding(() ->
+            CAPACITY_BY_STRENGTH[this.strength.getRepair() + 5],
+            this.strength.repairProperty()));
 
         // Nastavení postřehu na objekty
-        this.observationObjects.valueProperty().bind(intelligence.valueProperty());
+        this.observationObjects.bindTo(intelligence.valueProperty());
         // Nastavení postřehu na mechanismy
-        this.observationMechanics.valueProperty()
-            .bind(Bindings.divide(intelligence.valueProperty(), 2));
+        this.observationMechanics.bindTo(Bindings.divide(intelligence.valueProperty(), 2));
 
         this.agility.valueProperty().addListener((observable, oldValue, newValue) -> {
             final double value = newValue.doubleValue();
@@ -190,130 +201,20 @@ public class Hero extends EntityBase {
             this.mediumLoad.setValue(Math.round(Math.floor(value * WEIGHT_MEDIUM_MULTIPLICATOR)));
             this.highLoad.setValue(Math.round(Math.floor(value * WEIGHT_HIGH_MULTIPLICATOR)));
         });
-    }
 
-    // endregion
+        this.levelProperty().addListener((observable, oldValue, newValue) ->
+            this.experiences.setMaxValue(HeroGenerator.experience(getProfession(), newValue.intValue())));
 
-    // region Getters & Setters
+        this.levelUp.bind(Bindings.createBooleanBinding(() -> {
+            final int experience = this.experiences.getActValue().intValue();
+            final int maxExperience = this.experiences.getMaxValue().intValue();
+            return experience > 0 && experience >= maxExperience;
+        }, this.experiences.actValueProperty(), this.experiences.maxValueProperty()));
 
-    public Race getRace() {
-        return race.get();
-    }
-
-    public ObjectProperty<Race> raceProperty() {
-        return race;
-    }
-
-    public void setRace(Race race) {
-        this.race.set(race);
-    }
-
-    public Profession getProfession() {
-        return profession.get();
-    }
-
-    public ObjectProperty<Profession> professionProperty() {
-        return profession;
-    }
-
-    public void setProfession(Profession profession) {
-        this.profession.set(profession);
-    }
-
-    public int getLevel() {
-        return level.get();
-    }
-
-    public IntegerProperty levelProperty() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level.set(level);
-    }
-
-    public Money getMoney() {
-        return money;
-    }
-
-    public int getExperiences() {
-        return experiences.get();
-    }
-
-    public IntegerProperty experiencesProperty() {
-        return experiences;
-    }
-
-    public void setExperiences(int experiences) {
-        this.experiences.set(experiences);
-    }
-
-    public EntityProperty getStrength() {
-        return strength;
-    }
-
-    public EntityProperty getDexterity() {
-        return dexterity;
-    }
-
-    public EntityProperty getImmunity() {
-        return immunity;
-    }
-
-    public EntityProperty getIntelligence() {
-        return intelligence;
-    }
-
-    public EntityProperty getCharisma() {
-        return charisma;
-    }
-
-    public int getDefenceNumber() {
-        return defenceNumber.get();
-    }
-
-    public IntegerProperty defenceNumberProperty() {
-        return defenceNumber;
-    }
-
-    public void setDefenceNumber(int defenceNumber) {
-        this.defenceNumber.set(defenceNumber);
-    }
-
-    public int getCapacity() {
-        return capacity.get();
-    }
-
-    public IntegerProperty capacityProperty() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity.set(capacity);
-    }
-
-    public EntityProperty getAgility() {
-        return agility;
-    }
-
-    public EntityProperty getLowLoad() {
-        return lowLoad;
-    }
-
-    public EntityProperty getMediumLoad() {
-        return mediumLoad;
-    }
-
-    public EntityProperty getHighLoad() {
-        return highLoad;
-    }
-
-    public EntityProperty getObservationObjects() {
-        return observationObjects;
-    }
-
-    public EntityProperty getObservationMechanics() {
-        return observationMechanics;
+        this.attackNumber.bind(Bindings.createIntegerBinding(() -> {
+            // TODO přidat součet ÚČ zbraně
+            return strength.getRepair();
+        }, strength.repairProperty()));
     }
 
     // endregion
@@ -323,31 +224,148 @@ public class Hero extends EntityBase {
     @Override
     public void update(DatabaseItem other) {
         super.update(other);
+
         Hero hero = (Hero) other;
-        this.race.setValue(hero.getRace());
-        this.profession.setValue(hero.getProfession());
-        this.level.setValue(hero.getLevel());
+        setRace(hero.getRace());
+        setProfession(hero.getProfession());
+        setLevel(hero.getLevel());
         this.money.setRaw(hero.getMoney().getRaw());
-        this.experiences.setValue(hero.getExperiences());
+        this.experiences.update(hero.getExperiences());
         this.strength.setValue(hero.getStrength().getValue());
         this.dexterity.setValue(hero.getDexterity().getValue());
         this.immunity.setValue(hero.getImmunity().getValue());
         this.intelligence.setValue(hero.getIntelligence().getValue());
         this.charisma.setValue(hero.getCharisma().getValue());
         this.defenceNumber.setValue(hero.getDefenceNumber());
-        this.capacity.setValue(hero.getCapacity());
-        this.agility.setValue(hero.getAgility().getValue());
-        this.lowLoad.setValue(hero.getLowLoad().getValue());
-        this.mediumLoad.setValue(hero.getMediumLoad().getValue());
-        this.highLoad.setValue(hero.getHighLoad().getValue());
-        this.observationObjects.setValue(hero.getObservationObjects().getValue());
-        this.observationMechanics.setValue(hero.getObservationMechanics().getValue());
     }
 
     @Override
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "unchecked"})
     public <T extends IClonable> T duplicate() {
         return (T) new Hero(this);
+    }
+
+    /**
+     * Zvýší úroveň hrdiny o 1 pouze za předpokladu, že může
+     */
+    public void levelUp() {
+        if (!canLevelUp()) {
+            return;
+        }
+
+        setLevel(getLevel() + 1);
+    }
+
+    // endregion
+
+    // region Getters & Setters
+
+    public final Race getRace() {
+        return race.get();
+    }
+
+    public final ReadOnlyObjectProperty<Race> raceProperty() {
+        return race;
+    }
+
+    private void setRace(Race race) {
+        this.race.set(race);
+    }
+
+    public final Profession getProfession() {
+        return profession.get();
+    }
+
+    public final ReadOnlyObjectProperty<Profession> professionProperty() {
+        return profession;
+    }
+
+    private void setProfession(Profession profession) {
+        this.profession.set(profession);
+    }
+
+    public final int getLevel() {
+        return level.get();
+    }
+
+    public final ReadOnlyIntegerProperty levelProperty() {
+        return level;
+    }
+
+    private void setLevel(int level) {
+        this.level.set(level);
+    }
+
+    public final Money getMoney() {
+        return money;
+    }
+
+    public final MaxActValue getExperiences() {
+        return experiences;
+    }
+
+    public final EntityProperty getStrength() {
+        return strength;
+    }
+
+    public final EntityProperty getDexterity() {
+        return dexterity;
+    }
+
+    public final EntityProperty getImmunity() {
+        return immunity;
+    }
+
+    public final EntityProperty getIntelligence() {
+        return intelligence;
+    }
+
+    public final EntityProperty getCharisma() {
+        return charisma;
+    }
+
+    public final int getCapacity() {
+        return capacity.get();
+    }
+
+    public final ReadOnlyIntegerProperty capacityProperty() {
+        return capacity;
+    }
+
+    private void setCapacity(int capacity) {
+        this.capacity.set(capacity);
+    }
+
+    public final EntityProperty getAgility() {
+        return agility;
+    }
+
+    public final EntityProperty getLowLoad() {
+        return lowLoad;
+    }
+
+    public final EntityProperty getMediumLoad() {
+        return mediumLoad;
+    }
+
+    public final EntityProperty getHighLoad() {
+        return highLoad;
+    }
+
+    public final EntityProperty getObservationObjects() {
+        return observationObjects;
+    }
+
+    public final EntityProperty getObservationMechanics() {
+        return observationMechanics;
+    }
+
+    public final boolean canLevelUp() {
+        return levelUp.get();
+    }
+
+    public final ReadOnlyBooleanProperty levelUpProperty() {
+        return levelUp;
     }
 
     // endregion
@@ -367,7 +385,7 @@ public class Hero extends EntityBase {
 
     // Výčet povolání
     public enum Profession {
-        WARIOR, RANGER, ALCHEMIST, MAGICIAN, THIEF;
+        WARIOR, RANGER, ALCHEMIST, WIZARD, THIEF;
 
         public static Profession valueOf(int index) {
             if (index < 0) {
@@ -387,7 +405,7 @@ public class Hero extends EntityBase {
         private Conviction conviction = Conviction.NEUTRAL;
         private Race race;
         private Profession profession;
-        private int level;
+        private int level = 1;
         private int money;
         private int experiences;
         private int strength;

@@ -2,23 +2,58 @@
 
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<TableView fx:id="tableArmor" prefHeight="400.0" prefWidth="1000.0"
-  xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="cz.stechy.drd.controller.shop.ShopArmorController">
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<TableView fx:id="tableArmor" prefHeight="400.0" prefWidth="1100.0" styleClass="shop-table" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.shop.ShopArmorController">
   <columnResizePolicy>
-    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
   </columnResizePolicy>
   <columns>
-    <TableColumn fx:id="columnImage" minWidth="40.0" text="%drd_item_image"/>
-    <TableColumn fx:id="columnName" minWidth="100.0" text="%drd_item_name"/>
-    <TableColumn fx:id="columnAuthor" minWidth="100.0" text="%drd_item_author"/>
-    <TableColumn fx:id="columnDefenceNumber" minWidth="75"
-      text="%drd_item_weapon_mele_armor_defence_number"/>
-    <TableColumn fx:id="columnMinimumStrength" minWidth="75"
-      text="%drd_item_armor_minimum_strength"/>
-    <TableColumn fx:id="columnWeight" minWidth="50.0" text="%drd_item_weight"/>
-    <TableColumn fx:id="columnPrice" minWidth="50.0" text="%drd_item_price"/>
-    <TableColumn fx:id="columnAmmount" minWidth="75.0" text="%drd_item_ammount"/>
-    <TableColumn fx:id="columnAction" minWidth="135.0" text="%drd_shop_action"/>
+    <TableColumn fx:id="columnImage" minWidth="60.0" prefWidth="60.0" maxWidth="60.0" text="%drd_item_image">
+      <cellValueFactory>
+        <PropertyValueFactory property="image" />
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnName" prefWidth="100.0" text="%drd_item_name">
+      <cellValueFactory>
+        <PropertyValueFactory property="name" />
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnAuthor" prefWidth="100.0" text="%drd_item_author">
+      <cellValueFactory>
+        <PropertyValueFactory property="author" />
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnArmorType" text="%drd_item_armor_type">
+      <cellValueFactory>
+        <PropertyValueFactory property="armorType" />
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnDefenceNumber" text="%drd_item_weapon_mele_armor_defence_number">
+      <cellValueFactory>
+        <PropertyValueFactory property="defenceNumber" />
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnMinimumStrength" text="%drd_item_armor_minimum_strength">
+      <cellValueFactory>
+        <PropertyValueFactory property="minimumStrength" />
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnWeight" minWidth="50.0" prefWidth="50.0" maxWidth="50.0" text="%drd_item_weight">
+      <cellValueFactory>
+        <PropertyValueFactory property="weight" />
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnPrice" minWidth="140.0" prefWidth="140.0" maxWidth="140.0" text="%drd_item_price">
+      <cellValueFactory>
+        <PropertyValueFactory property="price" />
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnAmmount" minWidth="80.0" prefWidth="80.0" maxWidth="80.0" text="%drd_item_ammount">
+      <cellValueFactory>
+        <PropertyValueFactory property="ammount" />
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnAction" minWidth="200.0" prefWidth="200.0" maxWidth="200.0" text="%drd_shop_action" />
   </columns>
 </TableView>
