@@ -4,6 +4,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.FirebaseDatabase;
+import cz.stechy.drd.di.DiContainer;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseService;
@@ -71,6 +72,8 @@ public class Context {
 
     // region Variables
 
+    // DI kontejner obsahující všechny služby v aplikaci
+    private final DiContainer container = new DiContainer();
     // Pomocný wrapper na pozdější inicializaci firebase databáze
     private final FirebaseWrapper firebaseWrapper = new FirebaseWrapper();
     // Databáze
@@ -111,6 +114,9 @@ public class Context {
         LOGGER.info("Používám pracovní adresář: {}", appDirectory.getPath());
         loadConfiguration();
         database = new SQLite(appDirectory.getPath() + SEPARATOR + getDatabaseName());
+        container.addService(Database.class, database);
+        container.addService(Translator.class, new Translator(resources));
+        container.addService(Context.class, this);
     }
 
     // endregion
@@ -286,6 +292,7 @@ public class Context {
     // region Getters & Setters
 
     @SuppressWarnings("unchecked")
+    @Deprecated
     public <T> T getService(String name) {
         return (T) serviceMap.get(name);
     }
@@ -293,6 +300,7 @@ public class Context {
     /**
      * @return {@link Translator}
      */
+    @Deprecated
     public Translator getTranslator() {
         if (translator == null) {
             translator = new Translator(resources);
@@ -355,6 +363,10 @@ public class Context {
      */
     public void closeFirebase() {
         firebaseWrapper.closeDatabase();
+    }
+
+    public DiContainer getContainer() {
+        return container;
     }
 
     // endregion

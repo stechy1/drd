@@ -98,7 +98,7 @@ public class App extends Application {
         context = new Context(manager.getResources());
         notifier.increaseMaxProgress(context.getServiceCount());
         context.init(notifier);
-        manager.setControllerFactory(new ControllerFactory(context));
+        manager.setControllerFactory(new ControllerFactory(context.getContainer()));
 
         notifyPreloader(new MyPreloaderNotification(0.99, "Dokončování..."));
         Thread.sleep(1000);
@@ -128,7 +128,7 @@ public class App extends Application {
         context = new Context(manager.getResources());
         notifier.increaseMaxProgress(context.getServiceCount());
         context.init(notifier);
-        manager.setControllerFactory(new ControllerFactory(context));
+        manager.setControllerFactory(new ControllerFactory(context.getContainer()));
 
         notifyPreloader(new MyPreloaderNotification(0.99, "Dokončování..."));
         notifyPreloader(new MyPreloaderNotification(1, "Done"));
