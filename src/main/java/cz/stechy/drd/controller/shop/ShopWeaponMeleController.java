@@ -2,7 +2,6 @@ package cz.stechy.drd.controller.shop;
 
 import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.MaxActValue;
@@ -13,6 +12,8 @@ import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponType;
+import cz.stechy.drd.model.persistent.MeleWeaponService;
+import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.MeleWeaponEntry;
@@ -105,11 +106,10 @@ public class ShopWeaponMeleController implements Initializable,
 
     // region Constructors
 
-    public ShopWeaponMeleController(Context context) {
-        this.service = context
-            .getService(Context.SERVICE_WEAPON_MELE);
-        this.translator = context.getTranslator();
-        this.user = context.getUserService().getUser().get();
+    public ShopWeaponMeleController(UserService userService, MeleWeaponService meleWeaponService, Translator translator) {
+        this.service = meleWeaponService;
+        this.translator = translator;
+        this.user = userService.getUser().get();
     }
 
     // endregion

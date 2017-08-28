@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.Context;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.MoneyController;
 import cz.stechy.drd.model.MaxActValue;
@@ -164,8 +163,8 @@ public class ItemWeaponRangedController extends BaseController implements Initia
 
     // region Constructors
 
-    public ItemWeaponRangedController(Context context) {
-        this.translator = context.getTranslator();
+    public ItemWeaponRangedController(Translator translator) {
+        this.translator = translator;
     }
 
     // endregion
