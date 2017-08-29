@@ -1,9 +1,11 @@
 package cz.stechy.drd.controller.main.profession;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.main.MainScreen;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
+import cz.stechy.screens.BaseController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -12,7 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.StackPane;
 
-public class ProfessionController implements MainScreen, Initializable {
+public class ProfessionController implements MainScreen, Initializable, InjectableChild {
 
     // region Variables
 
@@ -25,6 +27,7 @@ public class ProfessionController implements MainScreen, Initializable {
 
     private IProfessionController professionController;
     private ResourceBundle resources;
+    private BaseController parent;
 
     // endregion
 
@@ -53,22 +56,21 @@ public class ProfessionController implements MainScreen, Initializable {
         });
     }
 
+    @Override
+    public void injectParent(BaseController parent) {
+        this.parent = parent;
+    }
+
     /**
      * Načte správný kontroler podle profese hrdiny
      *
      * @param hero {@link Hero}
      */
     private void loadProfession(Hero hero) throws IOException {
-        System.out.println("Načítám profesi");
-//        final String fxml = getFxmlName(hero.getProfession());
-//        FXMLLoader loader = new FXMLLoader();
-//        loader.setLocation(getClass().getResource("/fxml/main/profession/" + fxml + ".fxml"));
-//        loader.setControllerFactory(new ControllerFactory());
-//        loader.setResources(resources);
-//        final Node node = loader.load();
-//        professionController = loader.getController();
-//        professionController.setHero(hero);
-//        container.getChildren().setAll(node);
+        parent.getPartManager()
+            .inContainer(container)
+            .onLoaded((node, o) -> {})
+            .show(getFxmlName(hero.getProfession()));
     }
 
     /**
