@@ -66,8 +66,8 @@ public final class MeleWeapon extends WeaponBase {
      */
     private MeleWeapon(String id, String name, String description, String author, int weight,
         int price, int strength, int rampancy, int defence, MeleWeaponClass weaponClass,
-        MeleWeaponType weaponType, int renown, byte[] image, int stackSize, boolean uploaded,
-        boolean downloaded) {
+        MeleWeaponType weaponType, int renown, byte[] image, int stackSize, boolean downloaded,
+        boolean uploaded) {
         super(id, name, description, weight, price, strength, rampancy, renown, author, image,
             stackSize, downloaded, uploaded);
 
