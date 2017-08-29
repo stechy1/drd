@@ -6,9 +6,6 @@ import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.bestiary.MobEntry;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
-import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
-import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
-import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
 import cz.stechy.drd.model.persistent.BestiaryService;
@@ -319,14 +316,4 @@ public class BestiaryController extends BaseController implements Initializable 
     }
 
     // endregion
-
-    private final OnUploadItem<MobEntry> uploadHandler = entry -> service.upload(entry.getMobBase());
-    private final OnDownloadItem<MobEntry> downloadHandler = entry -> {
-        try {
-            service.insert(entry.getMobBase());
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
-    };
-    private final OnDeleteItem<MobEntry> deleteHandler = (entry, remote) -> service.deleteRemote(entry.getMobBase(), true);
 }
