@@ -90,7 +90,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
     public ShopGeneralController(UserService userService, GeneralItemService generalItemService) {
         this.service = generalItemService;
-        this.user = userService.getUser().get();
+        this.user = userService.getUser();
     }
 
     // endregion

@@ -149,8 +149,12 @@ public final class UserService implements Firebase<User> {
 
     // region Getters & Setters
 
-    public final ReadOnlyObjectProperty<User> getUser() {
+    public final ReadOnlyObjectProperty<User> userProperty() {
         return user;
+    }
+
+    public final User getUser() {
+        return user.get();
     }
 
     public final boolean isLogged() {

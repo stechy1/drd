@@ -112,7 +112,7 @@ public class ShopWeaponRangedController implements Initializable,
     public ShopWeaponRangedController(UserService userService, RangedWeaponService rangedWeaponService, Translator translator) {
         this.service = rangedWeaponService;
         this.translator = translator;
-        this.user = userService.getUser().get();
+        this.user = userService.getUser();
     }
 
     // endregion

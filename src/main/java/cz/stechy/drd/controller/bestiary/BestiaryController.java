@@ -126,7 +126,7 @@ public class BestiaryController extends BaseController implements Initializable 
     public BestiaryController(UserService userService, BestiaryService bestiaryService, Translator translator) {
         this.service = bestiaryService;
         this.translator = translator;
-        this.user = userService.getUser().get();
+        this.user = userService.getUser();
     }
 
     // endregion

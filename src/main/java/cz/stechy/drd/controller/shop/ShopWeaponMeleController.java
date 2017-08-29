@@ -109,7 +109,7 @@ public class ShopWeaponMeleController implements Initializable,
     public ShopWeaponMeleController(UserService userService, MeleWeaponService meleWeaponService, Translator translator) {
         this.service = meleWeaponService;
         this.translator = translator;
-        this.user = userService.getUser().get();
+        this.user = userService.getUser();
     }
 
     // endregion

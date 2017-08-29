@@ -107,7 +107,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     public ShopArmorController(UserService userService, ArmorService armorService, Translator translator) {
         this.service = armorService;
         this.translator = translator;
-        this.user = userService.getUser().get();
+        this.user = userService.getUser();
     }
 
     // endregion

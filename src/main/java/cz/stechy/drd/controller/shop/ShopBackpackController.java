@@ -92,7 +92,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     public ShopBackpackController(UserService userService, BackpackService backpackService) {
         this.service = backpackService;
-        this.user = userService.getUser().get();
+        this.user = userService.getUser();
     }
     // endregion
 
