@@ -14,6 +14,7 @@ import cz.stechy.drd.model.persistent.GeneralItemService;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.MeleWeaponService;
 import cz.stechy.drd.model.persistent.RangedWeaponService;
+import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
 import java.io.FileInputStream;
@@ -127,6 +128,7 @@ public class Context {
      * Inicializace všech správců předmětů
      */
     private void initServices() {
+        // Inicializace jednotlivých služeb
         for (Class service : services) {
             final DatabaseService instance = container.getInstance(service);
             try {
@@ -136,6 +138,9 @@ public class Context {
                 e.printStackTrace();
             }
         }
+
+        // Inicializace UserService
+        container.getInstance(UserService.class);
     }
 
     /**
