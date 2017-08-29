@@ -237,6 +237,11 @@ public class BestiaryController extends BaseController implements Initializable 
                     mob.setAuthor(user.getName());
                     mob.setId(HashGenerator.createHash());
                     service.insert(mob);
+                    sortedList.stream()
+                        .filter(mobEntry -> mobEntry.getName().equals(mob.getName()))
+                        .findFirst()
+                        .ifPresent(tableBestiary.getSelectionModel()::select);
+
                 } catch (DatabaseException e) {
                     e.printStackTrace();
                     LOGGER.warn("Nestvůru {} se nepodařilo vložit do databáze", mob.toString());
