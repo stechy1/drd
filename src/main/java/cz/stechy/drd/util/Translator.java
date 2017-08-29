@@ -136,6 +136,7 @@ public final class Translator {
             R.Translate.BESTIARY_TYPE_INVISIBLE,
             R.Translate.BESTIARY_TYPE_STATUE,
             R.Translate.BESTIARY_TYPE_SPIDER,
+            R.Translate.BESTIARY_TYPE_INSECT,
             R.Translate.BESTIARY_TYPE_OTHER,
         };
 

@@ -278,6 +278,7 @@ public final class R {
         public static final String BESTIARY_TYPE_INVISIBLE = "drd_bestiary_type_invisible";
         public static final String BESTIARY_TYPE_STATUE = "drd_bestiary_type_statue";
         public static final String BESTIARY_TYPE_SPIDER = "drd_bestiary_type_spider";
+        public static final String BESTIARY_TYPE_INSECT = "drd_bestiary_type_insect";
         public static final String BESTIARY_TYPE_OTHER = "drd_bestiary_type_other";
         public static final String MONEY_TITLE = "drd_money_title";
         public static final String USER_LOGIN_TITLE = "drd_user_login_title";
