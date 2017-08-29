@@ -55,7 +55,7 @@ public final class UserService implements Firebase<User> {
 
     // endregion
 
-    // region Constants
+    // region Constructors
 
     /**
      * Vytvoří nového správce uživatelů
@@ -96,6 +96,13 @@ public final class UserService implements Firebase<User> {
 
     // region Public methods
 
+    /**
+     * Přihlásí uživatele do aplikace
+     *
+     * @param username Uživatelské jméno
+     * @param password Uživatelské heslo
+     * @throws UserException Pokud se přihlášení nepodaří
+     */
     public void login(String username, String password) throws UserException {
         final Optional<User> result = onlineDatabase.stream()
             .filter(user -> user.getName().equals(username) && HashGenerator
@@ -110,12 +117,22 @@ public final class UserService implements Firebase<User> {
         this.user.get().setLogged(true);
     }
 
+    /**
+     * Odhlásí uživatele z aplikace
+     */
     public void logout() {
         this.user.get().setLogged(false);
         user.set(new User());
         logged.set(false);
     }
 
+    /**
+     * Zaregistruje nového uživatele
+     *
+     * @param username Uživatelské jméno
+     * @param password Uživatelské heslo
+     * @throws UserException Pokud se registrace nezdaří
+     */
     public void register(String username, String password) throws UserException {
         final Optional<User> result = onlineDatabase.stream()
             .filter(user -> user.getName().equals(username))
