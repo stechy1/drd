@@ -2,9 +2,6 @@ package cz.stechy.drd.controller.shop;
 
 import com.jfoenix.controls.JFXToggleButton;
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.db.base.Firebase.OnDeleteItem;
-import cz.stechy.drd.model.db.base.Firebase.OnDownloadItem;
-import cz.stechy.drd.model.db.base.Firebase.OnUploadItem;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.persistent.HeroService;
@@ -354,17 +351,4 @@ public class ShopController1 extends BaseController implements Initializable {
     }
 
     // endregion
-
-    private final OnUploadItem<ShopEntry> uploadHandler = item -> {
-        ShopItemController controller = controllers[selectedAccordionPaneIndex.get()];
-        controller.uploadRequest(item.getItemBase());
-    };
-    private final OnDownloadItem<ShopEntry> downloadHandler = item -> {
-        ShopItemController controller = controllers[selectedAccordionPaneIndex.get()];
-        controller.onAddItem(item.getItemBase(), true);
-    };
-    private final OnDeleteItem<ShopEntry> deleteHandler = (item, remote) -> {
-        ShopItemController controller = controllers[selectedAccordionPaneIndex.get()];
-        controller.requestRemoveItem(item, remote);
-    };
 }
