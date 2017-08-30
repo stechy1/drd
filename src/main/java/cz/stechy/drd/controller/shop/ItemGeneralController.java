@@ -4,6 +4,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.controller.MoneyController;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ImageUtils;
@@ -145,6 +146,8 @@ public class ItemGeneralController extends BaseController implements Initializab
         imageView.imageProperty().bindBidirectional(model.image);
         model.imageRaw.addListener((observable, oldValue, newValue) ->
             lblSelectImage.setVisible(Arrays.equals(newValue, new byte[0])));
+
+        btnFinish.disableProperty().bind(model.validProperty().not());
     }
 
     @Override
@@ -152,16 +155,18 @@ public class ItemGeneralController extends BaseController implements Initializab
         action = bundle.getInt(ShopHelper.ITEM_ACTION);
         lblTitle.setText(action == ShopHelper.ITEM_ACTION_ADD ? titleNew : titleUpdate);
 
-        model.id.setValue(bundle.getString(ID));
-        model.name.setValue(bundle.getString(NAME));
-        model.description.setValue(bundle.getString(DESCRIPTION));
-        model.price.setRaw(bundle.getInt(PRICE));
-        model.weight.setActValue(bundle.getInt(WEIGHT));
-        model.author.setValue(bundle.getString(AUTHOR));
-        model.imageRaw.setValue(bundle.getByteArray(IMAGE));
-        model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
-        model.uploaded.setValue(bundle.getBoolean(UPLOADED));
-        model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
+        if (action == ShopHelper.ITEM_ACTION_UPDATE) {
+            model.id.setValue(bundle.getString(ID));
+            model.name.setValue(bundle.getString(NAME));
+            model.description.setValue(bundle.getString(DESCRIPTION));
+            model.price.setRaw(bundle.getInt(PRICE));
+            model.weight.setActValue(bundle.getInt(WEIGHT));
+            model.author.setValue(bundle.getString(AUTHOR));
+            model.imageRaw.setValue(bundle.getByteArray(IMAGE));
+            model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
+            model.uploaded.setValue(bundle.getBoolean(UPLOADED));
+            model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
+        }
     }
 
     @Override
@@ -231,19 +236,24 @@ public class ItemGeneralController extends BaseController implements Initializab
 
     // endregion
 
-    private static class ItemModel {
+    private static class ItemModel extends ValidatedModel {
 
-        final StringProperty id = new SimpleStringProperty();
-        final StringProperty name = new SimpleStringProperty();
-        final StringProperty description = new SimpleStringProperty();
+        private static final int FLAG_NAME = 1 << 0;
+        private static final int FLAG_WEIGHT = 1 << 1;
+        private static final int FLAG_IMAGE = 1 << 2;
+        private static final int FLAG_STACK_SIZE = 1 << 3;
+
+        final StringProperty id = new SimpleStringProperty(this, "id", null);
+        final StringProperty name = new SimpleStringProperty(this, "name", null);
+        final StringProperty description = new SimpleStringProperty(this, "description", null);
         final Money price = new Money();
         final MaxActValue weight = new MaxActValue(Integer.MAX_VALUE);
-        final StringProperty author = new SimpleStringProperty();
-        final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(new byte[1]);
-        final ObjectProperty<Image> image = new SimpleObjectProperty<>();
+        final StringProperty author = new SimpleStringProperty(this, "author", null);
+        final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "imageRaw");
+        final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
         final MaxActValue stackSize = new MaxActValue(1, Integer.MAX_VALUE, 1);
-        final BooleanProperty uploaded = new SimpleBooleanProperty();
-        final BooleanProperty downloaded = new SimpleBooleanProperty();
+        final BooleanProperty uploaded = new SimpleBooleanProperty(this, "uploaded");
+        final BooleanProperty downloaded = new SimpleBooleanProperty(this, "downloaded");
 
         private boolean block = false;
 
@@ -251,6 +261,13 @@ public class ItemGeneralController extends BaseController implements Initializab
             imageRaw.addListener((observable, oldValue, newValue) -> {
                 if (block) {
                     return;
+                }
+
+                if (newValue == null || Arrays.equals(newValue, new byte[0])) {
+                    setValid(false);
+                    setValidityFlag(FLAG_IMAGE, true);
+                } else {
+                    setValidityFlag(FLAG_IMAGE, false);
                 }
 
                 block = true;
@@ -280,6 +297,34 @@ public class ItemGeneralController extends BaseController implements Initializab
                     block = false;
                 }
             });
+
+            name.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_NAME, true);
+                } else {
+                    setValidityFlag(FLAG_NAME, false);
+                }
+            });
+            weight.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_WEIGHT, true);
+                } else {
+                    setValidityFlag(FLAG_WEIGHT, false);
+                }
+            });
+            stackSize.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_STACK_SIZE, true);
+                } else {
+                    setValidityFlag(FLAG_STACK_SIZE, false);
+                }
+            });
+
+            validityFlag.set(FLAG_NAME + FLAG_IMAGE);
+            setValid(false);
         }
     }
 }
