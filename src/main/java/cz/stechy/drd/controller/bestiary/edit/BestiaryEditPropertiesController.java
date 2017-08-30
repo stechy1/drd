@@ -2,10 +2,12 @@ package cz.stechy.drd.controller.bestiary.edit;
 
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
@@ -73,7 +75,20 @@ public class BestiaryEditPropertiesController implements IEditController, Initia
         bundle.putInt(BestiaryHelper.CHARISMA, model.charisma.getActValue().intValue());
     }
 
-    private static class Model {
+    @Override
+    public ReadOnlyBooleanProperty validProperty() {
+        return model.validProperty();
+    }
+
+    private static class Model extends ValidatedModel {
+        private static final int FLAG_ATTACK_NUMBER = 1 << 0;
+        private static final int FLAG_DEFENCE_NUMBER = 1 << 1;
+        private static final int FLAG_VIABILITY = 1 << 2;
+        private static final int FLAG_IMMUNITY = 1 << 3;
+        private static final int FLAG_METTLE = 1 << 4;
+        private static final int FLAG_INTELLIGENCE = 1 << 5;
+        private static final int FLAG_CHARISMA = 1 << 6;
+
         private final MaxActValue attackNumber = new MaxActValue(Integer.MAX_VALUE);
         private final MaxActValue defenceNumber = new MaxActValue(Integer.MAX_VALUE);
         private final MaxActValue viability = new MaxActValue(Integer.MAX_VALUE);
@@ -81,5 +96,75 @@ public class BestiaryEditPropertiesController implements IEditController, Initia
         private final MaxActValue mettle = new MaxActValue(Integer.MAX_VALUE);
         private final MaxActValue intelligence = new MaxActValue(Integer.MAX_VALUE);
         private final MaxActValue charisma = new MaxActValue(Integer.MAX_VALUE);
+
+        {
+            attackNumber.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_ATTACK_NUMBER, true);
+                } else {
+                    setValidityFlag(FLAG_ATTACK_NUMBER, false);
+                }
+                System.out.println(valid);
+            });
+            defenceNumber.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_DEFENCE_NUMBER, true);
+                } else {
+                    setValidityFlag(FLAG_DEFENCE_NUMBER, false);
+                }
+                System.out.println(valid);
+            });
+            viability.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_VIABILITY, true);
+                } else {
+                    setValidityFlag(FLAG_VIABILITY, false);
+                }
+                System.out.println(valid);
+            });
+            immunity.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_IMMUNITY, true);
+                } else {
+                    setValidityFlag(FLAG_IMMUNITY, false);
+                }
+                System.out.println(valid);
+            });
+            mettle.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_METTLE, true);
+                } else {
+                    setValidityFlag(FLAG_METTLE, false);
+                }
+                System.out.println(valid);
+            });
+            intelligence.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_INTELLIGENCE, true);
+                } else {
+                    setValidityFlag(FLAG_INTELLIGENCE, false);
+                }
+                System.out.println(valid);
+            });
+            charisma.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_CHARISMA, true);
+                } else {
+                    setValidityFlag(FLAG_CHARISMA, false);
+                }
+                System.out.println(valid);
+            });
+
+            // Automatické nastavení validity na true
+            validityFlag.set(0);
+            setValid(true);
+        }
     }
 }

@@ -9,7 +9,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,7 +29,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 
 /**
- *
+ * Kontroler pro editaci obrázku nestvůry
  */
 public class BestiaryEditImageController implements IEditController, Initializable {
 
@@ -41,6 +44,7 @@ public class BestiaryEditImageController implements IEditController, Initializab
 
     // endregion
 
+    private final BooleanProperty valid = new SimpleBooleanProperty(this, "valid");
     private final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "rawImage");
 
     // endregion
@@ -48,6 +52,9 @@ public class BestiaryEditImageController implements IEditController, Initializab
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         imageRaw.addListener((observable, oldValue, newValue) -> {
+            valid.set(!(newValue == null || Arrays.equals(newValue, new byte[0])));
+            System.out.println(valid);
+
             final ByteArrayInputStream inputStream = new ByteArrayInputStream(newValue);
             container.setBackground(new Background(new BackgroundImage(
                 new Image(inputStream),
@@ -67,6 +74,11 @@ public class BestiaryEditImageController implements IEditController, Initializab
     @Override
     public void saveMobPropertiesToBundle(Bundle bundle) {
         bundle.put(BestiaryHelper.IMAGE, imageRaw.getValue());
+    }
+
+    @Override
+    public ReadOnlyBooleanProperty validProperty() {
+        return valid;
     }
 
     public void handleClick(MouseEvent mouseEvent) {
