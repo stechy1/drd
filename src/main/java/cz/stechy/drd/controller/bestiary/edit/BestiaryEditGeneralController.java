@@ -2,6 +2,7 @@ package cz.stechy.drd.controller.bestiary.edit;
 
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
 import cz.stechy.drd.model.Rule;
+import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
@@ -11,6 +12,7 @@ import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -85,11 +87,65 @@ public class BestiaryEditGeneralController implements Initializable, IEditContro
         bundle.putInt(BestiaryHelper.HEIGHT, model.height.getValue().ordinal());
     }
 
-    private static final class Model {
+    @Override
+    public ReadOnlyBooleanProperty validProperty() {
+        return model.validProperty();
+    }
+
+    private static final class Model extends ValidatedModel {
+        private static final int FLAG_NAME = 1 << 0;
+        private static final int FLAG_RULE = 1 << 1;
+        private static final int FLAG_MOB_CLASS = 1 << 2;
+        private static final int FLAG_CONVICTION = 1 << 3;
+        private static final int FLAG_HEIGHT = 1 << 4;
+
         private final StringProperty name = new SimpleStringProperty(this, "name");
         private final ObjectProperty<Rule> rule = new SimpleObjectProperty<>(this, "rule");
         private final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>(this, "mobClass");
         private final ObjectProperty<Conviction> conviction = new SimpleObjectProperty<>(this, "conviction");
         private final ObjectProperty<Height> height = new SimpleObjectProperty<>(this, "height");
+
+        {
+            name.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null || newValue.trim().isEmpty()) {
+                    setValid(false);
+                    setValidityFlag(FLAG_NAME, true);
+                } else {
+                    setValidityFlag(FLAG_NAME, false);
+                }
+            });
+            rule.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_RULE, true);
+                } else {
+
+                }
+            });
+            mobClass.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_MOB_CLASS, true);
+                } else {
+                    setValidityFlag(FLAG_MOB_CLASS, false);
+                }
+            });
+            conviction.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_CONVICTION, true);
+                } else {
+                    setValidityFlag(FLAG_CONVICTION, false);
+                }
+            });
+            height.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_HEIGHT, true);
+                } else {
+                    setValidityFlag(FLAG_HEIGHT, false);
+                }
+            });
+        }
     }
 }
