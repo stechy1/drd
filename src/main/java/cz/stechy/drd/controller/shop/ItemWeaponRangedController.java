@@ -4,6 +4,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.controller.MoneyController;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
 import cz.stechy.drd.util.FormUtils;
@@ -31,6 +32,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -106,6 +108,8 @@ public class ItemWeaponRangedController extends BaseController implements Initia
     private Label lblSelectImage;
     @FXML
     private ImageView imageView;
+    @FXML
+    private Button btnFinish;
     // endregion
 
     private final WeaponRangedModel model = new WeaponRangedModel();
@@ -197,6 +201,8 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         imageView.imageProperty().bindBidirectional(model.image);
         model.imageRaw.addListener((observable, oldValue, newValue) ->
             lblSelectImage.setVisible(Arrays.equals(newValue, new byte[0])));
+
+        btnFinish.disableProperty().bind(model.validProperty().not());
     }
 
     @Override
@@ -204,23 +210,25 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         action = bundle.getInt(ShopHelper.ITEM_ACTION);
         lblTitle.setText(action == ShopHelper.ITEM_ACTION_ADD ? titleNew : titleUpdate);
 
-        model.id.setValue(bundle.getString(ID));
-        model.name.setValue(bundle.getString(NAME));
-        model.description.setValue(bundle.getString(DESCRIPTION));
-        model.weight.setActValue(bundle.getInt(WEIGHT));
-        model.price.setRaw(bundle.getInt(PRICE));
-        model.strength.setActValue(bundle.getInt(STRENGTH));
-        model.rampancy.setActValue(bundle.getInt(RAMPANCY));
-        model.weaponType.setValue(RangedWeaponType.valueOf(bundle.getInt(WEAPON_TYPE)));
-        model.rangeLow.setActValue(bundle.getInt(RANGE_LOW));
-        model.rangeMedium.setActValue(bundle.getInt(RANGE_MEDIUM));
-        model.rangeLong.setActValue(bundle.getInt(RANGE_LONG));
-        model.author.setValue(bundle.getString(AUTHOR));
-        model.renown.setActValue(bundle.getInt(RENOWN));
-        model.imageRaw.setValue(bundle.getByteArray(IMAGE));
-        model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
-        model.uploaded.setValue(bundle.getBoolean(UPLOADED));
-        model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
+        if (action == ShopHelper.ITEM_ACTION_UPDATE) {
+            model.id.setValue(bundle.getString(ID));
+            model.name.setValue(bundle.getString(NAME));
+            model.description.setValue(bundle.getString(DESCRIPTION));
+            model.weight.setActValue(bundle.getInt(WEIGHT));
+            model.price.setRaw(bundle.getInt(PRICE));
+            model.strength.setActValue(bundle.getInt(STRENGTH));
+            model.rampancy.setActValue(bundle.getInt(RAMPANCY));
+            model.weaponType.setValue(RangedWeaponType.valueOf(bundle.getInt(WEAPON_TYPE)));
+            model.rangeLow.setActValue(bundle.getInt(RANGE_LOW));
+            model.rangeMedium.setActValue(bundle.getInt(RANGE_MEDIUM));
+            model.rangeLong.setActValue(bundle.getInt(RANGE_LONG));
+            model.author.setValue(bundle.getString(AUTHOR));
+            model.renown.setActValue(bundle.getInt(RENOWN));
+            model.imageRaw.setValue(bundle.getByteArray(IMAGE));
+            model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
+            model.uploaded.setValue(bundle.getBoolean(UPLOADED));
+            model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
+        }
     }
 
     @Override
@@ -297,11 +305,23 @@ public class ItemWeaponRangedController extends BaseController implements Initia
 
     // endregion
 
-    private static class WeaponRangedModel {
+    private static class WeaponRangedModel extends ValidatedModel {
 
-        final StringProperty id = new SimpleStringProperty();
-        final StringProperty name = new SimpleStringProperty();
-        final StringProperty description = new SimpleStringProperty();
+        private static final int FLAG_NAME = 1 << 0;
+        private static final int FLAG_WEIGHT = 1 << 1;
+        private static final int FLAG_STRENGTH = 1 << 2;
+        private static final int FLAG_RAMPANCY = 1 << 3;
+        private static final int FLAG_RANGE_LOW = 1 << 4;
+        private static final int FLAG_RANGE_MEDIUM = 1 << 5;
+        private static final int FLAG_RANGE_LONG = 1 << 6;
+        private static final int FLAG_WEAPON_TYPE = 1 << 7;
+        private static final int FLAG_RENOWN = 1 << 8;
+        private static final int FLAG_IMAGE = 1 << 9;
+        private static final int FLAG_STACK_SIZE = 1 << 10;
+
+        final StringProperty id = new SimpleStringProperty(this, "id", null);
+        final StringProperty name = new SimpleStringProperty(this, "name", null);
+        final StringProperty description = new SimpleStringProperty(this, "description", null);
         final Money price = new Money();
         final MaxActValue weight = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue strength = new MaxActValue(Integer.MAX_VALUE);
@@ -309,15 +329,14 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         final MaxActValue rangeLow = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue rangeMedium = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue rangeLong = new MaxActValue(Integer.MAX_VALUE);
-        final ObjectProperty<RangedWeaponType> weaponType = new SimpleObjectProperty<>(
-            RangedWeaponType.FIRE);
-        final StringProperty author = new SimpleStringProperty();
+        final ObjectProperty<RangedWeaponType> weaponType = new SimpleObjectProperty<>(this, "weaponType", null);
+        final StringProperty author = new SimpleStringProperty(this, "author", null);
         final MaxActValue renown = new MaxActValue(Integer.MAX_VALUE);
-        final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
-        final ObjectProperty<Image> image = new SimpleObjectProperty<>();
+        final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "imageRaw");
+        final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
         final MaxActValue stackSize = new MaxActValue(1, Integer.MAX_VALUE, 1);
-        final BooleanProperty uploaded = new SimpleBooleanProperty();
-        final BooleanProperty downloaded = new SimpleBooleanProperty();
+        final BooleanProperty uploaded = new SimpleBooleanProperty(this, "uploaded");
+        final BooleanProperty downloaded = new SimpleBooleanProperty(this, "downloaded");
 
         private boolean block = false;
 
@@ -325,6 +344,13 @@ public class ItemWeaponRangedController extends BaseController implements Initia
             imageRaw.addListener((observable, oldValue, newValue) -> {
                 if (block) {
                     return;
+                }
+
+                if (newValue == null || Arrays.equals(newValue, new byte[0])) {
+                    setValid(false);
+                    setValidityFlag(FLAG_IMAGE, true);
+                } else {
+                    setValidityFlag(FLAG_IMAGE, false);
                 }
 
                 block = true;
@@ -354,6 +380,90 @@ public class ItemWeaponRangedController extends BaseController implements Initia
                     block = false;
                 }
             });
+
+            name.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_NAME, true);
+                } else {
+                    setValidityFlag(FLAG_NAME, false);
+                }
+            });
+            weight.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_WEIGHT, true);
+                } else {
+                    setValidityFlag(FLAG_WEIGHT, false);
+                }
+            });
+            strength.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_STRENGTH, true);
+                } else {
+                    setValidityFlag(FLAG_STRENGTH, false);
+                }
+            });
+            rampancy.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_RAMPANCY, true);
+                } else {
+                    setValidityFlag(FLAG_RAMPANCY, false);
+                }
+            });
+            rangeLow.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_RANGE_LOW, true);
+                } else {
+                    setValidityFlag(FLAG_RANGE_LOW, false);
+                }
+            });
+            rangeMedium.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_RANGE_MEDIUM, true);
+                } else {
+                    setValidityFlag(FLAG_RANGE_MEDIUM, false);
+                }
+            });
+            rangeLong.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_RANGE_LONG, true);
+                } else {
+                    setValidityFlag(FLAG_RANGE_LONG, false);
+                }
+            });
+            weaponType.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_WEAPON_TYPE, true);
+                } else {
+                    setValidityFlag(FLAG_WEAPON_TYPE, false);
+                }
+            });
+            renown.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_RENOWN, true);
+                } else {
+                    setValidityFlag(FLAG_RENOWN, false);
+                }
+            });
+            stackSize.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_STACK_SIZE, true);
+                } else {
+                    setValidityFlag(FLAG_STACK_SIZE, false);
+                }
+            });
+
+            validityFlag.set(FLAG_NAME + FLAG_WEAPON_TYPE + FLAG_IMAGE);
+            setValid(false);
         }
 
     }
