@@ -13,61 +13,55 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<BorderPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="cz.stechy.drd.controller.shop.ItemArmorController">
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.shop.ItemArmorController">
   <top>
     <HBox styleClass="title-container">
-      <Label fx:id="lblTitle" styleClass="title-label" HBox.hgrow="ALWAYS"/>
+      <Label fx:id="lblTitle" styleClass="title-label" HBox.hgrow="ALWAYS" />
     </HBox>
   </top>
   <center>
     <VBox spacing="16.0">
       <HBox spacing="16.0" VBox.vgrow="ALWAYS">
         <VBox spacing="16.0" HBox.hgrow="ALWAYS">
-          <JFXTextField fx:id="txtName" labelFloat="true" promptText="%drd_item_name"/>
-          <JFXTextField fx:id="txtDefenceNumber" labelFloat="true"
-            promptText="%drd_item_weapon_mele_armor_defence_number"/>
-          <JFXTextField fx:id="txtMiniumStrength" labelFloat="true"
-            promptText="%drd_item_armor_minimum_strength"/>
-          <EnumComboBox fx:id="cmbType" enumType="cz.stechy.drd.model.item.Armor$ArmorType"
-            labelFloat="true" promptText="%drd_item_armor_type"/>
-          <JFXTextField fx:id="txtStackSize" labelFloat="true" promptText="Váha C"/>
+          <JFXTextField fx:id="txtName" labelFloat="true" promptText="%drd_item_name" />
+          <JFXTextField fx:id="txtDefenceNumber" labelFloat="true" promptText="%drd_item_weapon_mele_armor_defence_number" />
+          <JFXTextField fx:id="txtMiniumStrength" labelFloat="true" promptText="%drd_item_armor_minimum_strength" />
+          <EnumComboBox fx:id="cmbType" enumType="cz.stechy.drd.model.item.Armor$ArmorType" labelFloat="true" promptText="%drd_item_armor_type" />
+          <JFXTextField fx:id="txtStackSize" labelFloat="true" promptText="%drd_item_stack_size" />
         </VBox>
         <VBox spacing="16.0" HBox.hgrow="ALWAYS">
-          <JFXTextField fx:id="txtWeightA" labelFloat="true" promptText="%drd_item_armor_type"/>
-          <JFXTextField fx:id="txtWeightB" labelFloat="true" promptText="Váha A"/>
-          <JFXTextField fx:id="txtWeightC" labelFloat="true" promptText="Váha B"/>
+          <JFXTextField fx:id="txtWeightA" labelFloat="true" promptText="%drd_item_weight_a" />
+          <JFXTextField fx:id="txtWeightB" labelFloat="true" promptText="drd_item_weight_b" />
+          <JFXTextField fx:id="txtWeightC" labelFloat="true" promptText="drd_item_weight_c" />
         </VBox>
         <VBox spacing="16.0" HBox.hgrow="ALWAYS">
-          <Hyperlink fx:id="lblPriceA" onAction="#handleShowMoneyAPopup" text="Cena A"/>
-          <Hyperlink fx:id="lblPriceB" onAction="#handleShowMoneyBPopup" text="Cena B"/>
-          <Hyperlink fx:id="lblPriceC" onAction="#handleShowMoneyCPopup" text="Cena C"/>
+          <Hyperlink fx:id="lblPriceA" onAction="#handleShowMoneyAPopup" text="%drd_item_price_a" />
+          <Hyperlink fx:id="lblPriceB" onAction="#handleShowMoneyBPopup" text="%drd_item_price_b" />
+          <Hyperlink fx:id="lblPriceC" onAction="#handleShowMoneyCPopup" text="%drd_item_price_c" />
         </VBox>
         <padding>
-          <Insets top="8.0"/>
+          <Insets top="8.0" />
         </padding>
       </HBox>
       <HBox spacing="8.0" VBox.vgrow="NEVER">
         <StackPane>
-          <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0"
-            onMouseClicked="#handleSelectImage" pickOnBounds="true" preserveRatio="true"/>
-          <Label fx:id="lblSelectImage" text="%drd_image_click_for_image" visible="true"/>
+          <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleSelectImage" pickOnBounds="true" preserveRatio="true" />
+          <Label fx:id="lblSelectImage" text="%drd_image_click_for_image" visible="true" />
         </StackPane>
-        <JFXTextArea fx:id="txtDescription" labelFloat="true" promptText="%drd_item_description"
-          VBox.vgrow="ALWAYS"/>
+        <JFXTextArea fx:id="txtDescription" labelFloat="true" promptText="%drd_item_description" VBox.vgrow="ALWAYS" />
       </HBox>
       <padding>
-        <Insets topRightBottomLeft="8.0"/>
+        <Insets topRightBottomLeft="8.0" />
       </padding>
     </VBox>
   </center>
   <bottom>
     <HBox prefHeight="50" styleClass="separator-line, line-top">
-      <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton onAction="#handleFinish" prefHeight="34.0" styleClass="btn, btn-primary, btn-raised"
-        text="%drd_finish"/>
+      <Region HBox.hgrow="ALWAYS" />
+      <JFXButton fx:id="btnFinish" onAction="#handleFinish" prefHeight="34.0" styleClass="btn, btn-primary, btn-raised" text="%drd_finish" />
       <padding>
-        <Insets topRightBottomLeft="8.0"/>
+        <Insets topRightBottomLeft="8.0" />
       </padding>
     </HBox>
   </bottom>

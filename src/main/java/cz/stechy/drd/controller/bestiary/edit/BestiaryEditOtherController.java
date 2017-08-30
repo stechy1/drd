@@ -5,12 +5,14 @@ import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.VulnerabilityController;
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -105,6 +107,11 @@ public class BestiaryEditOtherController implements InjectableChild, IEditContro
         bundle.putInt(BestiaryHelper.DOMESTICATION, model.domestication.getActValue().intValue());
     }
 
+    @Override
+    public ReadOnlyBooleanProperty validProperty() {
+        return model.validProperty();
+    }
+
     // region Button handlers
 
     @FXML
@@ -117,7 +124,14 @@ public class BestiaryEditOtherController implements InjectableChild, IEditContro
 
     // endregion
 
-    private static final class Model {
+    private static final class Model extends ValidatedModel {
+
+        private static final int FLAG_VULNERABILITY = 1 << 0;
+        private static final int FLAG_MOBILITY = 1 << 1;
+        private static final int FLAG_PERSERVANCE = 1 << 2;
+        private static final int FLAG_CONTROL_ABILITY = 1 << 3;
+        private static final int FLAG_BASIC_POWER_OF_MIND = 1 << 4;
+        private static final int FLAG_DOMESTICATION = 1 << 5;
 
         final IntegerProperty vulnerability = new SimpleIntegerProperty();
         final MaxActValue mobility = new MaxActValue(Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
@@ -126,6 +140,61 @@ public class BestiaryEditOtherController implements InjectableChild, IEditContro
         final MaxActValue basicPowerOfMind = new MaxActValue(Integer.MIN_VALUE, Integer.MAX_VALUE,
             0);
         final MaxActValue domestication = new MaxActValue(Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
+
+        {
+            vulnerability.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_VULNERABILITY, true);
+                } else {
+                    setValidityFlag(FLAG_VULNERABILITY, false);
+                }
+            });
+            mobility.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null || newValue.intValue() < 0) {
+                    setValid(false);
+                    setValidityFlag(FLAG_MOBILITY, true);
+                } else {
+                    setValidityFlag(FLAG_MOBILITY, false);
+                }
+            });
+            perservance.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null || newValue.intValue() < 0) {
+                    setValid(false);
+                    setValidityFlag(FLAG_PERSERVANCE, true);
+                } else {
+                    setValidityFlag(FLAG_PERSERVANCE, false);
+                }
+            });
+            controlAbility.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null || newValue.intValue() < 0) {
+                    setValid(false);
+                    setValidityFlag(FLAG_CONTROL_ABILITY, true);
+                } else {
+                    setValidityFlag(FLAG_CONTROL_ABILITY, false);
+                }
+            });
+            basicPowerOfMind.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null || newValue.intValue() < 0) {
+                    setValid(false);
+                    setValidityFlag(FLAG_BASIC_POWER_OF_MIND, true);
+                } else {
+                    setValidityFlag(FLAG_BASIC_POWER_OF_MIND, false);
+                }
+            });
+            domestication.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null || newValue.intValue() < 0) {
+                    setValid(false);
+                    setValidityFlag(FLAG_DOMESTICATION, true);
+                } else {
+                    setValidityFlag(FLAG_DOMESTICATION, false);
+                }
+            });
+
+            // Automatické nastavení validity na true
+            validityFlag.set(0);
+            setValid(true);
+        }
 
     }
 }
