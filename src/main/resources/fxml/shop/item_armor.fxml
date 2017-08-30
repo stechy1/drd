@@ -65,7 +65,7 @@
     <HBox prefHeight="50" styleClass="separator-line, line-top">
       <Region HBox.hgrow="ALWAYS"/>
       <JFXButton onAction="#handleFinish" prefHeight="34.0" styleClass="btn, btn-primary, btn-raised"
-        text="%drd_finish"/>
+        text="%drd_finish" fx:id="btnFinish"/>
       <padding>
         <Insets topRightBottomLeft="8.0"/>
       </padding>

@@ -4,6 +4,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.controller.MoneyController;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.util.FormUtils;
@@ -31,6 +32,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -110,6 +112,8 @@ public class ItemArmorController extends BaseController implements Initializable
     private ImageView imageView;
     @FXML
     private Label lblSelectImage;
+    @FXML
+    private Button btnFinish;
 
     // endregion
 
@@ -204,6 +208,8 @@ public class ItemArmorController extends BaseController implements Initializable
         imageView.imageProperty().bindBidirectional(model.image);
         model.imageRaw.addListener((observable, oldValue, newValue) ->
             lblSelectImage.setVisible(Arrays.equals(newValue, new byte[0])));
+
+        btnFinish.disableProperty().bind(model.validProperty().not());
     }
 
     @Override
@@ -211,25 +217,25 @@ public class ItemArmorController extends BaseController implements Initializable
         action = bundle.getInt(ShopHelper.ITEM_ACTION);
         lblTitle.setText(action == ShopHelper.ITEM_ACTION_ADD ? titleNew : titleUpdate);
 
-        model.id.setValue(bundle.getString(ID));
-        model.name.setValue(bundle.getString(NAME));
-        model.description.setValue(bundle.getString(DESCRIPTION));
-        model.defence.setActValue(bundle.getInt(DEFENCE));
-        model.minimumStrength.setActValue(bundle.getInt(MINIMUM_STRENGTH));
-        model.type.setValue(ArmorType.values()[bundle.getInt(TYPE)]);
-        model.weightA.setActValue(bundle.getInt(WEIGHT_A));
-        model.weightB.setActValue(bundle.getInt(WEIGHT_B));
-        model.weightC.setActValue(bundle.getInt(WEIGHT_C));
-        model.priceA.setRaw(bundle.getInt(PRICE_A));
-        model.priceB.setRaw(bundle.getInt(PRICE_B));
-        model.priceC.setRaw(bundle.getInt(PRICE_C));
-        model.author.setValue(bundle.getString(AUTHOR));
-        model.imageRaw.setValue(bundle.getByteArray(IMAGE));
-        model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
-        model.uploaded.setValue(bundle.getBoolean(UPLOADED));
-        model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
-
-
+        if (action == ShopHelper.ITEM_ACTION_UPDATE) {
+            model.id.setValue(bundle.getString(ID));
+            model.name.setValue(bundle.getString(NAME));
+            model.description.setValue(bundle.getString(DESCRIPTION));
+            model.defence.setActValue(bundle.getInt(DEFENCE));
+            model.minimumStrength.setActValue(bundle.getInt(MINIMUM_STRENGTH));
+            model.type.setValue(ArmorType.values()[bundle.getInt(TYPE)]);
+            model.weightA.setActValue(bundle.getInt(WEIGHT_A));
+            model.weightB.setActValue(bundle.getInt(WEIGHT_B));
+            model.weightC.setActValue(bundle.getInt(WEIGHT_C));
+            model.priceA.setRaw(bundle.getInt(PRICE_A));
+            model.priceB.setRaw(bundle.getInt(PRICE_B));
+            model.priceC.setRaw(bundle.getInt(PRICE_C));
+            model.author.setValue(bundle.getString(AUTHOR));
+            model.imageRaw.setValue(bundle.getByteArray(IMAGE));
+            model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
+            model.uploaded.setValue(bundle.getBoolean(UPLOADED));
+            model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
+        }
     }
 
     @Override
@@ -332,26 +338,37 @@ public class ItemArmorController extends BaseController implements Initializable
 
     // endregion
 
-    private static class ArmorModel {
+    private static class ArmorModel extends ValidatedModel {
 
-        final StringProperty id = new SimpleStringProperty();
-        final StringProperty name = new SimpleStringProperty();
-        final StringProperty description = new SimpleStringProperty();
+        private static final int FLAG_NAME = 1 << 0;
+        private static final int FLAG_DESCRIPTION = 1 << 1;
+        private static final int FLAG_DEFENCE = 1 << 2;
+        private static final int FLAG_MINIMUM_STRENGTH = 1 << 2;
+        private static final int FLAG_TYPE = 1 << 4;
+        private static final int FLAG_WEIGHT_A = 1 << 5;
+        private static final int FLAG_WEIGHT_B = 1 << 6;
+        private static final int FLAG_WEIGHT_C = 1 << 7;
+        private static final int FLAG_IMAGE = 1 << 8;
+        private static final int FLAG_STACK_SIZE = 1 << 9;
+
+        final StringProperty id = new SimpleStringProperty(this, "id", null);
+        final StringProperty name = new SimpleStringProperty(this, "name", null);
+        final StringProperty description = new SimpleStringProperty(this, "description", null);
         final MaxActValue defence = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue minimumStrength = new MaxActValue(Integer.MAX_VALUE);
-        final ObjectProperty<ArmorType> type = new SimpleObjectProperty<>();
+        final ObjectProperty<ArmorType> type = new SimpleObjectProperty<>(this, "type", null);
         final MaxActValue weightA = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue weightB = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue weightC = new MaxActValue(Integer.MAX_VALUE);
         final Money priceA = new Money();
         final Money priceB = new Money();
         final Money priceC = new Money();
-        final StringProperty author = new SimpleStringProperty();
-        final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
-        final ObjectProperty<Image> image = new SimpleObjectProperty<>();
+        final StringProperty author = new SimpleStringProperty(this, "author", null);
+        final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "imageRaw");
+        final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
         final MaxActValue stackSize = new MaxActValue(1, Integer.MAX_VALUE, 1);
-        final BooleanProperty uploaded = new SimpleBooleanProperty();
-        final BooleanProperty downloaded = new SimpleBooleanProperty();
+        final BooleanProperty uploaded = new SimpleBooleanProperty(this, "uploaded");
+        final BooleanProperty downloaded = new SimpleBooleanProperty(this, "downloaded");
 
         private boolean block = false;
 
@@ -359,6 +376,13 @@ public class ItemArmorController extends BaseController implements Initializable
             imageRaw.addListener((observable, oldValue, newValue) -> {
                 if (block) {
                     return;
+                }
+
+                if (newValue == null || Arrays.equals(newValue, new byte[0])) {
+                    setValid(false);
+                    setValidityFlag(FLAG_IMAGE, true);
+                } else {
+                    setValidityFlag(FLAG_IMAGE, false);
                 }
 
                 block = true;
@@ -388,6 +412,82 @@ public class ItemArmorController extends BaseController implements Initializable
                     block = false;
                 }
             });
+
+            name.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_NAME, true);
+                } else {
+                    setValidityFlag(FLAG_NAME, false);
+                }
+            });
+            description.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_DESCRIPTION, true);
+                } else {
+                    setValidityFlag(FLAG_DESCRIPTION, false);
+                }
+            });
+            defence.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_DEFENCE, true);
+                } else {
+                    setValidityFlag(FLAG_DEFENCE, false);
+                }
+            });
+            minimumStrength.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_MINIMUM_STRENGTH, true);
+                } else {
+                    setValidityFlag(FLAG_MINIMUM_STRENGTH, false);
+                }
+            });
+            type.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_TYPE, true);
+                } else {
+                    setValidityFlag(FLAG_TYPE, false);
+                }
+            });
+            weightA.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_WEIGHT_A, true);
+                } else {
+                    setValidityFlag(FLAG_WEIGHT_A, false);
+                }
+            });
+            weightB.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_WEIGHT_B, true);
+                } else {
+                    setValidityFlag(FLAG_WEIGHT_B, false);
+                }
+            });
+            weightC.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_WEIGHT_C, true);
+                } else {
+                    setValidityFlag(FLAG_WEIGHT_C, false);
+                }
+            });
+            stackSize.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_STACK_SIZE, true);
+                } else {
+                    setValidityFlag(FLAG_STACK_SIZE, false);
+                }
+            });
+
+            validityFlag.set(FLAG_NAME + FLAG_TYPE + FLAG_IMAGE);
+            setValid(false);
         }
     }
 }
