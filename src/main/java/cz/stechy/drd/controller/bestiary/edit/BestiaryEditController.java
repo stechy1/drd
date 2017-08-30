@@ -8,9 +8,12 @@ import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Pane;
@@ -54,8 +57,12 @@ public class BestiaryEditController extends BaseController implements Initializa
     private VBox tabBestiaryOther;
     @FXML
     private TextArea tabBestiaryDescription;
+    @FXML
+    private Button btnFinish;
 
     // endregion
+
+    private final BooleanProperty valid = new SimpleBooleanProperty(this, "valid");
 
     private IEditController[] controllers;
     private String titleNew;
@@ -85,6 +92,16 @@ public class BestiaryEditController extends BaseController implements Initializa
                 ((InjectableChild) controller).injectParent(this);
             }
         });
+
+        valid.bind(tabBestiaryImageController.validProperty().and(
+            tabBestiaryGeneralController.validProperty().and(
+                tabBestiaryPropertiesController.validProperty().and(
+                    tabBestiaryOtherController.validProperty()
+                )
+            )
+        ));
+
+        btnFinish.disableProperty().bind(valid.not());
     }
 
     @Override

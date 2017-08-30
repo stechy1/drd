@@ -1,6 +1,7 @@
 package cz.stechy.drd.controller.bestiary.edit;
 
 import cz.stechy.screens.Bundle;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 
 /**
  * Značkovací rozhraní pro identifikaci kontroleru, který slouží pro úpravu vlastností nestvůry.
@@ -20,5 +21,12 @@ interface IEditController {
      * @param bundle {@link Bundle}
      */
     void saveMobPropertiesToBundle(Bundle bundle);
+
+    /**
+     * Vrátí validační property, která říká, zda-li jsou hodnoty v kontroleru validní
+     *
+     * @return {@link ReadOnlyBooleanProperty}
+     */
+    ReadOnlyBooleanProperty validProperty();
 
 }
