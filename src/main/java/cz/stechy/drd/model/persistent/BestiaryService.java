@@ -238,7 +238,6 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
 
     @Override
     public void toggleDatabase(boolean showOnline) {
-        System.out.println("Toggle");
         super.toggleDatabase(showOnline);
     }
 
