@@ -99,11 +99,11 @@ public class BestiaryEditGeneralController implements Initializable, IEditContro
         private static final int FLAG_CONVICTION = 1 << 3;
         private static final int FLAG_HEIGHT = 1 << 4;
 
-        private final StringProperty name = new SimpleStringProperty(this, "name");
-        private final ObjectProperty<Rule> rule = new SimpleObjectProperty<>(this, "rule");
-        private final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>(this, "mobClass");
-        private final ObjectProperty<Conviction> conviction = new SimpleObjectProperty<>(this, "conviction");
-        private final ObjectProperty<Height> height = new SimpleObjectProperty<>(this, "height");
+        private final StringProperty name = new SimpleStringProperty(this, "name", null);
+        private final ObjectProperty<Rule> rule = new SimpleObjectProperty<>(this, "rule", null);
+        private final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>(this, "mobClass", null);
+        private final ObjectProperty<Conviction> conviction = new SimpleObjectProperty<>(this, "conviction", null);
+        private final ObjectProperty<Height> height = new SimpleObjectProperty<>(this, "height", null);
 
         {
             name.addListener((observable, oldValue, newValue) -> {
@@ -119,7 +119,7 @@ public class BestiaryEditGeneralController implements Initializable, IEditContro
                     setValid(false);
                     setValidityFlag(FLAG_RULE, true);
                 } else {
-
+                    setValidityFlag(FLAG_RULE, false);
                 }
             });
             mobClass.addListener((observable, oldValue, newValue) -> {
@@ -146,6 +146,10 @@ public class BestiaryEditGeneralController implements Initializable, IEditContro
                     setValidityFlag(FLAG_HEIGHT, false);
                 }
             });
+
+            // Nastavení validačních příznaků - žádné pole není vyplněno
+            validityFlag.set(FLAG_NAME + FLAG_RULE + FLAG_MOB_CLASS + FLAG_CONVICTION + FLAG_HEIGHT);
+            setValid(false);
         }
     }
 }

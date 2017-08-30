@@ -105,7 +105,6 @@ public class BestiaryEditPropertiesController implements IEditController, Initia
                 } else {
                     setValidityFlag(FLAG_ATTACK_NUMBER, false);
                 }
-                System.out.println(valid);
             });
             defenceNumber.actValueProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue == null) {
@@ -114,7 +113,6 @@ public class BestiaryEditPropertiesController implements IEditController, Initia
                 } else {
                     setValidityFlag(FLAG_DEFENCE_NUMBER, false);
                 }
-                System.out.println(valid);
             });
             viability.actValueProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue == null) {
@@ -123,7 +121,6 @@ public class BestiaryEditPropertiesController implements IEditController, Initia
                 } else {
                     setValidityFlag(FLAG_VIABILITY, false);
                 }
-                System.out.println(valid);
             });
             immunity.actValueProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue == null) {
@@ -132,7 +129,6 @@ public class BestiaryEditPropertiesController implements IEditController, Initia
                 } else {
                     setValidityFlag(FLAG_IMMUNITY, false);
                 }
-                System.out.println(valid);
             });
             mettle.actValueProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue == null) {
@@ -141,7 +137,6 @@ public class BestiaryEditPropertiesController implements IEditController, Initia
                 } else {
                     setValidityFlag(FLAG_METTLE, false);
                 }
-                System.out.println(valid);
             });
             intelligence.actValueProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue == null) {
@@ -150,7 +145,6 @@ public class BestiaryEditPropertiesController implements IEditController, Initia
                 } else {
                     setValidityFlag(FLAG_INTELLIGENCE, false);
                 }
-                System.out.println(valid);
             });
             charisma.actValueProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue == null) {
@@ -159,7 +153,6 @@ public class BestiaryEditPropertiesController implements IEditController, Initia
                 } else {
                     setValidityFlag(FLAG_CHARISMA, false);
                 }
-                System.out.println(valid);
             });
 
             // Automatické nastavení validity na true

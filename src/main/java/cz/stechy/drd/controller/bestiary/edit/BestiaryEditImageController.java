@@ -53,7 +53,6 @@ public class BestiaryEditImageController implements IEditController, Initializab
     public void initialize(URL location, ResourceBundle resources) {
         imageRaw.addListener((observable, oldValue, newValue) -> {
             valid.set(!(newValue == null || Arrays.equals(newValue, new byte[0])));
-            System.out.println(valid);
 
             final ByteArrayInputStream inputStream = new ByteArrayInputStream(newValue);
             container.setBackground(new Background(new BackgroundImage(

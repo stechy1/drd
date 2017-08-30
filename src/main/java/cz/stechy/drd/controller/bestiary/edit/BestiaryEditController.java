@@ -111,7 +111,10 @@ public class BestiaryEditController extends BaseController implements Initializa
         downloaded =bundle.getBoolean(BestiaryHelper.DOWNLOADED);
         uploaded = bundle.getBoolean(BestiaryHelper.UPLOADED);
         lblTitle.setText(action == BestiaryHelper.MOB_ACTION_ADD ? titleNew : titleUpdate);
-        Arrays.stream(controllers).forEach(controller -> controller.loadMobPropertiesFromBundle(bundle));
+        if (action == BestiaryHelper.MOB_ACTION_UPDATE) {
+            Arrays.stream(controllers)
+                .forEach(controller -> controller.loadMobPropertiesFromBundle(bundle));
+        }
     }
 
     @Override
