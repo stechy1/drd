@@ -58,11 +58,6 @@ public final class CellUtils {
 
             @Override
             public void updateItem(MaxActValue item, boolean empty) {
-                // unbind old values
-                if (getItem() != null) {
-                    FormUtils.disposeTextFormater(input, getItem());
-                }
-
                 super.updateItem(item, empty);
 
                 // update according to new item
