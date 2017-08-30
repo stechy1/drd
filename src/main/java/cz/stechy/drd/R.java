@@ -217,7 +217,13 @@ public final class R {
         public static final String ITEM_AUTHOR = "drd_item_author";
         public static final String ITEM_DESCRIPTION = "drd_item_description";
         public static final String ITEM_WEIGHT = "drd_item_weight";
+        public static final String ITEM_WEIGHT_A = "drd_item_weight_a";
+        public static final String ITEM_WEIGHT_B = "drd_item_weight_b";
+        public static final String ITEM_WEIGHT_C = "drd_item_weight_c";
         public static final String ITEM_PRICE = "drd_item_price";
+        public static final String ITEM_PRICE_A = "drd_item_price_a";
+        public static final String ITEM_PRICE_B = "drd_item_price_b";
+        public static final String ITEM_PRICE_C = "drd_item_price_c";
         public static final String ITEM_AMMOUNT = "drd_item_ammount";
         public static final String ITEM_STACK_SIZE = "drd_item_stack_size";
         public static final String ITEM_IMAGE = "drd_item_image";
