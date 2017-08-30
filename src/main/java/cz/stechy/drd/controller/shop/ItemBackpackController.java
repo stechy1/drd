@@ -4,6 +4,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.controller.MoneyController;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.Backpack.Size;
 import cz.stechy.drd.util.FormUtils;
@@ -21,7 +22,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -173,8 +173,7 @@ public class ItemBackpackController extends BaseController implements Initializa
         model.imageRaw.addListener((observable, oldValue, newValue) ->
             lblSelectImage.setVisible(Arrays.equals(newValue, new byte[0])));
 
-        btnFinish.disableProperty()
-            .bind(Bindings.or(model.name.isEmpty(), model.imageRaw.isNull()));
+        btnFinish.disableProperty().bind(model.validProperty().not());
     }
 
     @Override
@@ -182,18 +181,20 @@ public class ItemBackpackController extends BaseController implements Initializa
         action = bundle.getInt(ShopHelper.ITEM_ACTION);
         lblTitle.setText(action == ShopHelper.ITEM_ACTION_ADD ? titleNew : titleUpdate);
 
-        model.id.setValue(bundle.getString(ID));
-        model.name.setValue(bundle.getString(NAME));
-        model.description.setValue(bundle.getString(DESCRIPTION));
-        model.price.setRaw(bundle.getInt(PRICE));
-        model.weight.setActValue(bundle.getInt(WEIGHT));
-        model.maxLoad.setActValue(bundle.getInt(MAX_LOAD));
-        model.size.setValue(Size.values()[bundle.getInt(SIZE)]);
-        model.author.setValue(bundle.getString(AUTHOR));
-        model.imageRaw.setValue(bundle.getByteArray(IMAGE));
-        model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
-        model.uploaded.setValue(bundle.getBoolean(UPLOADED));
-        model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
+        if (action == ShopHelper.ITEM_ACTION_UPDATE) {
+            model.id.setValue(bundle.getString(ID));
+            model.name.setValue(bundle.getString(NAME));
+            model.description.setValue(bundle.getString(DESCRIPTION));
+            model.price.setRaw(bundle.getInt(PRICE));
+            model.weight.setActValue(bundle.getInt(WEIGHT));
+            model.maxLoad.setActValue(bundle.getInt(MAX_LOAD));
+            model.size.setValue(Size.values()[bundle.getInt(SIZE)]);
+            model.author.setValue(bundle.getString(AUTHOR));
+            model.imageRaw.setValue(bundle.getByteArray(IMAGE));
+            model.stackSize.setActValue(bundle.getInt(STACK_SIZE));
+            model.uploaded.setValue(bundle.getBoolean(UPLOADED));
+            model.downloaded.setValue(bundle.getBoolean(DOWNLOADED));
+        }
     }
 
     @Override
@@ -265,21 +266,28 @@ public class ItemBackpackController extends BaseController implements Initializa
 
     // endregion
 
-    private static class ItemModel {
+    private static class ItemModel extends ValidatedModel {
 
-        final StringProperty id = new SimpleStringProperty();
-        final StringProperty name = new SimpleStringProperty();
-        final StringProperty description = new SimpleStringProperty();
+        private static final int FLAG_NAME = 1 << 0;
+        private static final int FLAG_WEIGHT = 1 << 1;
+        private static final int FLAG_MAX_LOAD = 1 << 2;
+        private static final int FLAG_IMAGE = 1 << 3;
+        private static final int FLAG_STACK_SIZE = 1 << 4;
+        private static final int FLAG_SIZE = 1 << 5;
+
+        final StringProperty id = new SimpleStringProperty(this, "id", null);
+        final StringProperty name = new SimpleStringProperty(this, "name", null);
+        final StringProperty description = new SimpleStringProperty(this, "description", null);
         final Money price = new Money();
         final MaxActValue weight = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue maxLoad = new MaxActValue(Integer.MAX_VALUE);
-        final StringProperty author = new SimpleStringProperty();
-        final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
-        final ObjectProperty<Image> image = new SimpleObjectProperty<>();
+        final StringProperty author = new SimpleStringProperty(this, "author", null);
+        final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "imageRaw");
+        final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
         final MaxActValue stackSize = new MaxActValue(1, Integer.MAX_VALUE, 1);
-        final BooleanProperty uploaded = new SimpleBooleanProperty();
-        final BooleanProperty downloaded = new SimpleBooleanProperty();
-        final ObjectProperty<Size> size = new SimpleObjectProperty<>();
+        final BooleanProperty uploaded = new SimpleBooleanProperty(this, "uploaded");
+        final BooleanProperty downloaded = new SimpleBooleanProperty(this, "downloaded");
+        final ObjectProperty<Size> size = new SimpleObjectProperty<>(this, "size", null);
 
         private boolean block = false;
 
@@ -287,6 +295,13 @@ public class ItemBackpackController extends BaseController implements Initializa
             imageRaw.addListener((observable, oldValue, newValue) -> {
                 if (block) {
                     return;
+                }
+
+                if (newValue == null || Arrays.equals(newValue, new byte[0])) {
+                    setValid(false);
+                    setValidityFlag(FLAG_IMAGE, true);
+                } else {
+                    setValidityFlag(FLAG_IMAGE, false);
                 }
 
                 block = true;
@@ -316,6 +331,50 @@ public class ItemBackpackController extends BaseController implements Initializa
                     block = false;
                 }
             });
+
+            name.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_NAME, true);
+                } else {
+                    setValidityFlag(FLAG_NAME, false);
+                }
+            });
+            weight.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_WEIGHT, true);
+                } else {
+                    setValidityFlag(FLAG_WEIGHT, false);
+                }
+            });
+            maxLoad.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_MAX_LOAD, true);
+                } else {
+                    setValidityFlag(FLAG_MAX_LOAD, false);
+                }
+            });
+            stackSize.actValueProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_STACK_SIZE, true);
+                } else {
+                    setValidityFlag(FLAG_STACK_SIZE, false);
+                }
+            });
+            size.addListener((observable, oldValue, newValue) -> {
+                if (newValue == null) {
+                    setValid(false);
+                    setValidityFlag(FLAG_SIZE, true);
+                } else {
+                    setValidityFlag(FLAG_SIZE, false);
+                }
+            });
+
+            validityFlag.set(FLAG_NAME + FLAG_IMAGE + FLAG_SIZE);
+            setValid(false);
         }
 
     }
