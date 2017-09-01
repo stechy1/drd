@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.main.profession;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -11,6 +12,7 @@ import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -20,6 +22,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 
@@ -40,9 +43,19 @@ public class RangerController implements IProfessionController, Initializable {
     @FXML
     private Button btnTracking;
 
+    @FXML
+    private TextField txtDistance;
+    @FXML
+    private TextField txtWeight;
+    @FXML
+    private Label lblSuccessTelekinesisResult;
+
+
     // endregion
 
     private final TrackingModel trackingModel = new TrackingModel();
+    private final MaxActValue distance = new MaxActValue(1, Integer.MAX_VALUE, null);
+    private final MaxActValue weight = new MaxActValue(1, Integer.MAX_VALUE, null);
     private final Translator translator;
 
     private Hero hero;
@@ -65,9 +78,26 @@ public class RangerController implements IProfessionController, Initializable {
 
         FormUtils.initTextFormater(txtAgeOfTrail, trackingModel.age);
         FormUtils.initTextFormater(txtEnemyCount, trackingModel.count);
+        FormUtils.initTextFormater(txtDistance, distance);
+        FormUtils.initTextFormater(txtWeight, weight);
         toggleContinueTracking.selectedProperty().bindBidirectional(trackingModel.repeating);
 
         btnTracking.disableProperty().bind(trackingModel.validProperty().not());
+        lblSuccessTelekinesisResult.textProperty().bind(Bindings.createStringBinding(() -> {
+            if (distance.getActValue() == null || weight.getActValue() == null || ranger == null) {
+                return resources.getString(R.Translate.NO_ACTION);
+            }
+
+            assert distance.getActValue() != null;
+            assert weight.getActValue() != null;
+
+            final int d = distance.getActValue().intValue();
+            final int w = weight.getActValue().intValue();
+            final boolean telekinesis = ranger.telekinesis(d, w);
+            final String translateKey = telekinesis ? R.Translate.SUCCESS : R.Translate.UNSUCCESS;
+
+            return resources.getString(translateKey);
+        }, distance.actValueProperty(), weight.actValueProperty()));
     }
 
     @Override

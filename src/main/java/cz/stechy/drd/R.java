@@ -71,6 +71,9 @@ public final class R {
         public static final String IMAGE_CLICK_FOR_IMAGE = "drd_image_click_for_image";
         public static final String IMAGE_CHOOSE_DIALOG = "drd_image_choose_dialog";
         public static final String TOTAL_PRICE = "drd_total_price";
+        public static final String SUCCESS = "drd_success";
+        public static final String UNSUCCESS = "drd_unsuccess";
+        public static final String NO_RESULT = "drd_no_result";
         public static final String MAIN_TITLE = "drd_main_title";
         public static final String MAIN_TAB_DASHBOARD = "drd_main_tab_dashboard";
         public static final String MAIN_TAB_INVENTORY = "drd_main_tab_inventory";

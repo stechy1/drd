@@ -18,11 +18,12 @@
   <fx:define>
     <Double fx:id="CARD_WIDTH" fx:value="250.0"/>
     <Double fx:id="CARD_HEIGHT" fx:value="250.0"/>
+    <Double fx:id="SPACING" fx:value="16.0"/>
   </fx:define>
   <FlowPane prefHeight="450.0" prefWidth="600.0">
     <Card caption="Stopování">
       <content>
-        <VBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH" spacing="16.0">
+        <VBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH" spacing="$SPACING">
           <EnumComboBox enumType="cz.stechy.drd.model.entity.hero.profession.Ranger$Terrain"
             labelFloat="true" promptText="Náročnost terénu" fx:id="cmbTerrain" prefWidth="$CARD_WIDTH"/>
           <JFXTextField fx:id="txtAgeOfTrail" labelFloat="true" promptText="Stáří stopy (dny)"/>
@@ -34,13 +35,11 @@
     </Card>
     <Card caption="Telekineze">
       <content>
-        <HBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH">
-          <Label text="Již brzy...">
-            <font>
-              <Font name="Roboto" size="24"/>
-            </font>
-          </Label>
-        </HBox>
+        <VBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH" spacing="$SPACING">
+          <JFXTextField fx:id="txtDistance" labelFloat="true" promptText="Vzdálenost"/>
+          <JFXTextField fx:id="txtWeight" labelFloat="true" promptText="Váha"/>
+          <Label fx:id="lblSuccessTelekinesisResult" text="%drd_no_result"/>
+        </VBox>
       </content>
     </Card>
     <Card caption="Pyrokineze">
