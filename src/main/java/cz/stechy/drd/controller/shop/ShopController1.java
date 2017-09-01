@@ -128,10 +128,10 @@ public class ShopController1 extends BaseController implements Initializable {
 
     // region Constructors
 
-    public ShopController1(UserService userService, HeroService heroService, Translator translator, ShoppingCart shoppingCart) {
+    public ShopController1(UserService userService, HeroService heroService, Translator translator) {
         this.hero = heroService.getHero();
         this.translator = translator;
-        this.shoppingCart = shoppingCart;
+        this.shoppingCart = new ShoppingCart(hero);
         this.user = userService.getUser();
 
         this.translatedItemType.addAll(translator.getTranslationFor(Key.SHOP_ITEMS));
