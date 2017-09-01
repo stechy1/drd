@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.main.profession;
 
+import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.ValidatedModel;
@@ -14,8 +15,10 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -50,12 +53,23 @@ public class RangerController implements IProfessionController, Initializable {
     @FXML
     private Label lblSuccessTelekinesisResult;
 
+    @FXML
+    private TextField txtPyroDistance;
+    @FXML
+    private JFXButton btnPyroCalculate;
+    @FXML
+    private Button btnPyroCancel;
+    @FXML
+    private Button btnPyroFire;
 
     // endregion
 
     private final TrackingModel trackingModel = new TrackingModel();
-    private final MaxActValue distance = new MaxActValue(1, Integer.MAX_VALUE, null);
-    private final MaxActValue weight = new MaxActValue(1, Integer.MAX_VALUE, null);
+    private final MaxActValue teleDistance = new MaxActValue(1, Integer.MAX_VALUE, null);
+    private final MaxActValue teleWeight = new MaxActValue(1, Integer.MAX_VALUE, null);
+    private final MaxActValue pyroDistance = new MaxActValue(1, Integer.MAX_VALUE, null);
+    private final IntegerProperty pyroRemainingAttempts = new SimpleIntegerProperty(this, "pyroRemainingAttempts", 0);
+    private final BooleanProperty pyroInicialized = new SimpleBooleanProperty(this, "pyroInicialized", false);
     private final Translator translator;
 
     private Hero hero;
@@ -78,26 +92,31 @@ public class RangerController implements IProfessionController, Initializable {
 
         FormUtils.initTextFormater(txtAgeOfTrail, trackingModel.age);
         FormUtils.initTextFormater(txtEnemyCount, trackingModel.count);
-        FormUtils.initTextFormater(txtDistance, distance);
-        FormUtils.initTextFormater(txtWeight, weight);
+        FormUtils.initTextFormater(txtDistance, teleDistance);
+        FormUtils.initTextFormater(txtWeight, teleWeight);
+        FormUtils.initTextFormater(txtPyroDistance, pyroDistance);
         toggleContinueTracking.selectedProperty().bindBidirectional(trackingModel.repeating);
 
         btnTracking.disableProperty().bind(trackingModel.validProperty().not());
         lblSuccessTelekinesisResult.textProperty().bind(Bindings.createStringBinding(() -> {
-            if (distance.getActValue() == null || weight.getActValue() == null || ranger == null) {
+            if (teleDistance.getActValue() == null || teleWeight.getActValue() == null || ranger == null) {
                 return resources.getString(R.Translate.NO_ACTION);
             }
 
-            assert distance.getActValue() != null;
-            assert weight.getActValue() != null;
-
-            final int d = distance.getActValue().intValue();
-            final int w = weight.getActValue().intValue();
+            final int d = teleDistance.getActValue().intValue();
+            final int w = teleWeight.getActValue().intValue();
             final boolean telekinesis = ranger.telekinesis(d, w);
             final String translateKey = telekinesis ? R.Translate.SUCCESS : R.Translate.UNSUCCESS;
 
             return resources.getString(translateKey);
-        }, distance.actValueProperty(), weight.actValueProperty()));
+        }, teleDistance.actValueProperty(), teleWeight.actValueProperty()));
+
+        pyroInicialized.bind(Bindings.createBooleanBinding(() -> pyroRemainingAttempts.get() > 0,
+            pyroRemainingAttempts));
+
+        btnPyroFire.disableProperty().bind(pyroInicialized.not());
+        btnPyroCancel.disableProperty().bind(pyroInicialized.not());
+        btnPyroCalculate.disableProperty().bind(pyroInicialized);
     }
 
     @Override
@@ -113,6 +132,23 @@ public class RangerController implements IProfessionController, Initializable {
         final boolean success = ranger.tracking(trackingModel.getProperties());
 
         System.out.println("Handle tracking: " + success);
+    }
+
+    public void handlePyroCalculate(ActionEvent actionEvent) {
+        final int attempts = ranger.pyrokinesis(pyroDistance.getActValue().intValue());
+        pyroRemainingAttempts.set(attempts);
+    }
+
+    @FXML
+    private void handlePyroFire(ActionEvent actionEvent) {
+        final int remaining = pyroRemainingAttempts.get();
+        pyroRemainingAttempts.set(remaining - 1);
+        System.out.println(pyroRemainingAttempts);
+    }
+
+    @FXML
+    private void handlePyroCancel(ActionEvent actionEvent) {
+        pyroRemainingAttempts.set(0);
     }
 
     // endregion
