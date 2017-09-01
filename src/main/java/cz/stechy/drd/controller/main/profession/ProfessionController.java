@@ -66,10 +66,10 @@ public class ProfessionController implements MainScreen, Initializable, Injectab
      *
      * @param hero {@link Hero}
      */
-    private void loadProfession(Hero hero) throws IOException {
+    private void loadProfession(final Hero hero) throws IOException {
         parent.getPartManager()
             .inContainer(container)
-            .onLoaded((node, o) -> {})
+            .onLoaded((node, controller) -> ((IProfessionController) controller).setHero(hero))
             .show(getFxmlName(hero.getProfession()));
     }
 
