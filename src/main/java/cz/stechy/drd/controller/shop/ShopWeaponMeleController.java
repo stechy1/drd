@@ -176,7 +176,11 @@ public class ShopWeaponMeleController implements Initializable,
 
             service.toggleDatabase(newValue);
         });
-        ammountEditable.bind(showOnlineDatabase);
+    }
+
+    @Override
+    public void setAmmountEditableProperty(BooleanProperty ammountEditable) {
+        this.ammountEditable.bind(ammountEditable);
     }
 
     @Override

@@ -36,6 +36,14 @@ interface ShopItemController<T> {
     void setShowOnlineDatabase(BooleanProperty showOnlineDatabase);
 
     /**
+     * Přidá referenci na {@link BooleanProperty} indikující, zda-li je možné přidávat věci do
+     * košíku či nikoliv
+     *
+     * @param ammountEditable True, pokud je možné editovat košík, jinak False
+     */
+    void setAmmountEditableProperty(BooleanProperty ammountEditable);
+
+    /**
      * @return Vrátí název screenu pro editaci itemu / přidání nového itemu
      */
     String getEditScreenName();

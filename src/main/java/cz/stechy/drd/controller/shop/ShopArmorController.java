@@ -184,7 +184,11 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
             service.toggleDatabase(newValue);
         });
-        ammountEditable.bind(showOnlineDatabase);
+    }
+
+    @Override
+    public void setAmmountEditableProperty(BooleanProperty ammountEditable) {
+        this.ammountEditable.bind(ammountEditable);
     }
 
     @Override

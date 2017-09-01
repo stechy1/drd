@@ -108,6 +108,7 @@ public class ShopController1 extends BaseController implements Initializable {
         NO_SELECTED_INDEX);
     private final IntegerProperty selectedRowIndex = new SimpleIntegerProperty(NO_SELECTED_INDEX);
     private final BooleanProperty showOnlineDatabase = new SimpleBooleanProperty(false);
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(this, "ammountEditable", false);
     // Indikuje, zda-li se nacházím v edit modu
     private final BooleanProperty editMode = new SimpleBooleanProperty(this, "editMode", false);
     private final BooleanProperty disableDownloadBtn = new SimpleBooleanProperty(this,
@@ -245,11 +246,13 @@ public class ShopController1 extends BaseController implements Initializable {
             .then(Color.GREEN)
             .otherwise(Color.RED));
         showOnlineDatabase.bindBidirectional(btnToggleOnline.selectedProperty());
+        ammountEditable.bind(Bindings.or(editMode, showOnlineDatabase));
 
         for (ShopItemController controller : controllers) {
             controller.setShoppingCart(shoppingCart);
             controller.setRowSelectedIndexProperty(selectedRowIndex);
             controller.setShowOnlineDatabase(showOnlineDatabase);
+            controller.setAmmountEditableProperty(ammountEditable);
         }
     }
 

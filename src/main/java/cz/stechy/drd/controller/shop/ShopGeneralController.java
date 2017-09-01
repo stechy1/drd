@@ -151,7 +151,11 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
             service.toggleDatabase(newValue);
         });
-        ammountEditable.bind(showOnlineDatabase);
+    }
+
+    @Override
+    public void setAmmountEditableProperty(BooleanProperty ammountEditable) {
+        this.ammountEditable.bind(ammountEditable);
     }
 
     @Override

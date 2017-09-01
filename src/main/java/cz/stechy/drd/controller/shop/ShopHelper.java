@@ -50,6 +50,7 @@ final class ShopHelper {
         return new TableCell<S, T>() {
             final Button btnAddRemove = new Button();
             final HBox container = new HBox(btnAddRemove);
+            boolean initialized = false;
 
             {
                 container.setSpacing(8.0);
@@ -65,43 +66,61 @@ final class ShopHelper {
                 if (empty) {
                     setGraphic(null);
                     setText(null);
+                    initialized = false;
                 } else {
                     setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-                    final S entry = getTableView().getItems().get(getIndex());
-                    final ObjectProperty<EventHandler<ActionEvent>> addHandlerInternal = new SimpleObjectProperty<>();
-                    final ObjectProperty<EventHandler<ActionEvent>> removeHandlerInternal = new SimpleObjectProperty<>();
+                    if (!initialized) {
+                        final S entry = getTableView().getItems().get(getIndex());
+                        final ObjectProperty<EventHandler<ActionEvent>> addHandlerInternal = new SimpleObjectProperty<>();
+                        final ObjectProperty<EventHandler<ActionEvent>> removeHandlerInternal = new SimpleObjectProperty<>();
 
-                    addHandlerInternal.setValue(event -> {
-                        if (addHandler != null) {
-                            addHandler.onAdd(entry);
-                        }
-                    });
+                        addHandlerInternal.setValue(event -> {
+                            if (addHandler != null) {
+                                addHandler.onAdd(entry);
+                            }
+                        });
 
-                    removeHandlerInternal.setValue(event -> {
-                        if (removeHandler != null) {
-                            removeHandler.onRemove(entry);
-                        }
-                        entry.getAmmount().setActValue(0);
-                    });
+                        removeHandlerInternal.setValue(event -> {
+                            if (removeHandler != null) {
+                                removeHandler.onRemove(entry);
+                            }
+                            entry.getAmmount().setActValue(0);
+                        });
 
-                    BooleanBinding addRemoveCondition = Bindings
-                        .or(entry.inShoppingCartProperty(),
-                            entry.getAmmount().actValueProperty().isEqualTo(0));
+//                        final BooleanBinding addRemoveCondition =
+//                            entry.inShoppingCartProperty().or(
+//                                entry.getAmmount().actValueProperty().isEqualTo(0).or(
+//                                    entry.getAmmount().actValueProperty().isNull()
+//                                )
+//                            );
+                        final BooleanBinding addRemoveCondition = Bindings.createBooleanBinding(() -> {
+                            return entry.isInShoppingCart()
+                                || entry.getAmmount().actValueProperty().get() == null
+                                || entry.getAmmount().actValueProperty().get().intValue() == 0;
+                        }, entry.inShoppingCartProperty(), entry.getAmmount().actValueProperty());
 
-                    btnAddRemove.disableProperty().bind(Bindings
-                        .or(Bindings
-                            .and(entry.inShoppingCartProperty().not(),
-                                entry.getAmmount().actValueProperty().isEqualTo(0)),
-                            cartEditable));
-                    btnAddRemove.textProperty().bind(Bindings
-                        .when(addRemoveCondition)
-                        .then(resourceRemove)
-                        .otherwise(resourceAdd));
-                    btnAddRemove.onActionProperty().bind(Bindings
-                        .when(addRemoveCondition)
-                        .then(removeHandlerInternal)
-                        .otherwise(addHandlerInternal));
+                        addRemoveCondition.addListener((observable, oldValue, newValue) -> {
+                            System.out.println("Total: " + newValue);
+                            System.out.println("InShopping: " + entry.isInShoppingCart());
+                            System.out.println("EqualTo 0: " + (entry.getAmmount().getActValue() != null && entry.getAmmount().getActValue().intValue() == 0));
+                            System.out.println("Is null: " + (entry.getAmmount().getActValue() == null));
+                            System.out.println("===============");
+                        });
 
+                        btnAddRemove.disableProperty().bind(Bindings
+                            .or(addRemoveCondition,
+                                cartEditable));
+                        btnAddRemove.textProperty().bind(Bindings
+                            .when(addRemoveCondition)
+                            .then(resourceRemove)
+                            .otherwise(resourceAdd));
+                        btnAddRemove.onActionProperty().bind(Bindings
+                            .when(addRemoveCondition)
+                            .then(removeHandlerInternal)
+                            .otherwise(addHandlerInternal));
+
+                        initialized = true;
+                    }
                     setGraphic(container);
                 }
             }
