@@ -45,15 +45,13 @@ public final class CellUtils {
         final BooleanProperty editable) {
         return new TableCell<S, MaxActValue>() {
             private final TextField input;
+            private boolean initialized = false;
 
             {
                 input = new TextField();
-                input.setVisible(false);
                 if (editable != null) {
                     input.disableProperty().bind(editable);
                 }
-                setGraphic(input);
-                setText(null);
             }
 
             @Override
@@ -62,12 +60,16 @@ public final class CellUtils {
 
                 // update according to new item
                 if (empty || item == null) {
-                    input.setVisible(false);
+                    setGraphic(null);
+                    setText(null);
                 } else {
-                    FormUtils.initTextFormater(input, item);
-                    input.setVisible(true);
+                    if (!initialized) {
+                        FormUtils.initTextFormater(input, item);
+                        initialized = true;
+                    }
+                    setGraphic(input);
+                    setText(null);
                 }
-
             }
         };
     }
