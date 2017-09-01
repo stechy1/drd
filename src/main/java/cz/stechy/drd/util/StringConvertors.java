@@ -7,6 +7,7 @@ import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.Vulnerabilities.VulnerabilityType;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
 import cz.stechy.drd.model.entity.hero.Hero.Race;
+import cz.stechy.drd.model.entity.hero.profession.Ranger.Terrain;
 import cz.stechy.drd.model.entity.hero.profession.Thief.Ability;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
 import cz.stechy.drd.model.item.Armor.ArmorType;
@@ -286,6 +287,24 @@ public final class StringConvertors {
             @Override
             public Ability fromString(String string) {
                 return Ability.valueOf(string);
+            }
+        };
+    }
+
+    public static StringConverter<Terrain> forTerrain(Translator translator) {
+        return new StringConverter<Terrain>() {
+            @Override
+            public String toString(Terrain object) {
+                if (object == null) {
+                    return "";
+                }
+
+                return translator.getTranslationFor(Key.TERRAIN_DIFICULTY).get(object.ordinal());
+            }
+
+            @Override
+            public Terrain fromString(String string) {
+                return Terrain.valueOf(string);
             }
         };
     }

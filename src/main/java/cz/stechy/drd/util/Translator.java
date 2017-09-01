@@ -32,6 +32,7 @@ public final class Translator {
     private static final String[] MOB_CLASSES_VALUES;
     private static final String[] VULNERABILITIES_VALUES;
     private static final String[] THIEF_ABILITY_VALUES;
+    private static final String[] TERRAIN_DIFICULTY_VALUES;
 
     public enum Key {
         CONVICTIONS(CONVICTIONS_VALUES),
@@ -47,7 +48,8 @@ public final class Translator {
         RULES(RULES_VALUES),
         MOB_CLASSES(MOB_CLASSES_VALUES),
         VULNERABILITIES(VULNERABILITIES_VALUES),
-        THIEF_ABILITIES(THIEF_ABILITY_VALUES);
+        THIEF_ABILITIES(THIEF_ABILITY_VALUES),
+        TERRAIN_DIFICULTY(TERRAIN_DIFICULTY_VALUES);
 
         private final String[] values;
 
@@ -170,6 +172,15 @@ public final class Translator {
             R.Translate.ABILITY_THIEF_SILENT_MOTION,
             R.Translate.ABILITY_THIEF_HIDE_IN_THE_SHADOW,
             R.Translate.ABILITY_THIEF_PICKING_POCKETS
+        };
+
+        TERRAIN_DIFICULTY_VALUES = new String[]{
+            R.Translate.TERRAIN_OPEN_EASY,
+            R.Translate.TERRAIN_OPEN_HARD,
+            R.Translate.TERRAIN_OPEN_UNUSABLE,
+            R.Translate.TERRAIN_CLOSE_EASY,
+            R.Translate.TERRAIN_CLOSE_HARD,
+            R.Translate.TERRAIN_CLOSE_UNUSABLE
         };
     }
 

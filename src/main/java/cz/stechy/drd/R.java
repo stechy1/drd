@@ -319,6 +319,12 @@ public final class R {
         public static final String SETTINGS = "drd_settings";
         public static final String ABOUT_CONTENT = "drd_about_content";
         public static final String SHOP_EDIT_MODE = "drd_shop_edit_mode";
+        public static final String TERRAIN_OPEN_EASY = "drd_terrain_open_easy";
+        public static final String TERRAIN_OPEN_HARD = "drd_terrain_open_hard";
+        public static final String TERRAIN_OPEN_UNUSABLE = "drd_terrain_open_unusable";
+        public static final String TERRAIN_CLOSE_EASY = "drd_terrain_close_easy";
+        public static final String TERRAIN_CLOSE_HARD = "drd_terrain_close_hard";
+        public static final String TERRAIN_CLOSE_UNUSABLE = "drd_terrain_close_unusable";
     }
 
     public static class Config {

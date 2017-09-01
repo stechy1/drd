@@ -92,23 +92,20 @@ public class Ranger {
     /**
      * Zjistí, zda-li hraničář udrží stopu
      *
-     * @param terrain Náročnost terénu % (větší je lepší)
-     * @param age Stáří stopy (co se hraničář domnívá)
-     * @param count Počet tvorů, kteří zanechali stopu
-     * @param continueTracking Pokud hraničář házi po druhé a více
+     * @param trackingProperties {@link TrackingProperties}
      * @return True, pokud se hraničáři podaří pokračovat ve stopování, jinak False
      */
-    public boolean tracking(int terrain, int age, int count, boolean continueTracking) {
+    public boolean tracking(TrackingProperties trackingProperties) {
         // Základní pravděpodobnost vychází z náročnosti terénu
-        int probability = terrain;
+        int probability = trackingProperties.terrain.dificulty;
         // Pokud není terén nepoužitelný, tak připočítám k pravděpodobnosti 2% za každou úroveň
-        probability += ((terrain > 0) ? 2 * hero.getLevel() : 0);
+        probability += ((probability > 0) ? 2 * hero.getLevel() : 0);
         // Odečtu stáří stopy
-        probability -= 10 * age;
+        probability -= 10 * trackingProperties.age;
         // Přičtu 3% za každého tvora, co stopuji, pokud jich je více
-        probability += 3 * count;
+        probability += 3 * trackingProperties.count;
         // Pokud stopuji delší dobu, přidám do pravděodobnosti ještě 10%
-        probability += continueTracking ? 10 : 0;
+        probability += trackingProperties.repeating ? 10 : 0;
         // Nakonec hodím kostkou a uvidím, co mi padne
         return Dice.K100.roll() <= probability;
     }
@@ -198,6 +195,21 @@ public class Ranger {
     // endregion
 
     /**
+     * Výčet náročností terénu pro stopování
+     */
+    public enum Terrain {
+
+        OPEN_EASY(80), OPEN_HARD(50), OPEN_UNUSABLE(0),
+        CLOSE_EASY(60), CLOSE_HARD(40), CLOSE_UNUSABLE(0);
+
+        private final int dificulty;
+
+        Terrain(int dificulty) {
+            this.dificulty = dificulty;
+        }
+    }
+
+    /**
      * Výčet činností při čtení mysli
      */
     public enum MindAction {
@@ -255,4 +267,52 @@ public class Ranger {
 
     }
 
+    /**
+     * Pomocná přepravka obsahující důležité informace pro stopování
+     */
+    public static final class TrackingProperties {
+
+        public final Terrain terrain;
+        public final int age;
+        public final int count;
+        public final boolean repeating;
+
+        private TrackingProperties(Terrain terrain, int age, int count, boolean repeating) {
+            this.terrain = terrain;
+            this.age = age;
+            this.count = count;
+            this.repeating = repeating;
+        }
+
+        public static final class Builder {
+            private Terrain terrain;
+            private int age;
+            private int count;
+            private boolean repeating;
+
+            public Builder terrain(Terrain terrain) {
+                this.terrain = terrain;
+                return this;
+            }
+
+            public Builder age(int age) {
+                this.age = age;
+                return this;
+            }
+
+            public Builder count(int count) {
+                this.count = count;
+                return this;
+            }
+
+            public Builder repeating(boolean repeating) {
+                this.repeating = repeating;
+                return this;
+            }
+
+            public TrackingProperties build() {
+                return new TrackingProperties(terrain, age, count, repeating);
+            }
+        }
+    }
 }
