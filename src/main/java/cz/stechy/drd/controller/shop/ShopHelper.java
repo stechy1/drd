@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.shop;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.shop.OnAddItemToCart;
 import cz.stechy.drd.model.shop.OnRemoveItemFromCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
@@ -44,8 +45,9 @@ final class ShopHelper {
     public static <S extends ShopEntry, T> TableCell<S, T> forActionButtons(
         final OnAddItemToCart<S> addHandler, final OnRemoveItemFromCart<S> removeHandler,
         ResourceBundle resources, BooleanProperty cartEditable) {
-        final String resourceAdd = resources.getString("drd_shop_item_cart_add");
-        final String resourceRemove = resources.getString("drd_shop_item_cart_remove");
+        final String resourceAdd = resources.getString(R.Translate.SHOP_ITEM_CART_ADD);
+        final String resourceRemove = resources.getString(R.Translate.SHOP_ITEM_CART_REMOVE);
+        final String resourceNoAction = resources.getString(R.Translate.NO_ACTION);
 
         return new TableCell<S, T>() {
             final Button btnAddRemove = new Button();
@@ -87,35 +89,20 @@ final class ShopHelper {
                             entry.getAmmount().setActValue(0);
                         });
 
-//                        final BooleanBinding addRemoveCondition =
-//                            entry.inShoppingCartProperty().or(
-//                                entry.getAmmount().actValueProperty().isEqualTo(0).or(
-//                                    entry.getAmmount().actValueProperty().isNull()
-//                                )
-//                            );
-                        final BooleanBinding addRemoveCondition = Bindings.createBooleanBinding(() -> {
-                            return entry.isInShoppingCart()
-                                || entry.getAmmount().actValueProperty().get() == null
-                                || entry.getAmmount().actValueProperty().get().intValue() == 0;
-                        }, entry.inShoppingCartProperty(), entry.getAmmount().actValueProperty());
-
-                        addRemoveCondition.addListener((observable, oldValue, newValue) -> {
-                            System.out.println("Total: " + newValue);
-                            System.out.println("InShopping: " + entry.isInShoppingCart());
-                            System.out.println("EqualTo 0: " + (entry.getAmmount().getActValue() != null && entry.getAmmount().getActValue().intValue() == 0));
-                            System.out.println("Is null: " + (entry.getAmmount().getActValue() == null));
-                            System.out.println("===============");
-                        });
+                        final BooleanBinding addRemoveCondition = Bindings.createBooleanBinding(() ->
+                                entry.getAmmount().actValueProperty().get() == null
+                                    || entry.getAmmount().actValueProperty().get().intValue() == 0,
+                            entry.getAmmount().actValueProperty());
 
                         btnAddRemove.disableProperty().bind(Bindings
-                            .or(addRemoveCondition,
+                            .or(entry.inShoppingCartProperty().not().and(addRemoveCondition),
                                 cartEditable));
                         btnAddRemove.textProperty().bind(Bindings
-                            .when(addRemoveCondition)
+                            .when(entry.inShoppingCartProperty())
                             .then(resourceRemove)
                             .otherwise(resourceAdd));
                         btnAddRemove.onActionProperty().bind(Bindings
-                            .when(addRemoveCondition)
+                            .when(entry.inShoppingCartProperty())
                             .then(removeHandlerInternal)
                             .otherwise(addHandlerInternal));
 
