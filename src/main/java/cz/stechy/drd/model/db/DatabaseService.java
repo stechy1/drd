@@ -25,4 +25,12 @@ public interface DatabaseService<T> {
     void commit() throws DatabaseException;
 
     void rollback() throws DatabaseException;
+
+    /**
+     * Metoda se zavolá, pokud je potřeba upgradovat databázi
+     *
+     * @param newVersion Nová verze databáze
+     * @throws DatabaseException Pokud se upgrade nezdaří
+     */
+    void onUpgrade(int newVersion) throws DatabaseException;
 }

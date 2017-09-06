@@ -1,7 +1,6 @@
 package cz.stechy.drd;
 
 import cz.stechy.drd.di.DiContainer;
-import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.DatabaseService;
 import cz.stechy.drd.model.db.FirebaseWrapper;
@@ -45,10 +44,10 @@ public class Context {
 
     private static final String DEFAULT_VALUE_DATABASE = "database.sqlite";
 
-    // Pomocná reference pro žískání uživatelských složek v různých systémech
-    private static final AppDirs appDirs = AppDirsFactory.getInstance();
+    // Pomocná reference pro získání uživatelských složek v různých systémech
+    private static final AppDirs APP_DIRS = AppDirsFactory.getInstance();
 
-    private static final Class[] services = new Class[] {
+    private static final Class[] SERVICES = new Class[]{
         HeroService.class,
         MeleWeaponService.class,
         RangedWeaponService.class,
@@ -82,7 +81,7 @@ public class Context {
      * @throws Exception Pokud se inicializace kontextu nezdaří
      */
     Context(ResourceBundle resources) throws Exception {
-        this.appDirectory = new File(appDirs
+        this.appDirectory = new File(APP_DIRS
             .getUserDataDir(CREDENTAILS_APP_NAME, CREDENTAILS_APP_VERSION, CREDENTILS_APP_AUTHOR));
         if (!appDirectory.exists()) {
             if (!appDirectory.mkdirs()) {
@@ -95,10 +94,14 @@ public class Context {
         settings = new AppSettings(getConfigFile());
         container.addService(AppSettings.class, settings);
 
-        Database database = new SQLite(appDirectory.getPath() + SEPARATOR + getDatabaseName());
+        // Získání aktuální verze databáze z nastavení
+        final int localDatabaseVersion = Integer.parseInt(
+            settings.getProperty(R.Config.DATABASE_VERSION, String.valueOf(R.DATABASE_VERSION)));
+
+        final Database database = new SQLite(appDirectory.getPath() + SEPARATOR + getDatabaseName(),
+            localDatabaseVersion);
         container.addService(Database.class, database);
         container.addService(Translator.class, new Translator(resources));
-        container.addService(Context.class, this);
         container.addService(FirebaseWrapper.class, firebaseWrapper);
     }
 
@@ -129,7 +132,7 @@ public class Context {
      */
     private void initServices() {
         // Inicializace jednotlivých služeb
-        for (Class service : services) {
+        for (Class service : SERVICES) {
             final DatabaseService instance = container.getInstance(service);
             try {
                 instance.createTable();
@@ -173,7 +176,6 @@ public class Context {
      * @throws Exception Pokud se inicializace nezdaří
      */
     void init(PreloaderNotifier notifier) throws Exception {
-        BaseDatabaseService.setNotifier(notifier);
         initServices();
         if (useOnlineDatabase()) {
             try {
@@ -220,6 +222,15 @@ public class Context {
 
     public DiContainer getContainer() {
         return container;
+    }
+
+    /**
+     * Přidá do DI kontejneru preloader notifikátor
+     *
+     * @param notifier {@link PreloaderNotifier}
+     */
+    public void setPreloaderNotifier(PreloaderNotifier notifier) {
+        container.addService(PreloaderNotifier.class, notifier);
     }
 
     // endregion
