@@ -10,7 +10,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Třída reprezentující měnu světa
  */
-public final class Money {
+public final class Money implements Comparable<Money> {
 
     // region Constants
 
@@ -410,6 +410,11 @@ public final class Money {
     }
 
     // endregion
+
+    @Override
+    public int compareTo(Money o) {
+        return Integer.compare(this.getRaw(), o.getRaw());
+    }
 
     @Override
     public boolean equals(Object o) {
