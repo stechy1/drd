@@ -1,14 +1,15 @@
 package cz.stechy.drd.model.shop;
 
-import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -23,7 +24,7 @@ public class ShoppingCart implements IShoppingCart {
     // region Variables
 
     private final Map<ShopEntry, AmmountListener> ammountListeners = new HashMap<>();
-    private final ReadOnlyBooleanWrapper enoughtMoney = new ReadOnlyBooleanWrapper();
+    private final BooleanProperty enoughtMoney = new SimpleBooleanProperty(this, "enoughtMoney", true);
 
     public final ObservableSet<ShopEntry> orderList = FXCollections.observableSet();
     public final Money totalPrice = new Money();
@@ -66,7 +67,7 @@ public class ShoppingCart implements IShoppingCart {
     }
 
     public ReadOnlyBooleanProperty enoughtMoneyProperty() {
-        return enoughtMoney.getReadOnlyProperty();
+        return enoughtMoney;
     }
 
     private final SetChangeListener<ShopEntry> orderListListener = change -> {
