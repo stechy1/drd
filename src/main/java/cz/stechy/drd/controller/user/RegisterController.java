@@ -81,7 +81,7 @@ public class RegisterController extends BaseController implements Initializable 
             setResult(RESULT_SUCCESS);
             finish();
         } catch (UserException e) {
-            LOGGER.info("Registrace se nezdařila", e);
+            LOGGER.info("Registrace se nezdařila");
             showNotification(new Notification(registerFail));
             loginModel.valid.set(false);
         }

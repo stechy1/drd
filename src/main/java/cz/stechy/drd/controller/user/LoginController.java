@@ -105,7 +105,7 @@ public class LoginController extends BaseController implements Initializable {
             setResult(RESULT_SUCCESS);
             finish();
         } catch (UserException e) {
-            LOGGER.info("Přihlášení se nezdařilo", e);
+            LOGGER.info("Přihlášení se nezdařilo");
             showNotification(new Notification(loginFail));
             loginModel.valid.set(false);
         }
