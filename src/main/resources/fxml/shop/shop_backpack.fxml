@@ -40,11 +40,11 @@
         <PropertyValueFactory property="price" />
       </cellValueFactory>
     </TableColumn>
-    <TableColumn fx:id="columnAmmount" minWidth="80.0" prefWidth="80.0" maxWidth="80.0" text="%drd_item_ammount">
+    <TableColumn fx:id="columnAmmount" minWidth="80.0" prefWidth="80.0" maxWidth="80.0" text="%drd_item_ammount" sortable="false">
       <cellValueFactory>
         <PropertyValueFactory property="ammount" />
       </cellValueFactory>
     </TableColumn>
-    <TableColumn fx:id="columnAction" minWidth="200.0" prefWidth="200.0" maxWidth="200.0" text="%drd_shop_action" />
+    <TableColumn fx:id="columnAction" minWidth="200.0" prefWidth="200.0" maxWidth="200.0" text="%drd_shop_action" sortable="false"/>
   </columns>
 </TableView>
