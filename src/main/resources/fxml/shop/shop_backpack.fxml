@@ -10,7 +10,7 @@
     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
   </columnResizePolicy>
   <columns>
-    <TableColumn fx:id="columnImage" minWidth="60.0" prefWidth="60.0" maxWidth="60.0" text="%drd_item_image">
+    <TableColumn fx:id="columnImage" minWidth="60.0" prefWidth="60.0" maxWidth="60.0" text="%drd_item_image" sortable="false">
       <cellValueFactory>
         <PropertyValueFactory property="image" />
       </cellValueFactory>
