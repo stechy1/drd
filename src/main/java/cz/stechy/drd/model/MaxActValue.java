@@ -23,6 +23,9 @@ public final class MaxActValue {
     // Možnost podtečení hodnoty - bude se ignorovat dolní interval
     private final BooleanProperty underflow = new SimpleBooleanProperty(this, "underflow",false);
 
+    // Pomocná proměnná pro zabránění nekonečného nastavování hodnoty
+    private boolean locked = false;
+
     // endregion
 
     // region Constructors
@@ -161,11 +164,19 @@ public final class MaxActValue {
             return;
         }
 
-        int value = newValue.intValue();
-        if (value > maxValue.get().doubleValue() && !canOverflow()) {
-            actValue.setValue(maxValue.get());
-        } else if (value < minValue.get().doubleValue() && !canUnderflow()) {
-            actValue.setValue(minValue.get());
+        if (locked) {
+            return;
         }
+
+        locked = true;
+
+        int value = newValue.intValue();
+        if (value > getMaxValue().doubleValue() && !canOverflow()) {
+            setActValue(getMaxValue());
+        } else if (value < getMinValue().doubleValue() && !canUnderflow()) {
+            setActValue(getMinValue());
+        }
+
+        locked = false;
     };
 }
