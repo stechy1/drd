@@ -1,6 +1,8 @@
 package cz.stechy.drd.model.db;
 
 import cz.stechy.drd.PreloaderNotifier;
+import cz.stechy.drd.R;
+import cz.stechy.drd.di.Inject;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.TransactionHandler;
@@ -33,7 +35,6 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseDatabaseService.class);
-    private static PreloaderNotifier notifier;
 
     /**
      * Vygeneruje řetěžec obsahující názvy sloupců oddělené čárkou
@@ -76,13 +77,14 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
     // region Variables
 
+    private final List<TransactionOperation<T>> operations = new ArrayList<>();
+    private boolean selectAllCalled = false;
+    protected final ObservableList<T> items = FXCollections.observableArrayList();
     // Databáze
     protected final Database db;
-    protected final ObservableList<T> items = FXCollections.observableArrayList();
+    @Inject
+    protected PreloaderNotifier notifier;
     // Operace transakce
-    private final List<TransactionOperation<T>> operations = new ArrayList<>();
-
-    private boolean selectAllCalled = false;
 
     // endregion
 
@@ -127,11 +129,6 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
         return arrayOutputStream.toByteArray();
     }
-
-    public static void setNotifier(PreloaderNotifier notifier) {
-        BaseDatabaseService.notifier = notifier;
-    }
-
     // endregion
 
     // region Private methods
@@ -211,6 +208,14 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
         final String query = getInitializationQuery();
         try {
             db.query(query);
+
+            final int dbVersion = db.getVersion();
+            final int requiredVersion = R.DATABASE_VERSION;
+
+            if (requiredVersion > dbVersion) {
+                onUpgrade(requiredVersion);
+            }
+
             db.select(resultSet -> {
                 final int count = resultSet.getInt(1);
                 if (notifier != null) {
@@ -349,6 +354,11 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
+    }
+
+    @Override
+    public void onUpgrade(int newVersion) throws DatabaseException {
+        LOGGER.info("Aktualizuji tabulku: {} na verzi: {}", getTable(), newVersion);
     }
 
     // endregion

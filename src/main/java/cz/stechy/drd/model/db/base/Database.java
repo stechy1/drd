@@ -61,4 +61,11 @@ public interface Database {
      * @param handler {@link TransactionHandler}
      */
     void addCommitHandler(TransactionHandler handler);
+
+    /**
+     * Získá verzi databáze
+     *
+     * @return Číslo verze databáze
+     */
+    int getVersion();
 }

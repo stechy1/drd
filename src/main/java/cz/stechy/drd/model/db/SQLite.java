@@ -22,17 +22,20 @@ public class SQLite implements Database {
     private final SQLiteConnectionPoolDataSource dataSource = new SQLiteConnectionPoolDataSource();
     private final MiniConnectionPoolManager pool;
     private final List<TransactionHandler> transactionHandlers = new ArrayList<>();
+    // Lokální verze databáze
+    private final int localVersion;
 
     private Connection transactionalConnection = null;
 
     /**
      * Vytvoří novou instanci databází pro SQLite
-     *
-     * @param path Cesta kde se má nacházet soubor s databází
+     *  @param path Cesta kde se má nacházet soubor s databází
+     * @param localVersion Aktuální verze databáze
      */
-    public SQLite(String path) {
+    public SQLite(String path, int localVersion) {
         dataSource.setUrl(CONNECTION_PREFIX + path);
         pool = new MiniConnectionPoolManager(dataSource, MAX_CONNECTIONS);
+        this.localVersion = localVersion;
     }
 
     private long queryTransactional(String query, Object... params) throws SQLException {
@@ -126,5 +129,10 @@ public class SQLite implements Database {
     @Override
     public void addCommitHandler(TransactionHandler handler) {
         transactionHandlers.add(handler);
+    }
+
+    @Override
+    public int getVersion() {
+        return localVersion;
     }
 }

@@ -96,6 +96,7 @@ public class App extends Application {
         notifyPreloader(new MyPreloaderNotification("Inicializace databáze"));
         Thread.sleep(1000);
         context = new Context(manager.getResources());
+        context.setPreloaderNotifier(notifier);
         notifier.increaseMaxProgress(context.getServiceCount());
         context.init(notifier);
         manager.setControllerFactory(new ControllerFactory(context.getContainer()));
@@ -126,6 +127,7 @@ public class App extends Application {
         initScreenManager();
         notifyPreloader(new MyPreloaderNotification("Inicializace databáze"));
         context = new Context(manager.getResources());
+        context.setPreloaderNotifier(notifier);
         notifier.increaseMaxProgress(context.getServiceCount());
         context.init(notifier);
         manager.setControllerFactory(new ControllerFactory(context.getContainer()));
