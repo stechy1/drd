@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<?import javafx.geometry.Insets?>
 <AnchorPane layoutY="35.0" style="-fx-background-color: rgb(255.0, 255.0, 255.0); -fx-background-radius: 4.0; -fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.15), 6.0, 0.7, 0.0, 1.5);" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1">
-  <Pane layoutY="-25.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0" prefHeight="50.0" prefWidth="180.0" style="-fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.15), 6.0, 0.7, 0.0, 1.5); -fx-background-radius: 4.0; -fx-background-color: rgb(20, 95, 183, 0.6);">
-    <Label fx:id="lblCaption" layoutX="29.0" layoutY="8.0" prefHeight="35.0" prefWidth="129.0" textFill="WHITE">
+  <HBox layoutY="-25.0" prefHeight="50.0" prefWidth="180.0" style="-fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.15), 6.0, 0.7, 0.0, 1.5); -fx-background-radius: 4.0; -fx-background-color: rgb(20, 95, 183, 0.6);" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="16.0">
+    <Label fx:id="lblCaption" prefHeight="35.0" text="testint" textFill="WHITE" HBox.hgrow="ALWAYS">
       <font>
         <Font name="Roboto Medium" size="14.0" />
       </font>
+         <padding>
+            <Insets topRightBottomLeft="16.0"/>
+         </padding>
     </Label>
-  </Pane>
+  </HBox>
   <StackPane fx:id="container">
     <padding>
-      <Insets top="32.0" right="8.0" bottom="8.0" left="8.0"/>
+      <Insets bottom="8.0" left="8.0" right="8.0" top="32.0" />
     </padding>
   </StackPane>
 </AnchorPane>
