@@ -357,7 +357,9 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     }
 
     @Override
-    public void onUpgrade(int newVersion) throws DatabaseException {}
+    public void onUpgrade(int newVersion) throws DatabaseException {
+        LOGGER.info("Aktualizuji tabulku: {} na verzi: {}", getTable(), newVersion);
+    }
 
     // endregion
 

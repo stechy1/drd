@@ -1,5 +1,6 @@
 package cz.stechy.drd;
 
+import cz.stechy.drd.R.Config;
 import cz.stechy.drd.di.DiContainer;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.DatabaseService;
@@ -97,6 +98,7 @@ public class Context {
         // Získání aktuální verze databáze z nastavení
         final int localDatabaseVersion = Integer.parseInt(
             settings.getProperty(R.Config.DATABASE_VERSION, String.valueOf(R.DATABASE_VERSION)));
+        settings.setProperty(Config.DATABASE_VERSION, String.valueOf(R.DATABASE_VERSION));
 
         final Database database = new SQLite(appDirectory.getPath() + SEPARATOR + getDatabaseName(),
             localDatabaseVersion);
