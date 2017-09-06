@@ -58,6 +58,7 @@ public final class BestiaryHelper {
     public static final String MOB_ACTION = "action_type";
     public static final int MOB_ACTION_ADD = 1;
     public static final int MOB_ACTION_UPDATE = 2;
+    public static final int MOB_ROW_HEIGHT = 40;
 
     // endregion
 

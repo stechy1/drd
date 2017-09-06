@@ -150,6 +150,8 @@ public class BestiaryController extends BaseController implements Initializable 
         this.title = resources.getString(R.Translate.BESTIARY_TITLE);
 
         tableBestiary.setItems(sortedList);
+        tableBestiary.setFixedCellSize(BestiaryHelper.MOB_ROW_HEIGHT);
+        sortedList.comparatorProperty().bind(tableBestiary.comparatorProperty());
 
         final BooleanBinding selectedRowBinding = selectedRowIndex.isEqualTo(NO_SELECTED_INDEX);
         selectedRowIndex.bind(tableBestiary.getSelectionModel().selectedIndexProperty());
