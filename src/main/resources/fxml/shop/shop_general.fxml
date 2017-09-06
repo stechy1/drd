@@ -39,6 +39,6 @@
         <PropertyValueFactory property="ammount" />
       </cellValueFactory>
     </TableColumn>
-    <TableColumn fx:id="columnAction" minWidth="200.0" prefWidth="200.0" maxWidth="200.0" text="%drd_shop_action" sortable="false"/>
+    <TableColumn fx:id="columnAction" minWidth="200.0" prefWidth="200.0" maxWidth="200.0" text="%drd_shop_shoppint_cart" sortable="false"/>
   </columns>
 </TableView>

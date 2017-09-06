@@ -206,7 +206,7 @@ public final class R {
         public static final String ITEM_WEAPON_RANGED_TITLE = "drd_item_weapon_ranged_title";
         public static final String ITEM_ARMOR_TITLE = "drd_item_armor_title";
         public static final String ITEM_GENERAL_TITLE = "drd_item_general_title";
-        public static final String SHOP_ACTION = "drd_shop_action";
+        public static final String SHOP_SHOPPINT_CART = "drd_shop_shoppint_cart";
         public static final String SHOP_CONTINUE_SHOPPING = "drd_shop_continue_shopping";
         public static final String REPOSITORY_ITEM_ADD = "drd_repository_item_add";
         public static final String REPOSITORY_ITEM_REMOVE = "drd_repository_item_remove";
