@@ -1,7 +1,20 @@
 package cz.stechy.drd.util;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.controller.dice.DiceHelper.AdditionType;
 import cz.stechy.drd.di.Singleton;
+import cz.stechy.drd.model.Rule;
+import cz.stechy.drd.model.entity.Conviction;
+import cz.stechy.drd.model.entity.Vulnerabilities.VulnerabilityType;
+import cz.stechy.drd.model.entity.hero.Hero.Profession;
+import cz.stechy.drd.model.entity.hero.Hero.Race;
+import cz.stechy.drd.model.entity.hero.profession.Ranger.Terrain;
+import cz.stechy.drd.model.entity.hero.profession.Thief;
+import cz.stechy.drd.model.entity.mob.Mob.MobClass;
+import cz.stechy.drd.model.item.Armor;
+import cz.stechy.drd.model.item.Backpack;
+import cz.stechy.drd.model.item.MeleWeapon;
+import cz.stechy.drd.model.item.RangedWeapon;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -9,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import javafx.util.StringConverter;
 
 /**
  * Pomocní knihovní třída pro překládání textů
@@ -35,26 +49,28 @@ public final class Translator {
     private static final String[] TERRAIN_DIFICULTY_VALUES;
 
     public enum Key {
-        CONVICTIONS(CONVICTIONS_VALUES),
-        RACES(RACES_VALUES),
-        PROFESSIONS(PROFESSIONS_VALUES),
-        WEAPON_MELE_CLASSES(WEAPON_MELE_CLASSES_VALUES),
-        WEAPON_MELE_TYPES(WEAPON_MELE_TYPES_VALUES),
-        WEAPON_RANGED_TYPES(WEAPON_RANGED_TYPES_VALUES),
-        ARMOR_TYPES(ARMOR_TYPES_VALUES),
-        DICE_ADDITION_PROPERTIES(DICE_ADDITION_PROPERTIES_VALUES),
-        SHOP_ITEMS(SHOP_ITEMS_VALUES),
-        BACKPACK_SIZES(BACKPACK_SIZES_VALUES),
-        RULES(RULES_VALUES),
-        MOB_CLASSES(MOB_CLASSES_VALUES),
-        VULNERABILITIES(VULNERABILITIES_VALUES),
-        THIEF_ABILITIES(THIEF_ABILITY_VALUES),
-        TERRAIN_DIFICULTY(TERRAIN_DIFICULTY_VALUES);
+        CONVICTIONS(CONVICTIONS_VALUES, Conviction.class),
+        RACES(RACES_VALUES, Race.class),
+        PROFESSIONS(PROFESSIONS_VALUES, Profession.class),
+        WEAPON_MELE_CLASSES(WEAPON_MELE_CLASSES_VALUES, MeleWeapon.MeleWeaponClass.class),
+        WEAPON_MELE_TYPES(WEAPON_MELE_TYPES_VALUES, MeleWeapon.MeleWeaponType.class),
+        WEAPON_RANGED_TYPES(WEAPON_RANGED_TYPES_VALUES, RangedWeapon.RangedWeaponType.class),
+        ARMOR_TYPES(ARMOR_TYPES_VALUES, Armor.ArmorType.class),
+        DICE_ADDITION_PROPERTIES(DICE_ADDITION_PROPERTIES_VALUES, AdditionType.class),
+        SHOP_ITEMS(SHOP_ITEMS_VALUES, null),
+        BACKPACK_SIZES(BACKPACK_SIZES_VALUES, Backpack.Size.class),
+        RULES(RULES_VALUES, Rule.class),
+        MOB_CLASSES(MOB_CLASSES_VALUES, MobClass.class),
+        VULNERABILITIES(VULNERABILITIES_VALUES, VulnerabilityType.class),
+        THIEF_ABILITIES(THIEF_ABILITY_VALUES, Thief.Ability.class),
+        TERRAIN_DIFICULTY(TERRAIN_DIFICULTY_VALUES, Terrain.class);
 
         private final String[] values;
+        public final Class<? extends Enum> enumType;
 
-        Key(String[] values) {
+        Key(String[] values, Class<? extends Enum> enumType) {
             this.values = values;
+            this.enumType = enumType;
         }
     }
 
@@ -225,6 +241,13 @@ public final class Translator {
         return stringList;
     }
 
+    public String getSingleTranslationFor(Key key, Enum e) {
+        if (e == null) {
+            return "";
+        }
+        return getTranslationFor(key).get(e.ordinal());
+    }
+
     /**
      * Přeloží názvy atributů podle konstant
      *
@@ -239,6 +262,33 @@ public final class Translator {
         tooltipMap.clear();
         tooltipMap.putAll(dummy);
     }
+
+    /**
+     * Obecná metoda pro vytvoření konvertoru
+     *
+     * @param key {@link Key} Klíč, pod kterým se nachází překlad
+     * @param <T> Konkrétní datový typ výčtu
+     * @return {@link StringConverter <T>}
+     */
+    public <T> StringConverter<T> getConvertor(final Translator.Key key) {
+        return new StringConverter<T>() {
+            @Override
+            public String toString(T object) {
+                if (object == null) {
+                    return "";
+                }
+
+                return getTranslationFor(key).get(((Enum) object).ordinal());
+            }
+
+            @Override
+            public T fromString(String string) {
+                return (T) Enum.valueOf(key.enumType, string);
+            }
+        };
+    }
+
+
 
     // endregion
 }

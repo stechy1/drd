@@ -9,8 +9,8 @@ import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.Backpack.Size;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ImageUtils;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.EnumComboBox;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -162,7 +162,7 @@ public class ItemBackpackController extends BaseController implements Initializa
         FormUtils.initTextFormater(txtWeight, model.weight);
         FormUtils.initTextFormater(txtMaxLoad, model.maxLoad);
 
-        cmbSize.converterProperty().setValue(StringConvertors.forBackpackSize(translator));
+        cmbSize.converterProperty().setValue(translator.getConvertor(Key.BACKPACK_SIZES));
         cmbSize.valueProperty().bindBidirectional(model.size);
 
         lblPrice.textProperty().bind(model.price.text);

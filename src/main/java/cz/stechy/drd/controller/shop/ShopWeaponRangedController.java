@@ -20,8 +20,8 @@ import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.Comparator;
@@ -128,7 +128,7 @@ public class ShopWeaponRangedController implements Initializable,
 
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnType.setCellFactory(
-            TextFieldTableCell.forTableColumn(StringConvertors.forRangedWeaponType(translator)));
+            TextFieldTableCell.forTableColumn(translator.getConvertor(Key.WEAPON_RANGED_TYPES)));
         columnWeight.setCellFactory(param -> CellUtils.forWeight());
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));

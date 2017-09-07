@@ -4,8 +4,8 @@ import cz.stechy.drd.model.Dice;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.profession.Thief;
 import cz.stechy.drd.model.entity.hero.profession.Thief.Ability;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -61,7 +61,7 @@ public class ThiefController implements IProfessionController, Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cmbAbilities.setItems(abilities);
-        cmbAbilities.setConverter(StringConvertors.forAbilities(translator));
+        cmbAbilities.setConverter(translator.getConvertor(Key.THIEF_ABILITIES));
 
         selectedAbility.bind(cmbAbilities.getSelectionModel().selectedItemProperty());
         btnUseAbility.disableProperty().bind(selectedAbility.isNull());

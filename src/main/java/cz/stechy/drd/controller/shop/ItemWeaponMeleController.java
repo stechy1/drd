@@ -10,8 +10,8 @@ import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponType;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ImageUtils;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.awt.image.BufferedImage;
@@ -182,10 +182,9 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         txtDescription.textProperty().bindBidirectional(model.description);
 
         cmbWeaponType.valueProperty().bindBidirectional(model.weaponType);
-        cmbWeaponType.converterProperty().setValue(StringConvertors.forMeleWeaponType(translator));
+        cmbWeaponType.converterProperty().setValue(translator.getConvertor(Key.WEAPON_MELE_TYPES));
         cmbWeaponClass.valueProperty().bindBidirectional(model.weaponClass);
-        cmbWeaponClass.converterProperty().setValue(
-            StringConvertors.forMeleWeaponClass(translator));
+        cmbWeaponClass.converterProperty().setValue(translator.getConvertor(Key.WEAPON_MELE_CLASSES));
 
         FormUtils.initTextFormater(txtStrength, model.strength);
         FormUtils.initTextFormater(txtRampancy, model.rampancy);

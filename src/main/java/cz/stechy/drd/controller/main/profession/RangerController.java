@@ -9,8 +9,8 @@ import cz.stechy.drd.model.entity.hero.profession.Ranger;
 import cz.stechy.drd.model.entity.hero.profession.Ranger.Terrain;
 import cz.stechy.drd.model.entity.hero.profession.Ranger.TrackingProperties;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -36,7 +36,7 @@ public class RangerController implements IProfessionController, Initializable {
     // region FXML
 
     @FXML
-    private ComboBox cmbTerrain;
+    private ComboBox<Terrain> cmbTerrain;
     @FXML
     private TextField txtAgeOfTrail;
     @FXML
@@ -87,7 +87,7 @@ public class RangerController implements IProfessionController, Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        cmbTerrain.setConverter(StringConvertors.forTerrain(translator));
+        cmbTerrain.setConverter(translator.getConvertor(Key.TERRAIN_DIFICULTY));
         trackingModel.terrain.bind(cmbTerrain.getSelectionModel().selectedItemProperty());
 
         FormUtils.initTextFormater(txtAgeOfTrail, trackingModel.age);

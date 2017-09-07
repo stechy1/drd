@@ -14,8 +14,8 @@ import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.HashGenerator;
 import cz.stechy.drd.util.ObservableMergers;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -206,9 +206,9 @@ public class BestiaryController extends BaseController implements Initializable 
 
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnMobClass.setCellFactory(
-            TextFieldTableCell.forTableColumn(StringConvertors.forMobClass(translator)));
+            TextFieldTableCell.forTableColumn(translator.getConvertor(Key.MOB_CLASSES)));
         columnRulesType.setCellFactory(
-            TextFieldTableCell.forTableColumn(StringConvertors.forRulesType(translator)));
+            TextFieldTableCell.forTableColumn(translator.getConvertor(Key.RULES)));
 
         Task<Void> task = new Task<Void>() {
             @Override

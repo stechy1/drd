@@ -21,8 +21,8 @@ import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.Comparator;
@@ -137,7 +137,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         columnWeight.setCellFactory(param -> CellUtils.forWeight());
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnArmorType.setCellFactory(
-            TextFieldTableCell.forTableColumn(StringConvertors.forArmorType(translator)));
+            TextFieldTableCell.forTableColumn(translator.getConvertor(Key.ARMOR_TYPES)));
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
         columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
     }

@@ -6,8 +6,8 @@ import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -58,9 +58,9 @@ public class BestiaryEditGeneralController implements Initializable, IEditContro
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        cmbRule.setConverter(StringConvertors.forRulesType(translator));
-        cmbMobClass.setConverter(StringConvertors.forMobClass(translator));
-        cmbConviction.setConverter(StringConvertors.forConvictionConverter(translator));
+        cmbRule.setConverter(translator.getConvertor(Key.RULES));
+        cmbMobClass.setConverter(translator.getConvertor(Key.MOB_CLASSES));
+        cmbConviction.setConverter(translator.getConvertor(Key.CONVICTIONS));
 
         txtName.textProperty().bindBidirectional(model.name);
         cmbRule.valueProperty().bindBidirectional(model.rule);

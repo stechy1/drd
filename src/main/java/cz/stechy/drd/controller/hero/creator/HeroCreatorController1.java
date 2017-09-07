@@ -7,8 +7,8 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
 import cz.stechy.drd.model.entity.hero.Hero.Race;
 import cz.stechy.drd.util.BitUtils;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -72,12 +72,9 @@ public class HeroCreatorController1 extends BaseController implements Initializa
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.GUIDE_NEW_HERO_1_TITLE);
 
-        cmbConviction.converterProperty().setValue(
-            StringConvertors.forConvictionConverter(translator));
-        cmbRace.converterProperty().setValue(
-            StringConvertors.forRaceConverter(translator));
-        cmbProfession.converterProperty().setValue(
-            StringConvertors.forProfessionConverter(translator));
+        cmbConviction.converterProperty().setValue(translator.getConvertor(Key.CONVICTIONS));
+        cmbRace.converterProperty().setValue(translator.getConvertor(Key.RACES));
+        cmbProfession.converterProperty().setValue(translator.getConvertor(Key.PROFESSIONS));
 
         txtName.textProperty().bindBidirectional(model.name);
         txtDescription.textProperty().bindBidirectional(model.description);

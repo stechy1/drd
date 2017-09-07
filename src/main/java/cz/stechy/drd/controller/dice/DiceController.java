@@ -7,8 +7,8 @@ import cz.stechy.drd.controller.dice.DiceHelper.DiceType;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -119,8 +119,8 @@ public class DiceController extends BaseController implements Initializable {
      * Inicializuje tabulku pro přidávání konstant k hodu kostkou
      */
     private void initTable() {
-        columnAdditionType.setCellFactory(ComboBoxTableCell
-            .forTableColumn(StringConvertors.forAdditionType(translator), AdditionType.values()));
+        columnAdditionType.setCellFactory(ComboBoxTableCell.forTableColumn(translator.getConvertor(
+            Key.DICE_ADDITION_PROPERTIES), AdditionType.values()));
         columnAdditionType.setOnEditCommit(
             event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
                 .setAdditionType(event.getNewValue()));

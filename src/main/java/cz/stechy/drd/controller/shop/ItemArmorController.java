@@ -9,8 +9,8 @@ import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ImageUtils;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.awt.image.BufferedImage;
@@ -186,7 +186,7 @@ public class ItemArmorController extends BaseController implements Initializable
         this.titleUpdate = resources.getString(R.Translate.ITEM_UPDATE);
         this.imageChooserTitle = resources.getString(R.Translate.IMAGE_CHOOSE_DIALOG);
 
-        cmbType.converterProperty().setValue(StringConvertors.forArmorType(translator));
+        cmbType.converterProperty().setValue(translator.getConvertor(Key.ARMOR_TYPES));
 
         txtName.textProperty().bindBidirectional(model.name);
         txtDescription.textProperty().bindBidirectional(model.description);

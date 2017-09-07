@@ -9,8 +9,8 @@ import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ImageUtils;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.awt.image.BufferedImage;
@@ -186,8 +186,7 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         txtDescription.textProperty().bindBidirectional(model.description);
 
         cmbWeaponType.valueProperty().bindBidirectional(model.weaponType);
-        cmbWeaponType.converterProperty()
-            .setValue(StringConvertors.forRangedWeaponType(translator));
+        cmbWeaponType.converterProperty().setValue(translator.getConvertor(Key.WEAPON_RANGED_TYPES));
 
         FormUtils.initTextFormater(txtStrength, model.strength);
         FormUtils.initTextFormater(txtRampancy, model.rampancy);

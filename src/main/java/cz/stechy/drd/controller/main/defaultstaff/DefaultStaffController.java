@@ -2,11 +2,12 @@ package cz.stechy.drd.controller.main.defaultstaff;
 
 import cz.stechy.drd.controller.main.MainScreen;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.util.StringConvertors;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.Card;
 import cz.stechy.drd.widget.LabeledMaxActValue;
 import cz.stechy.drd.widget.MoneyWidget;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -64,10 +65,12 @@ public class DefaultStaffController implements MainScreen {
     public void setHero(ReadOnlyObjectProperty<Hero> hero) {
         hero.addListener((observable, oldValue, newValue) -> {
             lblName.textProperty().bind(newValue.nameProperty());
-            lblRace.textProperty()
-                .bind(StringConvertors.forRaceConverter(translator, newValue.getRace()));
-            lblProfession.textProperty()
-                .bind(StringConvertors.forProfessionConverter(translator, newValue.getProfession()));
+            lblRace.textProperty().bind(Bindings.createStringBinding(() ->
+                translator.getSingleTranslationFor(Key.RACES, newValue.getRace()),
+                newValue.raceProperty()));
+            lblProfession.textProperty().bind(Bindings.createStringBinding(() ->
+                translator.getSingleTranslationFor(Key.PROFESSIONS, newValue.getProfession()),
+                newValue.professionProperty()));
             lblLive.setMaxActValue(newValue.getLive());
             lblMag.setMaxActValue(newValue.getMag());
             lblExperience.setMaxActValue(newValue.getExperiences());
