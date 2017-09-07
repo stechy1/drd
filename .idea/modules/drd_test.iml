@@ -17,7 +17,7 @@
     <orderEntry type="library" name="Gradle: com.google.firebase:firebase-admin:4.1.2" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-simple:1.7.25" level="project" />
-    <orderEntry type="library" name="Gradle: com.jfoenix:jfoenix:1.7.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.jfoenix:jfoenix:1.8.0" level="project" />
     <orderEntry type="library" name="Gradle: org.testfx:testfx-core:4.0.6-alpha" level="project" />
     <orderEntry type="library" name="Gradle: org.testfx:testfx-junit:4.0.6-alpha" level="project" />
     <orderEntry type="library" name="Gradle: org.testfx:testfx-legacy:4.0.6-alpha" level="project" />
