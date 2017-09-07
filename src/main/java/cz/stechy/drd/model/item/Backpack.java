@@ -52,6 +52,7 @@ public final class Backpack extends ItemBase {
      * @param name Název batohu
      * @param description Popis batohu
      * @param weight Váha batohu
+     * @param maxLoad Maximální nosnost batohu
      * @param price Cena batohu
      * @param size Velikost batohu
      * @param image Obrázek batohu
