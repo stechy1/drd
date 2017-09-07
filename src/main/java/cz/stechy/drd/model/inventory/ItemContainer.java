@@ -106,10 +106,10 @@ public abstract class ItemContainer {
     /**
      * Zajištění přesunu itemu
      *
-     * @param sourceInventoryId
-     * @param sourceSlot
+     * @param sourceInventoryId Id zdrojového inventáře
+     * @param sourceSlot {@link ItemSlot} Zdrojový slot, ze kterého je vyjmut předmět
      * @param destinationSlot {@link ItemSlot} Cílový slot, do kterého se má vložit item
-     * @param transferAmmount
+     * @param transferAmmount Přenášené množství předmětů
      */
     private void handleDragEnd(final String sourceInventoryId, final ItemSlot sourceSlot,
         final ItemSlot destinationSlot, final int transferAmmount) {
