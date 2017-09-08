@@ -101,8 +101,10 @@ public class BestiaryController extends BaseController implements Initializable 
         Comparator.comparing(MobEntry::getName));
     private final IntegerProperty selectedRowIndex = new SimpleIntegerProperty(
         this, "selectedRowIndex");
+    private final BooleanProperty userLogged = new SimpleBooleanProperty(this,
+        "userLogged", false);
     private final BooleanProperty showOnlineDatabase = new SimpleBooleanProperty(this,
-        "showOnlineDatabase, false");
+        "showOnlineDatabase", false);
     private final BooleanProperty disableDownloadBtn = new SimpleBooleanProperty(this,
         "disableDownloadBtn", true);
     private final BooleanProperty disableUploadBtn = new SimpleBooleanProperty(this,
@@ -124,6 +126,9 @@ public class BestiaryController extends BaseController implements Initializable 
         this.service = bestiaryService;
         this.translator = translator;
         this.user = userService.getUser();
+        if (this.user != null) {
+            userLogged.bind(this.user.loggedProperty());
+        }
     }
 
     // endregion
@@ -164,19 +169,19 @@ public class BestiaryController extends BaseController implements Initializable 
             selectedRowBinding,
             showOnlineDatabase));
         btnDownloadItem.disableProperty().bind(
-            user.loggedProperty().not().or(
+            userLogged.or(
                     disableDownloadBtn.or(
                         showOnlineDatabase.not())));
         btnUploadItem.disableProperty().bind(
-            user.loggedProperty().not().or(
+            userLogged.or(
                     disableUploadBtn.or(
                         showOnlineDatabase)));
         btnRemoveOnlineItem.disableProperty().bind(
-            user.loggedProperty().not().or(
+            userLogged.or(
                     disableRemoveOnlineBtn.or(
                         showOnlineDatabase.not())));
 
-        btnSynchronize.disableProperty().bind(user.loggedProperty().not());
+        btnSynchronize.disableProperty().bind(userLogged);
 
         selectedRowIndex.addListener((observable, oldValue, newValue) -> {
             if (newValue == null || newValue.intValue() < 0) {
@@ -192,9 +197,12 @@ public class BestiaryController extends BaseController implements Initializable 
             }
 
             final MobEntry entry = sortedList.get(newValue.intValue());
+            final BooleanBinding authorBinding = Bindings.createBooleanBinding(() ->
+                (user == null) ? true : entry.getAuthor().equals(user.getName()),
+                entry.authorProperty());
             disableDownloadBtn.bind(entry.downloadedProperty());
-            disableUploadBtn.bind(entry.uploadedProperty().or(entry.authorProperty().isNotEqualTo(user.nameProperty())));
-            disableRemoveOnlineBtn.bind(entry.authorProperty().isNotEqualTo(user.nameProperty()));
+            disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding));
+            disableRemoveOnlineBtn.bind(authorBinding);
         });
         showOnlineDatabase.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -236,7 +244,7 @@ public class BestiaryController extends BaseController implements Initializable 
                 }
                 mob = BestiaryHelper.mobFromBundle(bundle);
                 try {
-                    mob.setAuthor(user.getName());
+                    mob.setAuthor((user != null) ? user.getName() : "");
                     mob.setId(HashGenerator.createHash());
                     service.insert(mob);
                     sortedList.stream()
