@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.main;
 
+import cz.stechy.drd.AppSettings;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.hero.HeroHelper;
@@ -18,11 +19,13 @@ import cz.stechy.drd.model.user.User;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
@@ -95,6 +98,7 @@ public class MainController extends BaseController implements Initializable {
 
     // endregion
 
+    private final BooleanProperty useFirebase = new SimpleBooleanProperty(this, "useFirebase", false);
     private final ReadOnlyObjectProperty<Hero> hero;
     private final ReadOnlyObjectProperty<User> user;
     private final HeroService heroService;
@@ -109,11 +113,13 @@ public class MainController extends BaseController implements Initializable {
 
     // endregion
 
-    public MainController(HeroService heroService, UserService userService) {
+    public MainController(HeroService heroService, UserService userService, AppSettings settings) {
         this.heroService = heroService;
         this.userService = userService;
         this.hero = heroService.heroProperty();
         this.user = userService.userProperty();
+        settings.addListener(R.Config.USE_ONLINE_DATABASE, useOnlineDatabaseListener);
+        useFirebase.set(Boolean.parseBoolean(settings.getProperty(R.Config.USE_ONLINE_DATABASE)));
     }
 
     @Override
@@ -138,6 +144,7 @@ public class MainController extends BaseController implements Initializable {
         }
 
         tabProfession.disableProperty().bind(this.hero.isNull());
+        menuLogin.disableProperty().bind(useFirebase.not());
 
         this.hero.addListener(heroListener);
         this.user.addListener(userListener);
@@ -389,4 +396,6 @@ public class MainController extends BaseController implements Initializable {
 
         resetChildScreensAndHero();
     };
+    private final PropertyChangeListener useOnlineDatabaseListener = evt ->
+        useFirebase.set(Boolean.parseBoolean((String) evt.getNewValue()));
 }

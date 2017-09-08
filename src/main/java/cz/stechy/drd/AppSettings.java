@@ -1,9 +1,15 @@
 package cz.stechy.drd;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +30,7 @@ public final class AppSettings {
     
     private final Properties properties = new Properties();
     private final File propertiesFile;
+    private final Map<String, List<PropertyChangeListener>> propertyListeners = new HashMap<>();
 
     // endregion
 
@@ -56,6 +63,28 @@ public final class AppSettings {
         } catch (IOException e) {
             LOGGER.error("Nepodařilo se uložit konfiguraci", e);
         }
+    }
+
+    public void addListener(String propertyName, PropertyChangeListener listener) {
+        List<PropertyChangeListener> changeListeners = propertyListeners
+            .get(propertyName);
+        if (changeListeners == null) {
+            changeListeners = new ArrayList<>();
+            propertyListeners.put(propertyName, changeListeners);
+        }
+
+        changeListeners.add(listener);
+    }
+
+    public void removeListener(String propertyName, PropertyChangeListener listener) {
+        final List<PropertyChangeListener> changeListeners = propertyListeners
+            .get(propertyName);
+
+        if (changeListeners == null) {
+            return;
+        }
+
+        changeListeners.remove(listener);
     }
     
     // endregion
@@ -94,7 +123,16 @@ public final class AppSettings {
      * @param value Hodnota
      */
     public void setProperty(String key, String value) {
+        final String oldValue = properties.getProperty(key);
         properties.setProperty(key, value);
+        final List<PropertyChangeListener> changeListeners = propertyListeners.get(key);
+        if (changeListeners == null) {
+            return;
+        }
+
+        for (PropertyChangeListener listener : changeListeners) {
+            listener.propertyChange(new PropertyChangeEvent(this, key, oldValue, value));
+        }
     }
     
     // endregion
