@@ -14,7 +14,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
@@ -52,7 +51,10 @@ final class ShopHelper {
         return new TableCell<S, T>() {
             final Button btnAddRemove = new Button();
             final HBox container = new HBox(btnAddRemove);
+            final ObjectProperty<EventHandler<ActionEvent>> addHandlerInternal = new SimpleObjectProperty<>();
+            final ObjectProperty<EventHandler<ActionEvent>> removeHandlerInternal = new SimpleObjectProperty<>();
             boolean initialized = false;
+            int oldIndex = -1;
 
             {
                 container.setSpacing(8.0);
@@ -69,13 +71,19 @@ final class ShopHelper {
                     setGraphic(null);
                     setText(null);
                     initialized = false;
+                    oldIndex = -1;
                 } else {
-                    setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+                    if (oldIndex != -1 && oldIndex != getIndex()) {
+                        btnAddRemove.disableProperty().unbind();
+                        btnAddRemove.textProperty().unbind();
+                        btnAddRemove.onActionProperty().unbind();
+                        addHandlerInternal.setValue(null);
+                        removeHandlerInternal.setValue(null);
+                        initialized = false;
+                    }
                     if (!initialized) {
-                        final S entry = getTableView().getItems().get(getIndex());
-                        final ObjectProperty<EventHandler<ActionEvent>> addHandlerInternal = new SimpleObjectProperty<>();
-                        final ObjectProperty<EventHandler<ActionEvent>> removeHandlerInternal = new SimpleObjectProperty<>();
-
+                        oldIndex = getIndex();
+                        final S entry = getTableView().getItems().get(oldIndex);
                         addHandlerInternal.setValue(event -> {
                             if (addHandler != null) {
                                 addHandler.onAdd(entry);

@@ -46,6 +46,7 @@ public final class CellUtils {
         return new TableCell<S, MaxActValue>() {
             private final TextField input;
             private boolean initialized = false;
+            private MaxActValue oldItem;
 
             {
                 input = new TextField();
@@ -57,14 +58,20 @@ public final class CellUtils {
             @Override
             public void updateItem(MaxActValue item, boolean empty) {
                 super.updateItem(item, empty);
-
                 // update according to new item
                 if (empty || item == null) {
                     setGraphic(null);
                     setText(null);
+                    initialized = false;
                 } else {
+                    // Opravdu tu porovnávám přímo reference
+                    if (oldItem != null && item != oldItem) {
+                        FormUtils.disposeTextField(input, oldItem);
+                        initialized = false;
+                    }
                     if (!initialized) {
                         FormUtils.initTextFormater(input, item);
+                        this.oldItem = item;
                         initialized = true;
                     }
                     setGraphic(input);

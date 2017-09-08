@@ -27,6 +27,11 @@ public final class FormUtils {
             .bindBidirectional(maxActValue.actValueProperty(), new NumberStringConverter());
     }
 
+    public static void disposeTextField(TextField textField, MaxActValue maxActValue) {
+        textField.setTextFormatter(null);
+        textField.textProperty().unbindBidirectional(maxActValue.actValueProperty());
+    }
+
     public static final class MinMaxUnaryOperator implements UnaryOperator<Change> {
 
         private final ObjectProperty<Number> min = new SimpleObjectProperty<>();
