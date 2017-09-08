@@ -95,8 +95,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
 
     private static boolean tableInitialized = false;
 
-    private final ObjectProperty<Hero> hero = new SimpleObjectProperty<>(
-        new Hero.Builder().build());
+    private final ObjectProperty<Hero> hero = new SimpleObjectProperty<>(this,"hero", null);
     // Správce inventáře pro hrdinu
     private InventoryService inventoryManager;
 
@@ -223,7 +222,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
 
     @Override
     public void insert(Hero hero) throws DatabaseException {
-        InventoryService service = getInventory();
+        InventoryService service = getInventory(hero);
         service.insert(InventoryService.standartInventory(hero));
 
         super.insert(hero);
@@ -285,7 +284,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
     }
 
     public void resetHero() {
-        this.hero.setValue(new Hero.Builder().build());
+        this.hero.setValue(null);
     }
     // endregion
 

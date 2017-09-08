@@ -7,15 +7,18 @@ import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.Card;
 import cz.stechy.drd.widget.LabeledMaxActValue;
 import cz.stechy.drd.widget.MoneyWidget;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 
 /**
  * Kontroler pro základní parametry postavy
  */
-public class DefaultStaffController implements MainScreen {
+public class DefaultStaffController implements MainScreen, Initializable {
 
     // region Variables
 
@@ -61,22 +64,69 @@ public class DefaultStaffController implements MainScreen {
 
     // endregion
 
+    // region Private methods
+
+    private void reset() {
+        if (!lblName.textProperty().isBound()) {
+            lblName.setText("-");
+        }
+        if (!lblRace.textProperty().isBound()) {
+            lblRace.setText("-");
+        }
+        if (!lblProfession.textProperty().isBound()) {
+            lblProfession.setText("-");
+        }
+        if (!lblSpecialization.textProperty().isBound()) {
+            lblSpecialization.setText("-");
+        }
+
+    }
+
+    private void unbindHero(Hero oldValue) {
+        lblName.textProperty().unbind();
+        lblRace.textProperty().unbind();
+        lblProfession.textProperty().unbind();
+        lblMoney.unbind();
+        if (oldValue != null) {
+            lblLive.unbind(oldValue.getLive());
+            lblMag.unbind(oldValue.getMag());
+            lblExperience.unbind(oldValue.getExperiences());
+        }
+
+        reset();
+    }
+
+    private void bindHero(final Hero hero) {
+        lblName.textProperty().bind(hero.nameProperty());
+        lblRace.textProperty().bind(Bindings.createStringBinding(() ->
+                translator.getSingleTranslationFor(Key.RACES, hero.getRace()),
+            hero.raceProperty()));
+        lblProfession.textProperty().bind(Bindings.createStringBinding(() ->
+                translator.getSingleTranslationFor(Key.PROFESSIONS, hero.getProfession()),
+            hero.professionProperty()));
+        lblLive.bind(hero.getLive());
+        lblMag.bind(hero.getMag());
+        lblExperience.bind(hero.getExperiences());
+        lblMoney.bind(hero.getMoney());
+    }
+
+    // endregion
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        reset();
+    }
+
     @Override
     public void setHero(ReadOnlyObjectProperty<Hero> hero) {
         hero.addListener((observable, oldValue, newValue) -> {
-            lblName.textProperty().bind(newValue.nameProperty());
-            lblRace.textProperty().bind(Bindings.createStringBinding(() ->
-                translator.getSingleTranslationFor(Key.RACES, newValue.getRace()),
-                newValue.raceProperty()));
-            lblProfession.textProperty().bind(Bindings.createStringBinding(() ->
-                translator.getSingleTranslationFor(Key.PROFESSIONS, newValue.getProfession()),
-                newValue.professionProperty()));
-            lblLive.setMaxActValue(newValue.getLive());
-            lblMag.setMaxActValue(newValue.getMag());
-            lblExperience.setMaxActValue(newValue.getExperiences());
+            unbindHero(oldValue);
+            if (newValue != null) {
+                bindHero(newValue);
+            }
+
             defaultStaffLeftController.bindWithHero(newValue);
             defaultStaffRightController.bindWithHero(newValue);
-            lblMoney.bind(newValue.getMoney());
         });
     }
 

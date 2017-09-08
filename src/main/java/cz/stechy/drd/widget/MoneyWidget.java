@@ -58,7 +58,9 @@ public class MoneyWidget extends VBox {
     /**
      * Vytvoří nový widget reprezentující peníze
      */
-    public MoneyWidget() { }
+    public MoneyWidget() {
+        reset();
+    }
 
     /**
      * Vytvoří nový widget reprezentující peníze s definovanou hodnotou
@@ -81,6 +83,25 @@ public class MoneyWidget extends VBox {
 
     // endregion
 
+    // region Private methods
+
+    /**
+     * Vyresetuje hodnoty na výchozí hodnoty
+     */
+    private void reset() {
+        if (!goldText.textProperty().isBound()) {
+            goldText.setText("0");
+        }
+        if (!silverText.textProperty().isBound()) {
+            silverText.setText("0");
+        }
+        if (!copperText.textProperty().isBound()) {
+            copperText.setText("0");
+        }
+    }
+
+    // endregion
+
     // region Public methods
 
     /**
@@ -92,6 +113,17 @@ public class MoneyWidget extends VBox {
         goldText.textProperty().bind(money.gold.asString());
         silverText.textProperty().bind(money.silver.asString());
         copperText.textProperty().bind(money.copper.asString());
+    }
+
+    /**
+     * Odpojí datový model a vyresetuje hodnoty na výchozí
+     */
+    public void unbind() {
+        goldText.textProperty().unbind();
+        silverText.textProperty().unbind();
+        copperText.textProperty().unbind();
+
+        reset();
     }
 
     // endregion

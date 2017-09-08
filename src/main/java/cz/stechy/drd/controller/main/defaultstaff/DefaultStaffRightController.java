@@ -27,15 +27,36 @@ public class DefaultStaffRightController {
 
     // endregion
 
+    // region Private methods
+
+    private void unbind() {
+        lblAgility.unbind();
+        lblLoadLow.unbind();
+        lblLoadMedium.unbind();
+        lblLoadHigh.unbind();
+        lblObservationObjects.unbind();
+        lblObservationMechanics.unbind();
+    }
+
+    private void bind(Hero hero) {
+        lblAgility.bind(hero.getAgility());
+        lblLoadLow.bind(hero.getLowLoad());
+        lblLoadMedium.bind(hero.getMediumLoad());
+        lblLoadHigh.bind(hero.getHighLoad());
+        lblObservationObjects.bind(hero.getObservationObjects());
+        lblObservationMechanics.bind(hero.getObservationMechanics());
+    }
+
+    // endregion
+
     // region Public methods
 
     public void bindWithHero(Hero hero) {
-        lblAgility.setHeroProperty(hero.getAgility());
-        lblLoadLow.setHeroProperty(hero.getLowLoad());
-        lblLoadMedium.setHeroProperty(hero.getMediumLoad());
-        lblLoadHigh.setHeroProperty(hero.getHighLoad());
-        lblObservationObjects.setHeroProperty(hero.getObservationObjects());
-        lblObservationMechanics.setHeroProperty(hero.getObservationMechanics());
+        if (hero == null) {
+            unbind();
+        } else {
+            bind(hero);
+        }
     }
 
     // endregion

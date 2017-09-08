@@ -101,9 +101,14 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
     }
 
     private final ChangeListener<? super Hero> heroChangeListener = (observable, oldValue, newValue) -> {
+        InventoryContent.clearWeight();
+        if (newValue == null) {
+            mainItemContainer.clear();
+            equipItemContainer.clear();
+            return;
+        }
         // Získám správce inventáře podle hrdiny
         final InventoryService inventoryManager = heroManager.getInventory();
-        InventoryContent.clearWeight();
         try {
             // Získám záznam hlavního inventáře
             final Inventory mainInventory = inventoryManager.select(InventoryService.MAIN_INVENTORY_FILTER);

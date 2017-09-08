@@ -28,13 +28,42 @@ public class DefaultStaffLeftController {
 
     // endregion
 
-    void bindWithHero(Hero hero) {
-        lblStrength.setHeroProperty(hero.getStrength());
-        lblDexterity.setHeroProperty(hero.getDexterity());
-        lblImmunity.setHeroProperty(hero.getImmunity());
-        lblIntelligence.setHeroProperty(hero.getIntelligence());
-        lblCharisma.setHeroProperty(hero.getCharisma());
+    // region Private methods
+
+    private void reset() {
+        if (!lblHeight.textProperty().isBound()) {
+            lblHeight.setText("-");
+        }
+    }
+
+    private void unbind() {
+        lblStrength.unbind();
+        lblDexterity.unbind();
+        lblImmunity.unbind();
+        lblIntelligence.unbind();
+        lblCharisma.unbind();
+        lblHeight.textProperty().unbind();
+
+        reset();
+    }
+
+    private void bind(Hero hero) {
+        lblStrength.bind(hero.getStrength());
+        lblDexterity.bind(hero.getDexterity());
+        lblImmunity.bind(hero.getImmunity());
+        lblIntelligence.bind(hero.getIntelligence());
+        lblCharisma.bind(hero.getCharisma());
         lblHeight.textProperty().bind(hero.heightProperty().asString());
+    }
+
+    // endregion
+
+    void bindWithHero(Hero hero) {
+        if (hero == null) {
+            unbind();
+        } else {
+            bind(hero);
+        }
     }
 
 }

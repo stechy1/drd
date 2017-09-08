@@ -119,11 +119,11 @@ public class LevelUpController extends BaseController implements Initializable {
         this.title = resources.getString(R.Translate.LEVEL_UP_TITLE);
 
         lblLive.textProperty().bind(model.live.asString());
-        lblStrength.setHeroProperty(model.strength);
-        lblDexterity.setHeroProperty(model.dexterity);
-        lblImmunity.setHeroProperty(model.immunity);
-        lblIntelligence.setHeroProperty(model.intelligence);
-        lblCharisma.setHeroProperty(model.charisma);
+        lblStrength.bind(model.strength);
+        lblDexterity.bind(model.dexterity);
+        lblImmunity.bind(model.immunity);
+        lblIntelligence.bind(model.intelligence);
+        lblCharisma.bind(model.charisma);
         btnStrength.disableProperty().bind(rollFinish);
         btnDexterity.disableProperty().bind(rollFinish);
         btnImmunity.disableProperty().bind(rollFinish);

@@ -114,19 +114,28 @@ public class HeroOpenerController extends BaseController implements Initializabl
                 .setValue(translator.getTranslationFor(Key.RACES).get(newValue.getRace().ordinal()));
             lblProfession.textProperty()
                 .setValue(translator.getTranslationFor(Key.PROFESSIONS).get(newValue.getProfession().ordinal()));
-            lblStrength.setHeroProperty(newValue.getStrength());
-            lblDexterity.setHeroProperty(newValue.getDexterity());
-            lblImmunity.setHeroProperty(newValue.getImmunity());
-            lblIntelligence.setHeroProperty(newValue.getIntelligence());
-            lblCharisma.setHeroProperty(newValue.getCharisma());
+            lblStrength.bind(newValue.getStrength());
+            lblDexterity.bind(newValue.getDexterity());
+            lblImmunity.bind(newValue.getImmunity());
+            lblIntelligence.bind(newValue.getIntelligence());
+            lblCharisma.bind(newValue.getCharisma());
         });
 
         btnOpen.disableProperty().bind(selectedHero.isNull());
         btnDelete.disableProperty().bind(selectedHero.isNull());
 
-        filteredHeroes.setPredicate(hero -> !hero.equals(heroManager.getHero()) &&
-            heroManager.heroProperty().get() != null &&
-            hero.getAuthor().equals(heroManager.heroProperty().get().getAuthor())
+        filteredHeroes.setPredicate(hero -> {
+                return hero != null &&
+                    !hero.equals(heroManager.getHero());
+                    //hero.getAuthor().equals(user);
+            }
+//            System.out.println("1. " + !hero.equals(heroManager.getHero()));
+//            System.out.println("2. " + heroManager.getHero() != null);
+//            System.out.println("3. " + heroManager.getHero() != null && hero.getAuthor().equals(heroManager.getHero().getAuthor()));
+//                return !hero.equals(heroManager.getHero()) &&
+//                    heroManager.getHero() != null &&
+//                    hero.getAuthor().equals(heroManager.getHero().getAuthor());
+//            }
         );
 
         lvHeroes.setItems(filteredHeroes);

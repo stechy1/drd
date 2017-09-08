@@ -3,6 +3,7 @@ package cz.stechy.drd.widget;
 import cz.stechy.drd.model.MaxActValue;
 import java.io.IOException;
 import javafx.beans.NamedArg;
+import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -41,10 +42,6 @@ public class LabeledMaxActValue extends Group {
 
     // region Constructors
 
-    public LabeledMaxActValue(@NamedArg("caption") String caption, @NamedArg("description") String description) {
-        this(caption, description, new MaxActValue(0, 100, 50));
-    }
-
     public LabeledMaxActValue(@NamedArg("caption") String caption, @NamedArg("description") String description, @NamedArg("maxActValue") MaxActValue maxActValue) {
         try {
             final FXMLLoader loader = new FXMLLoader(getClass().getResource(
@@ -54,7 +51,11 @@ public class LabeledMaxActValue extends Group {
             getChildren().setAll(pane);
             lblCaption.setText(caption);
             lblDescription.setText(description);
-            lblValue.forMaxActValue(maxActValue);
+            if (maxActValue == null) {
+                reset();
+            } else {
+                bind(maxActValue);
+            }
             prefWidth(270);
             prefHeight(140);
         } catch (IOException e) {
@@ -64,6 +65,8 @@ public class LabeledMaxActValue extends Group {
 
     // endregion
 
+    // region Private methods
+
     private void sync(int actValue, int maxValue) {
         bar.setProgress(actValue / (double) maxValue);
 
@@ -72,20 +75,40 @@ public class LabeledMaxActValue extends Group {
         this.maxValue = maxValue;
     }
 
-    public void setMaxActValue(MaxActValue maxActValue) {
-        lblValue.forMaxActValue(maxActValue);
+    private void reset() {
+        bar.setProgress(0);
+    }
 
-        maxActValue.actValueProperty().addListener((observable, oldValue, newValue) -> {
-            sync(newValue.intValue(), maxValue);
-        });
-        maxActValue.maxValueProperty().addListener((observable, oldValue, newValue) -> {
-            sync(this.actValue, newValue.intValue());
-        });
+    // endregion
+
+    // region Public methods
+
+    public void bind(MaxActValue maxActValue) {
+        lblValue.bind(maxActValue);
+
+        maxActValue.actValueProperty().addListener(actValueListener);
+        maxActValue.maxValueProperty().addListener(maxValueListener);
 
         sync(maxActValue.getActValue().intValue(), maxActValue.getMaxValue().intValue());
+    }
+
+    public void unbind(MaxActValue maxActValue) {
+        assert maxActValue != null;
+        maxActValue.actValueProperty().removeListener(actValueListener);
+        maxActValue.maxValueProperty().removeListener(maxValueListener);
+        lblValue.unbind();
+
+        reset();
     }
 
     public void setImage(Image image) {
         imageView.setImage(image);
     }
+
+    // endregion
+
+    private final ChangeListener<Number> actValueListener = (observable, oldValue, newValue) ->
+        sync(newValue.intValue(), maxValue);
+    private final ChangeListener<Number> maxValueListener = (observable, oldValue, newValue) ->
+        sync(this.actValue, newValue.intValue());
 }

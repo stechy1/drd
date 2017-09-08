@@ -7,17 +7,42 @@ import javafx.scene.control.Label;
 /**
  * Obecná vizualizace {@link cz.stechy.drd.model.MaxActValue}
  */
-public class MaxActWidget extends Label {
+public final class MaxActWidget extends Label {
 
-    public MaxActWidget() {}
+    // region Constructors
 
-    public final void forMaxActValue(MaxActValue maxActValue) {
+    public MaxActWidget() {
+        reset();
+    }
+
+    // endregion
+
+    // region Private methods
+
+    private void reset() {
+        if (!textProperty().isBound()) {
+            setText("0/0");
+        }
+    }
+
+    // endregion
+
+    // region Public methods
+
+    public void bind(MaxActValue maxActValue) {
         textProperty().bind(Bindings.concat(
             maxActValue.actValueProperty().asString(),
             " / ",
             maxActValue.maxValueProperty().asString()
         ));
-
     }
+
+    public void unbind() {
+        textProperty().unbind();
+
+        reset();
+    }
+
+    // endregion
 
 }

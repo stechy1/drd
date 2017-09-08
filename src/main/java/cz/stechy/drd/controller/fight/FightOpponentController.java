@@ -116,12 +116,12 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
 
     private ChangeListener<? super Mob> mobListener = (observable, oldValue, newValue) -> {
         lblViability.setText(String.valueOf(newValue.getViability()));
-        lblImmunity.setHeroProperty(newValue.getImmunity());
-        lblIntelligence.setHeroProperty(newValue.getIntelligence());
-        lblCharisma.setHeroProperty(newValue.getCharisma());
+        lblImmunity.bind(newValue.getImmunity());
+        lblIntelligence.bind(newValue.getIntelligence());
+        lblCharisma.bind(newValue.getCharisma());
         lblAttackNumber.setText(String.valueOf(newValue.getAttackNumber()));
         lblDefenceNumber.setText(String.valueOf(newValue.getDefenceNumber()));
-        lblLive.setMaxActValue(newValue.getLive());
+        lblLive.bind(newValue.getLive());
     };
 
     // region Button handlers

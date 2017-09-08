@@ -135,6 +135,7 @@ public class MainController extends BaseController implements Initializable {
             closeChildScreens();
             heroService.resetHero();
         });
+        tabProfession.disableProperty().bind(this.hero.isNull());
 
         this.hero.addListener(heroListener);
     }
@@ -347,9 +348,17 @@ public class MainController extends BaseController implements Initializable {
     private ChangeListener<? super Boolean> levelUpListener = (observable, oldValue, newValue) -> {
         showNotification(new Notification("levelUp"));
     };
-    private ChangeListener<? super Hero> heroListener = (ChangeListener<Hero>) (observable, oldValue, newValue) -> {
-        newValue.levelUpProperty().addListener(levelUpListener);
-        btnLevelUp.visibleProperty().bind(newValue.levelUpProperty());
+    private ChangeListener<? super Hero> heroListener = (observable, oldValue, newValue) -> {
+        if (newValue == null) {
+            if (oldValue != null) {
+                oldValue.levelUpProperty().removeListener(levelUpListener);
+            }
+            btnLevelUp.visibleProperty().unbind();
+            btnLevelUp.setVisible(false);
+        } else {
+            newValue.levelUpProperty().addListener(levelUpListener);
+            btnLevelUp.visibleProperty().bind(newValue.levelUpProperty());
+        }
     };
 
 }
