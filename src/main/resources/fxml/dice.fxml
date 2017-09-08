@@ -18,7 +18,11 @@
   xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.dice.DiceController">
   <left>
-    <JFXListView maxWidth="65.0" prefWidth="65.0" fx:id="lvDices"/>
+    <VBox fx:id="diceContainer" spacing="8.0">
+      <padding>
+        <Insets topRightBottomLeft="8.0"/>
+      </padding>
+    </VBox>
   </left>
   <center>
     <VBox HBox.hgrow="ALWAYS" alignment="TOP_RIGHT" spacing="24.0">

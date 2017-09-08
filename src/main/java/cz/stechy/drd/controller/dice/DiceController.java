@@ -12,23 +12,24 @@ import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
-import javafx.util.Callback;
+import javafx.scene.layout.VBox;
 
 /**
  * Kontroler pro házení kostkou
@@ -40,7 +41,7 @@ public class DiceController extends BaseController implements Initializable {
     // region FXML
 
     @FXML
-    private ListView<DiceType> lvDices;
+    private VBox diceContainer;
     @FXML
     private TableView<DiceAddition> tableAdditions;
     @FXML
@@ -60,6 +61,7 @@ public class DiceController extends BaseController implements Initializable {
 
     // endregion
 
+    private final ToggleGroup diceGroup = new ToggleGroup();
     private final MaxActValue diceSideCount = new MaxActValue(1, Integer.MAX_VALUE, 1);
     private final MaxActValue diceRollCount = new MaxActValue(1, Integer.MAX_VALUE, 1);
     private final Hero hero;
@@ -83,37 +85,25 @@ public class DiceController extends BaseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.DICE_TITLE);
 
-        lvDices.setItems(FXCollections.observableArrayList(DiceHelper.DiceType.values()));
-        lvDices.setCellFactory(new Callback<ListView<DiceType>, ListCell<DiceType>>() {
-            @Override
-            public ListCell<DiceType> call(ListView<DiceType> param) {
-                ListCell<DiceType> cell = new ListCell<DiceType>() {
-                    @Override
-                    protected void updateItem(DiceType item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setText(null);
-                        } else {
-                            if (item == DiceType.CUSTOM) {
-                                setText("Vlastní");
-                            } else {
-                                setText(item.toString());
-                            }
-                        }
-                    }
-                };
-                return cell;
+        final String customDiceTranslate = resources.getString(R.Translate.DICE_CUSTOM);
+        final List<RadioButton> radioButtons = Arrays.stream(DiceType.values()).map(diceType -> {
+            final RadioButton radio = new RadioButton(diceType == DiceType.CUSTOM ? customDiceTranslate : diceType.toString());
+            radio.setToggleGroup(diceGroup);
+            radio.setUserData(diceType == DiceType.CUSTOM ? 0 : diceType.getSideCount());
+            if (diceType == DiceType.CUSTOM) {
+                radio.setSelected(true);
             }
+            return radio;
+        }).collect(Collectors.toList());
+        diceContainer.getChildren().setAll(radioButtons);
+        diceGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            Integer value = (Integer) newValue.getUserData();
+            diceSideCount.setActValue(value);
+            txtDiceSideCount.setDisable(value != 0);
         });
-        txtDiceSideCount.disableProperty().bind(
-            lvDices.getFocusModel().focusedIndexProperty().isEqualTo(0).not());
 
         FormUtils.initTextFormater(txtDiceSideCount, diceSideCount);
         FormUtils.initTextFormater(txtRollCount, diceRollCount);
-
-        lvDices.getFocusModel().focusedItemProperty()
-            .addListener((observable, oldValue, newValue) ->
-                diceSideCount.setActValue(newValue.getSideCount()));
 
         initTable();
     }

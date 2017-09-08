@@ -197,6 +197,7 @@ public final class R {
         public static final String DICE_PROPERTY = "drd_dice_property";
         public static final String DICE_RATE_REPAIR = "drd_dice_rate_repair";
         public static final String DICE_ADD_SUBTRACT = "drd_dice_add_subtract";
+        public static final String DICE_CUSTOM = "drd_dice_custom";
         public static final String DICE_CUSTOM_SIDE_COUNT = "drd_dice_custom_side_count";
         public static final String DICE_ROLL_COUNT = "drd_dice_roll_count";
         public static final String DICE_CUSTOM_CONSTANT = "drd_dice_custom_constant";
