@@ -1,6 +1,5 @@
 package cz.stechy.drd.controller.fight;
 
-import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -24,6 +23,7 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 
@@ -66,9 +66,9 @@ public class FightController extends BaseController implements Initializable {
     private Label lblStatus;
 
     @FXML
-    private JFXButton btnStartFight;
+    private Button btnStartFight;
     @FXML
-    private JFXButton btnStopFight;
+    private Button btnStopFight;
 
     // endregion
 
@@ -88,7 +88,11 @@ public class FightController extends BaseController implements Initializable {
 
     public FightController(HeroService heroService) {
         this.heroService = heroService;
-        this.hero = this.heroService.getHero().duplicate();
+        if (heroService.getHero() == null) {
+            this.hero = null;
+        } else {
+            this.hero = this.heroService.getHero().duplicate();
+        }
     }
 
     // endregion
@@ -125,16 +129,16 @@ public class FightController extends BaseController implements Initializable {
         fightOpponentController.injectParent(this);
 
         btnStartFight.disableProperty().bind(Bindings.createBooleanBinding(() ->
-            isFighting.get() || fightOpponentController.selectedMobProperty().get() == null,
-            isFighting, fightOpponentController.selectedMobProperty()));
+            isFighting.get()
+                || fightOpponentController.selectedMobProperty().get() == null
+                || heroService.heroProperty().get() == null,
+            isFighting, fightOpponentController.selectedMobProperty(), heroService.heroProperty()));
         btnStopFight.disableProperty().bind(isFighting.not());
     }
 
     @Override
     protected void onCreate(Bundle bundle) {
-        Arrays.stream(controllers).forEach(controller -> {
-            controller.setHero(hero);
-        });
+        Arrays.stream(controllers).forEach(controller -> controller.setHero(hero));
     }
 
     @Override

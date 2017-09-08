@@ -36,6 +36,18 @@ public class FightHeroController implements IFightChild {
 
     @Override
     public void setHero(Hero hero) {
+        if (hero == null) {
+            lblName.setText("-");
+            lblStrength.unbind();
+            lblDexterity.unbind();
+            lblImmunity.unbind();
+            lblIntelligence.unbind();
+            lblCharisma.unbind();
+            lblAttackNumber.setText("0");
+            lblDefenceNumber.setText("0");
+            return;
+        }
+
         lblName.textProperty().bind(hero.nameProperty());
         lblStrength.bind(hero.getStrength());
         lblDexterity.bind(hero.getDexterity());
