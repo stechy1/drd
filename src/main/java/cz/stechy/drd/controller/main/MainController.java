@@ -31,6 +31,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -85,6 +86,8 @@ public class MainController extends BaseController implements Initializable {
     @FXML
     private Button btnLevelUp;
 
+    @FXML
+    private TabPane tabPane;
     @FXML
     private Tab tabProfession;
 
@@ -359,6 +362,8 @@ public class MainController extends BaseController implements Initializable {
             newValue.levelUpProperty().addListener(levelUpListener);
             btnLevelUp.visibleProperty().bind(newValue.levelUpProperty());
         }
+
+        tabPane.getSelectionModel().selectFirst();
     };
 
 }

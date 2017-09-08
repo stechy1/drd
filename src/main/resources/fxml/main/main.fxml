@@ -174,7 +174,7 @@
       </tooltip>
     </JFXButton>
   </ToolBar>
-  <JFXTabPane side="BOTTOM" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+  <JFXTabPane fx:id="tabPane" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
     <Tab fx:id="tabDefaults" text="%drd_main_tab_dashboard">
       <tooltip>
         <Tooltip text="Základní informace o hrdinovi" />
