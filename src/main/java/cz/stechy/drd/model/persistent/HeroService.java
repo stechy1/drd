@@ -36,6 +36,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
     // Názvy sloupců v databázi
     private static final String COLUMN_ID = TABLE + "_id";
     private static final String COLUMN_NAME = TABLE + "_name";
+    private static final String COLUMN_AUTHOR = TABLE + "_author";
     private static final String COLUMN_DESCRIPTION = TABLE + "_description";
     private static final String COLUMN_CONVICTION = TABLE + "_conviction";
     private static final String COLUMN_RACE = TABLE + "_race";
@@ -54,17 +55,18 @@ public final class HeroService extends BaseDatabaseService<Hero> {
     private static final String COLUMN_MAX_LIVE = TABLE + "_max_live";
     private static final String COLUMN_MAG = TABLE + "_mag";
     private static final String COLUMN_MAX_MAG = TABLE + "_max_mag";
-    private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
-        COLUMN_CONVICTION, COLUMN_RACE, COLUMN_PROFESSION, COLUMN_LEVEL, COLUMN_MONEY,
-        COLUMN_EXPERIENCES, COLUMN_STRENGTH, COLUMN_DEXTERITY, COLUMN_IMMUNITY, COLUMN_INTELLIGENCE,
-        COLUMN_CHARISMA, COLUMN_HEIGHT, COLUMN_DEFENCE_NUMBER, COLUMN_LIVE, COLUMN_MAX_LIVE,
-        COLUMN_MAG, COLUMN_MAX_MAG};
+    private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_AUTHOR,
+        COLUMN_DESCRIPTION, COLUMN_CONVICTION, COLUMN_RACE, COLUMN_PROFESSION, COLUMN_LEVEL,
+        COLUMN_MONEY, COLUMN_EXPERIENCES, COLUMN_STRENGTH, COLUMN_DEXTERITY, COLUMN_IMMUNITY,
+        COLUMN_INTELLIGENCE, COLUMN_CHARISMA, COLUMN_HEIGHT, COLUMN_DEFENCE_NUMBER, COLUMN_LIVE,
+        COLUMN_MAX_LIVE, COLUMN_MAG, COLUMN_MAX_MAG};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
     private static final String QUERY_CREATE = String.format("CREATE TABLE IF NOT EXISTS %s("
             + "%s VARCHAR PRIMARY KEY NOT NULL UNIQUE,"         // id
             + "%s VARCHAR(255) NOT NULL,"                       // name
+            + "%s VARCHAR(255),"                                // author
             + "%s VARCHAR(255),"                                // description
             + "%s INT NOT NULL,"                                // conviction
             + "%s INT NOT NULL,"                                // race
@@ -83,11 +85,11 @@ public final class HeroService extends BaseDatabaseService<Hero> {
             + "%s INT NOT NULL,"                                // max baseLive
             + "%s INT NOT NULL,"                                // mag
             + "%s INT NOT NULL"                                 // max mag
-            + ");", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_CONVICTION,
-        COLUMN_RACE, COLUMN_PROFESSION, COLUMN_LEVEL, COLUMN_MONEY, COLUMN_EXPERIENCES,
-        COLUMN_STRENGTH, COLUMN_DEXTERITY, COLUMN_IMMUNITY, COLUMN_INTELLIGENCE, COLUMN_CHARISMA,
-        COLUMN_HEIGHT, COLUMN_DEFENCE_NUMBER, COLUMN_LIVE, COLUMN_MAX_LIVE, COLUMN_MAG,
-        COLUMN_MAX_MAG);
+            + ");", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_AUTHOR, COLUMN_DESCRIPTION,
+        COLUMN_CONVICTION, COLUMN_RACE, COLUMN_PROFESSION, COLUMN_LEVEL, COLUMN_MONEY,
+        COLUMN_EXPERIENCES, COLUMN_STRENGTH, COLUMN_DEXTERITY, COLUMN_IMMUNITY, COLUMN_INTELLIGENCE,
+        COLUMN_CHARISMA, COLUMN_HEIGHT, COLUMN_DEFENCE_NUMBER, COLUMN_LIVE, COLUMN_MAX_LIVE,
+        COLUMN_MAG, COLUMN_MAX_MAG);
 
     // endregion
 
@@ -121,6 +123,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
         return new Hero.Builder()
             .id(resultSet.getString(COLUMN_ID))
             .name(resultSet.getString(COLUMN_NAME))
+            .author(resultSet.getString(COLUMN_AUTHOR))
             .description(resultSet.getString(COLUMN_DESCRIPTION))
             .conviction(resultSet.getInt(COLUMN_CONVICTION))
             .race(resultSet.getInt(COLUMN_RACE))
@@ -147,6 +150,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
         return new ArrayList<>(Arrays.asList(
             hero.getId(),
             hero.getName(),
+            hero.getAuthor(),
             hero.getDescription(),
             hero.getConviction().ordinal(),
             hero.getRace().ordinal(),
