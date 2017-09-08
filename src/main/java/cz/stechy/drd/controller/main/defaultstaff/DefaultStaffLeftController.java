@@ -2,10 +2,13 @@ package cz.stechy.drd.controller.main.defaultstaff;
 
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.widget.LabeledHeroProperty;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 
-public class DefaultStaffLeftController {
+public class DefaultStaffLeftController implements Initializable {
 
     // region Variables
 
@@ -27,6 +30,11 @@ public class DefaultStaffLeftController {
     // endregion
 
     // endregion
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        reset();
+    }
 
     // region Private methods
 
