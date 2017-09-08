@@ -12,9 +12,12 @@ import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 /**
@@ -44,7 +47,15 @@ public class MoneyXpController extends BaseController implements Initializable {
     @FXML
     private TextField txtCopper;
     @FXML
+    private Button btnMoneyAdd;
+    @FXML
+    private Button btnMoneySubtract;
+    @FXML
     private TextField txtExperience;
+    @FXML
+    private Button btnXpAdd;
+    @FXML
+    private Button btnFinish;
 
     // endregion
 
@@ -53,8 +64,9 @@ public class MoneyXpController extends BaseController implements Initializable {
     private final MaxActValue silverValue = new MaxActValue(0, Money.MAX_SILVER, moneyModel.getSilver());
     private final MaxActValue copperValue = new MaxActValue(0, Money.MAX_COPPER, moneyModel.getCopper());
     private final MaxActValue experienceModel = new MaxActValue(Integer.MAX_VALUE);
+    private final BooleanProperty disableButtons = new SimpleBooleanProperty(this, "disableButtons", true);
 
-    private final Money heroMoney;
+    private final Money heroMoney = new Money();
     private final MaxActValue heroExperience = new MaxActValue();
     //private final Hero hero;
 
@@ -67,7 +79,13 @@ public class MoneyXpController extends BaseController implements Initializable {
     public MoneyXpController(HeroService heroService) {
         final Hero hero = heroService.getHero();
 
-        this.heroMoney = new Money(hero.getMoney());
+        if (hero == null) {
+            return;
+        }
+
+        disableButtons.set(false);
+
+        this.heroMoney.setRaw(hero.getMoney().getRaw());
         this.heroExperience.update(hero.getExperiences());
 
         goldValue.actValueProperty().bindBidirectional(moneyModel.gold);
@@ -88,6 +106,11 @@ public class MoneyXpController extends BaseController implements Initializable {
         FormUtils.initTextFormater(txtSilver, silverValue);
         FormUtils.initTextFormater(txtCopper, copperValue);
         FormUtils.initTextFormater(txtExperience, experienceModel);
+
+        btnMoneyAdd.disableProperty().bind(disableButtons);
+        btnMoneySubtract.disableProperty().bind(disableButtons);
+        btnXpAdd.disableProperty().bind(disableButtons);
+        btnFinish.disableProperty().bind(disableButtons);
     }
 
     @Override

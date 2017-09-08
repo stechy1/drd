@@ -36,10 +36,10 @@
             </VBox>
             <Region VBox.vgrow="ALWAYS"/>
             <HBox alignment="CENTER">
-              <JFXButton onAction="#handleMoneyAdd" styleClass="btn, btn-success"
+              <JFXButton fx:id="btnMoneyAdd" onAction="#handleMoneyAdd" styleClass="btn, btn-success"
                 text="%drd_money_add"/>
               <Region HBox.hgrow="ALWAYS"/>
-              <JFXButton onAction="#handleMoneySubtract" styleClass="btn, btn-danger"
+              <JFXButton fx:id="btnMoneySubtract" onAction="#handleMoneySubtract" styleClass="btn, btn-danger"
                 text="%drd_money_subtract"/>
             </HBox>
           </VBox>
@@ -60,7 +60,7 @@
             <Region VBox.vgrow="ALWAYS"/>
             <HBox>
               <Region HBox.hgrow="ALWAYS"/>
-              <JFXButton contentDisplay="CENTER" onAction="#handleXpAdd"
+              <JFXButton fx:id="btnXpAdd" contentDisplay="CENTER" onAction="#handleXpAdd"
                 styleClass="btn, btn-success"
                 text="%drd_xp_add"/>
             </HBox>
@@ -76,7 +76,7 @@
     <HBox>
       <JFXButton onAction="#handleCancel" styleClass="btn, btn-warning" text="%drd_cancel"/>
       <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton onAction="#handleFinish" styleClass="btn, btn-primary" text="%drd_finish"/>
+      <JFXButton fx:id="btnFinish" onAction="#handleFinish" styleClass="btn, btn-primary" text="%drd_finish"/>
       <padding>
         <Insets topRightBottomLeft="8.0"/>
       </padding>
