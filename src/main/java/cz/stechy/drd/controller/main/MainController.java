@@ -14,12 +14,14 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.user.User;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -94,6 +96,7 @@ public class MainController extends BaseController implements Initializable {
     // endregion
 
     private final ReadOnlyObjectProperty<Hero> hero;
+    private final ReadOnlyObjectProperty<User> user;
     private final HeroService heroService;
     private final UserService userService;
 
@@ -110,6 +113,7 @@ public class MainController extends BaseController implements Initializable {
         this.heroService = heroService;
         this.userService = userService;
         this.hero = heroService.heroProperty();
+        this.user = userService.userProperty();
     }
 
     @Override
@@ -119,7 +123,7 @@ public class MainController extends BaseController implements Initializable {
         this.logoutText = resources.getString(R.Translate.MAIN_MENU_FILE_LOGOUT);
         this.loginSuccess = resources.getString(R.Translate.NOTIFY_LOGIN_SUCCESS);
         this.actionFailed = resources.getString(R.Translate.ACTION_FAILED);
-        bindMenuLogin();
+        //bindMenuLogin();
 
         this.controllers = new MainScreen[]{
             defaultStaffController,
@@ -134,13 +138,14 @@ public class MainController extends BaseController implements Initializable {
             }
         }
 
-        this.userService.loggedProperty().addListener((observable, oldValue, newValue) -> {
-            closeChildScreens();
-            heroService.resetHero();
-        });
+//        this.userService.loggedProperty().addListener((observable, oldValue, newValue) -> {
+//            closeChildScreens();
+//            heroService.resetHero();
+//        });
         tabProfession.disableProperty().bind(this.hero.isNull());
 
         this.hero.addListener(heroListener);
+        this.user.addListener(userListener);
     }
 
     @Override
@@ -237,15 +242,29 @@ public class MainController extends BaseController implements Initializable {
     /**
      * Nastaví vlastnosti menu tlačítku pro přihlášení/odhlášení
      */
-    private void bindMenuLogin() {
+    private void bindMenuLogin(BooleanProperty loggedProperty) {
+        if (loggedProperty == null) {
+            this.menuLogin.textProperty().unbind();
+            this.menuLogin.onActionProperty().unbind();
+
+            this.menuLogin.setText(loginText);
+            this.menuLogin.setOnAction(this::handleMenuLogin);
+            return;
+        }
+
         this.menuLogin.textProperty().bind(Bindings
-            .when(userService.loggedProperty())
+            .when(loggedProperty)
             .then(logoutText)
             .otherwise(loginText));
         this.menuLogin.onActionProperty().bind(Bindings
-            .when(userService.loggedProperty())
-            .then(new SimpleObjectProperty<EventHandler<ActionEvent>>(event -> handleMenuLogout(event)))
-            .otherwise(new SimpleObjectProperty<>(event -> handleMenuLogin(event))));
+            .when(loggedProperty)
+            .then(new SimpleObjectProperty<EventHandler<ActionEvent>>(this::handleMenuLogout))
+            .otherwise(new SimpleObjectProperty<>(this::handleMenuLogin)));
+    }
+
+    private void resetChildScreensAndHero() {
+        closeChildScreens();
+        heroService.resetHero();
     }
 
     // endregion
@@ -348,10 +367,9 @@ public class MainController extends BaseController implements Initializable {
 
     // endregion
 
-    private ChangeListener<? super Boolean> levelUpListener = (observable, oldValue, newValue) -> {
+    private final ChangeListener<? super Boolean> levelUpListener = (observable, oldValue, newValue) ->
         showNotification(new Notification("levelUp"));
-    };
-    private ChangeListener<? super Hero> heroListener = (observable, oldValue, newValue) -> {
+    private final ChangeListener<? super Hero> heroListener = (observable, oldValue, newValue) -> {
         if (newValue == null) {
             if (oldValue != null) {
                 oldValue.levelUpProperty().removeListener(levelUpListener);
@@ -365,5 +383,15 @@ public class MainController extends BaseController implements Initializable {
 
         tabPane.getSelectionModel().selectFirst();
     };
+    private final ChangeListener<? super User> userListener = (observable, oldValue, newValue) -> {
+        if (newValue == null) {
+            bindMenuLogin(null);
+        } else {
+            bindMenuLogin(newValue.loggedProperty());
+            newValue.loggedProperty().addListener((observable1, oldValue1, newValue1) ->
+                resetChildScreensAndHero());
+        }
 
+        resetChildScreensAndHero();
+    };
 }

@@ -13,11 +13,8 @@ import cz.stechy.drd.util.HashGenerator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -49,8 +46,7 @@ public final class UserService implements Firebase<User> {
     // region Variables
 
     private final ObservableList<User> onlineDatabase = FXCollections.observableArrayList();
-    private final ObjectProperty<User> user = new SimpleObjectProperty<>(new User());
-    private final BooleanProperty logged = new SimpleBooleanProperty(this, "logged");
+    private final ObjectProperty<User> user = new SimpleObjectProperty<>(this, "user", null);
     private DatabaseReference firebaseReference;
 
     // endregion
@@ -65,7 +61,6 @@ public final class UserService implements Firebase<User> {
     public UserService(FirebaseWrapper wrapper) {
         wrapper.firebaseProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                logout();
                 onlineDatabase.clear();
                 firebaseReference = newValue.getReference(FIREBASE_CHILD_NAME);
                 firebaseReference.addChildEventListener(childEventListener);
@@ -113,17 +108,15 @@ public final class UserService implements Firebase<User> {
         }
 
         this.user.set(result.get());
-        logged.set(true);
-        this.user.get().setLogged(true);
+        getUser().setLogged(true);
     }
 
     /**
      * Odhlásí uživatele z aplikace
      */
     public void logout() {
-        this.user.get().setLogged(false);
-        user.set(new User());
-        logged.set(false);
+        getUser().setLogged(false);
+        user.set(null);
     }
 
     /**
@@ -155,14 +148,6 @@ public final class UserService implements Firebase<User> {
 
     public final User getUser() {
         return user.get();
-    }
-
-    public final boolean isLogged() {
-        return logged.get();
-    }
-
-    public final ReadOnlyBooleanProperty loggedProperty() {
-        return logged;
     }
 
     // endregion
