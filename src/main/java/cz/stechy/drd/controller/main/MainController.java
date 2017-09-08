@@ -123,7 +123,6 @@ public class MainController extends BaseController implements Initializable {
         this.logoutText = resources.getString(R.Translate.MAIN_MENU_FILE_LOGOUT);
         this.loginSuccess = resources.getString(R.Translate.NOTIFY_LOGIN_SUCCESS);
         this.actionFailed = resources.getString(R.Translate.ACTION_FAILED);
-        //bindMenuLogin();
 
         this.controllers = new MainScreen[]{
             defaultStaffController,
@@ -138,10 +137,6 @@ public class MainController extends BaseController implements Initializable {
             }
         }
 
-//        this.userService.loggedProperty().addListener((observable, oldValue, newValue) -> {
-//            closeChildScreens();
-//            heroService.resetHero();
-//        });
         tabProfession.disableProperty().bind(this.hero.isNull());
 
         this.hero.addListener(heroListener);

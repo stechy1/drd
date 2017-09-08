@@ -168,7 +168,8 @@
     </JFXButton>
     <Separator />
     <Region HBox.hgrow="ALWAYS" />
-    <JFXButton fx:id="btnLevelUp" onAction="#handleMenuLevelUp" styleClass="toolbar-button, icon-add">
+    <JFXButton fx:id="btnLevelUp" onAction="#handleMenuLevelUp" styleClass="toolbar-button, icon-add"
+      visible="false">
       <tooltip>
         <Tooltip text="%drd_hero_level_up" />
       </tooltip>
