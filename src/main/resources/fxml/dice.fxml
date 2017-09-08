@@ -62,7 +62,7 @@
       <padding>
         <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
       </padding>
-      <Button onAction="#handleAddAddition" styleClass="sidebar-button, icon-add"/>
+      <Button fx:id="btnAddAddition" onAction="#handleAddAddition" styleClass="sidebar-button, icon-add"/>
       <Button onAction="#handleRemoveAddition" styleClass="sidebar-button, icon-subtract"/>
     </VBox>
   </right>

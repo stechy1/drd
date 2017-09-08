@@ -19,6 +19,7 @@ import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -54,6 +55,8 @@ public class DiceController extends BaseController implements Initializable {
     private TextField txtRollCount;
     @FXML
     private Label lblRollResult;
+    @FXML
+    private Button btnAddAddition;
 
     // endregion
 
@@ -134,6 +137,7 @@ public class DiceController extends BaseController implements Initializable {
         columnUseSubtract.setOnEditCommit(
             event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
                 .setUseSubtract(event.getNewValue()));
+        btnAddAddition.setDisable(hero == null);
     }
 
     @Override
