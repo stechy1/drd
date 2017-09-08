@@ -6,8 +6,8 @@ import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.widget.LabeledMoney;
 import cz.stechy.drd.widget.LabeledProgressBar;
+import cz.stechy.drd.widget.MoneyWidget;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -37,7 +37,7 @@ public class MoneyXpController extends BaseController implements Initializable {
     // region FXML
 
     @FXML
-    private LabeledMoney lblMoney;
+    private MoneyWidget lblMoney;
     @FXML
     private LabeledProgressBar lblExperience = new LabeledProgressBar();
     @FXML
@@ -99,7 +99,7 @@ public class MoneyXpController extends BaseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.MONEY_XP_TITLE);
 
-        lblMoney.forMoney(heroMoney);
+        lblMoney.bind(heroMoney);
         lblExperience.setMaxActValue(heroExperience);
 
         FormUtils.initTextFormater(txtGold, goldValue);

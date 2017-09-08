@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import cz.stechy.drd.widget.MoneyWidget?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="490.0" prefWidth="500.0"
   xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.moneyxp.MoneyXpController">
@@ -27,7 +28,7 @@
             <padding>
               <Insets topRightBottomLeft="8.0"/>
             </padding>
-            <LabeledMoney label="%drd_hero_money" fx:id="lblMoney"/>
+            <MoneyWidget fx:id="lblMoney"/>
             <Region VBox.vgrow="ALWAYS"/>
             <VBox spacing="24.0">
               <JFXTextField labelFloat="true" promptText="%drd_money_gold" fx:id="txtGold"/>
