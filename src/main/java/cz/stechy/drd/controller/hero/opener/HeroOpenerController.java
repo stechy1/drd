@@ -5,6 +5,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
@@ -76,6 +77,7 @@ public class HeroOpenerController extends BaseController implements Initializabl
     private final FilteredList<Hero> filteredHeroes = new FilteredList<>(heroes);
     private final ObjectProperty<Hero> selectedHero = new SimpleObjectProperty<>();
     private final HeroService heroManager;
+    private final UserService userService;
     private final Translator translator;
 
     private String title;
@@ -84,8 +86,9 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
     // region Constructors
 
-    public HeroOpenerController(HeroService heroManager, Translator translator) {
+    public HeroOpenerController(HeroService heroManager, UserService userService, Translator translator) {
         this.heroManager = heroManager;
+        this.userService = userService;
         this.translator = translator;
     }
 
@@ -124,19 +127,13 @@ public class HeroOpenerController extends BaseController implements Initializabl
         btnOpen.disableProperty().bind(selectedHero.isNull());
         btnDelete.disableProperty().bind(selectedHero.isNull());
 
-        filteredHeroes.setPredicate(hero -> {
-                return hero != null &&
-                    !hero.equals(heroManager.getHero());
-                    //hero.getAuthor().equals(user);
-            }
-//            System.out.println("1. " + !hero.equals(heroManager.getHero()));
-//            System.out.println("2. " + heroManager.getHero() != null);
-//            System.out.println("3. " + heroManager.getHero() != null && hero.getAuthor().equals(heroManager.getHero().getAuthor()));
-//                return !hero.equals(heroManager.getHero()) &&
-//                    heroManager.getHero() != null &&
-//                    hero.getAuthor().equals(heroManager.getHero().getAuthor());
-//            }
-        );
+        filteredHeroes.setPredicate(hero ->
+            hero != null // Hrdina není null
+            && !hero.equals(heroManager.getHero()) // Hrdina není otevřený
+            // Přihlášený uživatel vidí pouze své hrdiny, nepřihlášený pouze hrdiny, kteří nemají autora
+            && ((userService.getUser() != null)
+                ? hero.getAuthor().equals(userService.getUser().getName())
+                : hero.getAuthor().isEmpty()));
 
         lvHeroes.setItems(filteredHeroes);
         lvHeroes.setOnMouseClicked(event -> {
