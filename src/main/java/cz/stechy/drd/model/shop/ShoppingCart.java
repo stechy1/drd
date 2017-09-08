@@ -40,6 +40,7 @@ public class ShoppingCart implements IShoppingCart {
      */
     public ShoppingCart(Hero hero) {
         this.hero = hero;
+        enoughtMoney.set(hero != null);
         orderList.addListener(orderListListener);
     }
 
@@ -95,7 +96,10 @@ public class ShoppingCart implements IShoppingCart {
             priceDuplicate.multiply(ammount.getActValue().intValue());
             totalPrice.subtract(priceDuplicate);
         }
-        enoughtMoney.set(hero.getMoney().getRaw() >= totalPrice.getRaw());
+
+        if (hero != null) {
+            enoughtMoney.set(hero.getMoney().getRaw() >= totalPrice.getRaw());
+        }
     };
 
     private class AmmountListener implements ChangeListener<Number> {

@@ -2,6 +2,7 @@ package cz.stechy.drd.controller.shop;
 
 import com.jfoenix.controls.JFXToggleButton;
 import cz.stechy.drd.R;
+import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.persistent.HeroService;
@@ -101,16 +102,21 @@ public class ShopController1 extends BaseController implements Initializable {
 
     // endregion
 
-    private final Translator translator;
     private final ShoppingCart shoppingCart;
     private final List<String> translatedItemType = new ArrayList<>();
     private final IntegerProperty selectedAccordionPaneIndex = new SimpleIntegerProperty(
         NO_SELECTED_INDEX);
     private final IntegerProperty selectedRowIndex = new SimpleIntegerProperty(NO_SELECTED_INDEX);
     private final BooleanProperty showOnlineDatabase = new SimpleBooleanProperty(false);
-    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(this, "ammountEditable", false);
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(this,
+        "ammountEditable", false);
     // Indikuje, zda-li se nacházím v edit modu
-    private final BooleanProperty editMode = new SimpleBooleanProperty(this, "editMode", false);
+    private final BooleanProperty editMode = new SimpleBooleanProperty(this,
+        "editMode", false);
+    private final BooleanProperty userLogged = new SimpleBooleanProperty(this,
+        "userLogged", false);
+    private final BooleanProperty heroSelected = new SimpleBooleanProperty(this,
+        "heroSelected", false);
     private final BooleanProperty disableDownloadBtn = new SimpleBooleanProperty(this,
         "disableDownloadBtn", true);
     private final BooleanProperty disableUploadBtn = new SimpleBooleanProperty(this,
@@ -130,9 +136,12 @@ public class ShopController1 extends BaseController implements Initializable {
 
     public ShopController1(UserService userService, HeroService heroService, Translator translator) {
         this.hero = heroService.getHero();
-        this.translator = translator;
+        heroSelected.set(this.hero != null);
         this.shoppingCart = new ShoppingCart(hero);
         this.user = userService.getUser();
+        if (this.user != null) {
+            userLogged.bind(this.user.loggedProperty());
+        }
 
         this.translatedItemType.addAll(translator.getTranslationFor(Key.SHOP_ITEMS));
     }
@@ -187,17 +196,17 @@ public class ShopController1 extends BaseController implements Initializable {
                     selectedAccordionPane,
                     showOnlineDatabase))));
         btnDownloadItem.disableProperty().bind(
-            user.loggedProperty().not().or(
+            userLogged.not().or(
                 editMode.not().or(
                     disableDownloadBtn.or(
                         showOnlineDatabase.not()))));
         btnUploadItem.disableProperty().bind(
-            user.loggedProperty().not().or(
+            userLogged.not().or(
                 editMode.not().or(
                     disableUploadBtn.or(
                         showOnlineDatabase))));
         btnRemoveOnlineItem.disableProperty().bind(
-            user.loggedProperty().not().or(
+            userLogged.not().or(
                 editMode.not().or(
                     disableRemoveOnlineBtn.or(
                         showOnlineDatabase.not()))));
@@ -205,8 +214,7 @@ public class ShopController1 extends BaseController implements Initializable {
         btnContinueShopping.disableProperty().bind(Bindings.or(
             editMode,
             Bindings.or(
-                Bindings.equal(
-                    "", hero.nameProperty()),
+                heroSelected,
                 shoppingCart.enoughtMoneyProperty().not())));
         selectedAccordionPaneIndex.addListener((observable, oldValue, newValue) -> {
             int index = newValue.intValue();
@@ -227,9 +235,12 @@ public class ShopController1 extends BaseController implements Initializable {
             final Optional<ShopEntry> entryOptional = controller.getSelectedItem();
             if (entryOptional.isPresent()) {
                 final ShopEntry entry = entryOptional.get();
+                final BooleanBinding authorBinding = Bindings.createBooleanBinding(() ->
+                        (user == null) ? true : entry.getAuthor().equals(user.getName()),
+                    entry.authorProperty());
                 disableDownloadBtn.bind(entry.downloadedProperty());
-                disableUploadBtn.bind(entry.uploadedProperty().or(entry.authorProperty().isNotEqualTo(user.nameProperty())));
-                disableRemoveOnlineBtn.bind(entry.authorProperty().isNotEqualTo(user.nameProperty()));
+                disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding));
+                disableRemoveOnlineBtn.bind(authorBinding);
             } else {
                 disableDownloadBtn.unbind();
                 disableUploadBtn.unbind();
@@ -258,7 +269,7 @@ public class ShopController1 extends BaseController implements Initializable {
 
     @Override
     protected void onCreate(Bundle bundle) {
-        tableArmorController.setHeroHeight(hero.getHeight());
+        tableArmorController.setHeroHeight((hero != null) ? hero.getHeight() : Height.B);
     }
 
     @Override
@@ -281,8 +292,9 @@ public class ShopController1 extends BaseController implements Initializable {
                 if (statusCode != RESULT_SUCCESS) {
                     return;
                 }
+
                 item = controller.fromBundle(bundle);
-                item.setAuthor(user.getName());
+                item.setAuthor((user != null) ? user.getName() : "");
                 item.setId(HashGenerator.createHash());
                 item.setDownloaded(true);
                 controller.onAddItem(item, false);
@@ -291,6 +303,7 @@ public class ShopController1 extends BaseController implements Initializable {
                 if (statusCode != RESULT_SUCCESS) {
                     return;
                 }
+
                 item = controller.fromBundle(bundle);
                 controller.onUpdateItem(item);
                 break;
