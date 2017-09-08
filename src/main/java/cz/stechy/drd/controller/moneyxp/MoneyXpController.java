@@ -100,7 +100,7 @@ public class MoneyXpController extends BaseController implements Initializable {
         title = resources.getString(R.Translate.MONEY_XP_TITLE);
 
         lblMoney.bind(heroMoney);
-        lblExperience.setMaxActValue(heroExperience);
+        lblExperience.bind(heroExperience);
 
         FormUtils.initTextFormater(txtGold, goldValue);
         FormUtils.initTextFormater(txtSilver, silverValue);

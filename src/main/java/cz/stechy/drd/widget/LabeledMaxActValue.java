@@ -18,6 +18,12 @@ import javafx.scene.layout.Pane;
  */
 public class LabeledMaxActValue extends Group {
 
+    // region Constants
+
+    private static final int DEFAULT_PROGRESS = 0;
+
+    // endregion
+
     // region Variables
 
     // region FXML
@@ -67,6 +73,12 @@ public class LabeledMaxActValue extends Group {
 
     // region Private methods
 
+    /**
+     * Nastaví progress baru správnou hodnotu
+     *
+     * @param actValue Aktuální stav postupu
+     * @param maxValue Maximální hodnota postupu
+     */
     private void sync(int actValue, int maxValue) {
         bar.setProgress(actValue / (double) maxValue);
 
@@ -75,14 +87,23 @@ public class LabeledMaxActValue extends Group {
         this.maxValue = maxValue;
     }
 
+    /**
+     * Vyresetuje progress bar a nastaví mu výchozí hodnotu
+     */
     private void reset() {
-        bar.setProgress(0);
+        bar.setProgress(DEFAULT_PROGRESS);
     }
 
     // endregion
 
     // region Public methods
 
+    /**
+     * Začne pozorovat vybraný model.
+     * Pokud se změní v modelu vybrané hdnoty, jsou tyto změny propagovány do widgetu.
+     *
+     * @param maxActValue {@link MaxActValue}
+     */
     public void bind(MaxActValue maxActValue) {
         lblValue.bind(maxActValue);
 
@@ -92,6 +113,11 @@ public class LabeledMaxActValue extends Group {
         sync(maxActValue.getActValue().intValue(), maxActValue.getMaxValue().intValue());
     }
 
+    /**
+     * Přestane pozorovat vybraný model.
+     *
+     * @param maxActValue {@link MaxActValue}
+     */
     public void unbind(MaxActValue maxActValue) {
         assert maxActValue != null;
         maxActValue.actValueProperty().removeListener(actValueListener);

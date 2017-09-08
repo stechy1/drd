@@ -105,7 +105,8 @@ public class MoneyWidget extends VBox {
     // region Public methods
 
     /**
-     * Propojí widget s penězi
+     * Začne pozorovat vybraný model.
+     * Pokud se změní v modelu vybrané hdnoty, jsou tyto změny propagovány do widgetu.
      *
      * @param money {@link Money}
      */
@@ -116,7 +117,7 @@ public class MoneyWidget extends VBox {
     }
 
     /**
-     * Odpojí datový model a vyresetuje hodnoty na výchozí
+     * Přestane pozorovat dříve přiřazený model.
      */
     public void unbind() {
         goldText.textProperty().unbind();

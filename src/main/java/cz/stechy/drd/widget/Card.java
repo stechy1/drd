@@ -43,24 +43,25 @@ public final class Card extends Group {
 
     }
 
-    public final Node getContent() {
+    // endregion
+
+    // region Public methods
+
+    public Node getContent() {
         return container.getChildren().get(0);
     }
 
-    public final void setContent(Node content) {
+    public void setContent(Node content) {
         container.getChildren().setAll(content);
     }
 
-    public final Label getCaption() {
+    public Label getCaption() {
         return lblCaption;
     }
 
-    public final StringProperty captionTextProperty() {
+    public StringProperty captionTextProperty() {
         return lblCaption.textProperty();
     }
 
     // endregion
-
-
-
 }

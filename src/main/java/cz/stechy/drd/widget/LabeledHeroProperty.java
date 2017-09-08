@@ -22,6 +22,7 @@ public class LabeledHeroProperty extends TextFlow {
     private static final Color COLOR_NEUTRAL = Color.BLACK;
     private static final Color COLOR_POSITIVE = Color.GREEN;
     private static final Color COLOR_NEGATIVE = Color.RED;
+    private static final String DEFAULT_VALUE = "0";
 
     // endregion
 
@@ -53,12 +54,15 @@ public class LabeledHeroProperty extends TextFlow {
 
     // region Private methods
 
+    /**
+     * Všude kde to bude možné se nastaví výchozí hodnoty
+     */
     private void reset() {
         if (!value.textProperty().isBound()) {
-            value.setText("0");
+            value.setText(DEFAULT_VALUE);
         }
         if (!repair.textProperty().isBound()) {
-            repair.setText("0");
+            repair.setText(DEFAULT_VALUE);
         }
         if (!repair.fillProperty().isBound()) {
             repair.setFill(COLOR_NEUTRAL);
@@ -69,6 +73,12 @@ public class LabeledHeroProperty extends TextFlow {
 
     // region Public methods
 
+    /**
+     * Začne pozorovat vybraný model.
+     * Pokud se změní v modelu vybrané hdnoty, jsou tyto změny propagovány do widgetu.
+     *
+     * @param entityProperty {@link EntityProperty}
+     */
     public void bind(EntityProperty entityProperty) {
         repair.fillProperty().bind(Bindings
             .when(entityProperty.repairProperty().isEqualTo(0))
@@ -82,6 +92,9 @@ public class LabeledHeroProperty extends TextFlow {
         repair.textProperty().bind(entityProperty.repairProperty().asString());
     }
 
+    /**
+     * Přestane pozorovat dříve přiřazený model.
+     */
     public void unbind() {
         repair.fillProperty().unbind();
         value.textProperty().unbind();

@@ -2,6 +2,7 @@ package cz.stechy.drd.widget;
 
 import cz.stechy.drd.model.MaxActValue;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.StackPane;
@@ -16,6 +17,8 @@ public class LabeledProgressBar extends VBox {
     // region Constants
 
     private static final int DEFAULT_LABEL_PADDING = 5;
+    private static final int DEFAULT_PROGRESS = 0;
+    private static final int DEFAULT_MAX_PROGRESS = 1;
 
     private static final String[] COLORS = new String[]{
         "-fx-accent: red", "-fx-accent: blue", "-fx-accent: #FEFF8A"
@@ -26,8 +29,8 @@ public class LabeledProgressBar extends VBox {
     // region Variables
 
     private final Label label = new Label();
-    private final ProgressBar progressBar = new ProgressBar(0);
-    private final Label progressLabel = new Label("0 / 0");
+    private final ProgressBar progressBar = new ProgressBar();
+    private final Label progressLabel = new Label();
     private final StackPane container = new StackPane(progressBar, progressLabel);
     private DisplayMode displayMode;
     private int actValue = 1;
@@ -46,13 +49,19 @@ public class LabeledProgressBar extends VBox {
         progressBar.setPrefWidth(Double.MAX_VALUE);
         getChildren().setAll(label, container);
 
-        sync(0, 100);
+        sync(DEFAULT_PROGRESS, DEFAULT_MAX_PROGRESS);
     }
 
     // endregion
 
     // region Private methods
 
+    /**
+     * Nastaví progress baru správnou hodnotu
+     *
+     * @param actValue Aktuální stav postupu
+     * @param maxValue Maximální hodnota postupu
+     */
     private void sync(int actValue, int maxValue) {
         progressBar.setProgress(actValue / (double) maxValue);
         progressLabel.setText(String.format("%d / %d", actValue, maxValue));
@@ -71,15 +80,29 @@ public class LabeledProgressBar extends VBox {
 
     // region Public methods
 
-    public void setMaxActValue(final MaxActValue maxActValue) {
-        maxActValue.actValueProperty().addListener((observable, oldValue, newValue) -> {
-            sync(newValue.intValue(), maxValue);
-        });
-        maxActValue.maxValueProperty().addListener((observable, oldValue, newValue) -> {
-            sync(this.actValue, newValue.intValue());
-        });
+    /**
+     *
+     *
+     * @param maxActValue
+     */
+    public void bind(final MaxActValue maxActValue) {
+        maxActValue.actValueProperty().addListener(actValueListener);
+        maxActValue.maxValueProperty().addListener(maxValueListener);
 
         sync(maxActValue.getActValue().intValue(), maxActValue.getMaxValue().intValue());
+    }
+
+    /**
+     * Přestane pozorovat vybraný model.
+     *
+     * @param maxActValue
+     */
+    public void unbind(MaxActValue maxActValue) {
+        assert maxActValue != null;
+        maxActValue.actValueProperty().removeListener(actValueListener);
+        maxActValue.maxValueProperty().removeListener(maxValueListener);
+
+        sync(DEFAULT_PROGRESS, DEFAULT_MAX_PROGRESS);
     }
 
     // endregion
@@ -108,6 +131,11 @@ public class LabeledProgressBar extends VBox {
     }
 
     // endregion
+
+    private final ChangeListener<Number> actValueListener = (observable, oldValue, newValue) ->
+        sync(newValue.intValue(), maxValue);
+    private final ChangeListener<Number> maxValueListener = (observable, oldValue, newValue) ->
+        sync(this.actValue, newValue.intValue());
 
     public enum DisplayMode {
         LIVE, MAG, EXPERIENCE

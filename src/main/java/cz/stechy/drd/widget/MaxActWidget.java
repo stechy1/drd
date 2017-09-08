@@ -9,6 +9,12 @@ import javafx.scene.control.Label;
  */
 public final class MaxActWidget extends Label {
 
+    // region Constants
+
+    private static final String DEFAULT_TEXT = "0 / 0";
+
+    // endregion
+
     // region Constructors
 
     public MaxActWidget() {
@@ -19,9 +25,12 @@ public final class MaxActWidget extends Label {
 
     // region Private methods
 
+    /**
+     * Vyresetuje text na výchozí hodnotu
+     */
     private void reset() {
         if (!textProperty().isBound()) {
-            setText("0/0");
+            setText(DEFAULT_TEXT);
         }
     }
 
@@ -29,6 +38,12 @@ public final class MaxActWidget extends Label {
 
     // region Public methods
 
+    /**
+     * Začne pozorovat vybraný model.
+     * Pokud se změní v modelu vybrané hdnoty, jsou tyto změny propagovány do widgetu.
+     *
+     * @param maxActValue {@link MaxActValue}
+     */
     public void bind(MaxActValue maxActValue) {
         textProperty().bind(Bindings.concat(
             maxActValue.actValueProperty().asString(),
@@ -37,6 +52,9 @@ public final class MaxActWidget extends Label {
         ));
     }
 
+    /**
+     * Přestane pozorovat dříve přiřazený model.
+     */
     public void unbind() {
         textProperty().unbind();
 
