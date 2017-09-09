@@ -20,6 +20,11 @@ apply plugin: 'javafx-gradle-plugin'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+task buildResources(type:Exec) {
+    println 'Generuji soubor R.java'
+    commandLine 'python', './scripts/src/resource_generator.py'
+}
+processResources.dependsOn buildResources
 
 repositories {
     jcenter()
