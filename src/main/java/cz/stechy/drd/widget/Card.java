@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
@@ -37,6 +38,7 @@ public final class Card extends Group {
             AnchorPane pane = loader.load();
             getChildren().setAll(pane);
             lblCaption.setText(caption);
+            lblCaption.setTooltip(new Tooltip(caption));
         } catch (IOException e) {
             e.printStackTrace();
         }
