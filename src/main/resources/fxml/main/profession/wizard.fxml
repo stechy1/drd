@@ -15,6 +15,17 @@
     <Double fx:id="CARD_HEIGHT" fx:value="130.0"/>
   </fx:define>
   <FlowPane prefHeight="450.0" prefWidth="600.0">
+    <Card caption="Základ pravděpodobnosti úspěchu">
+      <content>
+        <HBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH">
+          <Label fx:id="lblProbabilityOfSuccess">
+            <font>
+              <Font name="Roboto" size="24"/>
+            </font>
+          </Label>
+        </HBox>
+      </content>
+    </Card>
     <Card caption="Odvracení neviděných">
       <content>
         <HBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH">
