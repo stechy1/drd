@@ -13,6 +13,9 @@ public class Alchemist {
 
     // region Constants
 
+    private static final int MINIMUM_LEVEL = 1;
+    private static final int MAXIMUM_LEVEL = 5;
+
     private static final int[][] BASIC_MAGENERGY = {
         {7, 7, 7, 7, 8, 8, 8, 8, 8, 9, 9, 9, 9}, // 1. úroveň
         {15, 15, 16, 16, 17, 17, 18, 19, 19, 20, 20, 21, 21}, // 2. úroveň
@@ -37,6 +40,7 @@ public class Alchemist {
 
     // region Variables
 
+    private final IntegerProperty maxMag = new SimpleIntegerProperty(this, "maxMag");
     private final IntegerProperty probabilityOfSuccess = new SimpleIntegerProperty(this,
         "probabilityOfSuccess");
 
@@ -61,6 +65,21 @@ public class Alchemist {
             dexterity -= 8;
             return PROBABILITY_OF_SUCCESS[dexterity];
         }, hero.getDexterity().valueProperty()));
+
+        maxMag.bind(Bindings.createIntegerBinding(() -> {
+            int level = hero.getLevel();
+            int dexterity = hero.getDexterity().getValue();
+            // Normalizace úrovně a obratnosti, abych nevylezl mimo hranice pole
+            level = Math.max(MINIMUM_LEVEL, Math.min(level, MAXIMUM_LEVEL));
+            dexterity = Math.max(PROBABILITY_OF_SUCCESS_MIN_VALUE,
+                Math.min(PROBABILITY_OF_SUCCESS_MAX_VALUE, dexterity));
+            level -= MINIMUM_LEVEL;
+            dexterity -= PROBABILITY_OF_SUCCESS_MIN_VALUE;
+
+            return BASIC_MAGENERGY[level][dexterity];
+        }, hero.levelProperty(), hero.getDexterity().valueProperty()));
+
+        hero.getMag().maxValueProperty().bind(maxMag);
     }
 
     // endregion
@@ -94,20 +113,6 @@ public class Alchemist {
     // region Public methods
 
     /**
-     * Získá z tabulky maximální počet magů pro zadanou úroveň Počet se získá z úrovně a stupně
-     * obratnosti
-     *
-     * @return Maximální množství magů pro aktuální úroveň
-     */
-    public int getMaxMag() {
-        // Normalizace úrovně a obratnosti, abych nevylezl mimo hranice pole
-        final int level = Math.max(1, Math.min(hero.getLevel(), 5));
-        final int dexterity = Math.max(1, Math.min(hero.getDexterity().getValue() - 8, 13));
-
-        return BASIC_MAGENERGY[level - 1][dexterity - 1];
-    }
-
-    /**
      * Spočítá pravděpodobnost objevení zadaného počtu magenergie
      *
      * @param count Množství magenergie, které se zkoumá
@@ -122,6 +127,20 @@ public class Alchemist {
     // endregion
 
     // region Getters & Setters
+
+    /**
+     * Získá z tabulky maximální počet magů pro zadanou úroveň Počet se získá z úrovně a stupně
+     * obratnosti
+     *
+     * @return Maximální množství magů pro aktuální úroveň
+     */
+    public int getMaxMag() {
+        return maxMag.get();
+    }
+
+    public ReadOnlyIntegerProperty maxMagProperty() {
+        return maxMag;
+    }
 
     /**
      * Vrátí pravděpodobnost úspěchu alchymisty
