@@ -1,6 +1,10 @@
 package cz.stechy.drd.model.entity.hero.profession;
 
 import cz.stechy.drd.model.entity.hero.Hero;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * Třída obsahující dovednosti, která dokáže alchymista na 1. až 5. úrovní
@@ -26,9 +30,15 @@ public class Alchemist {
         32, 32, 47, 47, 47, 61, 61, 74, 74, 85, 85, 95, 95
     };
 
+    private static final int PROBABILITY_OF_SUCCESS_MIN_VALUE = 8;
+    private static final int PROBABILITY_OF_SUCCESS_MAX_VALUE = 20;
+
     // endregion
 
     // region Variables
+
+    private final IntegerProperty probabilityOfSuccess = new SimpleIntegerProperty(this,
+        "probabilityOfSuccess");
 
     protected final Hero hero;
 
@@ -43,6 +53,14 @@ public class Alchemist {
      */
     public Alchemist(Hero hero) {
         this.hero = hero;
+
+        probabilityOfSuccess.bind(Bindings.createIntegerBinding(() -> {
+            int dexterity = hero.getDexterity().getValue();
+            dexterity = Math.max(PROBABILITY_OF_SUCCESS_MIN_VALUE,
+                Math.min(PROBABILITY_OF_SUCCESS_MAX_VALUE, dexterity));
+            dexterity -= 8;
+            return PROBABILITY_OF_SUCCESS[dexterity];
+        }, hero.getDexterity().valueProperty()));
     }
 
     // endregion
@@ -76,8 +94,8 @@ public class Alchemist {
     // region Public methods
 
     /**
-     * Získá z tabulky maximální počet magů pro zadanou úroveň
-     * Počet se získá z úrovně a stupně obratnosti
+     * Získá z tabulky maximální počet magů pro zadanou úroveň Počet se získá z úrovně a stupně
+     * obratnosti
      *
      * @return Maximální množství magů pro aktuální úroveň
      */
@@ -101,13 +119,26 @@ public class Alchemist {
         return PROBABILITY_OF_FIND_MAGENERGY[hero.getLevel() - 1 + index];
     }
 
+    // endregion
+
+    // region Getters & Setters
+
     /**
-     * Spočítá z tabulky pravděpodobnost úspěchu, která je závislá na obratnosti
+     * Vrátí pravděpodobnost úspěchu alchymisty
      *
      * @return Pravděpodobnost úspěchu
      */
     public int getProbabilityOfSuccess() {
-        return PROBABILITY_OF_SUCCESS[hero.getDexterity().getValue() - 1];
+        return probabilityOfSuccess.get();
+    }
+
+    /**
+     * Vlastnost pravděpodobnost úspěchu
+     *
+     * @return Pravděpodobnost úspěchu
+     */
+    public ReadOnlyIntegerProperty probabilityOfSuccessProperty() {
+        return probabilityOfSuccess;
     }
 
     // endregion
