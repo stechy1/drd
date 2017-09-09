@@ -96,7 +96,8 @@ public class Wizard {
             return MAX_SPELL_COUNT[level];
         }, hero.levelProperty()));
 
-        hero.getMag().maxValueProperty().bind(maxMag);
+        maxMag.addListener((observable, oldValue, newValue) ->
+            hero.getMag().setMaxValue(newValue));
     }
 
     // endregion

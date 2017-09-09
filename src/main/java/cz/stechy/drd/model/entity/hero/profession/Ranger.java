@@ -5,6 +5,10 @@ import cz.stechy.drd.model.Trap;
 import cz.stechy.drd.model.entity.EntityProperty;
 import cz.stechy.drd.model.entity.hero.Hero;
 import java.util.Arrays;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 /**
  * Třída obsahující dovednosti, která dokáže hraničář na 1. až 5. úrovní
@@ -12,6 +16,9 @@ import java.util.Arrays;
 public class Ranger {
 
     // region Constants
+
+    private static final int MINIMUM_LEVEL = 1;
+    private static final int MAXIMUM_LEVEL = 5;
 
     // Tabulka telekineze obsahující součit náhy a vzdálenosti
     private static final int[] TELEKINESIS_TABLE = {
@@ -47,10 +54,14 @@ public class Ranger {
         {12, 12, 13, 13, 13, 13, 14, 14, 15, 15, 15, 15, 16, 16}  // 5. úroveň
     };
 
+    private static final int MINIMUM_INTELLIGENCE = 6;
+    private static final int MAXIMUM_INTELLIGENCE = 19;
+
 
     // endregion
 
     // region Variables
+    private final IntegerProperty maxMag = new SimpleIntegerProperty(this, "maxMag");
 
     protected final Hero hero;
 
@@ -65,24 +76,22 @@ public class Ranger {
      */
     public Ranger(Hero hero) {
         this.hero = hero;
-    }
 
-    // endregion
+        maxMag.bind(Bindings.createIntegerBinding(() -> {
+            int level = hero.getLevel();
+            int intelligence = hero.getIntelligence().getValue();
+            // Normalizace úrovně a inteligence, abych nevylezl mimo hranice pole
+            level = Math.max(MINIMUM_LEVEL, Math.min(level, MAXIMUM_LEVEL));
+            intelligence = Math.max(MINIMUM_INTELLIGENCE,
+                Math.min(MAXIMUM_INTELLIGENCE, intelligence));
+            level -= MINIMUM_LEVEL;
+            intelligence -= MINIMUM_INTELLIGENCE;
 
-    // region Public static methods
+            return BASIC_MAGENERGY[level][intelligence];
+        }, hero.levelProperty(), hero.getIntelligence().valueProperty()));
 
-    /**
-     * Vypočítá maximální možnou magenergii na základě úrovní a inteligenci postavy
-     *
-     * @param intelligence {@link EntityProperty} Inteligence postavy
-     * @param level Úroveň postavy (maximálně do 5. úrovně)
-     * @return Maximální magenergii
-     */
-    public static int getMaxMag(EntityProperty intelligence, int level) {
-        // Normalizace úrovně a inteligence abych nevylezl mimo hranice pole
-        final int levelIndex = Math.max(1, Math.min(level, 5));
-        final int intelligenceIndex = Math.max(1, Math.min(intelligence.getValue() - 6, 14));
-        return BASIC_MAGENERGY[levelIndex - 1][intelligenceIndex - 1];
+        maxMag.addListener((observable, oldValue, newValue) ->
+            hero.getMag().setMaxValue(newValue));
     }
 
     // endregion
@@ -190,6 +199,29 @@ public class Ranger {
                 break;
         }
         return trap.roll().isSuccess();
+    }
+
+    // endregion
+
+    // region Getters & Setters
+
+    /**
+     * Získá z tabulky maximální počet magů pro zadanou úroveň.
+     * Počet se získá z úrovně a stupně inteligence
+     *
+     * @return Maximální množství magů pro aktuální úroveň
+     */
+    public int getMaxMag() {
+        return maxMag.get();
+    }
+
+    /**
+     * Vlastnost maximální počet magů
+     *
+     * @return Maximmální počet magů
+     */
+    public ReadOnlyIntegerProperty maxMagProperty() {
+        return maxMag;
     }
 
     // endregion

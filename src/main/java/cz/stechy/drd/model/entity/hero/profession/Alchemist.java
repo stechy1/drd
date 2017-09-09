@@ -79,7 +79,8 @@ public class Alchemist {
             return BASIC_MAGENERGY[level][dexterity];
         }, hero.levelProperty(), hero.getDexterity().valueProperty()));
 
-        hero.getMag().maxValueProperty().bind(maxMag);
+        maxMag.addListener((observable, oldValue, newValue) ->
+            hero.getMag().setMaxValue(newValue));
     }
 
     // endregion
