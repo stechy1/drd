@@ -68,6 +68,7 @@ public class ItemSlot {
     private Predicate<ItemBase> filter = DEFAULT_FILTER;
     // Kontejner pro tooltip
     private GridPane tooltipContainer;
+    private Image backgroundImage;
 
     // endregion
 
@@ -170,21 +171,10 @@ public class ItemSlot {
         container.setPrefWidth(SLOT_SIZE);
         container.setPrefHeight(SLOT_SIZE);
 
-        imgItem.setOnMouseClicked(onMouseClicked);
-
-        // Source slot drag events
-        imgItem.setOnDragDetected(onDragDetected);
-        imgItem.setOnDragDone(onDragDone);
-
-        // Destination slot drag events
-        imgItem.setOnDragOver(onDragOver);
-        imgItem.setOnDragDropped(onDragDropped);
-
         imgItem.setFitWidth(SLOT_SIZE);
         imgItem.setFitHeight(SLOT_SIZE);
         imgItem.setCursor(Cursor.HAND);
 
-        Tooltip.install(imgItem, tooltip);
         tooltip.setOnShowing(tooltipShowing);
 
         lblAmmount.setMaxSize(SLOT_SIZE, LABEL_AMMOUNT_HEGHT);
@@ -196,6 +186,34 @@ public class ItemSlot {
         container.getChildren().setAll(imgItem, lblAmmount);
         container.setOnDragOver(onDragOver);
         container.setOnDragDropped(onDragDropped);
+    }
+
+    private void addImageHandlers() {
+        imgItem.setOnMouseClicked(onMouseClicked);
+
+        // Source slot drag events
+        imgItem.setOnDragDetected(onDragDetected);
+        imgItem.setOnDragDone(onDragDone);
+
+        // Destination slot drag events
+        imgItem.setOnDragOver(onDragOver);
+        imgItem.setOnDragDropped(onDragDropped);
+
+        Tooltip.install(imgItem, tooltip);
+    }
+
+    private void removeImageHandlers() {
+        imgItem.setOnMouseClicked(null);
+
+        // Source slot drag events
+        imgItem.setOnDragDetected(null);
+        imgItem.setOnDragDone(null);
+
+        // Destination slot drag events
+        imgItem.setOnDragOver(null);
+        imgItem.setOnDragDropped(null);
+
+        Tooltip.uninstall(imgItem, tooltip);
     }
 
     private void setImage(byte[] image) {
@@ -234,10 +252,10 @@ public class ItemSlot {
         }
         itemStack = null;
         lblAmmount.textProperty().unbind();
-        imgItem.setImage(null);
+        imgItem.setImage(backgroundImage);
         lblAmmount.setText(null);
         clickListener = null;
-        //filter = DEFAULT_FILTER;
+        removeImageHandlers();
     }
 
     /**
@@ -256,6 +274,7 @@ public class ItemSlot {
             setImage(item.getImage());
             this.itemStack.getItem().imageProperty().addListener(imageChangeListener);
             this.filter = itemBase -> itemBase.getItemType() == item.getItemType();
+            addImageHandlers();
             return;
         }
 
@@ -378,6 +397,17 @@ public class ItemSlot {
     public void setTooltipTranslator(TooltipTranslator tooltipTranslator) {
         if (this.tooltipTranslator == null) {
             this.tooltipTranslator = tooltipTranslator;
+        }
+    }
+
+    public Image getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(Image backgroundImage) {
+        this.backgroundImage = backgroundImage;
+        if (isEmpty()) {
+            imgItem.setImage(backgroundImage);
         }
     }
 
