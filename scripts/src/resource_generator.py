@@ -89,6 +89,6 @@ with open(output_path, "w", encoding="utf8") as file:
   generate_resources(folder + "fxml", "fxml", "FXML", file)
   generate_translate_keys(folder + "lang/translate_cs_CZ.properties", file)
   generate_config_keys(configuration, file)
-  generate_image_paths(folder, "images", 4, "./images", file)
+  generate_image_paths(folder, "images", 4, "/images", file)
 
   file.write("}\n")
