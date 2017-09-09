@@ -211,11 +211,13 @@ public class ShopController1 extends BaseController implements Initializable {
                     disableRemoveOnlineBtn.or(
                         showOnlineDatabase.not()))));
 
-        btnContinueShopping.disableProperty().bind(Bindings.or(
-            editMode,
-            Bindings.or(
-                heroSelected,
-                shoppingCart.enoughtMoneyProperty().not())));
+        btnContinueShopping.disableProperty().bind(
+            editMode.or(
+                heroSelected.not().or(
+                    shoppingCart.enoughtMoneyProperty().not()
+                )
+            )
+        );
         selectedAccordionPaneIndex.addListener((observable, oldValue, newValue) -> {
             int index = newValue.intValue();
             if (index < 0) {
