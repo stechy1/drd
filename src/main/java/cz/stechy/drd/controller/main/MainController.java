@@ -171,7 +171,7 @@ public class MainController extends BaseController implements Initializable {
 
                 closeChildScreens();
                 final Hero hero = HeroHelper.fromBundle(bundle);
-                hero.setAuthor(userService.getUser().getName());
+                hero.setAuthor((user.get() != null) ? user.get().getName() : "");
                 ObservableList<InventoryHelper.ItemRecord> itemsToInventory = bundle
                     .get(HeroHelper.INVENTORY);
                 try {
