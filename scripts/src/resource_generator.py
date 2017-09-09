@@ -45,7 +45,40 @@ def generate_config_keys(config, output_file):
   output_file.write("    public static class Config {\n\n")
   for key in config:
     output_file.write('        ' + string.format(key.upper(), key))
-  output_file.write("    }\n")
+  output_file.write("    }\n\n")
+
+def generate_image_paths(folder, subfolder, spaces, builded_path, output_file):
+  def write_space(count, f):
+    f.write(" " * count)
+  def write_class(space_prefix, class_name, f):
+    write_space(space_prefix, f)
+    f.write("public static class " + class_name.capitalize() + " {\n\n")
+  def write_entry(space_prefix, entry_name, entry_value, f):
+    write_space(space_prefix, f)
+    entry_name = entry_name.upper().replace("-", "_")
+    entry_value = entry_value.replace("\\", "/")
+    f.write('public static final String {} = "{}";\n'.format(entry_name, entry_value))
+
+
+  write_class(spaces, subfolder, output_file)
+  current_path = os.path.join(folder, subfolder)
+  for entry in os.listdir(current_path):
+
+    entry_path = os.path.join(current_path, entry)
+    is_dir = os.path.isdir(entry_path)
+    if is_dir:
+      generate_image_paths(current_path, entry, spaces + 4, os.path.join(builded_path, entry), output_file)
+      continue
+
+    if ".png" not in entry:
+      continue
+
+    dot_index = entry.index(".")
+    entry_name = entry[:dot_index]
+    write_entry(spaces + 4, entry_name.upper(), os.path.join(builded_path, entry), output_file)
+  write_space(spaces, output_file)
+  output_file.write("}\n\n")
+
 
 with open(output_path, "w", encoding="utf8") as file:
   file.write("package cz.stechy.drd;\n\n")
@@ -56,4 +89,6 @@ with open(output_path, "w", encoding="utf8") as file:
   generate_resources(folder + "fxml", "fxml", "FXML", file)
   generate_translate_keys(folder + "lang/translate_cs_CZ.properties", file)
   generate_config_keys(configuration, file)
+  generate_image_paths(folder, "images", 4, "./images", file)
+
   file.write("}\n")
