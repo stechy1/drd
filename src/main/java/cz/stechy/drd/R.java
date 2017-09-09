@@ -346,59 +346,59 @@ public final class R {
 
         public static class Coins {
 
-            public static final String COPPER_COIN = "./images/coins/copper_coin.png";
-            public static final String GOLD_COIN = "./images/coins/gold_coin.png";
-            public static final String SILVER_COIN = "./images/coins/silver_coin.png";
+            public static final String COPPER_COIN = "/images/coins/copper_coin.png";
+            public static final String GOLD_COIN = "/images/coins/gold_coin.png";
+            public static final String SILVER_COIN = "/images/coins/silver_coin.png";
         }
 
         public static class Icon {
 
-            public static final String ABOUT = "./images/icon/about.png";
-            public static final String ADD = "./images/icon/add.png";
-            public static final String BANK = "./images/icon/bank.png";
-            public static final String BESTIARY = "./images/icon/bestiary.png";
-            public static final String CHANGELOG = "./images/icon/changelog.png";
-            public static final String CLOSE = "./images/icon/close.png";
-            public static final String CLOSE_HERO = "./images/icon/close_hero.png";
-            public static final String CONFIRM = "./images/icon/confirm.png";
-            public static final String DICE = "./images/icon/dice.png";
-            public static final String DOWNLOAD = "./images/icon/download.png";
-            public static final String EDIT = "./images/icon/edit.png";
-            public static final String EXPORT = "./images/icon/export.png";
-            public static final String FIGHT = "./images/icon/fight.png";
-            public static final String GENERATE = "./images/icon/generate.png";
-            public static final String HAND_CLICK = "./images/icon/hand_click.png";
-            public static final String HELP = "./images/icon/help.png";
-            public static final String IMPORT = "./images/icon/import.png";
-            public static final String LOGIN = "./images/icon/login.png";
-            public static final String NEW = "./images/icon/new.png";
-            public static final String NEXT = "./images/icon/next.png";
-            public static final String ONLINE = "./images/icon/online.png";
-            public static final String OPEN = "./images/icon/open.png";
-            public static final String PREVIOUS = "./images/icon/previous.png";
-            public static final String REJECT = "./images/icon/reject.png";
-            public static final String REMOVE_ONLINE = "./images/icon/remove_online.png";
-            public static final String SAVE = "./images/icon/save.png";
-            public static final String SAVE_AS = "./images/icon/save_as.png";
-            public static final String SETTINGS = "./images/icon/settings.png";
-            public static final String SHOP = "./images/icon/shop.png";
-            public static final String START = "./images/icon/start.png";
-            public static final String STEP = "./images/icon/step.png";
-            public static final String STOP = "./images/icon/stop.png";
-            public static final String SUBTRACT = "./images/icon/subtract.png";
-            public static final String SYNCHRONIZE = "./images/icon/synchronize.png";
-            public static final String UPLOAD = "./images/icon/upload.png";
-            public static final String WIP = "./images/icon/wip.png";
+            public static final String ABOUT = "/images/icon/about.png";
+            public static final String ADD = "/images/icon/add.png";
+            public static final String BANK = "/images/icon/bank.png";
+            public static final String BESTIARY = "/images/icon/bestiary.png";
+            public static final String CHANGELOG = "/images/icon/changelog.png";
+            public static final String CLOSE = "/images/icon/close.png";
+            public static final String CLOSE_HERO = "/images/icon/close_hero.png";
+            public static final String CONFIRM = "/images/icon/confirm.png";
+            public static final String DICE = "/images/icon/dice.png";
+            public static final String DOWNLOAD = "/images/icon/download.png";
+            public static final String EDIT = "/images/icon/edit.png";
+            public static final String EXPORT = "/images/icon/export.png";
+            public static final String FIGHT = "/images/icon/fight.png";
+            public static final String GENERATE = "/images/icon/generate.png";
+            public static final String HAND_CLICK = "/images/icon/hand_click.png";
+            public static final String HELP = "/images/icon/help.png";
+            public static final String IMPORT = "/images/icon/import.png";
+            public static final String LOGIN = "/images/icon/login.png";
+            public static final String NEW = "/images/icon/new.png";
+            public static final String NEXT = "/images/icon/next.png";
+            public static final String ONLINE = "/images/icon/online.png";
+            public static final String OPEN = "/images/icon/open.png";
+            public static final String PREVIOUS = "/images/icon/previous.png";
+            public static final String REJECT = "/images/icon/reject.png";
+            public static final String REMOVE_ONLINE = "/images/icon/remove_online.png";
+            public static final String SAVE = "/images/icon/save.png";
+            public static final String SAVE_AS = "/images/icon/save_as.png";
+            public static final String SETTINGS = "/images/icon/settings.png";
+            public static final String SHOP = "/images/icon/shop.png";
+            public static final String START = "/images/icon/start.png";
+            public static final String STEP = "/images/icon/step.png";
+            public static final String STOP = "/images/icon/stop.png";
+            public static final String SUBTRACT = "/images/icon/subtract.png";
+            public static final String SYNCHRONIZE = "/images/icon/synchronize.png";
+            public static final String UPLOAD = "/images/icon/upload.png";
+            public static final String WIP = "/images/icon/wip.png";
         }
 
-        public static final String LOGO = "./images/logo.png";
+        public static final String LOGO = "/images/logo.png";
         public static class Source {
 
-            public static final String LOGIN = "./images/source/login.png";
+            public static final String LOGIN = "/images/source/login.png";
         }
 
-        public static final String TOOLBAR_BIG = "./images/toolbar-big.png";
-        public static final String TOOLBAR_BIG2 = "./images/toolbar-big2.png";
+        public static final String TOOLBAR_BIG = "/images/toolbar-big.png";
+        public static final String TOOLBAR_BIG2 = "/images/toolbar-big2.png";
     }
 
 }
