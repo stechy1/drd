@@ -14,6 +14,7 @@ import cz.stechy.drd.model.persistent.GeneralItemService;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.MeleWeaponService;
 import cz.stechy.drd.model.persistent.RangedWeaponService;
+import cz.stechy.drd.model.persistent.SpellBookService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
@@ -55,7 +56,8 @@ public class Context {
         ArmorService.class,
         GeneralItemService.class,
         BackpackService.class,
-        BestiaryService.class
+        BestiaryService.class,
+        SpellBookService.class
     };
 
     // endregion
