@@ -3,6 +3,7 @@ package cz.stechy.drd.controller.spellbook;
 import cz.stechy.drd.R;
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.db.DatabaseException;
+import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.persistent.SpellBookService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.spell.Spell;
@@ -18,6 +19,7 @@ import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -122,6 +124,23 @@ public class SpellBookController extends BaseController implements Initializable
         this.spellBook = spellBook;
         this.user = userService.getUser();
         this.translator = translator;
+    }
+
+    // endregion
+
+    // region Private methods
+
+    /**
+     * Vrátí {@link Optional} obsahující vybranou nestvůru, nebo prázdnou hodnotu
+     *
+     * @return {@link Optional< Mob >}
+     */
+    private Optional<Spell> getSelectedEntry() {
+        if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(sortedList.get(selectedRowIndex.get()).getSpellBase());
     }
 
     // endregion
@@ -258,7 +277,14 @@ public class SpellBookController extends BaseController implements Initializable
 
     @FXML
     private void handleRemoveItem(ActionEvent actionEvent) {
-
+        final int rowIndex = selectedRowIndex.get();
+        final SpellEntry entry = sortedList.get(rowIndex);
+        final String name = entry.getName();
+        try {
+            spellBook.delete(entry.getSpellBase().getId());
+        } catch (DatabaseException e) {
+            LOGGER.warn("Příšeru {} se nepodařilo odebrat z databáze", name);
+        }
     }
 
     @FXML
@@ -272,22 +298,29 @@ public class SpellBookController extends BaseController implements Initializable
 
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
-
+        getSelectedEntry().ifPresent(spellBook::upload);
     }
 
     @FXML
     private void handleDownloadItem(ActionEvent actionEvent) {
-
+        getSelectedEntry().ifPresent(spell -> {
+            try {
+                spellBook.insert(spell);
+            } catch (DatabaseException e) {
+                LOGGER.error(e.getMessage());
+            }
+        });
     }
 
     @FXML
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
-
+        getSelectedEntry().ifPresent(spell -> spellBook.deleteRemote(spell, true));
     }
 
     @FXML
     private void handleSynchronize(ActionEvent actionEvent) {
-
+        spellBook.synchronize(user.getName(), total ->
+            LOGGER.info("Bylo synchronizováno clekem: {} kouzel.", total));
     }
 
     // endregion
