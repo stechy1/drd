@@ -42,7 +42,6 @@ public class Context {
     private static final String CREDENTILS_APP_AUTHOR = "stechy1";
     private static final String CONFIG_FILE_NAME = "config.properties";
     private static final char SEPARATOR = File.separatorChar;
-    private static final int SERVICES_COUNT = 7;
 
     private static final String DEFAULT_VALUE_DATABASE = "database.sqlite";
 
@@ -200,7 +199,7 @@ public class Context {
      * @return Celkový počet služeb (tabulek) v aplikaci
      */
     int getServiceCount() {
-        return SERVICES_COUNT;
+        return SERVICES.length + 1;
     }
 
     // endregion

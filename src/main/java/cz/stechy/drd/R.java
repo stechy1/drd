@@ -57,6 +57,7 @@ public final class R {
         public static final String SHOP_GENERAL = "shop_general";
         public static final String SHOP_MELE_WEAPON = "shop_mele_weapon";
         public static final String SHOP_RANGED_WEAPON = "shop_ranged_weapon";
+        public static final String SPELLBOOK = "spellbook";
         public static final String LOGIN = "login";
         public static final String REGISTER = "register";
     }
@@ -159,6 +160,7 @@ public final class R {
         public static final String MAIN_MENU_TOOLS_DICE = "drd_main_menu_tools_dice";
         public static final String MAIN_MENU_TOOLS_BESTIARY = "drd_main_menu_tools_bestiary";
         public static final String MAIN_MENU_TOOLS_SHOP = "drd_main_menu_tools_shop";
+        public static final String MAIN_MENU_TOOLS_SPELL_BOOK = "drd_main_menu_tools_spell_book";
         public static final String MAIN_MENU_TOOLS_FIGHT = "drd_main_menu_tools_fight";
         public static final String MAIN_MENU_HELP = "drd_main_menu_help";
         public static final String MAIN_MENU_HELP_CHANGELOG = "drd_main_menu_help_changelog";
@@ -302,6 +304,7 @@ public final class R {
         public static final String ITEM_MAX_LOAD = "drd_item_max_load";
         public static final String LEVEL_UP_TITLE = "drd_level_up_title";
         public static final String LEVEL_UP_PRICE = "drd_level_up_price";
+        public static final String SPELL_BOOK_TITLE = "drd_spell_book_title";
         public static final String FIGHT_TITLE = "drd_fight_title";
         public static final String FIGHT_START = "drd_fight_start";
         public static final String FIGHT_STOP = "drd_fight_stop";

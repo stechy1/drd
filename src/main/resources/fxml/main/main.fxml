@@ -94,6 +94,13 @@
           </ImageView>
         </graphic>
       </MenuItem>
+      <MenuItem fx:id="menuSpellBook" onAction="#handleMenuSpellBook" text="%drd_main_menu_tools_spell_book">
+        <graphic>
+          <ImageView>
+            <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/shop.png" />
+          </ImageView>
+        </graphic>
+      </MenuItem>
       <MenuItem fx:id="menuFight" onAction="#handleMenuFight" text="%drd_main_menu_tools_fight">
         <graphic>
           <ImageView>
