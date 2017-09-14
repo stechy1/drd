@@ -41,7 +41,7 @@ public final class Spell extends OnlineItem {
     //  0 = kouzlo působí pouze na kouzelníka
     // >0 = kouzlo působí na všechny, kdo jsou v dosahu
     private final IntegerProperty radius = new SimpleIntegerProperty(this, "radius");
-    // Rozhah kouzla - na kolik cílů lze kouzlo poslat
+    // Rozsah kouzla - na kolik cílů lze kouzlo poslat
     private final IntegerProperty range = new SimpleIntegerProperty(this, "range");
     // Typ cíle, na který je možné kouzlo poslat
     private final ObjectProperty<SpellTarget> target = new SimpleObjectProperty<>(this, "target");

@@ -2,16 +2,18 @@ package cz.stechy.drd.controller.spellbook;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.ThreadPool;
-import cz.stechy.drd.controller.bestiary.BestiaryHelper;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.persistent.SpellBookService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.spell.Spell;
+import cz.stechy.drd.model.spell.SpellEntry;
+import cz.stechy.drd.model.spell.SpellProfessionType;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.HashGenerator;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -34,6 +36,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,13 +60,19 @@ public class SpellBookController extends BaseController implements Initializable
     // region FXML
 
     @FXML
-    private TableView<Spell> tableSpellBook;
+    private TableView<SpellEntry> tableSpellBook;
     @FXML
-    private TableColumn<Spell, Image> columnImage;
+    private TableColumn<SpellEntry, Image> columnImage;
     @FXML
-    private TableColumn<Spell, String> columnName;
+    private TableColumn<SpellEntry, String> columnName;
     @FXML
-    private TableColumn<Spell, String> columnAuthor;
+    private TableColumn<SpellEntry, String> columnMagicName;
+    @FXML
+    private TableColumn<SpellEntry, String> columnAuthor;
+    @FXML
+    private TableColumn<SpellEntry, SpellProfessionType> columnType;
+//    @FXML
+//    private TableColumn<SpellEntry, String> columnPrice;
 
     @FXML
     private Button btnAddItem;
@@ -84,9 +93,9 @@ public class SpellBookController extends BaseController implements Initializable
 
     // endregion
 
-    private final ObservableList<Spell> spells = FXCollections.observableArrayList();
-    private final SortedList<Spell> sortedList = new SortedList<>(spells,
-        Comparator.comparing(Spell::getName));
+    private final ObservableList<SpellEntry> spells = FXCollections.observableArrayList();
+    private final SortedList<SpellEntry> sortedList = new SortedList<>(spells,
+        Comparator.comparing(SpellEntry::getName));
     private final IntegerProperty selectedRowIndex = new SimpleIntegerProperty(
         this, "selectedRowIndex");
     private final BooleanProperty userLogged = new SimpleBooleanProperty(this,
@@ -122,7 +131,7 @@ public class SpellBookController extends BaseController implements Initializable
         this.title = resources.getString(R.Translate.SPELL_BOOK_TITLE);
 
         tableSpellBook.setItems(sortedList);
-        tableSpellBook.setFixedCellSize(BestiaryHelper.MOB_ROW_HEIGHT);
+        tableSpellBook.setFixedCellSize(SpellBookHelper.SPELL_ROW_HEIGHT);
         sortedList.comparatorProperty().bind(tableSpellBook.comparatorProperty());
 
         final BooleanBinding selectedRowBinding = selectedRowIndex.isEqualTo(NO_SELECTED_INDEX);
@@ -163,7 +172,7 @@ public class SpellBookController extends BaseController implements Initializable
                 return;
             }
 
-            final Spell entry = sortedList.get(newValue.intValue());
+            final Spell entry = sortedList.get(newValue.intValue()).getSpellBase();
             final BooleanBinding authorBinding = Bindings.createBooleanBinding(() ->
                     (user == null) ? true : entry.getAuthor().equals(user.getName()),
                 entry.authorProperty());
@@ -180,11 +189,13 @@ public class SpellBookController extends BaseController implements Initializable
         });
 
         columnImage.setCellFactory(param -> CellUtils.forImage());
+        columnType.setCellFactory(TextFieldTableCell.forTableColumn(translator.getConvertor(
+            Key.SPELL_PROFESSION_TYPES)));
 
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                ObservableMergers.mergeList(spells, spellBook.selectAll());
+                ObservableMergers.mergeList(SpellEntry::new, spells, spellBook.selectAll());
                 return null;
             }
         };
@@ -205,7 +216,7 @@ public class SpellBookController extends BaseController implements Initializable
                 if (statusCode != RESULT_SUCCESS) {
                     return;
                 }
-                spell = SpellBookHelper.spellFromBundle(bundle);
+                spell = SpellBookHelper.fromBundle(bundle);
                 try {
                     spell.setAuthor((user != null) ? user.getName() : "");
                     spell.setId(HashGenerator.createHash());
@@ -226,7 +237,7 @@ public class SpellBookController extends BaseController implements Initializable
                     return;
                 }
 
-                spell = SpellBookHelper.spellFromBundle(bundle);
+                spell = SpellBookHelper.fromBundle(bundle);
                 try {
                     spellBook.update(spell);
                 } catch (DatabaseException e) {
@@ -240,7 +251,9 @@ public class SpellBookController extends BaseController implements Initializable
 
     @FXML
     private void handleAddItem(ActionEvent actionEvent) {
-
+        Bundle bundle = new Bundle();
+        bundle.putInt(SpellBookHelper.SPELL_ACTION, SpellBookHelper.SPELL_ACTION_ADD);
+        startNewDialogForResult(R.FXML.SPELLBOOK_EDIT, SpellBookHelper.SPELL_ACTION_ADD, bundle);
     }
 
     @FXML
@@ -250,7 +263,11 @@ public class SpellBookController extends BaseController implements Initializable
 
     @FXML
     private void handleEditItem(ActionEvent actionEvent) {
-
+        final Spell entry = sortedList.get(selectedRowIndex.get()).getSpellBase();
+        final Bundle bundle = new Bundle();
+        bundle.putInt(SpellBookHelper.SPELL_ACTION, SpellBookHelper.SPELL_ACTION_UPDATE);
+        SpellBookHelper.toBundle(bundle, entry);
+        startNewDialogForResult(R.FXML.SPELLBOOK_EDIT, SpellBookHelper.SPELL_ACTION_UPDATE, bundle);
     }
 
     @FXML

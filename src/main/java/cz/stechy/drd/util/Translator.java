@@ -15,6 +15,8 @@ import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.RangedWeapon;
+import cz.stechy.drd.model.spell.SpellProfessionType;
+import cz.stechy.drd.model.spell.SpellTarget;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -47,6 +49,8 @@ public final class Translator {
     private static final String[] VULNERABILITIES_VALUES;
     private static final String[] THIEF_ABILITY_VALUES;
     private static final String[] TERRAIN_DIFICULTY_VALUES;
+    private static final String[] SPELL_PROFESSION_TYPES_VALUES;
+    private static final String[] SPELL_TARGET_TYPES_VALUES;
 
     public enum Key {
         CONVICTIONS(CONVICTIONS_VALUES, Conviction.class),
@@ -63,7 +67,9 @@ public final class Translator {
         MOB_CLASSES(MOB_CLASSES_VALUES, MobClass.class),
         VULNERABILITIES(VULNERABILITIES_VALUES, VulnerabilityType.class),
         THIEF_ABILITIES(THIEF_ABILITY_VALUES, Thief.Ability.class),
-        TERRAIN_DIFICULTY(TERRAIN_DIFICULTY_VALUES, Terrain.class);
+        TERRAIN_DIFICULTY(TERRAIN_DIFICULTY_VALUES, Terrain.class),
+        SPELL_PROFESSION_TYPES(SPELL_PROFESSION_TYPES_VALUES, SpellProfessionType.class),
+        SPELL_TARGET_TYPES(SPELL_TARGET_TYPES_VALUES, SpellTarget.class);
 
         private final String[] values;
         public final Class<? extends Enum> enumType;
@@ -197,6 +203,18 @@ public final class Translator {
             R.Translate.TERRAIN_CLOSE_EASY,
             R.Translate.TERRAIN_CLOSE_HARD,
             R.Translate.TERRAIN_CLOSE_UNUSABLE
+        };
+
+        SPELL_PROFESSION_TYPES_VALUES = new String[]{
+            R.Translate.PROFESSION_RANGER,
+            R.Translate.PROFESSION_MAGICIAN
+        };
+
+        SPELL_TARGET_TYPES_VALUES = new String[]{
+            R.Translate.SPELL_TARGET_TYPE_HERO,
+            R.Translate.SPELL_TARGET_TYPE_MONSTER,
+            R.Translate.SPELL_TARGET_TYPE_CREATURE,
+            R.Translate.SPELL_TARGET_TYPE_THING,
         };
     }
 
