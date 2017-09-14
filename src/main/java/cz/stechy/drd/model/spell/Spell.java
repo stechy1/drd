@@ -261,7 +261,7 @@ public final class Spell extends OnlineItem {
 
     // endregion
 
-    public final class Builder {
+    public static final class Builder {
         private String id;
         private String author;
         private String name;
@@ -303,6 +303,11 @@ public final class Spell extends OnlineItem {
             return this;
         }
 
+        public Builder type(int type) {
+            this.type = SpellProfessionType.values()[type];
+            return this;
+        }
+
         public Builder type(SpellProfessionType type) {
             this.type = type;
             return this;
@@ -320,6 +325,11 @@ public final class Spell extends OnlineItem {
 
         public Builder range(int range) {
             this.range = range;
+            return this;
+        }
+
+        public Builder target(int target) {
+            this.target = SpellTarget.values()[target];
             return this;
         }
 
