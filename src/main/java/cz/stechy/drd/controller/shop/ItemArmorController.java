@@ -394,78 +394,15 @@ public class ItemArmorController extends BaseController implements Initializable
                 }
             });
 
-            name.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_NAME, true);
-                } else {
-                    setValidityFlag(FLAG_NAME, false);
-                }
-            });
-            description.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_DESCRIPTION, true);
-                } else {
-                    setValidityFlag(FLAG_DESCRIPTION, false);
-                }
-            });
-            defence.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_DEFENCE, true);
-                } else {
-                    setValidityFlag(FLAG_DEFENCE, false);
-                }
-            });
-            minimumStrength.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_MINIMUM_STRENGTH, true);
-                } else {
-                    setValidityFlag(FLAG_MINIMUM_STRENGTH, false);
-                }
-            });
-            type.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_TYPE, true);
-                } else {
-                    setValidityFlag(FLAG_TYPE, false);
-                }
-            });
-            weightA.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_WEIGHT_A, true);
-                } else {
-                    setValidityFlag(FLAG_WEIGHT_A, false);
-                }
-            });
-            weightB.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_WEIGHT_B, true);
-                } else {
-                    setValidityFlag(FLAG_WEIGHT_B, false);
-                }
-            });
-            weightC.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_WEIGHT_C, true);
-                } else {
-                    setValidityFlag(FLAG_WEIGHT_C, false);
-                }
-            });
-            stackSize.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_STACK_SIZE, true);
-                } else {
-                    setValidityFlag(FLAG_STACK_SIZE, false);
-                }
-            });
+            name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
+            description.addListener(FormUtils.notEmptyCondition(this, FLAG_DESCRIPTION));
+            defence.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_DEFENCE));
+            minimumStrength.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_MINIMUM_STRENGTH));
+            type.addListener(FormUtils.notEmptyCondition(this, FLAG_TYPE));
+            weightA.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT_A));
+            weightB.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT_B));
+            weightC.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT_C));
+            stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_TYPE + FLAG_IMAGE);
             setValid(false);

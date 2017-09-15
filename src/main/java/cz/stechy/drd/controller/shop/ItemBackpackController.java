@@ -313,46 +313,11 @@ public class ItemBackpackController extends BaseController implements Initializa
                 }
             });
 
-            name.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_NAME, true);
-                } else {
-                    setValidityFlag(FLAG_NAME, false);
-                }
-            });
-            weight.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_WEIGHT, true);
-                } else {
-                    setValidityFlag(FLAG_WEIGHT, false);
-                }
-            });
-            maxLoad.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_MAX_LOAD, true);
-                } else {
-                    setValidityFlag(FLAG_MAX_LOAD, false);
-                }
-            });
-            stackSize.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_STACK_SIZE, true);
-                } else {
-                    setValidityFlag(FLAG_STACK_SIZE, false);
-                }
-            });
-            size.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_SIZE, true);
-                } else {
-                    setValidityFlag(FLAG_SIZE, false);
-                }
-            });
+            name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
+            weight.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT));
+            maxLoad.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_MAX_LOAD));
+            stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
+            size.addListener(FormUtils.notEmptyCondition(this, FLAG_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_IMAGE + FLAG_SIZE);
             setValid(false);

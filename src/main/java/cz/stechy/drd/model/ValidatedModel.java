@@ -15,13 +15,15 @@ public abstract class ValidatedModel {
     protected final BooleanProperty valid = new SimpleBooleanProperty();
     protected final BooleanProperty changed = new SimpleBooleanProperty();
 
+    // region Public methods
+
     /**
      * Nastaví validitu zadanému příznaku
      *
      * @param flag Příznak
      * @param value True, pokud je příznak validní, jinak false
      */
-    protected void setValidityFlag(int flag, boolean value) {
+    public void setValidityFlag(int flag, boolean value) {
         int oldFlagValue = validityFlag.get();
         int newFlag = BitUtils.setBit(oldFlagValue, flag, value);
 
@@ -36,6 +38,8 @@ public abstract class ValidatedModel {
             setValid(true);
         }
     }
+
+    // endregion
 
     // region Getters & Setters
 

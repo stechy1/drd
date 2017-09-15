@@ -142,54 +142,12 @@ public class BestiaryEditOtherController implements InjectableChild, IEditContro
         final MaxActValue domestication = new MaxActValue(Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
 
         {
-            vulnerability.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_VULNERABILITY, true);
-                } else {
-                    setValidityFlag(FLAG_VULNERABILITY, false);
-                }
-            });
-            mobility.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null || newValue.intValue() < 0) {
-                    setValid(false);
-                    setValidityFlag(FLAG_MOBILITY, true);
-                } else {
-                    setValidityFlag(FLAG_MOBILITY, false);
-                }
-            });
-            perservance.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null || newValue.intValue() < 0) {
-                    setValid(false);
-                    setValidityFlag(FLAG_PERSERVANCE, true);
-                } else {
-                    setValidityFlag(FLAG_PERSERVANCE, false);
-                }
-            });
-            controlAbility.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null || newValue.intValue() < 0) {
-                    setValid(false);
-                    setValidityFlag(FLAG_CONTROL_ABILITY, true);
-                } else {
-                    setValidityFlag(FLAG_CONTROL_ABILITY, false);
-                }
-            });
-            basicPowerOfMind.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null || newValue.intValue() < 0) {
-                    setValid(false);
-                    setValidityFlag(FLAG_BASIC_POWER_OF_MIND, true);
-                } else {
-                    setValidityFlag(FLAG_BASIC_POWER_OF_MIND, false);
-                }
-            });
-            domestication.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null || newValue.intValue() < 0) {
-                    setValid(false);
-                    setValidityFlag(FLAG_DOMESTICATION, true);
-                } else {
-                    setValidityFlag(FLAG_DOMESTICATION, false);
-                }
-            });
+            vulnerability.addListener(FormUtils.notEmptyCondition(this, FLAG_VULNERABILITY));
+            mobility.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_MOBILITY));
+            perservance.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_PERSERVANCE));
+            controlAbility.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_CONTROL_ABILITY));
+            basicPowerOfMind.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_BASIC_POWER_OF_MIND));
+            domestication.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_DOMESTICATION));
 
             // Automatické nastavení validity na true
             validityFlag.set(0);

@@ -353,78 +353,15 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
                 }
             });
 
-            name.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_NAME, true);
-                } else {
-                    setValidityFlag(FLAG_NAME, false);
-                }
-            });
-            weight.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_WEIGHT, true);
-                } else {
-                    setValidityFlag(FLAG_WEIGHT, false);
-                }
-            });
-            strength.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_STRENGTH, true);
-                } else {
-                    setValidityFlag(FLAG_STRENGTH, false);
-                }
-            });
-            rampancy.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_RAMPANCY, true);
-                } else {
-                    setValidityFlag(FLAG_RAMPANCY, false);
-                }
-            });
-            defence.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_DEFENCE, true);
-                } else {
-                    setValidityFlag(FLAG_DEFENCE, false);
-                }
-            });
-            weaponClass.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_WEAPON_CLASS, true);
-                } else {
-                    setValidityFlag(FLAG_WEAPON_CLASS, false);
-                }
-            });
-            weaponType.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_WEAPON_TYPE, true);
-                } else {
-                    setValidityFlag(FLAG_WEAPON_TYPE, false);
-                }
-            });
-            renown.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_RENOWN, true);
-                } else {
-                    setValidityFlag(FLAG_RENOWN, false);
-                }
-            });
-            stackSize.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_STACK_SIZE, true);
-                } else {
-                    setValidityFlag(FLAG_STACK_SIZE, false);
-                }
-            });
+            name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
+            weight.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT));
+            strength.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STRENGTH));
+            rampancy.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RAMPANCY));
+            defence.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_DEFENCE));
+            weaponClass.addListener(FormUtils.notEmptyCondition(this, FLAG_WEAPON_CLASS));
+            weaponType.addListener(FormUtils.notEmptyCondition(this, FLAG_WEAPON_TYPE));
+            renown.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RENOWN));
+            stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_WEAPON_CLASS + FLAG_WEAPON_TYPE + FLAG_IMAGE);
             setValid(false);

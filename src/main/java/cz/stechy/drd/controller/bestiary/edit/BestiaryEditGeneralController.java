@@ -6,6 +6,7 @@ import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
+import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.Bundle;
@@ -106,46 +107,11 @@ public class BestiaryEditGeneralController implements Initializable, IEditContro
         private final ObjectProperty<Height> height = new SimpleObjectProperty<>(this, "height", null);
 
         {
-            name.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null || newValue.trim().isEmpty()) {
-                    setValid(false);
-                    setValidityFlag(FLAG_NAME, true);
-                } else {
-                    setValidityFlag(FLAG_NAME, false);
-                }
-            });
-            rule.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_RULE, true);
-                } else {
-                    setValidityFlag(FLAG_RULE, false);
-                }
-            });
-            mobClass.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_MOB_CLASS, true);
-                } else {
-                    setValidityFlag(FLAG_MOB_CLASS, false);
-                }
-            });
-            conviction.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_CONVICTION, true);
-                } else {
-                    setValidityFlag(FLAG_CONVICTION, false);
-                }
-            });
-            height.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_HEIGHT, true);
-                } else {
-                    setValidityFlag(FLAG_HEIGHT, false);
-                }
-            });
+            name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
+            rule.addListener(FormUtils.notEmptyCondition(this, FLAG_RULE));
+            mobClass.addListener(FormUtils.notEmptyCondition(this, FLAG_MOB_CLASS));
+            conviction.addListener(FormUtils.notEmptyCondition(this, FLAG_CONVICTION));
+            height.addListener(FormUtils.notEmptyCondition(this, FLAG_HEIGHT));
 
             // Nastavení validačních příznaků - žádné pole není vyplněno
             validityFlag.set(FLAG_NAME + FLAG_RULE + FLAG_MOB_CLASS + FLAG_CONVICTION + FLAG_HEIGHT);

@@ -165,30 +165,9 @@ public class RangerController implements IProfessionController, Initializable {
         private final BooleanProperty repeating = new SimpleBooleanProperty(this, "repeating", false);
 
         {
-            terrain.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_TERRAIN, true);
-                } else {
-                    setValidityFlag(FLAG_TERRAIN, false);
-                }
-            });
-            age.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_AGE, true);
-                } else {
-                    setValidityFlag(FLAG_AGE, false);
-                }
-            });
-            count.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_COUNT, true);
-                } else {
-                    setValidityFlag(FLAG_COUNT, false);
-                }
-            });
+            terrain.addListener(FormUtils.notEmptyCondition(this, FLAG_TERRAIN));
+            age.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_AGE));
+            count.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_COUNT));
 
             validityFlag.set(FLAG_TERRAIN);
             setValid(false);

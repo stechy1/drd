@@ -361,86 +361,16 @@ public class ItemWeaponRangedController extends BaseController implements Initia
                 }
             });
 
-            name.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_NAME, true);
-                } else {
-                    setValidityFlag(FLAG_NAME, false);
-                }
-            });
-            weight.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_WEIGHT, true);
-                } else {
-                    setValidityFlag(FLAG_WEIGHT, false);
-                }
-            });
-            strength.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_STRENGTH, true);
-                } else {
-                    setValidityFlag(FLAG_STRENGTH, false);
-                }
-            });
-            rampancy.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_RAMPANCY, true);
-                } else {
-                    setValidityFlag(FLAG_RAMPANCY, false);
-                }
-            });
-            rangeLow.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_RANGE_LOW, true);
-                } else {
-                    setValidityFlag(FLAG_RANGE_LOW, false);
-                }
-            });
-            rangeMedium.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_RANGE_MEDIUM, true);
-                } else {
-                    setValidityFlag(FLAG_RANGE_MEDIUM, false);
-                }
-            });
-            rangeLong.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_RANGE_LONG, true);
-                } else {
-                    setValidityFlag(FLAG_RANGE_LONG, false);
-                }
-            });
-            weaponType.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_WEAPON_TYPE, true);
-                } else {
-                    setValidityFlag(FLAG_WEAPON_TYPE, false);
-                }
-            });
-            renown.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_RENOWN, true);
-                } else {
-                    setValidityFlag(FLAG_RENOWN, false);
-                }
-            });
-            stackSize.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_STACK_SIZE, true);
-                } else {
-                    setValidityFlag(FLAG_STACK_SIZE, false);
-                }
-            });
+            name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
+            weight.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT));
+            strength.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STRENGTH));
+            rampancy.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RAMPANCY));
+            rangeLow.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RANGE_LOW));
+            rangeMedium.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RANGE_MEDIUM));
+            rangeLong.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RANGE_LONG));
+            weaponType.addListener(FormUtils.notEmptyCondition(this, FLAG_WEAPON_TYPE));
+            renown.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RENOWN));
+            stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_WEAPON_TYPE + FLAG_IMAGE);
             setValid(false);

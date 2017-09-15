@@ -98,62 +98,13 @@ public class BestiaryEditPropertiesController implements IEditController, Initia
         private final MaxActValue charisma = new MaxActValue(Integer.MAX_VALUE);
 
         {
-            attackNumber.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_ATTACK_NUMBER, true);
-                } else {
-                    setValidityFlag(FLAG_ATTACK_NUMBER, false);
-                }
-            });
-            defenceNumber.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_DEFENCE_NUMBER, true);
-                } else {
-                    setValidityFlag(FLAG_DEFENCE_NUMBER, false);
-                }
-            });
-            viability.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_VIABILITY, true);
-                } else {
-                    setValidityFlag(FLAG_VIABILITY, false);
-                }
-            });
-            immunity.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_IMMUNITY, true);
-                } else {
-                    setValidityFlag(FLAG_IMMUNITY, false);
-                }
-            });
-            mettle.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_METTLE, true);
-                } else {
-                    setValidityFlag(FLAG_METTLE, false);
-                }
-            });
-            intelligence.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_INTELLIGENCE, true);
-                } else {
-                    setValidityFlag(FLAG_INTELLIGENCE, false);
-                }
-            });
-            charisma.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_CHARISMA, true);
-                } else {
-                    setValidityFlag(FLAG_CHARISMA, false);
-                }
-            });
+            attackNumber.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_ATTACK_NUMBER));
+            defenceNumber.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_DEFENCE_NUMBER));
+            viability.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_VIABILITY));
+            immunity.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_IMMUNITY));
+            mettle.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_METTLE));
+            intelligence.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_INTELLIGENCE));
+            charisma.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_CHARISMA));
 
             // Automatické nastavení validity na true
             validityFlag.set(0);

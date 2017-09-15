@@ -1,9 +1,11 @@
 package cz.stechy.drd.util;
 
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.ValidatedModel;
 import java.util.function.UnaryOperator;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
@@ -32,7 +34,27 @@ public final class FormUtils {
         textField.textProperty().unbindBidirectional(maxActValue.actValueProperty());
     }
 
-    public static final class MinMaxUnaryOperator implements UnaryOperator<Change> {
+    /**
+     * Vytvoří novou podmínku, která kontroluje, zda-li je změněná hodnota null, či nikoliv.
+     * Pokud je nová hodnota null, nastaví se do modelu příznak podle flagu
+     *
+     * @param model {@link ValidatedModel} Model, který se kontroluje
+     * @param flag Přáznak, který se nastavuje
+     * @param <T> Datový typ proměnné, se kterou se pracuje
+     * @return {@link ChangeListener}
+     */
+    public static <T> ChangeListener<? super T> notEmptyCondition(ValidatedModel model, final int flag) {
+        return (observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                model.setValid(false);
+                model.setValidityFlag(flag, true);
+            } else {
+                model.setValidityFlag(flag, false);
+            }
+        };
+    }
+
+    private static final class MinMaxUnaryOperator implements UnaryOperator<Change> {
 
         private final ObjectProperty<Number> min = new SimpleObjectProperty<>();
         private final ObjectProperty<Number> max = new SimpleObjectProperty<>();

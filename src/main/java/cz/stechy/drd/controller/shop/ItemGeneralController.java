@@ -279,30 +279,9 @@ public class ItemGeneralController extends BaseController implements Initializab
                 }
             });
 
-            name.addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_NAME, true);
-                } else {
-                    setValidityFlag(FLAG_NAME, false);
-                }
-            });
-            weight.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_WEIGHT, true);
-                } else {
-                    setValidityFlag(FLAG_WEIGHT, false);
-                }
-            });
-            stackSize.actValueProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    setValid(false);
-                    setValidityFlag(FLAG_STACK_SIZE, true);
-                } else {
-                    setValidityFlag(FLAG_STACK_SIZE, false);
-                }
-            });
+            name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
+            weight.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT));
+            stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_IMAGE);
             setValid(false);
