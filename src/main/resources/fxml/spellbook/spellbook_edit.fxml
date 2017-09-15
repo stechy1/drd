@@ -31,7 +31,7 @@
         <VBox HBox.hgrow="ALWAYS" spacing="16.0">
           <EnumComboBox enumType="cz.stechy.drd.model.spell.SpellProfessionType"
             labelFloat="true" promptText="%drd_spell_profession_type" fx:id="cmbType"/>
-          <Hyperlink text="%drd_spell_price" fx:id="linkPrice"/>
+          <Hyperlink text="%drd_spell_price" fx:id="linkPrice" onAction="#handlePrice"/>
           <EnumComboBox enumType="cz.stechy.drd.model.spell.SpellTarget"
             labelFloat="true" promptText="%drd_spell_target_type" fx:id="cmbTarget"/>
         </VBox>

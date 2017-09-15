@@ -19,6 +19,7 @@ import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.EnumComboBox;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -214,6 +215,10 @@ public class SpellBookEditController extends BaseController implements Initializ
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void handlePrice(ActionEvent actionEvent) {
+        showNotification(new Notification("Tato funkce zatím není implementována"));
     }
 
     // endregion
