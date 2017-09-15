@@ -1,10 +1,10 @@
 package cz.stechy.drd.controller.bestiary.edit;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
-import cz.stechy.drd.util.ImageUtils;
+import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.screens.Bundle;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -26,7 +26,6 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.StackPane;
-import javafx.stage.FileChooser;
 
 /**
  * Kontroler pro editaci obrázku nestvůry
@@ -47,10 +46,13 @@ public class BestiaryEditImageController implements IEditController, Initializab
     private final BooleanProperty valid = new SimpleBooleanProperty(this, "valid");
     private final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "rawImage");
 
+    private String imageChooserTitle;
+
     // endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.imageChooserTitle = resources.getString(R.Translate.IMAGE_CHOOSE_DIALOG);
         imageRaw.addListener((observable, oldValue, newValue) -> {
             valid.set(!(newValue == null || Arrays.equals(newValue, new byte[0])));
 
@@ -80,23 +82,13 @@ public class BestiaryEditImageController implements IEditController, Initializab
         return valid;
     }
 
-    public void handleClick(MouseEvent mouseEvent) {
-        FileChooser imageChooser = new FileChooser();
-        imageChooser.setTitle("Vyberte obrázek...");
-        imageChooser.setInitialDirectory(
-            new File(System.getProperty("user.home"))
-        );
-        imageChooser.getExtensionFilters().setAll(Arrays.asList(
-            new FileChooser.ExtensionFilter("PNG", "*.png")
-        ));
-        final File file = imageChooser.showOpenDialog(((Node) mouseEvent.getSource()).getScene().getWindow());
-        if (file == null) {
-            return;
-        }
-
+    @FXML
+    private void handleSelectImage(MouseEvent mouseEvent) {
         try {
-            final byte[] image = ImageUtils.readImage(file);
-            this.imageRaw.set(image);
+            final byte[] image = DialogUtils
+                .openImageForItemEditor(((Node) mouseEvent.getSource()).getScene().getWindow(),
+                    imageChooserTitle);
+            this.imageRaw.setValue(image);
         } catch (IOException e) {
             e.printStackTrace();
         }

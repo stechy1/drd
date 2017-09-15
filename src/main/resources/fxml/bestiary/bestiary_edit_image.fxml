@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.Label?>
 <StackPane fx:id="container" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="cz.stechy.drd.controller.bestiary.edit.BestiaryEditImageController" onMouseClicked="#handleClick">
+  fx:controller="cz.stechy.drd.controller.bestiary.edit.BestiaryEditImageController" onMouseClicked="#handleSelectImage">
   <Label fx:id="lblSelectImage" text="%drd_image_choose_dialog"/>
   <cursor>
     <Cursor fx:constant="HAND"/>

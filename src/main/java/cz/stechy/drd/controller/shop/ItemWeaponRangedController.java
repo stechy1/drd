@@ -7,8 +7,8 @@ import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
+import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.ImageUtils;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
@@ -16,7 +16,6 @@ import cz.stechy.screens.Bundle;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -41,8 +40,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javax.imageio.ImageIO;
 
 /**
@@ -284,19 +281,11 @@ public class ItemWeaponRangedController extends BaseController implements Initia
 
     @FXML
     private void handleSelectImage(MouseEvent mouseEvent) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle(imageChooserTitle);
-        fileChooser.getExtensionFilters().add(new ExtensionFilter("PNG", "*.png"));
-        final File file = fileChooser
-            .showOpenDialog(((Node) mouseEvent.getSource()).getScene().getWindow());
-        if (file == null) {
-            return;
-        }
-
         try {
-            final byte[] image = ImageUtils.readImage(file);
-            final byte[] resizedImage = ImageUtils.resizeImageRaw(image, 150, 150);
-            model.imageRaw.set(resizedImage);
+            final byte[] image = DialogUtils
+                .openImageForItemEditor(((Node) mouseEvent.getSource()).getScene().getWindow(),
+                    imageChooserTitle);
+            model.imageRaw.setValue(image);
         } catch (IOException e) {
             e.printStackTrace();
         }
