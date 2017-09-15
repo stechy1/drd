@@ -9,16 +9,15 @@ import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.ImageUtils;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -356,43 +355,11 @@ public class ItemArmorController extends BaseController implements Initializable
         final BooleanProperty uploaded = new SimpleBooleanProperty(this, "uploaded");
         final BooleanProperty downloaded = new SimpleBooleanProperty(this, "downloaded");
 
-        private boolean block = false;
+        private final AtomicBoolean b = new AtomicBoolean(false);
 
         {
-            imageRaw.addListener((observable, oldValue, newValue) -> {
-                if (block) {
-                    return;
-                }
-
-                if (newValue == null || Arrays.equals(newValue, new byte[0])) {
-                    setValid(false);
-                    setValidityFlag(FLAG_IMAGE, true);
-                } else {
-                    setValidityFlag(FLAG_IMAGE, false);
-                }
-
-                block = true;
-                try {
-                    final ByteArrayInputStream inputStream = new ByteArrayInputStream(newValue);
-                    image.set(new Image(inputStream));
-                } finally {
-                    block = false;
-                }
-            });
-            image.addListener((observable, oldValue, newValue) -> {
-                if (block) {
-                    return;
-                }
-
-                block = true;
-                try {
-                    imageRaw.setValue(ImageUtils.imageToRaw(newValue));
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                } finally {
-                    block = false;
-                }
-            });
+            imageRaw.addListener(FormUtils.notEmptyImageRawCondition(this, FLAG_IMAGE, image, b));
+            image.addListener(FormUtils.notEmptyImageSetter(imageRaw, b));
 
             name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
             description.addListener(FormUtils.notEmptyCondition(this, FLAG_DESCRIPTION));

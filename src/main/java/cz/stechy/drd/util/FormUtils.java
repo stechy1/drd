@@ -2,6 +2,9 @@ package cz.stechy.drd.util;
 
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.ValidatedModel;
+import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.UnaryOperator;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -9,6 +12,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
+import javafx.scene.image.Image;
 import javafx.util.converter.NumberStringConverter;
 
 /**
@@ -43,13 +47,53 @@ public final class FormUtils {
      * @param <T> Datový typ proměnné, se kterou se pracuje
      * @return {@link ChangeListener}
      */
-    public static <T> ChangeListener<? super T> notEmptyCondition(ValidatedModel model, final int flag) {
+    public static <T> ChangeListener<? super T> notEmptyCondition(final ValidatedModel model, final int flag) {
         return (observable, oldValue, newValue) -> {
             if (newValue == null) {
                 model.setValid(false);
                 model.setValidityFlag(flag, true);
             } else {
                 model.setValidityFlag(flag, false);
+            }
+        };
+    }
+
+    public static ChangeListener<byte[]> notEmptyImageRawCondition(final ValidatedModel model, final int flag, final ObjectProperty<Image> image, final AtomicBoolean block) {
+        return (observable, oldValue, newValue) -> {
+            if (block.get()) {
+                return;
+            }
+
+            if (newValue == null || Arrays.equals(newValue, new byte[0])) {
+                model.setValid(false);
+                model.setValidityFlag(flag, true);
+            } else {
+                model.setValidityFlag(flag, false);
+            }
+
+            block.set(true);
+            try {
+                final ByteArrayInputStream inputStream = new ByteArrayInputStream(newValue);
+                image.set(new Image(inputStream));
+            } finally {
+                block.set(false);
+            }
+        };
+    }
+
+    public static ChangeListener<Image> notEmptyImageSetter(final ObjectProperty<byte[]> imageRaw, final AtomicBoolean block) {
+        return (observable, oldValue, newValue) -> {
+            if (block.get()) {
+                return;
+            }
+
+            block.set(true);
+            try {
+                imageRaw.setValue(ImageUtils.imageToRaw(newValue));
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                block.set(false);
             }
         };
     }
