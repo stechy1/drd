@@ -19,7 +19,6 @@ import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.EnumComboBox;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
-import cz.stechy.screens.Notification;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -204,7 +203,7 @@ public class SpellBookEditController extends BaseController implements Initializ
 
     @FXML
     private void handlePrice(ActionEvent actionEvent) {
-        showNotification(new Notification("Tato funkce zatím není implementována"));
+        startNewDialog(R.FXML.SPELL_PRICE_EDITOR);
     }
 
     // endregion
