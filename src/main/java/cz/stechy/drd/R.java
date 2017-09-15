@@ -322,6 +322,7 @@ public final class R {
         public static final String LEVEL_UP_TITLE = "drd_level_up_title";
         public static final String LEVEL_UP_PRICE = "drd_level_up_price";
         public static final String SPELL_BOOK_TITLE = "drd_spell_book_title";
+        public static final String SPELL_BOOK_NO_CONTENT = "drd_spell_book_no_content";
         public static final String SPELL_BOOK_EDIT_NEW_TITLE = "drd_spell_book_edit_new_title";
         public static final String SPELL_BOOK_EDIT_UPDATE_TITLE = "drd_spell_book_edit_update_title";
         public static final String FIGHT_TITLE = "drd_fight_title";
@@ -343,6 +344,7 @@ public final class R {
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";
         public static final String NOTIFY_REGISTER_FAIL = "drd_notify_register_fail";
         public static final String NOTIFY_FIGHT_LIVE_UPDATE = "drd_notify_fight_live_update";
+        public static final String NOTIFY_TABLE_IS_EMPTY = "drd_notify_table_is_empty";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
         public static final String SETTINGS = "drd_settings";
         public static final String ABOUT_CONTENT = "drd_about_content";
@@ -353,7 +355,6 @@ public final class R {
         public static final String TERRAIN_CLOSE_EASY = "drd_terrain_close_easy";
         public static final String TERRAIN_CLOSE_HARD = "drd_terrain_close_hard";
         public static final String TERRAIN_CLOSE_UNUSABLE = "drd_terrain_close_unusable";
-        public static final String SPELL_BOOK_NO_CONTENT = "drd_spell_book_no_content";
     }
 
     public static class Config {

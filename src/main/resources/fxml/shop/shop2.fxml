@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -15,6 +16,9 @@
       <columnResizePolicy>
         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
       </columnResizePolicy>
+      <placeholder>
+        <Label text="%drd_notify_table_is_empty"/>
+      </placeholder>
       <columns>
         <TableColumn prefWidth="75.0" text="%drd_item_name" fx:id="columnName"/>
         <TableColumn prefWidth="75.0" text="%drd_item_ammount" fx:id="columnAmmount"/>

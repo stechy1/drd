@@ -3,13 +3,14 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Separator?>
 <BorderPane prefWidth="900" prefHeight="500" xmlns="http://javafx.com/javafx/8.0.112"
   xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="cz.stechy.drd.controller.bestiary.BestiaryController">
@@ -18,6 +19,9 @@
       <columnResizePolicy>
         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
       </columnResizePolicy>
+      <placeholder>
+        <Label text="%drd_notify_table_is_empty"/>
+      </placeholder>
       <columns>
         <TableColumn fx:id="columnImage" prefWidth="75.0" text="%drd_item_image" sortable="false">
           <cellValueFactory>

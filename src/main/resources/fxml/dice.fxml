@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXListView?>
+
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -30,6 +30,9 @@
         <columnResizePolicy>
           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
         </columnResizePolicy>
+        <placeholder>
+          <Label text="%drd_notify_table_is_empty"/>
+        </placeholder>
         <columns>
           <TableColumn prefWidth="75.0" text="%drd_dice_property" fx:id="columnAdditionType">
             <cellValueFactory>

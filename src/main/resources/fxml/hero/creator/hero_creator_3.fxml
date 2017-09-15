@@ -25,6 +25,9 @@
       <columnResizePolicy>
         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
       </columnResizePolicy>
+      <placeholder>
+        <Label text="%drd_notify_table_is_empty"/>
+      </placeholder>
       <columns>
         <TableColumn minWidth="50" styleClass="table-column" text="%drd_item_image"
           fx:id="columnImage">
