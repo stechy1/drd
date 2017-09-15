@@ -8,11 +8,10 @@ import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.FormUtils;
+import cz.stechy.drd.util.ImageUtils;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -23,7 +22,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -36,7 +34,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javax.imageio.ImageIO;
 
 /**
  * Kontroler pro vytvoření nového standartního předmětu
@@ -274,12 +271,7 @@ public class ItemGeneralController extends BaseController implements Initializab
 
                 block = true;
                 try {
-                    BufferedImage bImage = SwingFXUtils.fromFXImage(newValue, null);
-                    ByteArrayOutputStream s = new ByteArrayOutputStream();
-                    ImageIO.write(bImage, "png", s);
-                    byte[] res = s.toByteArray();
-                    s.close(); //especially if you are using a different output stream.
-                    imageRaw.setValue(res);
+                    imageRaw.setValue(ImageUtils.imageToRaw(newValue));
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 } finally {

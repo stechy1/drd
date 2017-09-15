@@ -144,7 +144,7 @@ public final class ImageUtils {
      * @return Surová data obrázku
      * @throws IOException Pokud se převod nepovede
      */
-    private static byte[] imageToRaw(Image image) throws IOException {
+    public static byte[] imageToRaw(Image image) throws IOException {
         BufferedImage bImage = SwingFXUtils.fromFXImage(image, null);
         ByteArrayOutputStream s = new ByteArrayOutputStream();
         ImageIO.write(bImage, "png", s);
