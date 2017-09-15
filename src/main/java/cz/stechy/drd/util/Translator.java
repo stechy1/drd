@@ -17,6 +17,7 @@ import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.spell.SpellProfessionType;
 import cz.stechy.drd.model.spell.SpellTarget;
+import cz.stechy.drd.model.spell.parser.SpellParser.SpellVariable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -51,6 +52,7 @@ public final class Translator {
     private static final String[] TERRAIN_DIFICULTY_VALUES;
     private static final String[] SPELL_PROFESSION_TYPES_VALUES;
     private static final String[] SPELL_TARGET_TYPES_VALUES;
+    private static final String[] SPELL_VARIABLE_TYPES_VALUES;
 
     public enum Key {
         CONVICTIONS(CONVICTIONS_VALUES, Conviction.class),
@@ -69,7 +71,8 @@ public final class Translator {
         THIEF_ABILITIES(THIEF_ABILITY_VALUES, Thief.Ability.class),
         TERRAIN_DIFICULTY(TERRAIN_DIFICULTY_VALUES, Terrain.class),
         SPELL_PROFESSION_TYPES(SPELL_PROFESSION_TYPES_VALUES, SpellProfessionType.class),
-        SPELL_TARGET_TYPES(SPELL_TARGET_TYPES_VALUES, SpellTarget.class);
+        SPELL_TARGET_TYPES(SPELL_TARGET_TYPES_VALUES, SpellTarget.class),
+        SPELL_VARIABLE_TYPES(SPELL_VARIABLE_TYPES_VALUES, SpellVariable.class);
 
         private final String[] values;
         public final Class<? extends Enum> enumType;
@@ -216,6 +219,15 @@ public final class Translator {
             R.Translate.SPELL_TARGET_TYPE_CREATURE,
             R.Translate.SPELL_TARGET_TYPE_THING,
         };
+
+        SPELL_VARIABLE_TYPES_VALUES = new String[]{
+            R.Translate.BESTIARY_VIABILITY,
+            R.Translate.HERO_STRENGTH,
+            R.Translate.HERO_DEXTERITY,
+            R.Translate.HERO_IMMUNITY,
+            R.Translate.HERO_INTELLIGENCE,
+            R.Translate.HERO_CHARISMA
+        };
     }
 
     // region Variables
@@ -306,7 +318,9 @@ public final class Translator {
         };
     }
 
-
+    public String translate(String key) {
+        return resources.getString(key);
+    }
 
     // endregion
 }

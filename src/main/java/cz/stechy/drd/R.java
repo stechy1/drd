@@ -59,6 +59,8 @@ public final class R {
         public static final String SHOP_RANGED_WEAPON = "shop_ranged_weapon";
         public static final String SPELLBOOK = "spellbook";
         public static final String SPELLBOOK_EDIT = "spellbook_edit";
+        public static final String DRAGGABLE_SPELL_NODE = "draggable_spell_node";
+        public static final String SPELL_PRICE_EDITOR = "spell_price_editor";
         public static final String LOGIN = "login";
         public static final String REGISTER = "register";
     }
@@ -289,6 +291,9 @@ public final class R {
         public static final String SPELL_DESCRIPTION = "drd_spell_description";
         public static final String SPELL_PROFESSION_TYPE = "drd_spell_profession_type";
         public static final String SPELL_PRICE = "drd_spell_price";
+        public static final String SPELL_PRICE_TYPE_CONSTANT = "drd_spell_price_type_constant";
+        public static final String SPELL_PRICE_TYPE_VARIABLE = "drd_spell_price_type_variable";
+        public static final String SPELL_PRICE_TYPE_MODIFIER = "drd_spell_price_type_modifier";
         public static final String SPELL_RADIUS = "drd_spell_radius";
         public static final String SPELL_RANGE = "drd_spell_range";
         public static final String SPELL_TARGET_TYPE = "drd_spell_target_type";
