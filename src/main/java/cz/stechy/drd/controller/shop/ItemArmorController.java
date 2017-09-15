@@ -239,29 +239,9 @@ public class ItemArmorController extends BaseController implements Initializable
 
     @Override
     protected void onScreenResult(int statusCode, int actionId, Bundle bundle) {
-        switch (actionId) {
-            case ACTION_MONEY_A:
-                if (statusCode != RESULT_SUCCESS) {
-                    return;
-                }
-                model.priceA.setRaw(bundle.getInt(MoneyController.MONEY));
-
-                break;
-            case ACTION_MONEY_B:
-                if (statusCode != RESULT_SUCCESS) {
-                    return;
-                }
-                model.priceB.setRaw(bundle.getInt(MoneyController.MONEY));
-
-                break;
-            case ACTION_MONEY_C:
-                if (statusCode != RESULT_SUCCESS) {
-                    return;
-                }
-                model.priceC.setRaw(bundle.getInt(MoneyController.MONEY));
-
-                break;
-        }
+        ShopHelper.setItemPrice(statusCode, actionId, ACTION_MONEY_A, bundle, model.priceA);
+        ShopHelper.setItemPrice(statusCode, actionId, ACTION_MONEY_B, bundle, model.priceB);
+        ShopHelper.setItemPrice(statusCode, actionId, ACTION_MONEY_C, bundle, model.priceC);
     }
 
     // region Button handles

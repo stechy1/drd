@@ -231,15 +231,7 @@ public class ItemWeaponRangedController extends BaseController implements Initia
 
     @Override
     protected void onScreenResult(int statusCode, int actionId, Bundle bundle) {
-        switch (actionId) {
-            case ACTION_MONEY:
-                if (statusCode != RESULT_SUCCESS) {
-                    return;
-                }
-                model.price.setRaw(bundle.getInt(MoneyController.MONEY));
-
-                break;
-        }
+        ShopHelper.setItemPrice(statusCode, actionId, ACTION_MONEY, bundle, model.price);
     }
 
     // region Button handles

@@ -1,9 +1,13 @@
 package cz.stechy.drd.controller.shop;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.controller.MoneyController;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.shop.OnAddItemToCart;
 import cz.stechy.drd.model.shop.OnRemoveItemFromCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
+import cz.stechy.screens.BaseController;
+import cz.stechy.screens.Bundle;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -124,4 +128,24 @@ final class ShopHelper {
 
     // endregion
 
+    // region Public static methods
+
+    /**
+     * Nastaví cenu předmětu z bundlu, pokud byl požadavek úspěšný
+     *
+     * @param statusCode Výsledek (ne)úspěchu requestu
+     * @param actionId Kód akce
+     * @param requestedAction Požadovaný kód akce
+     * @param bundle {@link Bundle}
+     * @param price {@link Money}
+     */
+    public static void setItemPrice(int statusCode, int actionId, int requestedAction, Bundle bundle, Money price) {
+        if (actionId != requestedAction || statusCode != BaseController.RESULT_SUCCESS) {
+            return;
+        }
+
+        price.setRaw(bundle.getInt(MoneyController.MONEY));
+    }
+
+    // endregion
 }
