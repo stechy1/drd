@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<SplitPane xmlns:fx="http://javafx.com/fxml/1" dividerPositions="0.2" prefHeight="400.0"
+  prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121"
+  fx:controller="cz.stechy.drd.controller.spellbook.priceeditor.SpellPriceEditorController">
+  <VBox SplitPane.resizableWithParent="false" prefHeight="400" prefWidth="120.0"
+    spacing="16.0" fx:id="componentSourceContainer" alignment="TOP_CENTER"/>
+  <ScrollPane>
+    <Pane prefHeight="400" prefWidth="480.0" fx:id="componentPlayground">
+      <cursor>
+        <Cursor fx:constant="MOVE"/>
+      </cursor>
+    </Pane>
+  </ScrollPane>
+</SplitPane>
