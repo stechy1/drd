@@ -185,8 +185,8 @@ public class SpellBookController extends BaseController implements Initializable
                 disableRemoveOnlineBtn.unbind();
 
                 disableDownloadBtn.set(true);
-                disableRemoveOnlineBtn.set(true);
                 disableUploadBtn.set(true);
+                disableRemoveOnlineBtn.set(true);
 
                 return;
             }

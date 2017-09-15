@@ -3,14 +3,13 @@ package cz.stechy.drd.controller.hero.creator;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.WithImage;
 import cz.stechy.drd.model.db.base.DatabaseItem;
-import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemRegistry;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
-import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
@@ -27,20 +26,13 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 
 /**
  * Třetí kontroler z průvodce vytvoření postavy Nastavení základních předmětů a zbraní
@@ -143,8 +135,8 @@ public class HeroCreatorController3 extends BaseController implements Initializa
             .getContent())
             .getChildren().get(1));
         comboBox.setPrefWidth(100);
-        comboBox.setButtonCell(new ChoiceEntryCell());
-        comboBox.setCellFactory(param -> new ChoiceEntryCell());
+        comboBox.setButtonCell(new CellUtils.RawImageListCell());
+        comboBox.setCellFactory(param -> new CellUtils.RawImageListCell());
         comboBox.setMinWidth(200);
         comboBox.setMinHeight(40);
         final Optional<ChoiceEntry> result = dialog.showAndWait();
@@ -165,57 +157,28 @@ public class HeroCreatorController3 extends BaseController implements Initializa
 
     // endregion
 
-    static final class ChoiceEntry {
+    static final class ChoiceEntry implements WithImage {
 
         final StringProperty id = new SimpleStringProperty();
         final StringProperty name = new SimpleStringProperty();
-        final ObjectProperty<Image> image = new SimpleObjectProperty<>();
+        final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
 
-        public ChoiceEntry(DatabaseItem databaseItem) {
+        ChoiceEntry(DatabaseItem databaseItem) {
             assert databaseItem instanceof ItemBase;
             final ItemBase itemBase = (ItemBase) databaseItem;
             this.id.setValue(itemBase.getId());
             this.name.setValue(itemBase.getName());
-            final ByteArrayInputStream inputStream = new ByteArrayInputStream(itemBase.getImage());
-            image.set(new Image(inputStream));
+            imageRaw.set(itemBase.getImage());
         }
 
         @Override
         public String toString() {
             return name.get();
         }
-    }
-
-    private static final class ChoiceEntryCell extends ListCell<ChoiceEntry> {
-
-        final ImageView imageView = new ImageView();
-        final Label label = new Label();
-        final HBox container = new HBox(imageView, label);
-
-        {
-            imageView.setFitWidth(ItemSlot.SLOT_SIZE);
-            imageView.setFitHeight(ItemSlot.SLOT_SIZE);
-
-            label.setTextFill(Color.BLACK);
-            label.setMinHeight(40);
-            label.setAlignment(Pos.CENTER_LEFT);
-            label.setTextAlignment(TextAlignment.CENTER);
-
-            container.setSpacing(8);
-        }
 
         @Override
-        protected void updateItem(ChoiceEntry item, boolean empty) {
-            super.updateItem(item, empty);
-
-            if (empty) {
-                setGraphic(null);
-                setText(null);
-            } else {
-                imageView.setImage(item.image.get());
-                label.setText(item.name.get());
-                setGraphic(container);
-            }
+        public byte[] getImage() {
+            return imageRaw.get();
         }
     }
 

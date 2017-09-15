@@ -2,6 +2,7 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
+import cz.stechy.drd.model.WithImage;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.OnlineItem;
 import java.util.LinkedHashMap;
@@ -19,7 +20,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Základní třída pro všechny itemy ve světě dračího doupěte
  */
-public abstract class ItemBase extends OnlineItem implements IDescriptable {
+public abstract class ItemBase extends OnlineItem implements IDescriptable, WithImage {
 
     // region Variables
 

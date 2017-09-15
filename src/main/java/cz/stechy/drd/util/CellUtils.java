@@ -2,13 +2,21 @@ package cz.stechy.drd.util;
 
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.WithImage;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.widget.MoneyWidget;
+import java.io.ByteArrayInputStream;
 import javafx.beans.property.BooleanProperty;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 
 /**
  * Pomocná knihovní třída pro generování různých buněk
@@ -118,4 +126,36 @@ public final class CellUtils {
         };
     }
 
+    public static class RawImageListCell<T extends WithImage> extends ListCell<T> {
+        final ImageView imageView = new ImageView();
+        final Label label = new Label();
+        final HBox container = new HBox(imageView, label);
+
+        {
+            imageView.setFitWidth(ItemSlot.SLOT_SIZE);
+            imageView.setFitHeight(ItemSlot.SLOT_SIZE);
+
+            label.setTextFill(Color.BLACK);
+            label.setMinHeight(40);
+            label.setAlignment(Pos.CENTER_LEFT);
+            label.setTextAlignment(TextAlignment.CENTER);
+
+            container.setSpacing(8);
+        }
+
+        @Override
+        protected void updateItem(T item, boolean empty) {
+            super.updateItem(item, empty);
+
+            if (empty) {
+                setText(null);
+                setGraphic(null);
+            } else {
+                final ByteArrayInputStream inputStream = new ByteArrayInputStream(item.getImage());
+                imageView.setImage(new Image(inputStream));
+                label.setText(item.toString());
+                setGraphic(container);
+            }
+        }
+    }
 }

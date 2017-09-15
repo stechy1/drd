@@ -9,9 +9,9 @@ import cz.stechy.drd.model.item.ItemRegistry;
 import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.model.item.WeaponBase;
 import cz.stechy.drd.model.persistent.BestiaryService;
+import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ObservableMergers;
-import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -21,19 +21,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 
 public class WarriorController implements IProfessionController, Initializable {
 
@@ -78,10 +70,10 @@ public class WarriorController implements IProfessionController, Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cmbBestiaryIntimidation.setItems(mobs);
-        cmbBestiaryIntimidation.setCellFactory(param -> new BestiaryCell());
+        cmbBestiaryIntimidation.setCellFactory(param -> new CellUtils.RawImageListCell());
 
         cmbItemsDetectArtefact.setItems(items);
-        cmbItemsDetectArtefact.setCellFactory(param -> new WeaponCell());
+        cmbItemsDetectArtefact.setCellFactory(param -> new CellUtils.RawImageListCell());
 
         btnIntimidation.disableProperty().bind(
             cmbBestiaryIntimidation.getSelectionModel().selectedItemProperty().isNull()
@@ -107,12 +99,6 @@ public class WarriorController implements IProfessionController, Initializable {
         this.hero = hero;
         this.warior = new Warior(hero);
     }
-
-    // region Public methods
-
-
-
-    // endregion
 
     // region Button handlers
 
@@ -142,71 +128,4 @@ public class WarriorController implements IProfessionController, Initializable {
     }
 
     // endregion
-
-    private static final class BestiaryCell extends ListCell<Mob> {
-
-        final ImageView imageView = new ImageView();
-        final Label label = new Label();
-        final HBox container = new HBox(imageView, label);
-
-        {
-            imageView.setFitWidth(40);
-            imageView.setFitHeight(40);
-
-            label.setTextFill(Color.BLACK);
-            label.setMinHeight(40);
-            label.setAlignment(Pos.CENTER_LEFT);
-            label.setTextAlignment(TextAlignment.CENTER);
-
-            container.setSpacing(8);
-        }
-
-        @Override
-        protected void updateItem(Mob item, boolean empty) {
-            super.updateItem(item, empty);
-
-            if (empty) {
-                setText(null);
-                setGraphic(null);
-            } else {
-                final ByteArrayInputStream inputStream = new ByteArrayInputStream(item.getImage());
-                imageView.setImage(new Image(inputStream));
-                label.setText(item.getName());
-                setGraphic(container);
-            }
-        }
-    }
-
-    private static final class WeaponCell extends ListCell<WeaponBase> {
-        final ImageView imageView = new ImageView();
-        final Label label = new Label();
-        final HBox container = new HBox(imageView, label);
-
-        {
-            imageView.setFitWidth(40);
-            imageView.setFitHeight(40);
-
-            label.setTextFill(Color.BLACK);
-            label.setMinHeight(40);
-            label.setAlignment(Pos.CENTER_LEFT);
-            label.setTextAlignment(TextAlignment.CENTER);
-
-            container.setSpacing(8);
-        }
-
-        @Override
-        protected void updateItem(WeaponBase item, boolean empty) {
-            super.updateItem(item, empty);
-
-            if (empty) {
-                setText(null);
-                setGraphic(null);
-            } else {
-                final ByteArrayInputStream inputStream = new ByteArrayInputStream(item.getImage());
-                imageView.setImage(new Image(inputStream));
-                label.setText(item.getName());
-                setGraphic(container);
-            }
-        }
-    }
 }

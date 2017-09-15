@@ -2,6 +2,7 @@ package cz.stechy.drd.model.entity.mob;
 
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.Rule;
+import cz.stechy.drd.model.WithImage;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.EntityBase;
@@ -18,7 +19,7 @@ import javafx.beans.property.SimpleObjectProperty;
 /**
  * Třída představuje všechna zvířata a nestvůry žijící ve světě Dračího doupěte
  */
-public final class Mob extends EntityBase {
+public final class Mob extends EntityBase implements WithImage {
 
     // region Variables
 
