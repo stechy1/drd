@@ -14,6 +14,7 @@ import cz.stechy.drd.model.persistent.GeneralItemService;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.MeleWeaponService;
 import cz.stechy.drd.model.persistent.RangedWeaponService;
+import cz.stechy.drd.model.persistent.SpellBookService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
@@ -41,7 +42,6 @@ public class Context {
     private static final String CREDENTILS_APP_AUTHOR = "stechy1";
     private static final String CONFIG_FILE_NAME = "config.properties";
     private static final char SEPARATOR = File.separatorChar;
-    private static final int SERVICES_COUNT = 7;
 
     private static final String DEFAULT_VALUE_DATABASE = "database.sqlite";
 
@@ -55,7 +55,8 @@ public class Context {
         ArmorService.class,
         GeneralItemService.class,
         BackpackService.class,
-        BestiaryService.class
+        BestiaryService.class,
+        SpellBookService.class
     };
 
     // endregion
@@ -198,7 +199,7 @@ public class Context {
      * @return Celkový počet služeb (tabulek) v aplikaci
      */
     int getServiceCount() {
-        return SERVICES_COUNT;
+        return SERVICES.length + 1;
     }
 
     // endregion

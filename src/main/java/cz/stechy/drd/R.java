@@ -57,6 +57,8 @@ public final class R {
         public static final String SHOP_GENERAL = "shop_general";
         public static final String SHOP_MELE_WEAPON = "shop_mele_weapon";
         public static final String SHOP_RANGED_WEAPON = "shop_ranged_weapon";
+        public static final String SPELLBOOK = "spellbook";
+        public static final String SPELLBOOK_EDIT = "spellbook_edit";
         public static final String LOGIN = "login";
         public static final String REGISTER = "register";
     }
@@ -159,6 +161,7 @@ public final class R {
         public static final String MAIN_MENU_TOOLS_DICE = "drd_main_menu_tools_dice";
         public static final String MAIN_MENU_TOOLS_BESTIARY = "drd_main_menu_tools_bestiary";
         public static final String MAIN_MENU_TOOLS_SHOP = "drd_main_menu_tools_shop";
+        public static final String MAIN_MENU_TOOLS_SPELL_BOOK = "drd_main_menu_tools_spell_book";
         public static final String MAIN_MENU_TOOLS_FIGHT = "drd_main_menu_tools_fight";
         public static final String MAIN_MENU_HELP = "drd_main_menu_help";
         public static final String MAIN_MENU_HELP_CHANGELOG = "drd_main_menu_help_changelog";
@@ -280,6 +283,22 @@ public final class R {
         public static final String VULNERABILITY_UNDEATH = "drd_vulnerability_undeath";
         public static final String VULNERABILITY_INVISIBLE = "drd_vulnerability_invisible";
         public static final String VULNERABILITY_CUSTOM = "drd_vulnerability_custom";
+        public static final String SPELL_NAME = "drd_spell_name";
+        public static final String SPELL_MAGIC_NAME = "drd_spell_magic_name";
+        public static final String SPELL_AUTHOR = "drd_spell_author";
+        public static final String SPELL_DESCRIPTION = "drd_spell_description";
+        public static final String SPELL_PROFESSION_TYPE = "drd_spell_profession_type";
+        public static final String SPELL_PRICE = "drd_spell_price";
+        public static final String SPELL_RADIUS = "drd_spell_radius";
+        public static final String SPELL_RANGE = "drd_spell_range";
+        public static final String SPELL_TARGET_TYPE = "drd_spell_target_type";
+        public static final String SPELL_TARGET_TYPE_HERO = "drd_spell_target_type_hero";
+        public static final String SPELL_TARGET_TYPE_MONSTER = "drd_spell_target_type_monster";
+        public static final String SPELL_TARGET_TYPE_CREATURE = "drd_spell_target_type_creature";
+        public static final String SPELL_TARGET_TYPE_THING = "drd_spell_target_type_thing";
+        public static final String SPELL_CAST_TIME = "drd_spell_cast_time";
+        public static final String SPELL_DURATION = "drd_spell_duration";
+        public static final String SPELL_IMAGE = "drd_spell_image";
         public static final String RULES_PPZ = "drd_rules_ppz";
         public static final String RULES_PPP = "drd_rules_ppp";
         public static final String RULES_PPE = "drd_rules_ppe";
@@ -302,6 +321,9 @@ public final class R {
         public static final String ITEM_MAX_LOAD = "drd_item_max_load";
         public static final String LEVEL_UP_TITLE = "drd_level_up_title";
         public static final String LEVEL_UP_PRICE = "drd_level_up_price";
+        public static final String SPELL_BOOK_TITLE = "drd_spell_book_title";
+        public static final String SPELL_BOOK_EDIT_NEW_TITLE = "drd_spell_book_edit_new_title";
+        public static final String SPELL_BOOK_EDIT_UPDATE_TITLE = "drd_spell_book_edit_update_title";
         public static final String FIGHT_TITLE = "drd_fight_title";
         public static final String FIGHT_START = "drd_fight_start";
         public static final String FIGHT_STOP = "drd_fight_stop";
@@ -331,6 +353,7 @@ public final class R {
         public static final String TERRAIN_CLOSE_EASY = "drd_terrain_close_easy";
         public static final String TERRAIN_CLOSE_HARD = "drd_terrain_close_hard";
         public static final String TERRAIN_CLOSE_UNUSABLE = "drd_terrain_close_unusable";
+        public static final String SPELL_BOOK_NO_CONTENT = "drd_spell_book_no_content";
     }
 
     public static class Config {
