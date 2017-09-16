@@ -8,7 +8,7 @@ import cz.stechy.drd.util.Translator;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class ConstantDraggableSpellNode extends DraggableSpellNode {
+class ConstantDraggableSpellNode extends DraggableSpellNode {
 
     // region Variables
 
@@ -21,7 +21,7 @@ public class ConstantDraggableSpellNode extends DraggableSpellNode {
 
     // region Constructors
 
-    public ConstantDraggableSpellNode(Translator translator) {
+    ConstantDraggableSpellNode(Translator translator) {
         super(translator);
     }
 

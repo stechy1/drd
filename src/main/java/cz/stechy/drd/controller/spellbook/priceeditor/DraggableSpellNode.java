@@ -17,7 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 
-public abstract class DraggableSpellNode extends Group implements Initializable {
+abstract class DraggableSpellNode extends Group implements Initializable {
 
     // region Constants
 
@@ -64,7 +64,7 @@ public abstract class DraggableSpellNode extends Group implements Initializable 
 
     // region Constructors
 
-    public DraggableSpellNode(Translator translator) {
+    DraggableSpellNode(Translator translator) {
         this.translator = translator;
         FXMLLoader loader = new FXMLLoader(getClass().getResource(RESOURCE_PATH));
         loader.setRoot(this);
