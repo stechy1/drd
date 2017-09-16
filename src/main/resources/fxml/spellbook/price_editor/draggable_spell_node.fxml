@@ -13,8 +13,8 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
-<fx:root xmlns:fx="http://javafx.com/fxml/1" styleClass="dragicon" type="javafx.scene.Group"
-  xmlns="http://javafx.com/javafx/8.0.121" fx:id="root_pane">
+<fx:root xmlns:fx="http://javafx.com/fxml/1" type="javafx.scene.Group"
+  xmlns="http://javafx.com/javafx/8.0.121">
   <fx:define>
     <Double fx:id="linkRadius" fx:value="10.0"/>
     <Double fx:id="linkLayoutY" fx:value="65.0"/>
@@ -23,14 +23,13 @@
     <Double fx:id="linkPadding" fx:value="-7.5"/>
   </fx:define>
   <AnchorPane style="-fx-effect: dropshadow(three-pass-box, derive(cadetblue, -20%), 10, 0, 4, 4);"
-    prefHeight="120.0" prefWidth="200.0">
+    prefHeight="120.0" prefWidth="200.0" fx:id="anchorRoot">
     <cursor>
       <Cursor fx:constant="DEFAULT"/>
     </cursor>
     <VBox style="-fx-background-color: yellow" AnchorPane.bottomAnchor="0.0"
-      AnchorPane.leftAnchor="0.0"
-      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0"
-      alignment="CENTER" fx:id="container">
+      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0"
+      alignment="CENTER" fx:id="container" spacing="16.0">
       <fx:define>
         <Double fx:id="padding" fx:value="20.0"/>
       </fx:define>

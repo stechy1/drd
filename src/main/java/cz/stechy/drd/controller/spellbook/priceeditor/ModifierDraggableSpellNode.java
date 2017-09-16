@@ -6,37 +6,51 @@ import cz.stechy.drd.model.ITranslatedEnum;
 import cz.stechy.drd.util.Translator;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.scene.control.ComboBox;
+import javafx.beans.binding.Bindings;
 
 public class ModifierDraggableSpellNode extends DraggableSpellNode {
 
     // region Variables
 
-    private ComboBox<Operation> cmbOperation;
+    private JFXComboBox<Operation> cmbOperation;
 
-    public ModifierDraggableSpellNode(Translator translator, double startX, double startY) {
-        super(translator, startX, startY);
+    public ModifierDraggableSpellNode(Translator translator) {
+        super(translator);
     }
 
     // endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-         cmbOperation = new JFXComboBox<>();
+        cmbOperation = new JFXComboBox<>();
+        cmbOperation.setLabelFloat(true);
+        cmbOperation.setPromptText(translator.translate(R.Translate.SPELL_PRICE_MODIFIER_TYPE));
 
-        lblTitle.setText(translator.translate(R.Translate.SPELL_PRICE_TYPE_MODIFIER));
+        lblTitle.textProperty().bind(Bindings.concat(
+            translator.translate(R.Translate.SPELL_PRICE_TYPE_MODIFIER),
+            Bindings.createStringBinding(() -> {
+                final Operation operation = cmbOperation.getSelectionModel().selectedItemProperty()
+                    .get();
+                if (operation == null) {
+                    return "";
+                }
+
+                return " - " + translator.translate(operation.getKeyForTranslation());
+            }, cmbOperation.getSelectionModel().selectedItemProperty())
+        ));
 
         cmbOperation.getItems().setAll(Operation.values());
+        container.getChildren().setAll(cmbOperation);
 
         circleLeftLink.setVisible(true);
         circleRightLink.setVisible(true);
     }
 
     private enum Operation implements ITranslatedEnum {
-        ADD(R.Translate.SPELL_PRICE, "+"),
-        SUBTRACT(R.Translate.SPELL_PRICE, "-"),
-        MULTIPLE(R.Translate.SPELL_PRICE, "*"),
-        DIVIDE(R.Translate.SPELL_PRICE, "/");
+        ADD(R.Translate.SPELL_PRICE_MODIFIER_TYPE_ADDER, "+"),
+        SUBTRACT(R.Translate.SPELL_PRICE_MODIFIER_TYPE_SUBTRACTER, "-"),
+        MULTIPLE(R.Translate.SPELL_PRICE_MODIFIER_TYPE_MULTIPLIER, "*"),
+        DIVIDE(R.Translate.SPELL_PRICE_MODIFIER_TYPE_DIVIDER, "/");
 
         private final String key;
         private final String operator;

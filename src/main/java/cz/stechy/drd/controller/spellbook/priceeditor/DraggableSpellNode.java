@@ -12,6 +12,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
@@ -30,6 +31,8 @@ public abstract class DraggableSpellNode extends Group implements Initializable 
 
     // region FXML
 
+    @FXML
+    protected AnchorPane anchorRoot;
     @FXML
     private HBox moveContainer;
     @FXML
@@ -53,7 +56,6 @@ public abstract class DraggableSpellNode extends Group implements Initializable 
     private DraggableSpellNode rightNode;
     private DraggableSpellNode bottomNode;
 
-    private double mouseX, mouseY;
     private Point2D mouse;
 
     protected final Translator translator;
@@ -62,8 +64,7 @@ public abstract class DraggableSpellNode extends Group implements Initializable 
 
     // region Constructors
 
-    public DraggableSpellNode(Translator translator, double startX,
-        double startY) {
+    public DraggableSpellNode(Translator translator) {
         this.translator = translator;
         FXMLLoader loader = new FXMLLoader(getClass().getResource(RESOURCE_PATH));
         loader.setRoot(this);
@@ -87,6 +88,7 @@ public abstract class DraggableSpellNode extends Group implements Initializable 
             mouse = new Point2D(event.getSceneX(), event.getSceneY());
             mouse = sceneToLocal(mouse);
             moveCursor.setValue(MOVE_CURSOR);
+            toFront();
 
             event.consume();
         });

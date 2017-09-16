@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
@@ -49,6 +50,8 @@ public class SpellPriceEditorController extends BaseController implements Initia
     // endregion
 
     private final Translator translator;
+
+    private String title;
     private DraggableSpellNode rootNode;
 
     // endregion
@@ -71,13 +74,13 @@ public class SpellPriceEditorController extends BaseController implements Initia
         DraggableSpellNode node;
         switch (type) {
             case PROPERTY_PRICE_TYPE_CONSTANT:
-                node = new ConstantDraggableSpellNode(translator, screenX, screenY);
+                node = new ConstantDraggableSpellNode(translator);
                 break;
             case PROPERTY_PRICE_TYPE_VARIABLE:
-                node = new VariableDraggableSpellNode(translator, screenX, screenY);
+                node = new VariableDraggableSpellNode(translator);
                 break;
             case PROPERTY_PRICE_TYPE_MODIFIER:
-                node = new ModifierDraggableSpellNode(translator, screenX, screenY);
+                node = new ModifierDraggableSpellNode(translator);
                 break;
             default:
                 return;
@@ -87,12 +90,18 @@ public class SpellPriceEditorController extends BaseController implements Initia
         }
 
         componentPlayground.getChildren().add(node);
+        Point2D point = node.getParent().sceneToLocal(new Point2D(screenX, screenY));
+        System.out.println(point);
+        // 100 = polovina šířky draggable nodu
+        // 15 = polovina výšky záhlaví draggable nodu
+        node.relocate(point.getX() - 100, point.getY() - 15);
     }
 
     // endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.title = resources.getString(R.Translate.SPELL_PRICE_EDITOR_TITLE);
         for (int i = 0; i < LABEL_CAPTIONS.length; i++) {
             final String key = LABEL_CAPTIONS[i];
             final Label label = new Label(resources.getString(key));
@@ -103,6 +112,12 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
         componentPlayground.setOnDragDropped(onDragDropped);
         componentPlayground.setOnDragOver(onDragOver);
+    }
+
+    @Override
+    protected void onResume() {
+        setTitle(title);
+        setScreenSize(800, 600);
     }
 
     private final EventHandler<? super MouseEvent> onDragDetected = event -> {
@@ -128,7 +143,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
         if (db.hasString()) {
             event.setDropCompleted(true);
             final String type = db.getString();
-            addNode(Integer.parseInt(type), event.getScreenX(), event.getScreenY());
+            addNode(Integer.parseInt(type), event.getSceneX(), event.getSceneY());
         }
 
         event.consume();
