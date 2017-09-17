@@ -14,8 +14,12 @@ public class ModifierDraggableSpellNode extends DraggableSpellNode {
 
     private JFXComboBox<Operation> cmbOperation;
 
-    ModifierDraggableSpellNode(Translator translator) {
-        super(translator);
+    // endregion
+
+    // region Constructors
+
+    ModifierDraggableSpellNode(INodeManipulator nodeManipulator, Translator translator) {
+        super(nodeManipulator, translator);
     }
 
     // endregion

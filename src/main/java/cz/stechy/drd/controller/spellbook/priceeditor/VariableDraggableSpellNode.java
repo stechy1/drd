@@ -18,8 +18,8 @@ class VariableDraggableSpellNode extends DraggableSpellNode {
 
     // region Constructors
 
-    VariableDraggableSpellNode(Translator translator) {
-        super(translator);
+    VariableDraggableSpellNode(INodeManipulator nodeManipulator, Translator translator) {
+        super(nodeManipulator, translator);
     }
 
     // endregion

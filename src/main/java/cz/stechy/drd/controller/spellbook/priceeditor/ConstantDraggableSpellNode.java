@@ -21,8 +21,8 @@ class ConstantDraggableSpellNode extends DraggableSpellNode {
 
     // region Constructors
 
-    ConstantDraggableSpellNode(Translator translator) {
-        super(translator);
+    ConstantDraggableSpellNode(INodeManipulator nodeManipulator, Translator translator) {
+        super(nodeManipulator, translator);
     }
 
     // endregion

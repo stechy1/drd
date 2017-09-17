@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.spellbook.priceeditor;
 
+import cz.stechy.drd.model.DragContainer;
 import cz.stechy.drd.util.Translator;
 import java.io.IOException;
 import java.net.URL;
@@ -14,7 +15,10 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -27,6 +31,10 @@ abstract class DraggableSpellNode extends Group implements Initializable {
     private static final String RESOURCE_PATH = "/fxml/spellbook/price_editor/draggable_spell_node.fxml";
     private static final Cursor DEFAULT_CURSOR = Cursor.OPEN_HAND;
     private static final Cursor MOVE_CURSOR = Cursor.CLOSED_HAND;
+
+    private static final String NODE_ID = "node_id";
+
+    private static int COUNTER = 0;
 
     // endregion
 
@@ -54,21 +62,26 @@ abstract class DraggableSpellNode extends Group implements Initializable {
     // endregion
 
     private final ObjectProperty<Cursor> moveCursor = new SimpleObjectProperty<>(this, "moveCursor", Cursor.OPEN_HAND);
+    private final INodeManipulator nodeManipulator;
+    protected final Translator translator;
+    private final int id;
 
     private DraggableSpellNode leftNode;
     private DraggableSpellNode rightNode;
     private DraggableSpellNode bottomNode;
 
     private Point2D mouse;
+    private NodeLink dragLink;
 
-    protected final Translator translator;
 
     // endregion
 
     // region Constructors
 
-    DraggableSpellNode(Translator translator) {
+    DraggableSpellNode(INodeManipulator nodeManipulator, Translator translator) {
+        this.nodeManipulator = nodeManipulator;
         this.translator = translator;
+        this.id = COUNTER++;
         FXMLLoader loader = new FXMLLoader(getClass().getResource(RESOURCE_PATH));
         loader.setRoot(this);
         loader.setController(this);
@@ -89,9 +102,29 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         moveContainer.setOnMousePressed(this::onNodeMousePressed);
         moveContainer.setOnMouseDragged(this::onNodeMouseDragged);
         setOnMouseReleased(event -> moveCursor.setValue(DEFAULT_CURSOR));
+
+        circleBottomLink.setOnDragDetected(this::onLinkDragDetect);
+        circleBottomLink.setOnDragDone(this::onLinkDragDone);
+
     }
 
     // region Private methods
+
+    /**
+     * Vytvoří nový nodelink a nastaví mu novou výchozí pozici
+     *
+     * @param circle {@link Circle} Výchozí pozice
+     * @return {@link NodeLink}
+     */
+    private NodeLink addNodeLink(Circle circle) {
+        final NodeLink nodeLink = new NodeLink();
+        final Point2D point = localToParent(new Point2D(circle.getLayoutX(), circle.getLayoutY()));
+        nodeLink.setStart(point);
+        nodeManipulator.addNode(nodeLink);
+        return nodeLink;
+    }
+
+    // region Node drag&drop
 
     private void onNodeMousePressed(MouseEvent event) {
         mouse = new Point2D(event.getSceneX(), event.getSceneY());
@@ -108,6 +141,50 @@ abstract class DraggableSpellNode extends Group implements Initializable {
 
         event.consume();
     }
+
+    // endregion
+
+    // region Link drag&drop
+
+    private void onLinkDragDetect(MouseEvent event) {
+        nodeManipulator.setOnDragOverHandler(this::onLinkDragOver);
+
+        final Circle source = (Circle) event.getSource();
+        dragLink = addNodeLink(source);
+
+        final DragContainer container = new DragContainer();
+        container.addData(NODE_ID, id);
+
+        final ClipboardContent content = new ClipboardContent();
+        content.put(DragContainer.PRICE_NODE_LINK_ADD, container);
+
+        source.startDragAndDrop(TransferMode.ANY).setContent(content);
+
+        event.consume();
+    }
+
+    private void onLinkDragOver(DragEvent event) {
+        System.out.println("Over");
+        final DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.PRICE_NODE_LINK_ADD);
+        if (container == null) {
+            return;
+        }
+
+        event.acceptTransferModes(TransferMode.ANY);
+        dragLink.setEnd(getParent().sceneToLocal(new Point2D(event.getSceneX(), event.getSceneY())));
+    }
+
+    private void onLinkDragDropped(DragEvent event) {
+        System.out.println("Dropped");
+    }
+
+    private void onLinkDragDone(DragEvent event) {
+        nodeManipulator.setOnDragOverHandler(null);
+        nodeManipulator.removeNode(dragLink);
+        dragLink = null;
+    }
+
+    // endregion
 
     // endregion
 
