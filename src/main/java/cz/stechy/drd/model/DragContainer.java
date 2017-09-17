@@ -17,8 +17,6 @@ public class DragContainer implements Serializable {
 
     public static final DataFormat PRICE_NODE_ADD = new DataFormat(
         "cz.stechy.drd.controller.spellBook.priceEditor.draggableSpellNode.add");
-    public static final DataFormat PRICE_NODE_MOVE = new DataFormat(
-        "cz.stechy.drd.controller.spellBook.priceEditor.draggableSpellNode.move");
     public static final DataFormat PRICE_NODE_LINK_ADD = new DataFormat(
         "cz.stechy.drd.controller.spellBook.priceEditor.draggableSpellLink.add");
 
