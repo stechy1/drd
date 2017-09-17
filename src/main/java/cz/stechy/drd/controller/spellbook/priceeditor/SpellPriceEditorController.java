@@ -65,6 +65,13 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     // region Private methods
 
+    /**
+     * Přidá node určitého typu na scénu
+     *
+     * @param type Typ nodu
+     * @param screenX X-ová souřadnice středu nodu v X-ové ose
+     * @param screenY Y-ová souřadnice reprezentující horní část nodu
+     */
     private void addNode(int type, double screenX, double screenY) {
         DraggableSpellNode node;
         switch (type) {
