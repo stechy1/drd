@@ -2,6 +2,8 @@ package cz.stechy.drd.controller.spellbook.priceeditor;
 
 import cz.stechy.drd.util.Translator;
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
@@ -12,6 +14,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -75,32 +78,35 @@ abstract class DraggableSpellNode extends Group implements Initializable {
             e.printStackTrace();
         }
 
-        moveContainer.cursorProperty().bind(moveCursor);
-        initDropHandlers();
     }
 
     // endregion
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        moveContainer.cursorProperty().bind(moveCursor);
+
+        moveContainer.setOnMousePressed(this::onNodeMousePressed);
+        moveContainer.setOnMouseDragged(this::onNodeMouseDragged);
+        setOnMouseReleased(event -> moveCursor.setValue(DEFAULT_CURSOR));
+    }
+
     // region Private methods
 
-    private void initDropHandlers() {
-        moveContainer.setOnMousePressed(event -> {
-            mouse = new Point2D(event.getSceneX(), event.getSceneY());
-            mouse = sceneToLocal(mouse);
-            moveCursor.setValue(MOVE_CURSOR);
-            toFront();
+    private void onNodeMousePressed(MouseEvent event) {
+        mouse = new Point2D(event.getSceneX(), event.getSceneY());
+        mouse = sceneToLocal(mouse);
+        moveCursor.setValue(MOVE_CURSOR);
+        toFront();
 
-            event.consume();
-        });
-        moveContainer.setOnMouseDragged(event -> {
-            Point2D local = getParent().sceneToLocal(new Point2D(event.getSceneX(), event.getSceneY()));
-            relocate(local.getX() - mouse.getX(), local.getY() - mouse.getY());
+        event.consume();
+    }
 
-            event.consume();
-        });
-        setOnMouseReleased(event -> {
-            moveCursor.setValue(DEFAULT_CURSOR);
-        });
+    private void onNodeMouseDragged(MouseEvent event) {
+        Point2D local = getParent().sceneToLocal(new Point2D(event.getSceneX(), event.getSceneY()));
+        relocate(local.getX() - mouse.getX(), local.getY() - mouse.getY());
+
+        event.consume();
     }
 
     // endregion

@@ -29,6 +29,7 @@ class ConstantDraggableSpellNode extends DraggableSpellNode {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
         inputValue = new JFXTextField();
         inputExtention = new JFXTextField();
         value = new MaxActValue(Integer.MIN_VALUE, Integer.MAX_VALUE, 0);

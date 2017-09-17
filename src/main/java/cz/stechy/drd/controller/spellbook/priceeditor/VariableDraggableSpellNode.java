@@ -26,6 +26,7 @@ class VariableDraggableSpellNode extends DraggableSpellNode {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
         cmbVariable = new JFXComboBox<>();
         cmbVariable.setLabelFloat(true);
         cmbVariable.setPromptText(translator.translate(R.Translate.SPELL_PRICE_TYPE_VARIABLE));

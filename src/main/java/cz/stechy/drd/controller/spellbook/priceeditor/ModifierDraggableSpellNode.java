@@ -22,6 +22,7 @@ public class ModifierDraggableSpellNode extends DraggableSpellNode {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
         cmbOperation = new JFXComboBox<>();
         cmbOperation.setLabelFloat(true);
         cmbOperation.setPromptText(translator.translate(R.Translate.SPELL_PRICE_MODIFIER_TYPE));
