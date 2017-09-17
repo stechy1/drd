@@ -6,7 +6,6 @@ import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -66,10 +65,6 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     // region Private methods
 
-    private void initDragHandlers(Label label) {
-        label.setOnDragDetected(onDragDetected);
-    }
-
     private void addNode(int type, double screenX, double screenY) {
         DraggableSpellNode node;
         switch (type) {
@@ -97,31 +92,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
         node.relocate(point.getX() - 100, point.getY() - 15);
     }
 
-    // endregion
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.title = resources.getString(R.Translate.SPELL_PRICE_EDITOR_TITLE);
-        for (int i = 0; i < LABEL_CAPTIONS.length; i++) {
-            final String key = LABEL_CAPTIONS[i];
-            final Label label = new Label(resources.getString(key));
-            label.getProperties().put(PROPERTY_PRICE_TYPE, i);
-            initDragHandlers(label);
-            componentSourceContainer.getChildren().add(label);
-        }
-
-        componentPlayground.setOnDragDropped(onDragDropped);
-        componentPlayground.setOnDragOver(onDragOver);
-    }
-
-    @Override
-    protected void onResume() {
-        setTitle(title);
-        setScreenSize(800, 600);
-    }
-
-    // Zdrojové eventy
-    private final EventHandler<? super MouseEvent> onDragDetected = event -> {
+    private void onDragDetected(MouseEvent event) {
         final Label source = (Label) event.getSource();
         final int propertyType = (int) source.getProperties().get(PROPERTY_PRICE_TYPE);
 
@@ -134,10 +105,20 @@ public class SpellPriceEditorController extends BaseController implements Initia
         source.startDragAndDrop(TransferMode.ANY).setContent(content);
 
         event.consume();
-    };
+    }
 
-    // Cílové eventy
-    private final EventHandler<? super DragEvent> onDragOver = event -> {
+    private void onDragDropped(DragEvent event) {
+        final DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.PRICE_NODE_ADD);
+        container.getValue(PROPERTY_PRICE_TYPE).ifPresent(o -> {
+            event.setDropCompleted(true);
+            final int type = (int) o;
+            addNode(type, event.getSceneX(), event.getSceneY());
+        });
+
+        event.consume();
+    }
+
+    private void onDragOver(DragEvent event) {
         final DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.PRICE_NODE_ADD);
         if (container == null) {
             return;
@@ -147,15 +128,29 @@ public class SpellPriceEditorController extends BaseController implements Initia
             event.acceptTransferModes(TransferMode.ANY));
 
         event.consume();
-    };
-    private final EventHandler<? super DragEvent> onDragDropped = event -> {
-        final DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.PRICE_NODE_ADD);
-        container.getValue(PROPERTY_PRICE_TYPE).ifPresent(o -> {
-            event.setDropCompleted(true);
-            final int type = (int) o;
-            addNode(type, event.getSceneX(), event.getSceneY());
-        });
+    }
 
-        event.consume();
-    };
+    // endregion
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.title = resources.getString(R.Translate.SPELL_PRICE_EDITOR_TITLE);
+        for (int i = 0; i < LABEL_CAPTIONS.length; i++) {
+            final String key = LABEL_CAPTIONS[i];
+            final Label label = new Label(resources.getString(key));
+            label.getProperties().put(PROPERTY_PRICE_TYPE, i);
+            label.setOnDragDetected(this::onDragDetected);
+            componentSourceContainer.getChildren().add(label);
+        }
+
+        componentPlayground.setOnDragDropped(this::onDragDropped);
+        componentPlayground.setOnDragOver(this::onDragOver);
+    }
+
+    @Override
+    protected void onResume() {
+        setTitle(title);
+        setScreenSize(800, 600);
+    }
+
 }
