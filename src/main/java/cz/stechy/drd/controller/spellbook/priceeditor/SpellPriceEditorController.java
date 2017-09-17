@@ -6,9 +6,11 @@ import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
@@ -20,7 +22,7 @@ import javafx.scene.layout.VBox;
 /**
  * Kontroler pro editaci ceny kouzla
  */
-public class SpellPriceEditorController extends BaseController implements Initializable {
+public class SpellPriceEditorController extends BaseController implements Initializable, INodeManipulator {
 
     // region Constants
 
@@ -76,13 +78,13 @@ public class SpellPriceEditorController extends BaseController implements Initia
         DraggableSpellNode node;
         switch (type) {
             case PROPERTY_PRICE_TYPE_CONSTANT:
-                node = new ConstantDraggableSpellNode(translator);
+                node = new ConstantDraggableSpellNode(this, translator);
                 break;
             case PROPERTY_PRICE_TYPE_VARIABLE:
-                node = new VariableDraggableSpellNode(translator);
+                node = new VariableDraggableSpellNode(this, translator);
                 break;
             case PROPERTY_PRICE_TYPE_MODIFIER:
-                node = new ModifierDraggableSpellNode(translator);
+                node = new ModifierDraggableSpellNode(this, translator);
                 break;
             default:
                 return;
@@ -160,4 +162,22 @@ public class SpellPriceEditorController extends BaseController implements Initia
         setScreenSize(800, 600);
     }
 
+    @Override
+    public void addNode(Node node) {
+        componentPlayground.getChildren().add(node);
+    }
+
+    @Override
+    public void removeNode(Node node) {
+        componentPlayground.getChildren().remove(node);
+    }
+
+    @Override
+    public void setOnDragOverHandler(EventHandler<? super DragEvent> event) {
+        if (event == null) {
+            componentPlayground.setOnDragOver(this::onDragOver);
+        } else {
+            componentPlayground.setOnDragOver(event);
+        }
+    }
 }
