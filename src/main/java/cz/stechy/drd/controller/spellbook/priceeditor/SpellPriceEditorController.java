@@ -1,6 +1,7 @@
 package cz.stechy.drd.controller.spellbook.priceeditor;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.model.DragContainer;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import java.net.URL;
@@ -12,7 +13,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
@@ -120,31 +120,41 @@ public class SpellPriceEditorController extends BaseController implements Initia
         setScreenSize(800, 600);
     }
 
+    // Zdrojové eventy
     private final EventHandler<? super MouseEvent> onDragDetected = event -> {
         final Label source = (Label) event.getSource();
-        final Dragboard db = source.startDragAndDrop(TransferMode.ANY);
-        final ClipboardContent content = new ClipboardContent();
         final int propertyType = (int) source.getProperties().get(PROPERTY_PRICE_TYPE);
-        content.putString(String.valueOf(propertyType));
-        db.setContent(content);
+
+        final DragContainer container = new DragContainer();
+        container.addData(PROPERTY_PRICE_TYPE, propertyType);
+
+        final ClipboardContent content = new ClipboardContent();
+        content.put(DragContainer.PRICE_NODE_ADD, container);
+
+        source.startDragAndDrop(TransferMode.ANY).setContent(content);
 
         event.consume();
     };
 
+    // Cílové eventy
     private final EventHandler<? super DragEvent> onDragOver = event -> {
-        if (event.getDragboard().hasString()) {
-            event.acceptTransferModes(TransferMode.ANY);
+        final DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.PRICE_NODE_ADD);
+        if (container == null) {
+            return;
         }
+
+        container.getValue(PROPERTY_PRICE_TYPE).ifPresent(o ->
+            event.acceptTransferModes(TransferMode.ANY));
 
         event.consume();
     };
     private final EventHandler<? super DragEvent> onDragDropped = event -> {
-        Dragboard db = event.getDragboard();
-        if (db.hasString()) {
+        final DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.PRICE_NODE_ADD);
+        container.getValue(PROPERTY_PRICE_TYPE).ifPresent(o -> {
             event.setDropCompleted(true);
-            final String type = db.getString();
-            addNode(Integer.parseInt(type), event.getSceneX(), event.getSceneY());
-        }
+            final int type = (int) o;
+            addNode(type, event.getSceneX(), event.getSceneY());
+        });
 
         event.consume();
     };
