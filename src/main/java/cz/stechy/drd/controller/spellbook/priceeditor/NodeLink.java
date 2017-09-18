@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.spellbook.priceeditor;
 
+import java.util.UUID;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -34,6 +35,7 @@ public class NodeLink extends CubicCurve {
         mControlOffsetY.set(50.0);
         setStroke(Color.BLACK);
         setFill(null);
+        setId(UUID.randomUUID().toString());
 
         mControlDirectionX1.bind(Bindings
             .when(startXProperty().greaterThan(endXProperty()))
@@ -103,6 +105,16 @@ public class NodeLink extends CubicCurve {
         }
         endXProperty().bind(target.layoutXProperty().add(targetCircle.getLayoutX()));
         endYProperty().bind(target.layoutYProperty().add(targetCircle.getLayoutY()));
+    }
+
+    /**
+     * Zruší pozorování vlastností
+     */
+    public void unbind() {
+        startXProperty().unbind();
+        startYProperty().unbind();
+        endXProperty().unbind();
+        endYProperty().unbind();
     }
 
     // endregion

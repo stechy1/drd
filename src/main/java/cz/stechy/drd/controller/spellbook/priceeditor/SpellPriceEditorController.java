@@ -12,7 +12,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
@@ -53,6 +52,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
     // endregion
 
     private final List<DraggableSpellNode> nodes = new ArrayList<>();
+    private final List<NodeLink> links = new ArrayList<>();
     private final Translator translator;
 
     private String title;
@@ -170,15 +170,6 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     // Implementace node manipulatoru
     private final INodeManipulator manipulator = new INodeManipulator() {
-        @Override
-        public void addNode(Node node) {
-            componentPlayground.getChildren().add(node);
-        }
-
-        @Override
-        public void removeNode(Node node) {
-            componentPlayground.getChildren().remove(node);
-        }
 
         @Override
         public void setOnDragOverHandler(EventHandler<? super DragEvent> event) {
@@ -188,6 +179,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
                 componentPlayground.setOnDragOver(event);
             }
         }
+
     };
 
     private final ILinkListener linkListener = new ILinkListener() {
@@ -201,7 +193,15 @@ public class SpellPriceEditorController extends BaseController implements Initia
             dragLink = new NodeLink();
             dragLink.setStart(start);
             componentPlayground.getChildren().add(dragLink);
+            links.add(dragLink);
             return dragLink;
+        }
+
+        @Override
+        public void deleteNodeLink(NodeLink nodeLink) {
+            componentPlayground.getChildren().remove(nodeLink);
+            links.remove(nodeLink);
+            nodeLink.unbind();
         }
 
         @Override

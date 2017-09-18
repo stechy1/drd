@@ -23,6 +23,13 @@ public interface ILinkListener {
     NodeLink createNodeLink(Point2D start);
 
     /**
+     * Odebere {@link NodeLink} ze scény
+     *
+     * @param nodeLink {@link NodeLink}
+     */
+    void deleteNodeLink(NodeLink nodeLink);
+
+    /**
      * Propojí konec čáry s cílovým nodem
      *
      * @param id Id cílového nodu
