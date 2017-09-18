@@ -5,6 +5,8 @@ import cz.stechy.drd.model.DragContainer;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -22,7 +24,7 @@ import javafx.scene.layout.VBox;
 /**
  * Kontroler pro editaci ceny kouzla
  */
-public class SpellPriceEditorController extends BaseController implements Initializable, INodeManipulator {
+public class SpellPriceEditorController extends BaseController implements Initializable {
 
     // region Constants
 
@@ -50,10 +52,14 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     // endregion
 
+    private final List<DraggableSpellNode> nodes = new ArrayList<>();
     private final Translator translator;
 
     private String title;
     private DraggableSpellNode rootNode;
+
+    private DraggableSpellNode dragSourceNode;
+    private NodeLink dragLink;
 
     // endregion
 
@@ -78,13 +84,13 @@ public class SpellPriceEditorController extends BaseController implements Initia
         DraggableSpellNode node;
         switch (type) {
             case PROPERTY_PRICE_TYPE_CONSTANT:
-                node = new ConstantDraggableSpellNode(this, translator);
+                node = new ConstantDraggableSpellNode(manipulator, linkListener, translator);
                 break;
             case PROPERTY_PRICE_TYPE_VARIABLE:
-                node = new VariableDraggableSpellNode(this, translator);
+                node = new VariableDraggableSpellNode(manipulator, linkListener, translator);
                 break;
             case PROPERTY_PRICE_TYPE_MODIFIER:
-                node = new ModifierDraggableSpellNode(this, translator);
+                node = new ModifierDraggableSpellNode(manipulator, linkListener, translator);
                 break;
             default:
                 return;
@@ -94,8 +100,8 @@ public class SpellPriceEditorController extends BaseController implements Initia
         }
 
         componentPlayground.getChildren().add(node);
+        nodes.add(node);
         Point2D point = node.getParent().sceneToLocal(new Point2D(screenX, screenY));
-        System.out.println(point);
         // 100 = polovina šířky draggable nodu
         // 15 = polovina výšky záhlaví draggable nodu
         node.relocate(point.getX() - 100, point.getY() - 15);
@@ -162,22 +168,49 @@ public class SpellPriceEditorController extends BaseController implements Initia
         setScreenSize(800, 600);
     }
 
-    @Override
-    public void addNode(Node node) {
-        componentPlayground.getChildren().add(node);
-    }
-
-    @Override
-    public void removeNode(Node node) {
-        componentPlayground.getChildren().remove(node);
-    }
-
-    @Override
-    public void setOnDragOverHandler(EventHandler<? super DragEvent> event) {
-        if (event == null) {
-            componentPlayground.setOnDragOver(this::onDragOver);
-        } else {
-            componentPlayground.setOnDragOver(event);
+    // Implementace node manipulatoru
+    private final INodeManipulator manipulator = new INodeManipulator() {
+        @Override
+        public void addNode(Node node) {
+            componentPlayground.getChildren().add(node);
         }
-    }
+
+        @Override
+        public void removeNode(Node node) {
+            componentPlayground.getChildren().remove(node);
+        }
+
+        @Override
+        public void setOnDragOverHandler(EventHandler<? super DragEvent> event) {
+            if (event == null) {
+                componentPlayground.setOnDragOver(SpellPriceEditorController.this::onDragOver);
+            } else {
+                componentPlayground.setOnDragOver(event);
+            }
+        }
+    };
+
+    private final ILinkListener linkListener = new ILinkListener() {
+        @Override
+        public void saveSourceNode(DraggableSpellNode node) {
+            SpellPriceEditorController.this.dragSourceNode = node;
+        }
+
+        @Override
+        public NodeLink createNodeLink(Point2D start) {
+            dragLink = new NodeLink();
+            dragLink.setStart(start);
+            componentPlayground.getChildren().add(dragLink);
+            return dragLink;
+        }
+
+        @Override
+        public void connectLineEndWithNode(String id, LinkPosition position) {
+            nodes.stream()
+                .filter(draggableSpellNode -> draggableSpellNode.getId().equals(id))
+                .findFirst()
+                .ifPresent(dragDestinationNode ->
+                    dragLink.bindEnds(dragSourceNode, dragDestinationNode, position));
+        }
+    };
 }

@@ -88,11 +88,21 @@ public class NodeLink extends CubicCurve {
      * @param source Zdrojový node
      * @param target Cílový node
      */
-    public void bindEnds(Circle source, Circle target) {
-        startXProperty().bind(source.layoutXProperty());
-        startYProperty().bind(source.layoutYProperty());
-        endXProperty().bind(target.layoutXProperty());
-        endYProperty().bind(target.layoutYProperty());
+    public void bindEnds(DraggableSpellNode source, DraggableSpellNode target, LinkPosition position) {
+        startXProperty().bind(source.layoutXProperty().add(source.circleBottomLink.getLayoutX()));
+        startYProperty().bind(source.layoutYProperty().add(source.circleBottomLink.getLayoutY()));
+
+        Circle targetCircle = null;
+        switch (position) {
+            case LEFT:
+                targetCircle = target.circleLeftLink;
+                break;
+            case RIGHT:
+                targetCircle = target.circleRightLink;
+                break;
+        }
+        endXProperty().bind(target.layoutXProperty().add(targetCircle.getLayoutX()));
+        endYProperty().bind(target.layoutYProperty().add(targetCircle.getLayoutY()));
     }
 
     // endregion

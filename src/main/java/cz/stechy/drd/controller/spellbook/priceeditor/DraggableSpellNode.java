@@ -5,7 +5,10 @@ import cz.stechy.drd.util.Translator;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.UUID;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,8 +37,6 @@ abstract class DraggableSpellNode extends Group implements Initializable {
 
     private static final String NODE_ID = "node_id";
 
-    private static int COUNTER = 0;
-
     // endregion
 
     // region Variables
@@ -62,9 +63,10 @@ abstract class DraggableSpellNode extends Group implements Initializable {
     // endregion
 
     private final ObjectProperty<Cursor> moveCursor = new SimpleObjectProperty<>(this, "moveCursor", Cursor.OPEN_HAND);
+    private final BooleanProperty circlesVisible = new SimpleBooleanProperty(this, "circlesVisible", false);
     private final INodeManipulator nodeManipulator;
+    private final ILinkListener linkListener;
     protected final Translator translator;
-    private final int id;
 
     private DraggableSpellNode leftNode;
     private DraggableSpellNode rightNode;
@@ -78,10 +80,12 @@ abstract class DraggableSpellNode extends Group implements Initializable {
 
     // region Constructors
 
-    DraggableSpellNode(INodeManipulator nodeManipulator, Translator translator) {
+    DraggableSpellNode(INodeManipulator nodeManipulator, ILinkListener linkListener,
+        Translator translator) {
         this.nodeManipulator = nodeManipulator;
+        this.linkListener = linkListener;
         this.translator = translator;
-        this.id = COUNTER++;
+        setId(UUID.randomUUID().toString());
         FXMLLoader loader = new FXMLLoader(getClass().getResource(RESOURCE_PATH));
         loader.setRoot(this);
         loader.setController(this);
@@ -98,6 +102,8 @@ abstract class DraggableSpellNode extends Group implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         moveContainer.cursorProperty().bind(moveCursor);
+        circleLeftLink.visibleProperty().bind(circlesVisible);
+        circleRightLink.visibleProperty().bind(circlesVisible);
 
         moveContainer.setOnMousePressed(this::onNodeMousePressed);
         moveContainer.setOnMouseDragged(this::onNodeMouseDragged);
@@ -106,22 +112,28 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         circleBottomLink.setOnDragDetected(this::onLinkDragDetect);
         circleBottomLink.setOnDragDone(this::onLinkDragDone);
 
+        circlesVisible.addListener((observable, oldValue, newValue) -> {
+            if (newValue == null || !newValue) { // Kolečka nejsou viditelné - odeberu listenery
+                circleLeftLink.setOnDragOver(null);
+                circleLeftLink.setOnDragDropped(null);
+                circleRightLink.setOnDragOver(null);
+                circleRightLink.setOnDragDropped(null);
+            } else { // Kolečka jsou viditelná, nastavím listenerry
+                circleLeftLink.setOnDragOver(this::onLinkDragOver);
+                circleLeftLink.setOnDragDropped(this::onLinkDragDropped);
+                circleRightLink.setOnDragOver(this::onLinkDragOver);
+                circleRightLink.setOnDragDropped(this::onLinkDragDropped);
+            }
+        });
     }
 
     // region Private methods
 
     /**
-     * Vytvoří nový nodelink a nastaví mu novou výchozí pozici
-     *
-     * @param circle {@link Circle} Výchozí pozice
-     * @return {@link NodeLink}
+     * Zobrazí levé a pravé kolečko
      */
-    private NodeLink addNodeLink(Circle circle) {
-        final NodeLink nodeLink = new NodeLink();
-        final Point2D point = localToParent(new Point2D(circle.getLayoutX(), circle.getLayoutY()));
-        nodeLink.setStart(point);
-        nodeManipulator.addNode(nodeLink);
-        return nodeLink;
+    protected void showLeftRightCircles() {
+        circlesVisible.set(true);
     }
 
     // region Node drag&drop
@@ -130,7 +142,6 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         mouse = new Point2D(event.getSceneX(), event.getSceneY());
         mouse = sceneToLocal(mouse);
         moveCursor.setValue(MOVE_CURSOR);
-        toFront();
 
         event.consume();
     }
@@ -147,44 +158,65 @@ abstract class DraggableSpellNode extends Group implements Initializable {
     // region Link drag&drop
 
     private void onLinkDragDetect(MouseEvent event) {
-        nodeManipulator.setOnDragOverHandler(this::onLinkDragOver);
+        nodeManipulator.setOnDragOverHandler(this::onParentDragOver);
 
         final Circle source = (Circle) event.getSource();
-        dragLink = addNodeLink(source);
+        // Instanci ukládám pouze, abych mohl lehce měnit koncové souřadnice čáry podle myši
+        linkListener.saveSourceNode(this);
+        dragLink = linkListener.createNodeLink(localToParent(new Point2D(source.getLayoutX(), source.getLayoutY())));
 
         final DragContainer container = new DragContainer();
-        container.addData(NODE_ID, id);
+        container.addData(NODE_ID, getId());
 
         final ClipboardContent content = new ClipboardContent();
         content.put(DragContainer.PRICE_NODE_LINK_ADD, container);
 
         source.startDragAndDrop(TransferMode.ANY).setContent(content);
-
         event.consume();
     }
 
     private void onLinkDragOver(DragEvent event) {
-        System.out.println("Over");
         final DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.PRICE_NODE_LINK_ADD);
         if (container == null) {
             return;
         }
 
-        event.acceptTransferModes(TransferMode.ANY);
-        dragLink.setEnd(getParent().sceneToLocal(new Point2D(event.getSceneX(), event.getSceneY())));
+        container.getValue(NODE_ID).ifPresent(o -> {
+            final String otherId = (String) o;
+            if (!getId().equals(otherId)) {
+                System.out.println("Accepting");
+                event.acceptTransferModes(TransferMode.ANY);
+                event.consume();
+            }
+        });
     }
 
     private void onLinkDragDropped(DragEvent event) {
-        System.out.println("Dropped");
+        final Circle source = (Circle) event.getSource();
+
+        linkListener.connectLineEndWithNode(getId(), source == circleLeftLink ? LinkPosition.LEFT : LinkPosition.RIGHT);
+
+        event.setDropCompleted(true);
     }
 
     private void onLinkDragDone(DragEvent event) {
         nodeManipulator.setOnDragOverHandler(null);
-        nodeManipulator.removeNode(dragLink);
         dragLink = null;
     }
 
+    private void onParentDragOver(DragEvent event) {
+        if (dragLink == null) {
+            return;
+        }
+
+        dragLink.setEnd(getParent().sceneToLocal(new Point2D(event.getSceneX(), event.getSceneY())));
+    }
+
     // endregion
+
+    // endregion
+
+    // region Getters & Setters
 
     // endregion
 

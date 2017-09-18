@@ -18,8 +18,10 @@ public class ModifierDraggableSpellNode extends DraggableSpellNode {
 
     // region Constructors
 
-    ModifierDraggableSpellNode(INodeManipulator nodeManipulator, Translator translator) {
-        super(nodeManipulator, translator);
+    ModifierDraggableSpellNode(INodeManipulator nodeManipulator,
+        ILinkListener linkListener,
+        Translator translator) {
+        super(nodeManipulator, linkListener, translator);
     }
 
     // endregion
@@ -47,8 +49,7 @@ public class ModifierDraggableSpellNode extends DraggableSpellNode {
         cmbOperation.getItems().setAll(Operation.values());
         container.getChildren().setAll(cmbOperation);
 
-        circleLeftLink.setVisible(true);
-        circleRightLink.setVisible(true);
+        showLeftRightCircles();
     }
 
     private enum Operation implements ITranslatedEnum {
