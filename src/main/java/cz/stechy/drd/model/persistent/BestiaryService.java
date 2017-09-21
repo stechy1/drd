@@ -105,7 +105,7 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
     // region Private methods
 
     @Override
-    protected Mob parseDataSnapshot(DataSnapshot snapshot) {
+    public Mob parseDataSnapshot(DataSnapshot snapshot) {
         return new Builder()
             .id(snapshot.child(COLUMN_ID).getValue(String.class))
             .name(snapshot.child(COLUMN_NAME).getValue(String.class))
@@ -230,7 +230,7 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
     }
 
     @Override
-    protected Map<String, Object> toFirebaseMap(Mob mob) {
+    public Map<String, Object> toFirebaseMap(Mob mob) {
         final Map<String, Object> map = super.toFirebaseMap(mob);
         map.put(COLUMN_IMAGE, blobToBase64(mob.getImage()));
         return map;

@@ -81,7 +81,7 @@ public final class BackpackService extends AdvancedDatabaseService<Backpack> {
     // region Private methods
 
     @Override
-    protected Backpack parseDataSnapshot(DataSnapshot snapshot) {
+    public Backpack parseDataSnapshot(DataSnapshot snapshot) {
         return new Backpack.Builder()
             .id(snapshot.child(COLUMN_ID).getValue(String.class))
             .name(snapshot.child(COLUMN_NAME).getValue(String.class))
@@ -167,7 +167,7 @@ public final class BackpackService extends AdvancedDatabaseService<Backpack> {
     }
 
     @Override
-    protected Map<String, Object> toFirebaseMap(Backpack item) {
+    public Map<String, Object> toFirebaseMap(Backpack item) {
         final Map<String, Object> map = super.toFirebaseMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;

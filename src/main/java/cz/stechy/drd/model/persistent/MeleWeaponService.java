@@ -95,7 +95,7 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
     // region Private methods
 
     @Override
-    protected MeleWeapon parseDataSnapshot(DataSnapshot snapshot) {
+    public MeleWeapon parseDataSnapshot(DataSnapshot snapshot) {
         return new MeleWeapon.Builder()
             .id(snapshot.child(COLUMN_ID).getValue(String.class))
             .name(snapshot.child(COLUMN_NAME).getValue(String.class))
@@ -193,7 +193,7 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
     }
 
     @Override
-    protected Map<String, Object> toFirebaseMap(MeleWeapon item) {
+    public Map<String, Object> toFirebaseMap(MeleWeapon item) {
         final Map<String, Object> map = super.toFirebaseMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;

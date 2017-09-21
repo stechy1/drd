@@ -79,7 +79,7 @@ public final class GeneralItemService extends AdvancedDatabaseService<GeneralIte
     // region Private methods
 
     @Override
-    protected GeneralItem parseDataSnapshot(DataSnapshot snapshot) {
+    public GeneralItem parseDataSnapshot(DataSnapshot snapshot) {
         return new GeneralItem.Builder()
             .id(snapshot.child(COLUMN_ID).getValue(String.class))
             .name(snapshot.child(COLUMN_NAME).getValue(String.class))
@@ -159,7 +159,7 @@ public final class GeneralItemService extends AdvancedDatabaseService<GeneralIte
     }
 
     @Override
-    protected Map<String, Object> toFirebaseMap(GeneralItem item) {
+    public Map<String, Object> toFirebaseMap(GeneralItem item) {
         final Map<String, Object> map = super.toFirebaseMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;

@@ -89,36 +89,9 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     // region Private methods
 
     /**
-     * Konvertuje {@link DataSnapshot} na instanci třídy {@link T}
-     *
-     * @param snapshot Snapshot itemu
-     * @return Instanci třídy {@link T}
-     */
-    protected abstract T parseDataSnapshot(DataSnapshot snapshot);
-
-    /**
      * @return Vrátí název potomka ve firebase
      */
     protected abstract String getFirebaseChildName();
-
-    /**
-     * Namapuje vybraný item do mapy
-     *
-     * @param item Item, který se má převést do mapy
-     * @return Mapu, kde klíč je název sloupce a hodnota je hodnota sloupce
-     */
-    protected Map<String, Object> toFirebaseMap(T item) {
-        String[] columns = getColumnsKeys().split(",");
-        Object[] values = itemToParams(item).toArray();
-        assert columns.length == values.length;
-        final Map<String, Object> map = new HashMap<>(columns.length);
-
-        for (int i = 0; i < columns.length; i++) {
-            map.put(columns[i], values[i]);
-        }
-
-        return map;
-    }
 
     private ListChangeListener<T> makeChangeListener() {
         return c -> {
@@ -184,6 +157,19 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             .filter(item -> item.getId().equals(id))
             .findFirst()
             .ifPresent(t -> t.setDownloaded(false));
+    }
+
+    public Map<String, Object> toFirebaseMap(T item) {
+        String[] columns = getColumnsKeys().split(",");
+        Object[] values = itemToParams(item).toArray();
+        assert columns.length == values.length;
+        final Map<String, Object> map = new HashMap<>(columns.length);
+
+        for (int i = 0; i < columns.length; i++) {
+            map.put(columns[i], values[i]);
+        }
+
+        return map;
     }
 
     @Override

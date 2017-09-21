@@ -95,7 +95,7 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
     // region Private methods
 
     @Override
-    protected Armor parseDataSnapshot(DataSnapshot snapshot) {
+    public Armor parseDataSnapshot(DataSnapshot snapshot) {
         return new Armor.Builder()
             .id(snapshot.child(COLUMN_ID).getValue(String.class))
             .name(snapshot.child(COLUMN_NAME).getValue(String.class))
@@ -196,7 +196,7 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
     }
 
     @Override
-    protected Map<String, Object> toFirebaseMap(Armor item) {
+    public Map<String, Object> toFirebaseMap(Armor item) {
         final Map<String, Object> map = super.toFirebaseMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;
