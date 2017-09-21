@@ -1,5 +1,5 @@
 package cz.stechy.drd.controller.spellbook.priceeditor;
 
 public enum LinkPosition {
-    LEFT, RIGHT
+    LEFT, RIGHT, BOTTOM
 }

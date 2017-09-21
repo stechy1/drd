@@ -93,14 +93,17 @@ public class NodeLink extends CubicCurve {
     public void bindEnds(DraggableSpellNode source, DraggableSpellNode target, LinkPosition position) {
         startXProperty().bind(source.layoutXProperty().add(source.circleBottomLink.getLayoutX()));
         startYProperty().bind(source.layoutYProperty().add(source.circleBottomLink.getLayoutY()));
+        source.bottomLink = this;
 
         Circle targetCircle = null;
         switch (position) {
             case LEFT:
                 targetCircle = target.circleLeftLink;
+                target.leftLink = this;
                 break;
             case RIGHT:
                 targetCircle = target.circleRightLink;
+                target.rightLink = this;
                 break;
         }
         endXProperty().bind(target.layoutXProperty().add(targetCircle.getLayoutX()));

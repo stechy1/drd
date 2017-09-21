@@ -23,6 +23,13 @@ public interface ILinkListener {
     NodeLink createNodeLink(Point2D start);
 
     /**
+     * ULoží {@link NodeLink} pro pozdější použití
+     *
+     * @param nodeLink {@link NodeLink}
+     */
+    void saveNodeLink(NodeLink nodeLink);
+
+    /**
      * Odebere {@link NodeLink} ze scény
      *
      * @param nodeLink {@link NodeLink}

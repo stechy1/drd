@@ -198,6 +198,11 @@ public class SpellPriceEditorController extends BaseController implements Initia
         }
 
         @Override
+        public void saveNodeLink(NodeLink nodeLink) {
+            SpellPriceEditorController.this.dragLink = nodeLink;
+        }
+
+        @Override
         public void deleteNodeLink(NodeLink nodeLink) {
             componentPlayground.getChildren().remove(nodeLink);
             links.remove(nodeLink);

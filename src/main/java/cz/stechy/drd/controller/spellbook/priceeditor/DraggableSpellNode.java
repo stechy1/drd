@@ -38,6 +38,7 @@ abstract class DraggableSpellNode extends Group implements Initializable {
 
     private static final String NODE_ID = "node_id";
     private static final String LINK_ADD_STATUS = "link_add_status";
+    private static final String LINK_ID = "link_id";
 
     // endregion
 
@@ -70,9 +71,12 @@ abstract class DraggableSpellNode extends Group implements Initializable {
     private final ILinkListener linkListener;
     protected final Translator translator;
 
-    private DraggableSpellNode leftNode;
-    private DraggableSpellNode rightNode;
-    private DraggableSpellNode bottomNode;
+    protected DraggableSpellNode leftNode;
+    protected DraggableSpellNode rightNode;
+    protected DraggableSpellNode bottomNode;
+    protected NodeLink leftLink;
+    protected NodeLink rightLink;
+    protected NodeLink bottomLink;
 
     private Point2D mouse;
     private NodeLink dragLink;
@@ -116,13 +120,17 @@ abstract class DraggableSpellNode extends Group implements Initializable {
 
         circlesVisible.addListener((observable, oldValue, newValue) -> {
             if (newValue == null || !newValue) { // Kolečka nejsou viditelné - odeberu listenery
+                circleLeftLink.setOnDragDetected(null);
                 circleLeftLink.setOnDragOver(null);
                 circleLeftLink.setOnDragDropped(null);
+                circleRightLink.setOnDragDetected(null);
                 circleRightLink.setOnDragOver(null);
                 circleRightLink.setOnDragDropped(null);
             } else { // Kolečka jsou viditelná, nastavím listenerry
+                circleLeftLink.setOnDragDetected(this::onLinkDragDetect);
                 circleLeftLink.setOnDragOver(this::onLinkDragOver);
                 circleLeftLink.setOnDragDropped(this::onLinkDragDropped);
+                circleRightLink.setOnDragDetected(this::onLinkDragDetect);
                 circleRightLink.setOnDragOver(this::onLinkDragOver);
                 circleRightLink.setOnDragDropped(this::onLinkDragDropped);
             }
@@ -136,6 +144,43 @@ abstract class DraggableSpellNode extends Group implements Initializable {
      */
     protected void showLeftRightCircles() {
         circlesVisible.set(true);
+    }
+
+    private LinkPosition getPosition(Circle circle) {
+        if (this.circleBottomLink == circle) {
+            return LinkPosition.BOTTOM;
+        }
+        if (this.circleLeftLink == circle) {
+            return LinkPosition.LEFT;
+        } else {
+            return LinkPosition.RIGHT;
+        }
+    }
+
+    private NodeLink getLink(LinkPosition position) {
+        switch (position) {
+            case BOTTOM:
+                return bottomLink;
+            case LEFT:
+                return leftLink;
+            case RIGHT:
+                return rightLink;
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    private boolean hasConnection(LinkPosition position) {
+        switch (position) {
+            case BOTTOM:
+                return bottomLink != null;
+            case LEFT:
+                return leftLink != null;
+            case RIGHT:
+                return rightLink != null;
+            default:
+                throw new IllegalStateException();
+        }
     }
 
     // region Node drag&drop
@@ -160,12 +205,30 @@ abstract class DraggableSpellNode extends Group implements Initializable {
     // region Link drag&drop
 
     private void onLinkDragDetect(MouseEvent event) {
+        final Circle source = (Circle) event.getSource();
+        final LinkPosition position = getPosition(source);
+        System.out.println(position);
+        final boolean connected = hasConnection(position);
+        System.out.println(connected);
+        if (!connected && (position == LinkPosition.LEFT || position == LinkPosition.RIGHT)) {
+            event.consume();
+            return;
+        }
+
         nodeManipulator.setOnDragOverHandler(this::onParentDragOver);
 
-        final Circle source = (Circle) event.getSource();
         // Instanci ukládám pouze, abych mohl lehce měnit koncové souřadnice čáry podle myši
         linkListener.saveSourceNode(this);
-        dragLink = linkListener.createNodeLink(localToParent(new Point2D(source.getLayoutX(), source.getLayoutY())));
+        if (connected) {
+            dragLink = getLink(position);
+            dragLink.unbind();
+            dragLink.setStart(localToParent(new Point2D(source.getLayoutX(), source.getLayoutY())));
+
+            linkListener.saveNodeLink(dragLink);
+        } else {
+            dragLink = linkListener.createNodeLink(
+                localToParent(new Point2D(source.getLayoutX(), source.getLayoutY())));
+        }
 
         final DragContainer container = new DragContainer();
         container.addData(NODE_ID, getId());
