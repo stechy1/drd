@@ -207,9 +207,7 @@ abstract class DraggableSpellNode extends Group implements Initializable {
     private void onLinkDragDetect(MouseEvent event) {
         final Circle source = (Circle) event.getSource();
         final LinkPosition position = getPosition(source);
-        System.out.println(position);
         final boolean connected = hasConnection(position);
-        System.out.println(connected);
         if (!connected && (position == LinkPosition.LEFT || position == LinkPosition.RIGHT)) {
             event.consume();
             return;
@@ -270,6 +268,7 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         event.getDragboard().setContent(content);
 
         event.setDropCompleted(true);
+        event.consume();
     }
 
     private void onLinkDragDone(DragEvent event) {
