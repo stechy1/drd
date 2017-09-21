@@ -181,7 +181,7 @@ public class BestiaryController extends BaseController implements Initializable 
                     disableRemoveOnlineBtn.or(
                         showOnlineDatabase.not())));
 
-        btnSynchronize.disableProperty().bind(userLogged);
+        btnSynchronize.disableProperty().bind(userLogged.not());
 
         selectedRowIndex.addListener((observable, oldValue, newValue) -> {
             if (newValue == null || newValue.intValue() < 0) {
