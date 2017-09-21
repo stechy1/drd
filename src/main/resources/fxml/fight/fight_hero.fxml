@@ -4,6 +4,7 @@
 <?import cz.stechy.drd.widget.LabeledHeroProperty?>
 <?import cz.stechy.drd.widget.LabeledMaxActValue?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -18,7 +19,11 @@
     <HBox styleClass="title-container">
       <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_hero"/>
     </HBox>
-    <LabeledMaxActValue caption="%drd_hero_lives" description="%drd_hero_live" fx:id="lblLive"/>
+    <LabeledMaxActValue caption="%drd_hero_lives" description="%drd_hero_live" fx:id="lblLive">
+      <image>
+        <Image url="@/images/icon/zivoty.png"/>
+      </image>
+    </LabeledMaxActValue>
     <Card caption="%drd_hero_about">
       <content>
         <GridPane prefHeight="200.0" prefWidth="255.0" vgap="8.0">

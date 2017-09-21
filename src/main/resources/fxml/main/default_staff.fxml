@@ -5,21 +5,33 @@
 <?import cz.stechy.drd.widget.MoneyWidget?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-
 <VBox xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.main.defaultstaff.DefaultStaffController">
   <HBox spacing="8.0" VBox.vgrow="NEVER">
     <LabeledMaxActValue fx:id="lblLive" caption="%drd_hero_lives" description="%drd_hero_live">
+        <image>
+          <Image url="@/images/icon/zivoty.png"/>
+        </image>
     </LabeledMaxActValue>
     <Region HBox.hgrow="ALWAYS" />
-    <LabeledMaxActValue fx:id="lblMag" caption="%drd_hero_mags" description="%drd_hero_mag" />
+    <LabeledMaxActValue fx:id="lblMag" caption="%drd_hero_mags" description="%drd_hero_mag">
+      <image>
+        <Image url="@/images/icon/mana.png"/>
+      </image>
+    </LabeledMaxActValue>
     <Region HBox.hgrow="ALWAYS" />
-    <LabeledMaxActValue fx:id="lblExperience" caption="%drd_hero_experience" description="%drd_hero_experience_count" />
+    <LabeledMaxActValue fx:id="lblExperience" caption="%drd_hero_experience" description="%drd_hero_experience_count">
+      <image>
+        <Image url="@/images/icon/exp.png"/>
+      </image>
+    </LabeledMaxActValue>
   </HBox>
   <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
     <fx:include fx:id="defaultStaffLeft" source="default_staff_left.fxml" />
