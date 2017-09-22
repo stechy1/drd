@@ -7,6 +7,7 @@ import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.model.item.MeleWeapon;
+import cz.stechy.drd.model.service.OnlineItemRegistry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -88,6 +89,7 @@ public final class MeleWeaponService extends AdvancedDatabaseService<MeleWeapon>
         super(db);
 
         ItemRegistry.getINSTANCE().addColection(items);
+        OnlineItemRegistry.getINSTANCE().addColection(onlineDatabase);
     }
 
     // endregion

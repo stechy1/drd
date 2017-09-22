@@ -39,7 +39,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     // region Variables
 
-    private final ObservableList<T> onlineDatabase = FXCollections.observableArrayList();
+    protected final ObservableList<T> onlineDatabase = FXCollections.observableArrayList();
     private final ObservableList<T> usedItems = FXCollections.observableArrayList();
 
     private DatabaseReference firebaseReference;

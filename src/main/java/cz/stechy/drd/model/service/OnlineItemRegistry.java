@@ -12,11 +12,11 @@ import javafx.collections.ObservableMap;
 /**
  * Registr všech offline itemů
  */
-public final class ItemRegistry {
+public final class OnlineItemRegistry {
 
     // region Variables
 
-    private static ItemRegistry INSTANCE;
+    private static OnlineItemRegistry INSTANCE;
 
     private final ObservableMap<String, DatabaseItem> registry = FXCollections.observableHashMap();
 
@@ -24,16 +24,19 @@ public final class ItemRegistry {
 
     // region Constructors
 
-    private ItemRegistry() {
+    /**
+     * Privátní konstruktor k zamezení vytvoření instance
+     */
+    private OnlineItemRegistry() {
     }
 
     // endregion
 
     // region Public static methods
 
-    public static ItemRegistry getINSTANCE() {
+    public static OnlineItemRegistry getINSTANCE() {
         if (INSTANCE == null) {
-            INSTANCE = new ItemRegistry();
+            INSTANCE = new OnlineItemRegistry();
         }
 
         return INSTANCE;
