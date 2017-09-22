@@ -336,6 +336,11 @@ public class MainController extends BaseController implements Initializable {
     }
 
     @FXML
+    private void handleMenuCollections(ActionEvent actionEvent) {
+        startNewDialog(R.FXML.COLLECTIONS);
+    }
+
+    @FXML
     private void handleMenuSpellBook(ActionEvent actionEvent) {
         startNewDialog(R.FXML.SPELLBOOK);
     }
