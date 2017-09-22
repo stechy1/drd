@@ -12,6 +12,7 @@ import cz.stechy.drd.model.persistent.BackpackService;
 import cz.stechy.drd.model.persistent.BestiaryService;
 import cz.stechy.drd.model.persistent.GeneralItemService;
 import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.model.persistent.ItemCollectionService;
 import cz.stechy.drd.model.persistent.MeleWeaponService;
 import cz.stechy.drd.model.persistent.RangedWeaponService;
 import cz.stechy.drd.model.persistent.SpellBookService;
@@ -147,6 +148,8 @@ public class Context {
 
         // Inicializace UserService
         container.getInstance(UserService.class);
+        // Inicializace ItemCollectionService
+        container.getInstance(ItemCollectionService.class);
     }
 
     /**
