@@ -4,6 +4,10 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.FirebaseDatabase;
+import cz.stechy.drd.model.item.GeneralItem;
+import cz.stechy.drd.model.item.ItemCollection;
+import cz.stechy.drd.model.persistent.ItemCollectionService;
+import cz.stechy.drd.util.HashGenerator;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,7 +67,15 @@ public final class FirebaseWrapper {
             .build();
 
         FirebaseApp.initializeApp(options);
+        ItemCollectionService service = new ItemCollectionService(this);
         this.firebase.set(FirebaseDatabase.getInstance());
+
+        service.upload(new ItemCollection.Builder()
+            .id(HashGenerator.createHash())
+            .author("stechy1")
+            .name("testCollection")
+            .entry(new GeneralItem.Builder().id("testId").name("generalItem").build())
+            .build());
     }
 
     // endregion

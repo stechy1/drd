@@ -6,13 +6,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.drd.model.db.base.Firebase;
+import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.model.item.ItemCollection.Builder;
-import cz.stechy.drd.model.item.ItemCollection.ItemEntry;
-import cz.stechy.drd.util.Base64Util;
+import cz.stechy.drd.model.service.OnlineItemRegistry;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -66,19 +67,19 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
 
     // region Private methods
 
-    private ItemCollection.ItemEntry parseEntryDataSnapshot(DataSnapshot snapshot) {
-        return new ItemEntry(
-            snapshot.child(COLUMN_ENTRY_ID).getValue(String.class),
-            snapshot.child(COLUMN_ENTRY_ID).getValue(String.class),
-            Base64Util.decode(snapshot.child(COLUMN_ENTRY_ID).getValue(String.class))
-        );
+    private ItemBase parseEntryDataSnapshot(DataSnapshot snapshot) {
+        final String id = snapshot.child(COLUMN_ENTRY_ID).getValue(String.class);
+        final Optional<ItemBase> optional = OnlineItemRegistry.getINSTANCE().getItemById(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        }
+
+        return null;
     }
 
-    private Map<String, Object> entryToMap(ItemCollection.ItemEntry entry) {
+    private Map<String, Object> entryToMap(ItemBase item) {
         final Map<String, Object> map = new HashMap<>();
-        map.put(COLUMN_ENTRY_ID, entry.getId());
-        map.put(COLUMN_ENTRY_NAME, entry.getName());
-        map.put(COLUMN_ENTRY_IMAGE, Base64Util.encode(entry.getImage()));
+        map.put(COLUMN_ENTRY_ID, item.getId());
         return map;
     }
 
@@ -116,7 +117,10 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
     @Override
     public void upload(ItemCollection item) {
         final DatabaseReference child = firebaseReference.child(item.getId());
-        child.setValue(toFirebaseMap(item));
+        child.child(COLUMN_NAME).setValue(item.getName());
+        child.child(COLUMN_AUTHOR).setValue(item.getAuthor());
+        final DatabaseReference recordsReference = child.child(COLUMN_RECORDS);
+        item.getItems().forEach(itemBase -> recordsReference.push().setValue(itemBase.getId()));
     }
 
     @Override
