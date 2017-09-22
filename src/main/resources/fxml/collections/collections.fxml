@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<SplitPane dividerPositions="0.5" prefHeight="300.0" prefWidth="550.0"
+  xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="cz.stechy.drd.controller.collections.CollectionsController">
+  <BorderPane HBox.hgrow="ALWAYS">
+    <center>
+      <ListView fx:id="lvCollections">
+        <placeholder>
+          <Label text="%drd_notify_list_is_empty"/>
+        </placeholder>
+      </ListView>
+    </center>
+    <right>
+      <VBox prefWidth="50.0" spacing="8.0">
+        <JFXButton fx:id="btnCollectionDownload" onAction="#handleCollectionDownload"
+          styleClass="sidebar-button, icon-download">
+          <tooltip>
+            <Tooltip text="%drd_firebase_entry_download"/>
+          </tooltip>
+        </JFXButton>
+        <JFXButton fx:id="btnCollectionRemove" onAction="#handleCollectionRemove"
+          styleClass="sidebar-button, icon-subtract">
+          <tooltip>
+            <Tooltip text="%drd_firebase_entry_remove"/>
+          </tooltip>
+        </JFXButton>
+      </VBox>
+    </right>
+    <bottom>
+      <HBox spacing="16.0">
+        <padding>
+          <Insets topRightBottomLeft="8.0"/>
+        </padding>
+        <TextField fx:id="txtCollectionName"/>
+        <JFXButton fx:id="btnCollectionAdd" onAction="#handleCollectionAdd"
+          styleClass="btn, btn-primary, btn-raised, btn-small" text="%drd_shop_item_cart_add"/>
+      </HBox>
+    </bottom>
+  </BorderPane>
+  <BorderPane HBox.hgrow="ALWAYS">
+    <center>
+      <ListView fx:id="lvCollectionItems">
+        <placeholder>
+          <Label text="%drd_notify_list_is_empty"/>
+        </placeholder>
+      </ListView>
+    </center>
+    <right>
+      <VBox prefWidth="50.0" spacing="8.0">
+        <JFXButton styleClass="sidebar-button, icon-add">
+          <tooltip>
+            <Tooltip text="%drd_firebase_entry_upload"/>
+          </tooltip>
+        </JFXButton>
+        <JFXButton styleClass="sidebar-button, icon-subtract">
+          <tooltip>
+            <Tooltip text="%drd_firebase_entry_remove"/>
+          </tooltip>
+        </JFXButton>
+      </VBox>
+    </right>
+  </BorderPane>
+</SplitPane>

@@ -2,13 +2,10 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.db.base.DatabaseItem;
-import java.util.ArrayList;
-import java.util.List;
+import cz.stechy.drd.util.HashGenerator;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 /**
  * Třída reprezentující jednu kolekci předmětů
@@ -21,18 +18,15 @@ public class ItemCollection extends DatabaseItem {
     private final StringProperty name = new SimpleStringProperty(this, "name");
     // Autor kolekce
     private final StringProperty author = new SimpleStringProperty(this, "author");
-    // Seznam předmětů, které jsou v kolekci
-    private final ObservableList<ItemBase> items = FXCollections.observableArrayList();
 
     // endregion
 
     // region Constructors
 
-    private ItemCollection(String id, String name, String author, List<ItemBase> entries) {
+    private ItemCollection(String id, String name, String author) {
         super(id);
         setName(name);
         setAuthor(author);
-        items.setAll(entries);
     }
 
     // endregion
@@ -72,17 +66,12 @@ public class ItemCollection extends DatabaseItem {
         this.author.set(author);
     }
 
-    public final ObservableList<ItemBase> getItems() {
-        return items;
-    }
-
     // endregion
 
     public static final class Builder {
-        private String id;
+        private String id = HashGenerator.createHash();
         private String name;
         private String author;
-        private List<ItemBase> entries = new ArrayList<>();
 
         public Builder id(String id) {
             this.id = id;
@@ -99,17 +88,8 @@ public class ItemCollection extends DatabaseItem {
             return this;
         }
 
-        public Builder entry(ItemBase entry) {
-            if (entry == null) {
-                return this;
-            }
-
-            entries.add(entry);
-            return this;
-        }
-
         public ItemCollection build() {
-            return new ItemCollection(id, name, author, entries);
+            return new ItemCollection(id, name, author);
         }
     }
 }

@@ -4,22 +4,19 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.drd.model.db.base.Firebase;
-import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.model.item.ItemCollection.Builder;
-import cz.stechy.drd.model.service.OnlineItemRegistry;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class ItemCollectionService implements Firebase<ItemCollection> {
 
     // region Constants
@@ -36,10 +33,6 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_RECORDS = "records";
 
-    private static final String COLUMN_ENTRY_ID = "id";
-    private static final String COLUMN_ENTRY_NAME = "name";
-    private static final String COLUMN_ENTRY_IMAGE = "image";
-
     // endregion
 
     // endregion
@@ -47,6 +40,7 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
     // region Variables
 
     private final ObservableList<ItemCollection> collections = FXCollections.observableArrayList();
+    private final Map<String, ItemCollectionContent> contentMap = new HashMap<>();
     private DatabaseReference firebaseReference;
 
     // endregion
@@ -65,29 +59,20 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
 
     // endregion
 
-    // region Private methods
-
-    private ItemBase parseEntryDataSnapshot(DataSnapshot snapshot) {
-        final String id = snapshot.child(COLUMN_ENTRY_ID).getValue(String.class);
-        final Optional<ItemBase> optional = OnlineItemRegistry.getINSTANCE().getItemById(id);
-        if (optional.isPresent()) {
-            return optional.get();
-        }
-
-        return null;
-    }
-
-    private Map<String, Object> entryToMap(ItemBase item) {
-        final Map<String, Object> map = new HashMap<>();
-        map.put(COLUMN_ENTRY_ID, item.getId());
-        return map;
-    }
-
-    // endregion
-
     // region Public methods
 
+    public ItemCollectionContent getContent(ItemCollection collection) {
+        final String id = collection.getId();
+        ItemCollectionContent collectionContent;
+        if (!contentMap.containsKey(id)) {
+            collectionContent = new ItemCollectionContent(firebaseReference.child(collection.getId()).child(COLUMN_RECORDS));
+            contentMap.put(id, collectionContent);
+        } else {
+            collectionContent = contentMap.get(id);
+        }
 
+        return collectionContent;
+    }
 
     // endregion
 
@@ -97,36 +82,36 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
             .id(snapshot.child(COLUMN_ID).getValue(String.class))
             .name(snapshot.child(COLUMN_NAME).getValue(String.class))
             .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class));
-        final DataSnapshot records = snapshot.child(COLUMN_RECORDS);
-        records.getChildren().forEach(snapshot1 -> builder.entry(parseEntryDataSnapshot(snapshot1)));
         return builder.build();
     }
 
     @Override
     public Map<String, Object> toFirebaseMap(ItemCollection item) {
         final Map<String, Object> map = new HashMap<>();
+        map.put(COLUMN_ID, item.getId());
         map.put(COLUMN_NAME, item.getName());
         map.put(COLUMN_AUTHOR, item.getAuthor());
-        final List<Map<String, Object>> values = item.getItems().stream()
-            .map(this::entryToMap)
-            .collect(Collectors.toList());
-        map.put(COLUMN_RECORDS, values);
         return map;
     }
 
     @Override
     public void upload(ItemCollection item) {
         final DatabaseReference child = firebaseReference.child(item.getId());
-        child.child(COLUMN_NAME).setValue(item.getName());
-        child.child(COLUMN_AUTHOR).setValue(item.getAuthor());
-        final DatabaseReference recordsReference = child.child(COLUMN_RECORDS);
-        item.getItems().forEach(itemBase -> recordsReference.push().setValue(itemBase.getId()));
+        child.setValue(toFirebaseMap(item));
     }
 
     @Override
     public void deleteRemote(ItemCollection item, boolean remote) {
         firebaseReference.child(item.getId()).removeValue();
     }
+
+    // region Getters & Setters
+
+    public ObservableList<ItemCollection> getCollections() {
+        return collections;
+    }
+
+    // endregion
 
     private final ChildEventListener childEventListener = new ChildEventListener() {
         @Override
