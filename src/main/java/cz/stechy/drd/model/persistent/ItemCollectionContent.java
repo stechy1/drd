@@ -26,17 +26,25 @@ public class ItemCollectionContent implements Firebase<ItemBase> {
 
     // endregion
 
+    // region Variables
+
     private final ObservableList<ItemBase> items = FXCollections.observableArrayList();
     private final DatabaseReference reference;
+
+    // endregion
+
+    // region Constructors
 
     public ItemCollectionContent(DatabaseReference reference) {
         this.reference = reference;
         reference.addChildEventListener(childEventListener);
     }
 
+     // endregion
+
     @Override
     public ItemBase parseDataSnapshot(DataSnapshot snapshot) {
-        final String id = snapshot.child(COLUMN_ENTRY_ID).getValue(String.class);
+        final String id = snapshot.getValue(String.class);
         final Optional<ItemBase> optional = OnlineItemRegistry.getINSTANCE().getItemById(id);
         if (optional.isPresent()) {
             return optional.get();
@@ -52,13 +60,25 @@ public class ItemCollectionContent implements Firebase<ItemBase> {
 
     @Override
     public void upload(ItemBase item) {
-        reference.push().setValue(item.getId());
+        if (items.contains(item)) {
+            return;
+        }
+
+        reference.child(item.getId()).setValue(item.getId());
     }
 
     @Override
     public void deleteRemote(ItemBase item, boolean remote) {
-
+        reference.child(item.getId()).removeValue();
     }
+
+    // region Getters & Setters
+
+    public ObservableList<ItemBase> getItems() {
+        return items;
+    }
+
+    // endregion
 
     private final ChildEventListener childEventListener = new ChildEventListener() {
         @Override

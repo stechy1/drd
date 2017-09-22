@@ -3,6 +3,7 @@ package cz.stechy.drd.util;
 import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
@@ -29,12 +30,12 @@ public final class ObservableMergers {
         final ObservableList<T> list = into;
         for (ObservableList<T> l : lists) {
             list.addAll(l);
-            l.addListener((ListChangeListener<T>) c -> {
-                while (c.next()) {
-                    list.addAll(c.getAddedSubList());
-                    list.removeAll(c.getRemoved());
-                }
-            });
+            l.addListener((ListChangeListener<T>) c -> Platform.runLater(() -> {
+            while (c.next()) {
+                list.addAll(c.getAddedSubList());
+                list.removeAll(c.getRemoved());
+            }
+            }));
         }
     }
 

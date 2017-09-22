@@ -5,35 +5,34 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane dividerPositions="0.5" prefHeight="300.0" prefWidth="550.0"
-  xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="cz.stechy.drd.controller.collections.CollectionsController">
+<SplitPane dividerPositions="0.4" prefHeight="300.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.collections.CollectionsController">
   <BorderPane HBox.hgrow="ALWAYS">
     <center>
       <ListView fx:id="lvCollections">
         <placeholder>
-          <Label text="%drd_notify_list_is_empty"/>
+          <Label text="%drd_notify_list_is_empty" />
         </placeholder>
       </ListView>
     </center>
     <right>
       <VBox prefWidth="50.0" spacing="8.0">
-        <JFXButton fx:id="btnCollectionDownload" onAction="#handleCollectionDownload"
-          styleClass="sidebar-button, icon-download">
+        <JFXButton fx:id="btnCollectionDownload" onAction="#handleCollectionDownload" styleClass="sidebar-button, icon-download">
           <tooltip>
-            <Tooltip text="%drd_firebase_entry_download"/>
+            <Tooltip text="%drd_firebase_entry_download" />
           </tooltip>
         </JFXButton>
-        <JFXButton fx:id="btnCollectionRemove" onAction="#handleCollectionRemove"
-          styleClass="sidebar-button, icon-subtract">
+        <JFXButton fx:id="btnCollectionRemove" onAction="#handleCollectionRemove" styleClass="sidebar-button, icon-subtract">
           <tooltip>
-            <Tooltip text="%drd_firebase_entry_remove"/>
+            <Tooltip text="%drd_firebase_entry_remove" />
           </tooltip>
         </JFXButton>
       </VBox>
@@ -41,32 +40,56 @@
     <bottom>
       <HBox spacing="16.0">
         <padding>
-          <Insets topRightBottomLeft="8.0"/>
+          <Insets topRightBottomLeft="8.0" />
         </padding>
-        <TextField fx:id="txtCollectionName"/>
-        <JFXButton fx:id="btnCollectionAdd" onAction="#handleCollectionAdd"
-          styleClass="btn, btn-primary, btn-raised, btn-small" text="%drd_shop_item_cart_add"/>
+        <TextField fx:id="txtCollectionName" />
+        <JFXButton fx:id="btnCollectionAdd" onAction="#handleCollectionAdd" styleClass="btn, btn-primary, btn-raised, btn-small" text="%drd_shop_item_cart_add" />
       </HBox>
     </bottom>
   </BorderPane>
   <BorderPane HBox.hgrow="ALWAYS">
     <center>
-      <ListView fx:id="lvCollectionItems">
+      <TableView fx:id="tableCollectionItems">
+        <columnResizePolicy>
+          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+        </columnResizePolicy>
         <placeholder>
-          <Label text="%drd_notify_list_is_empty"/>
+          <Label text="%drd_notify_list_is_empty" />
         </placeholder>
-      </ListView>
+        <columns>
+          <TableColumn fx:id="columnImage" prefWidth="75.0" sortable="false" text="%drd_item_image">
+          <cellValueFactory>
+            <PropertyValueFactory property="image" />
+          </cellValueFactory>
+        </TableColumn>
+          <TableColumn fx:id="columnName" prefWidth="75.0" text="%drd_item_name">
+          <cellValueFactory>
+            <PropertyValueFactory property="name" />
+          </cellValueFactory>
+        </TableColumn>
+          <TableColumn fx:id="columnWeight" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%drd_item_weight">
+            <cellValueFactory>
+              <PropertyValueFactory property="weight" />
+            </cellValueFactory>
+          </TableColumn>
+          <TableColumn fx:id="columnPrice" maxWidth="140.0" minWidth="140.0" prefWidth="140.0" text="%drd_item_price">
+            <cellValueFactory>
+              <PropertyValueFactory property="price" />
+            </cellValueFactory>
+          </TableColumn>
+        </columns>
+      </TableView>
     </center>
     <right>
       <VBox prefWidth="50.0" spacing="8.0">
-        <JFXButton styleClass="sidebar-button, icon-add">
+        <JFXButton fx:id="btnCollectionItemAdd" onAction="#handleCollectionItemAdd" styleClass="sidebar-button, icon-add">
           <tooltip>
-            <Tooltip text="%drd_firebase_entry_upload"/>
+            <Tooltip text="%drd_firebase_entry_upload" />
           </tooltip>
         </JFXButton>
-        <JFXButton styleClass="sidebar-button, icon-subtract">
+        <JFXButton fx:id="btnCollectionItemRemove" onAction="#handleCollectionItemRemove" styleClass="sidebar-button, icon-subtract">
           <tooltip>
-            <Tooltip text="%drd_firebase_entry_remove"/>
+            <Tooltip text="%drd_firebase_entry_remove" />
           </tooltip>
         </JFXButton>
       </VBox>

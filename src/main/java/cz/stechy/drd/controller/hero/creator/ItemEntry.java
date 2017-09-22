@@ -1,10 +1,10 @@
 package cz.stechy.drd.controller.hero.creator;
 
-import cz.stechy.drd.controller.hero.creator.HeroCreatorController3.ChoiceEntry;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.service.ItemRegistry;
+import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import java.io.ByteArrayInputStream;
 import java.util.Optional;
 import javafx.beans.property.IntegerProperty;
@@ -25,7 +25,7 @@ public final class ItemEntry implements InventoryHelper.ItemRecord {
 
     ItemEntry(ChoiceEntry entry) {
         final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
-            .getItemById(entry.id.get());
+            .getItemById(entry.getId());
         if (!itemOptional.isPresent()) {
             return;
         }

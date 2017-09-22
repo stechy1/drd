@@ -4,15 +4,22 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemCollection;
+import cz.stechy.drd.model.persistent.ItemCollectionContent;
 import cz.stechy.drd.model.persistent.ItemCollectionService;
 import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.model.user.User;
+import cz.stechy.drd.util.CellUtils;
+import cz.stechy.drd.util.DialogUtils;
+import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.IntegerProperty;
@@ -21,13 +28,17 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 
@@ -40,7 +51,13 @@ public class CollectionsController extends BaseController implements Initializab
     @FXML
     private ListView<ItemCollection> lvCollections;
     @FXML
-    private ListView<ItemEntry> lvCollectionItems;
+    private TableView<ItemEntry> tableCollectionItems;
+    @FXML
+    private TableColumn<ItemEntry, Image> columnImage;
+    @FXML
+    private TableColumn columnWeight;
+    @FXML
+    private TableColumn<ItemEntry, Money> columnPrice;
     @FXML
     private Button btnCollectionAdd;
     @FXML
@@ -49,11 +66,19 @@ public class CollectionsController extends BaseController implements Initializab
     private Button btnCollectionDownload;
     @FXML
     private TextField txtCollectionName;
+    @FXML
+    private Button btnCollectionItemAdd;
+    @FXML
+    private Button btnCollectionItemRemove;
 
     // endregion
 
     private final ObservableList<ItemCollection> collections = FXCollections.observableArrayList();
+    private final ObservableList<ItemEntry> collectionItems = FXCollections.observableArrayList();
+    private final ObservableList<ChoiceEntry> itemRegistry = FXCollections.observableArrayList();
     private final ObjectProperty<ItemCollection> selectedCollection = new SimpleObjectProperty<>(this, "selectedCollection", null);
+    private final ObjectProperty<ItemEntry> selectedCollectionItem = new SimpleObjectProperty<>(this, "selectedCollectionItem", null);
+    private final ObjectProperty<ItemCollectionContent> collectionContent = new SimpleObjectProperty<>(this, "collectionContent", null);
 
     private final ItemCollectionService collectionService;
     private final User user;
@@ -67,6 +92,26 @@ public class CollectionsController extends BaseController implements Initializab
     public CollectionsController(ItemCollectionService collectionService, UserService userService) {
         this.collectionService = collectionService;
         this.user = userService.getUser();
+        itemRegistry.setAll(ItemRegistry.getINSTANCE().getChoices());
+    }
+
+    // endregion
+
+    // region Private methods
+
+    private void collectionContentListener(ObservableValue<? extends ItemCollectionContent> observable,
+        ItemCollectionContent oldValue, ItemCollectionContent newValue) {
+        collectionItems.clear();
+        if (oldValue != null) {
+            oldValue.getItems().removeListener(collectionContentChangeListener);
+        }
+        if (newValue == null) {
+            return;
+        }
+
+        collectionItems.setAll(collectionContent.get().getItems().stream()
+            .map(ItemEntry::new).collect(Collectors.toList()));
+        newValue.getItems().addListener(collectionContentChangeListener);
     }
 
     // endregion
@@ -76,6 +121,11 @@ public class CollectionsController extends BaseController implements Initializab
         this.title = resources.getString(R.Translate.COLLECTIONS_TITLE);
         lvCollections.setItems(collections);
         lvCollections.setCellFactory(param -> new ItemCollectionCell());
+        tableCollectionItems.setFixedCellSize(40);
+        tableCollectionItems.setItems(collectionItems);
+        columnImage.setCellFactory(param -> CellUtils.forImage());
+        columnWeight.setCellFactory(param -> CellUtils.forWeight());
+        columnPrice.setCellFactory(param -> CellUtils.forMoney());
 
         btnCollectionAdd.disableProperty().bind(Bindings.createBooleanBinding(() ->
             user == null || txtCollectionName.getText().trim().isEmpty(),
@@ -83,8 +133,21 @@ public class CollectionsController extends BaseController implements Initializab
         final BooleanBinding selectedBinding = selectedCollection.isNull();
         btnCollectionRemove.disableProperty().bind(selectedBinding);
         btnCollectionDownload.disableProperty().bind(selectedBinding);
+        btnCollectionItemAdd.disableProperty().bind(selectedBinding);
 
+        selectedCollectionItem.bind(tableCollectionItems.getSelectionModel().selectedItemProperty());
+        btnCollectionItemRemove.disableProperty().bind(selectedCollectionItem.isNull());
+
+        collectionContent.addListener(this::collectionContentListener);
         selectedCollection.bind(lvCollections.getSelectionModel().selectedItemProperty());
+        collectionContent.bind(Bindings.createObjectBinding(() -> {
+                final ItemCollection collection = selectedCollection.get();
+                if (collection == null) {
+                    return null;
+                }
+                return collectionService.getContent(collection);
+            },
+            selectedCollection));
 
         ObservableMergers.mergeList(collections, collectionService.getCollections());
     }
@@ -92,7 +155,7 @@ public class CollectionsController extends BaseController implements Initializab
     @Override
     protected void onResume() {
         setTitle(title);
-        setScreenSize(550, 300);
+        setScreenSize(700, 300);
     }
 
     // region Button handlers
@@ -104,7 +167,7 @@ public class CollectionsController extends BaseController implements Initializab
             .author(user != null ? user.getName() : "")
             .build();
         collectionService.upload(collection);
-        txtCollectionName.setText("");
+        txtCollectionName.clear();
     }
 
     @FXML
@@ -119,13 +182,41 @@ public class CollectionsController extends BaseController implements Initializab
         showNotification(new Notification("Funkce není implementována..."));
     }
 
+    @FXML
+    private void handleCollectionItemAdd(ActionEvent actionEvent) {
+        final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(itemRegistry);
+        entryOptional.ifPresent(choiceEntry -> collectionContent.get().upload(choiceEntry.getItemBase()));
+    }
+
+    @FXML
+    private void handleCollectionItemRemove(ActionEvent actionEvent) {
+        final ItemCollectionContent content = this.collectionContent.get();
+        if (content == null) {
+            return;
+        }
+
+        content.deleteRemote(selectedCollectionItem.get().getItemBase(), true);
+    }
+
     // endregion
 
-    private static final class ItemEntry {
-        final StringProperty name = new SimpleStringProperty(this, "name");
-        final IntegerProperty weight = new SimpleIntegerProperty(this, "weight");
-        final ObjectProperty<Money> price = new SimpleObjectProperty<>(this, "price");
-        final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
+    private final ListChangeListener<ItemBase> collectionContentChangeListener = c -> {
+        while(c.next()) {
+            collectionItems.addAll(c.getAddedSubList().stream().map(ItemEntry::new).collect(
+                Collectors.toList()));
+            c.getRemoved().stream()
+                .forEach(o -> collectionItems.stream()
+                    .filter(itemEntry -> o.getId().equals(itemEntry.getId()))
+                    .findFirst()
+                    .ifPresent(itemEntry -> collectionItems.remove(itemEntry)));
+        }
+    };
+
+    public static final class ItemEntry {
+        public final StringProperty name = new SimpleStringProperty(this, "name");
+        public final IntegerProperty weight = new SimpleIntegerProperty(this, "weight");
+        public final ObjectProperty<Money> price = new SimpleObjectProperty<>(this, "price");
+        public final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
         final ItemBase itemBase;
 
         public ItemEntry(ItemBase itemBase) {
@@ -135,6 +226,10 @@ public class CollectionsController extends BaseController implements Initializab
             setPrice(itemBase.getPrice());
             ByteArrayInputStream bais = new ByteArrayInputStream(itemBase.getImage());
             setImage(new Image(bais));
+        }
+
+        public String getId() {
+            return itemBase.getId();
         }
 
         public String getName() {
@@ -183,6 +278,10 @@ public class CollectionsController extends BaseController implements Initializab
 
         public void setImage(Image image) {
             this.image.set(image);
+        }
+
+        public ItemBase getItemBase() {
+            return itemBase;
         }
     }
 }

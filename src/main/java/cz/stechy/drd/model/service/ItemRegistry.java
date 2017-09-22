@@ -2,6 +2,8 @@ package cz.stechy.drd.model.service;
 
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
@@ -77,6 +79,13 @@ public final class ItemRegistry {
 
     public ObservableMap<String, DatabaseItem> getRegistry() {
         return registry;
+    }
+
+    public List<ChoiceEntry> getChoices() {
+        return registry.entrySet()
+            .stream()
+            .map(entry -> new ChoiceEntry(entry.getValue()))
+            .collect(Collectors.toList());
     }
 
     // endregion
