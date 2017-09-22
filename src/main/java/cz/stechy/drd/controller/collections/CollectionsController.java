@@ -127,16 +127,24 @@ public class CollectionsController extends BaseController implements Initializab
         columnWeight.setCellFactory(param -> CellUtils.forWeight());
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
 
-        btnCollectionAdd.disableProperty().bind(Bindings.createBooleanBinding(() ->
-            user == null || txtCollectionName.getText().trim().isEmpty(),
-            txtCollectionName.textProperty()));
+        final BooleanBinding loggedBinding = Bindings.createBooleanBinding(() -> user != null);
+        btnCollectionAdd.disableProperty().bind(loggedBinding.not().or(txtCollectionName.textProperty().isEmpty()));
         final BooleanBinding selectedBinding = selectedCollection.isNull();
-        btnCollectionRemove.disableProperty().bind(selectedBinding);
+        final BooleanBinding authorBinding = Bindings.createBooleanBinding(() -> {
+            final ItemCollection collection = selectedCollection.get();
+            if (collection == null || user == null) {
+                return false;
+            }
+
+            return collection.getAuthor().equals(user.getName());
+        }, selectedCollection);
         btnCollectionDownload.disableProperty().bind(selectedBinding);
-        btnCollectionItemAdd.disableProperty().bind(selectedBinding);
+        btnCollectionRemove.disableProperty().bind(authorBinding.not().or(selectedBinding));
 
         selectedCollectionItem.bind(tableCollectionItems.getSelectionModel().selectedItemProperty());
-        btnCollectionItemRemove.disableProperty().bind(selectedCollectionItem.isNull());
+
+        btnCollectionItemRemove.disableProperty().bind(selectedCollectionItem.isNull().or(authorBinding.not()));
+        btnCollectionItemAdd.disableProperty().bind(selectedBinding.or(authorBinding.not()));
 
         collectionContent.addListener(this::collectionContentListener);
         selectedCollection.bind(lvCollections.getSelectionModel().selectedItemProperty());
@@ -282,6 +290,25 @@ public class CollectionsController extends BaseController implements Initializab
 
         public ItemBase getItemBase() {
             return itemBase;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            ItemEntry itemEntry = (ItemEntry) o;
+
+            return itemBase.equals(itemEntry.itemBase);
+        }
+
+        @Override
+        public int hashCode() {
+            return itemBase.hashCode();
         }
     }
 }
