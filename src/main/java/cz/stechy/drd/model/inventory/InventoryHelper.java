@@ -4,7 +4,7 @@ import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.model.persistent.InventoryContent;
 import cz.stechy.drd.model.persistent.InventoryService;

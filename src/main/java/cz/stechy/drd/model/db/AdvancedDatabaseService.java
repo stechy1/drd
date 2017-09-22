@@ -10,7 +10,7 @@ import cz.stechy.drd.di.Inject;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.Firebase;
 import cz.stechy.drd.model.db.base.OnlineItem;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.util.Base64Util;
 import java.util.HashMap;
 import java.util.Map;

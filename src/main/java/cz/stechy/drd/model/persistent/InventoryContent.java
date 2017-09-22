@@ -8,7 +8,7 @@ import cz.stechy.drd.model.inventory.InventoryException;
 import cz.stechy.drd.model.inventory.InventoryRecord;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

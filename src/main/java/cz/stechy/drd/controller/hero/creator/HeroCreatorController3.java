@@ -6,7 +6,7 @@ import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.WithImage;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;

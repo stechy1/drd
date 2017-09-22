@@ -5,7 +5,7 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.container.EquipItemContainer;
 import cz.stechy.drd.model.item.Armor;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.WeaponBase;
 import cz.stechy.drd.model.persistent.InventoryContent;

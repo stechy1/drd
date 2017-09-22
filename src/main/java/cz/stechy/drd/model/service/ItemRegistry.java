@@ -1,6 +1,7 @@
-package cz.stechy.drd.model.item;
+package cz.stechy.drd.model.service;
 
 import cz.stechy.drd.model.db.base.DatabaseItem;
+import cz.stechy.drd.model.item.ItemBase;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;

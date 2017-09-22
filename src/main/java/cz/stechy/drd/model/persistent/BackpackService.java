@@ -6,7 +6,7 @@ import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.item.Backpack;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

@@ -4,7 +4,7 @@ import cz.stechy.drd.controller.hero.creator.HeroCreatorController3.ChoiceEntry;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import java.io.ByteArrayInputStream;
 import java.util.Optional;
 import javafx.beans.property.IntegerProperty;

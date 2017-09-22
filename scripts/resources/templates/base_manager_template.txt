@@ -3,7 +3,7 @@ package cz.stechy.drd.model.persistent;
 import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.model.item.{generic_class};
 import java.sql.ResultSet;
 import java.sql.SQLException;
