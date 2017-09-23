@@ -21,6 +21,7 @@ public final class R {
         public static final String BESTIARY_EDIT_IMAGE = "bestiary_edit_image";
         public static final String BESTIARY_EDIT_OTHER = "bestiary_edit_other";
         public static final String BESTIARY_EDIT_PROPERTIES = "bestiary_edit_properties";
+        public static final String COLLECTIONS = "collections";
         public static final String FIGHT = "fight";
         public static final String FIGHT_COMMENT = "fight_comment";
         public static final String FIGHT_HERO = "fight_hero";
@@ -161,6 +162,7 @@ public final class R {
         public static final String MAIN_MENU_TOOLS_DICE = "drd_main_menu_tools_dice";
         public static final String MAIN_MENU_TOOLS_BESTIARY = "drd_main_menu_tools_bestiary";
         public static final String MAIN_MENU_TOOLS_SHOP = "drd_main_menu_tools_shop";
+        public static final String MAIN_MENU_TOOLS_COLLECTIONS = "drd_main_menu_tools_collections";
         public static final String MAIN_MENU_TOOLS_SPELL_BOOK = "drd_main_menu_tools_spell_book";
         public static final String MAIN_MENU_TOOLS_FIGHT = "drd_main_menu_tools_fight";
         public static final String MAIN_MENU_HELP = "drd_main_menu_help";
@@ -325,6 +327,7 @@ public final class R {
         public static final String SPELL_BOOK_NO_CONTENT = "drd_spell_book_no_content";
         public static final String SPELL_BOOK_EDIT_NEW_TITLE = "drd_spell_book_edit_new_title";
         public static final String SPELL_BOOK_EDIT_UPDATE_TITLE = "drd_spell_book_edit_update_title";
+        public static final String COLLECTIONS_TITLE = "drd_collections_title";
         public static final String FIGHT_TITLE = "drd_fight_title";
         public static final String FIGHT_START = "drd_fight_start";
         public static final String FIGHT_STOP = "drd_fight_stop";
@@ -345,6 +348,8 @@ public final class R {
         public static final String NOTIFY_REGISTER_FAIL = "drd_notify_register_fail";
         public static final String NOTIFY_FIGHT_LIVE_UPDATE = "drd_notify_fight_live_update";
         public static final String NOTIFY_TABLE_IS_EMPTY = "drd_notify_table_is_empty";
+        public static final String NOTIFY_LIST_IS_EMPTY = "drd_notify_list_is_empty";
+        public static final String NOTIFY_MERGED_ITEMS = "drd_notify_merged_items";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
         public static final String SETTINGS = "drd_settings";
         public static final String ABOUT_CONTENT = "drd_about_content";
@@ -377,7 +382,6 @@ public final class R {
 
         public static class Icon {
 
-            public static final String LOGIN = "/images/icon/login.png";
             public static final String ABOUT = "/images/icon/about.png";
             public static final String ADD = "/images/icon/add.png";
             public static final String BANK = "/images/icon/bank.png";
@@ -396,6 +400,7 @@ public final class R {
             public static final String HAND_CLICK = "/images/icon/hand_click.png";
             public static final String HELP = "/images/icon/help.png";
             public static final String IMPORT = "/images/icon/import.png";
+            public static final String LOGIN = "/images/icon/login.png";
             public static final String MANA = "/images/icon/mana.png";
             public static final String NEW = "/images/icon/new.png";
             public static final String NEXT = "/images/icon/next.png";

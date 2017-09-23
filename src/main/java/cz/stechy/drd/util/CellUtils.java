@@ -1,7 +1,7 @@
 package cz.stechy.drd.util;
 
-import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.WithImage;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.widget.MoneyWidget;

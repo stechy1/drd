@@ -1,6 +1,9 @@
-package cz.stechy.drd.model.item;
+package cz.stechy.drd.model.service;
 
 import cz.stechy.drd.model.db.base.DatabaseItem;
+import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
@@ -43,7 +46,7 @@ public final class ItemRegistry {
     // region Public methods
 
     /**
-     * Pridá kolekci do registru
+     * Přidá kolekci do registru
      *
      * @param items Kolekce, která se má přidat
      */
@@ -78,24 +81,13 @@ public final class ItemRegistry {
         return registry;
     }
 
-    // endregion
-
-    public static class ItemException extends Exception {
-
-        public ItemException() {
-        }
-
-        public ItemException(String message) {
-            super(message);
-        }
-
-        public ItemException(String message, Throwable cause) {
-            super(message, cause);
-        }
-
-        public ItemException(Throwable cause) {
-            super(cause);
-        }
+    public List<ChoiceEntry> getChoices() {
+        return registry.entrySet()
+            .stream()
+            .map(entry -> new ChoiceEntry(entry.getValue()))
+            .collect(Collectors.toList());
     }
+
+    // endregion
 
 }

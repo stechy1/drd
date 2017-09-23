@@ -70,9 +70,10 @@ public final class UserService implements Firebase<User> {
 
     // endregion
 
-    // region Private methods
+    // region Public methods
 
-    private User parseDataSnapshot(DataSnapshot snapshot) {
+    @Override
+    public User parseDataSnapshot(DataSnapshot snapshot) {
         return new User.Builder()
             .id(snapshot.getKey())
             .name(snapshot.child(COLUMN_NAME).getValue(String.class))
@@ -80,16 +81,13 @@ public final class UserService implements Firebase<User> {
             .build();
     }
 
-    private Map<String, Object> toMap(User user) {
+    @Override
+    public Map<String, Object> toFirebaseMap(User user) {
         Map<String, Object> map = new HashMap<>();
         map.put(COLUMN_NAME, user.getName());
         map.put(COLUMN_PASSWORD, user.getPassword());
         return map;
     }
-
-    // endregion
-
-    // region Public methods
 
     /**
      * Přihlásí uživatele do aplikace
@@ -155,7 +153,7 @@ public final class UserService implements Firebase<User> {
     @Override
     public void upload(User user) {
         final DatabaseReference child = firebaseReference.child(user.getId());
-        child.setValue(toMap(user));
+        child.setValue(toFirebaseMap(user));
     }
 
     @Override

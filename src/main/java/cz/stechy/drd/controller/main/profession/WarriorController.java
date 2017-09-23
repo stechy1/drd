@@ -5,7 +5,7 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.profession.Warior;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.model.item.WeaponBase;
 import cz.stechy.drd.model.persistent.BestiaryService;
