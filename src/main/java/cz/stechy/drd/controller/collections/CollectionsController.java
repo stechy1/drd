@@ -142,7 +142,7 @@ public class CollectionsController extends BaseController implements Initializab
 
             return collection.getAuthor().equals(user.getName());
         }, selectedCollection);
-        btnCollectionDownload.disableProperty().bind(selectedBinding);
+        btnCollectionDownload.disableProperty().bind(loggedBinding.not().or(selectedBinding));
         btnCollectionRemove.disableProperty().bind(authorBinding.not().or(selectedBinding));
 
         selectedCollectionItem.bind(tableCollectionItems.getSelectionModel().selectedItemProperty());
