@@ -238,11 +238,11 @@ public class ShopController1 extends BaseController implements Initializable {
             if (entryOptional.isPresent()) {
                 final ShopEntry entry = entryOptional.get();
                 final BooleanBinding authorBinding = Bindings.createBooleanBinding(() ->
-                        (user == null) ? true : entry.getAuthor().equals(user.getName()),
+                        (user == null) ? false : entry.getAuthor().equals(user.getName()),
                     entry.authorProperty());
                 disableDownloadBtn.bind(entry.downloadedProperty());
-                disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding));
-                disableRemoveOnlineBtn.bind(authorBinding);
+                disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding.not()));
+                disableRemoveOnlineBtn.bind(authorBinding.not());
             } else {
                 disableDownloadBtn.unbind();
                 disableUploadBtn.unbind();
