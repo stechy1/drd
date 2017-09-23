@@ -77,8 +77,9 @@ public class ItemResolver {
      *
      * @param items Kolekce ID online předmětů
      */
-    public void merge(List<? extends WithItemBase> items) {
+    public int merge(List<? extends WithItemBase> items) {
         final ItemRegistry itemRegistry = ItemRegistry.getINSTANCE();
+        final int[] merged = {0};
 
         items.forEach(item -> {
             final Optional<ItemBase> optional = itemRegistry.getItemById(item.getItemBase().getId());
@@ -90,10 +91,13 @@ public class ItemResolver {
             final AdvancedDatabaseService<ItemBase> service = getService(itemBase.getItemType());
             try {
                 service.insert(itemBase);
+                merged[0]++;
             } catch (DatabaseException e) {
                 e.printStackTrace();
             }
         });
+
+        return merged[0];
     }
 
     // endregion

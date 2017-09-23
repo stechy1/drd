@@ -1,6 +1,7 @@
 package cz.stechy.drd.controller.collections;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemCollection;
@@ -16,6 +17,7 @@ import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.BaseController;
+import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Optional;
@@ -86,6 +88,7 @@ public class CollectionsController extends BaseController implements Initializab
     private final User user;
 
     private String title;
+    private String mergedNotification;
 
     // endregion
 
@@ -123,6 +126,7 @@ public class CollectionsController extends BaseController implements Initializab
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.title = resources.getString(R.Translate.COLLECTIONS_TITLE);
+        this.mergedNotification = resources.getString(R.Translate.NOTIFY_MERGED_ITEMS);
         lvCollections.setItems(collections);
         lvCollections.setCellFactory(param -> new ItemCollectionCell());
         tableCollectionItems.setFixedCellSize(40);
@@ -191,7 +195,8 @@ public class CollectionsController extends BaseController implements Initializab
 
     @FXML
     private void handleCollectionDownload(ActionEvent actionEvent) {
-        itemResolver.merge(collectionItems);
+        final int merged = itemResolver.merge(collectionItems);
+        showNotification(new Notification(String.format(mergedNotification, merged)));
     }
 
     @FXML

@@ -349,6 +349,7 @@ public final class R {
         public static final String NOTIFY_FIGHT_LIVE_UPDATE = "drd_notify_fight_live_update";
         public static final String NOTIFY_TABLE_IS_EMPTY = "drd_notify_table_is_empty";
         public static final String NOTIFY_LIST_IS_EMPTY = "drd_notify_list_is_empty";
+        public static final String NOTIFY_MERGED_ITEMS = "drd_notify_merged_items";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
         public static final String SETTINGS = "drd_settings";
         public static final String ABOUT_CONTENT = "drd_about_content";
