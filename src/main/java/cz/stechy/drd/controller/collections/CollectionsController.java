@@ -8,13 +8,14 @@ import cz.stechy.drd.model.persistent.ItemCollectionContent;
 import cz.stechy.drd.model.persistent.ItemCollectionService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.service.ItemRegistry;
+import cz.stechy.drd.model.service.ItemResolver;
+import cz.stechy.drd.model.service.ItemResolver.WithItemBase;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.BaseController;
-import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Optional;
@@ -81,6 +82,7 @@ public class CollectionsController extends BaseController implements Initializab
     private final ObjectProperty<ItemCollectionContent> collectionContent = new SimpleObjectProperty<>(this, "collectionContent", null);
 
     private final ItemCollectionService collectionService;
+    private final ItemResolver itemResolver;
     private final User user;
 
     private String title;
@@ -89,8 +91,10 @@ public class CollectionsController extends BaseController implements Initializab
 
     // region Constructors
 
-    public CollectionsController(ItemCollectionService collectionService, UserService userService) {
+    public CollectionsController(ItemCollectionService collectionService, ItemResolver itemResolver,
+        UserService userService) {
         this.collectionService = collectionService;
+        this.itemResolver = itemResolver;
         this.user = userService.getUser();
         itemRegistry.setAll(ItemRegistry.getINSTANCE().getChoices());
     }
@@ -187,7 +191,7 @@ public class CollectionsController extends BaseController implements Initializab
 
     @FXML
     private void handleCollectionDownload(ActionEvent actionEvent) {
-        showNotification(new Notification("Funkce není implementována..."));
+        itemResolver.merge(collectionItems);
     }
 
     @FXML
@@ -220,7 +224,7 @@ public class CollectionsController extends BaseController implements Initializab
         }
     };
 
-    public static final class ItemEntry {
+    public static final class ItemEntry implements WithItemBase {
         public final StringProperty name = new SimpleStringProperty(this, "name");
         public final IntegerProperty weight = new SimpleIntegerProperty(this, "weight");
         public final ObjectProperty<Money> price = new SimpleObjectProperty<>(this, "price");
