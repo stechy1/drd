@@ -60,6 +60,7 @@ public class MainController extends BaseController implements Initializable {
     private static final int ACTION_LOGIN = 3;
     private static final int ACTION_MONEY_EXPERIENCE = 4;
     private static final int ACTION_LEVEL_UP = 5;
+    public VBox container;
 
     // endregion
 
@@ -153,6 +154,14 @@ public class MainController extends BaseController implements Initializable {
     @Override
     protected void onCreate(Bundle bundle) {
         heroService.resetHero();
+        container.setDisable(true);
+
+        ((StackPane) getRoot()).getChildren().addAll(
+            new TutorialMainGroup()
+        );
+        getRoot().setOnMouseMoved(event -> {
+            System.out.println("Mouse X: " + event.getSceneX() + "; mouse Y: " + event.getSceneY());
+        });
     }
 
     @Override

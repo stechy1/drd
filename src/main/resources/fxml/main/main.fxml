@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.main.MainController">
+<VBox xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.main.MainController" fx:id="container">
   <MenuBar>
     <Menu fx:id="menuFile" text="%drd_main_menu_file">
       <MenuItem fx:id="menuNewHero" onAction="#handleMenuNewHero" text="%drd_main_menu_file_new_hero">
