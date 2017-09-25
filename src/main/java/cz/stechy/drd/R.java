@@ -350,6 +350,8 @@ public final class R {
         public static final String NOTIFY_TABLE_IS_EMPTY = "drd_notify_table_is_empty";
         public static final String NOTIFY_LIST_IS_EMPTY = "drd_notify_list_is_empty";
         public static final String NOTIFY_MERGED_ITEMS = "drd_notify_merged_items";
+        public static final String NOTIFY_FUNCTION_NOT_IMPLEMENTED = "drd_notify_function_not_implemented";
+        public static final String NOTIFY_HERO_NOT_FOUND = "drd_notify_hero_not_found";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
         public static final String SETTINGS = "drd_settings";
         public static final String ABOUT_CONTENT = "drd_about_content";

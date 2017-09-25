@@ -102,7 +102,7 @@ public final class UserService implements Firebase<User> {
                 .checkSame(user.getPassword(), password))
             .findFirst();
         if (!result.isPresent()) {
-            throw new UserException("User not found");
+            throw new UserException();
         }
 
         this.user.set(result.get());
@@ -129,7 +129,7 @@ public final class UserService implements Firebase<User> {
             .filter(user -> user.getName().equals(username))
             .findFirst();
         if (result.isPresent()) {
-            throw new UserException("User not found");
+            throw new UserException();
         }
 
         User user = new User(username, password);

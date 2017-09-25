@@ -30,7 +30,6 @@ public class MiniConnectionPoolManager {
     private PoolConnectionEventListener poolConnectionEventListener;
 
     // The following variables must only be accessed within synchronized blocks.
-// @GuardedBy("this") could by used in the future.
     private LinkedList<PooledConnection> recycledConnections;          // list of inactive PooledConnections
     private int activeConnections;            // number of active (open) connections of this pool
     private boolean isDisposed;                   // true if this connection pool has been disposed

@@ -110,6 +110,7 @@ public class MainController extends BaseController implements Initializable {
     private String logoutText;
     private String loginSuccess;
     private String actionFailed;
+    private String heroNotFound;
 
     // endregion
 
@@ -129,6 +130,7 @@ public class MainController extends BaseController implements Initializable {
         this.logoutText = resources.getString(R.Translate.MAIN_MENU_FILE_LOGOUT);
         this.loginSuccess = resources.getString(R.Translate.NOTIFY_LOGIN_SUCCESS);
         this.actionFailed = resources.getString(R.Translate.ACTION_FAILED);
+        this.heroNotFound = resources.getString(R.Translate.NOTIFY_HERO_NOT_FOUND);
 
         this.controllers = new MainScreen[]{
             defaultStaffController,
@@ -191,7 +193,7 @@ public class MainController extends BaseController implements Initializable {
                     this.heroService.load(heroId);
                 } catch (DatabaseException e) {
                     LOGGER.warn(e.getMessage());
-                    showNotification(new Notification("Hrdina nebyl nalezen"));
+                    showNotification(new Notification(heroNotFound));
                 }
                 break;
             case ACTION_LOGIN:
