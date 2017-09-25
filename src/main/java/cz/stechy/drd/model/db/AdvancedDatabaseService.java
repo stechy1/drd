@@ -10,7 +10,6 @@ import cz.stechy.drd.di.Inject;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.Firebase;
 import cz.stechy.drd.model.db.base.OnlineItem;
-import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.util.Base64Util;
 import java.util.HashMap;
 import java.util.Map;
@@ -269,15 +268,13 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     private final ChildEventListener childEventListener = new ChildEventListener() {
 
-        final ItemRegistry itemRegistry = ItemRegistry.getINSTANCE();
-
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             final T item = parseDataSnapshot(dataSnapshot);
             LOGGER.trace("Přidávám online item {} do svého povědomí.", item.toString());
 
             Platform.runLater(() -> {
-                itemRegistry.getItemById(item.getId()).ifPresent(itemBase -> {
+                items.stream().filter(t -> item.getId().equals(t.getId())).findFirst().ifPresent(itemBase -> {
                     item.setDownloaded(true);
                     itemBase.setUploaded(true);
                 });

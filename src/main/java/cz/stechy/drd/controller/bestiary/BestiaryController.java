@@ -169,15 +169,15 @@ public class BestiaryController extends BaseController implements Initializable 
             selectedRowBinding,
             showOnlineDatabase));
         btnDownloadItem.disableProperty().bind(
-            userLogged.or(
+            userLogged.not().or(
                     disableDownloadBtn.or(
                         showOnlineDatabase.not())));
         btnUploadItem.disableProperty().bind(
-            userLogged.or(
+            userLogged.not().or(
                     disableUploadBtn.or(
                         showOnlineDatabase)));
         btnRemoveOnlineItem.disableProperty().bind(
-            userLogged.or(
+            userLogged.not().or(
                     disableRemoveOnlineBtn.or(
                         showOnlineDatabase.not())));
 
@@ -198,11 +198,11 @@ public class BestiaryController extends BaseController implements Initializable 
 
             final MobEntry entry = sortedList.get(newValue.intValue());
             final BooleanBinding authorBinding = Bindings.createBooleanBinding(() ->
-                (user == null) ? true : entry.getAuthor().equals(user.getName()),
+                (user == null) ? false : entry.getAuthor().equals(user.getName()),
                 entry.authorProperty());
             disableDownloadBtn.bind(entry.downloadedProperty());
-            disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding));
-            disableRemoveOnlineBtn.bind(authorBinding);
+            disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding.not()));
+            disableRemoveOnlineBtn.bind(authorBinding.not());
         });
         showOnlineDatabase.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {

@@ -189,4 +189,9 @@ public final class SpellEntry {
     public int hashCode() {
         return spellBase.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return spellBase.toString();
+    }
 }
