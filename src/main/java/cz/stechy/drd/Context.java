@@ -2,6 +2,7 @@ package cz.stechy.drd;
 
 import cz.stechy.drd.R.Config;
 import cz.stechy.drd.di.DiContainer;
+import cz.stechy.drd.di.IDependencyManager;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.DatabaseService;
 import cz.stechy.drd.model.db.FirebaseWrapper;
@@ -65,7 +66,7 @@ public class Context {
     // region Variables
 
     // DI kontejner obsahující všechny služby v aplikaci
-    private final DiContainer container = new DiContainer();
+    private final IDependencyManager container = new DiContainer();
     // Pomocný wrapper na pozdější inicializaci firebase databáze
     private final FirebaseWrapper firebaseWrapper = new FirebaseWrapper();
     // Pracovní adresář, kam můžu ukládat potřebné soubory
@@ -226,7 +227,7 @@ public class Context {
         firebaseWrapper.closeDatabase();
     }
 
-    public DiContainer getContainer() {
+    public IDependencyManager getContainer() {
         return container;
     }
 

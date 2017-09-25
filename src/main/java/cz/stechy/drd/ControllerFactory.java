@@ -1,6 +1,6 @@
 package cz.stechy.drd;
 
-import cz.stechy.drd.di.DiContainer;
+import cz.stechy.drd.di.IDependencyManager;
 import javafx.util.Callback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +19,13 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
 
     // region Variables
 
-    private final DiContainer container;
+    private final IDependencyManager container;
 
     // endregion
 
     // region Constructors
 
-    public ControllerFactory(DiContainer container) {
+    public ControllerFactory(IDependencyManager container) {
         this.container = container;
     }
 
