@@ -4,7 +4,6 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
-import cz.stechy.drd.model.inventory.ItemClickListener;
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.inventory.TooltipTranslator;
@@ -90,6 +89,31 @@ public class BackpackController extends BaseController implements TooltipTransla
 
     // endregion
 
+    // region Private methods
+
+    // region Method handlers
+
+    private void itemClickHandler(ItemSlot itemSlot) {
+        final ItemBase item = itemSlot.getItemStack().getItem();
+        switch (itemSlot.getItemStack().getItem().getItemType()) {
+            case BACKPACK:
+                final Backpack backpack = (Backpack) item;
+                final Bundle bundle = new Bundle();
+                final Metadata metadata = itemSlot.getItemStack().getMetadata();
+                final String childInventoryId = (String) metadata.get(Backpack.CHILD_INVENTORY_ID);
+                final String itemName = backpack.getName();
+                bundle.putInt(BACKPACK_SIZE, backpack.getSize().size);
+                bundle.putString(INVENTORY_ID, childInventoryId);
+                bundle.putString(ITEM_NAME, itemName);
+                startNewDialog(R.FXML.BACKPACK, bundle);
+                break;
+        }
+    }
+
+    // endregion
+
+    // endregion
+
     @Override
     protected void onCreate(Bundle bundle) {
         backpackSize = bundle.getInt(BACKPACK_SIZE);
@@ -97,7 +121,7 @@ public class BackpackController extends BaseController implements TooltipTransla
         setTitle(bundle.getString(ITEM_NAME));
         itemContainer = new FlowItemContainer(this, backpackSize);
         container.setContent(itemContainer.getGraphics());
-        itemContainer.setItemClickListener(itemClickListener);
+        itemContainer.setItemClickListener(this::itemClickHandler);
         setScreenSize(WIDTH, BackpackController.computeHeight(backpackSize));
 
         final InventoryService inventoryManager = heroManager.getInventory();
@@ -113,21 +137,4 @@ public class BackpackController extends BaseController implements TooltipTransla
     public void onTooltipTranslateRequest(Map<String, String> map) {
         translator.translateTooltipKeys(map);
     }
-
-    private final ItemClickListener itemClickListener = itemSlot -> {
-        final ItemBase item = itemSlot.getItemStack().getItem();
-        switch (itemSlot.getItemStack().getItem().getItemType()) {
-            case BACKPACK:
-                final Backpack backpack = (Backpack) item;
-                final Bundle bundle = new Bundle();
-                final Metadata metadata = itemSlot.getItemStack().getMetadata();
-                final String childInventoryId = (String) metadata.get(Backpack.CHILD_INVENTORY_ID);
-                final String itemName = backpack.getName();
-                bundle.putInt(BACKPACK_SIZE, backpack.getSize().size);
-                bundle.putString(INVENTORY_ID, childInventoryId);
-                bundle.putString(ITEM_NAME, itemName);
-                startNewDialog(R.FXML.BACKPACK, bundle);
-                break;
-        }
-    };
 }

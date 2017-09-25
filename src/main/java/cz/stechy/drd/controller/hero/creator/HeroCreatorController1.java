@@ -64,9 +64,13 @@ public class HeroCreatorController1 extends BaseController implements Initializa
 
     // endregion
 
+    // region Constructors
+
     public HeroCreatorController1(Translator translator) {
         this.translator = translator;
     }
+
+    // endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

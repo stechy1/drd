@@ -14,7 +14,6 @@ public class HeroAggresiveEntity extends AggresiveEntityDecorator {
 
     // region Variables
 
-//    private final InventoryContent inventory;
     private int weaponStrength = 0;
     private int weaponDefence = 0;
     private int armorDefence = 0;

@@ -51,7 +51,7 @@ public class DefaultStaffRightController {
 
     // region Public methods
 
-    public void bindWithHero(Hero hero) {
+    void bindWithHero(Hero hero) {
         if (hero == null) {
             unbind();
         } else {

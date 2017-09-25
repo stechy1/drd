@@ -28,6 +28,19 @@ public class FightCommentController extends BaseController implements Initializa
 
     // endregion
 
+    // region Private methods
+
+    /**
+     * Přidá komentář do {@link TextArea}
+     *
+     * @param comment Obsah komentáře
+     */
+    private void addComment(String comment) {
+        txtComment.appendText(comment + "\n");
+    }
+
+    // endregion
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         txtComment.textProperty().addListener((observable, oldValue, newValue) ->
@@ -44,9 +57,5 @@ public class FightCommentController extends BaseController implements Initializa
     protected void onResume() {
         setTitle("Komentář souboje");
         setScreenSize(350, 210);
-    }
-
-    private void addComment(String comment) {
-        txtComment.appendText(comment + "\n");
     }
 }

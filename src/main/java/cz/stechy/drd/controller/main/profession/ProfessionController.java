@@ -35,31 +35,7 @@ public class ProfessionController implements MainScreen, Initializable, Injectab
 
     // endregion
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        this.resources = resources;
-    }
-
-    @Override
-    public void setHero(ReadOnlyObjectProperty<Hero> hero) {
-        hero.addListener((observable, oldValue, newValue) -> {
-            container.getChildren().clear();
-            if (newValue == null || newValue.getName().isEmpty()) {
-                return;
-            }
-
-            try {
-                loadProfession(newValue);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    @Override
-    public void injectParent(BaseController parent) {
-        this.parent = parent;
-    }
+    // region Private methods
 
     /**
      * Načte správný kontroler podle profese hrdiny
@@ -100,5 +76,33 @@ public class ProfessionController implements MainScreen, Initializable, Injectab
         }
 
         return fxmlName;
+    }
+
+    // endregion
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        this.resources = resources;
+    }
+
+    @Override
+    public void setHero(ReadOnlyObjectProperty<Hero> hero) {
+        hero.addListener((observable, oldValue, newValue) -> {
+            container.getChildren().clear();
+            if (newValue == null || newValue.getName().isEmpty()) {
+                return;
+            }
+
+            try {
+                loadProfession(newValue);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @Override
+    public void injectParent(BaseController parent) {
+        this.parent = parent;
     }
 }

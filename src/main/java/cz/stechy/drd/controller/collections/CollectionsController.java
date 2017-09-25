@@ -109,7 +109,7 @@ public class CollectionsController extends BaseController implements Initializab
         ItemCollectionContent oldValue, ItemCollectionContent newValue) {
         collectionItems.clear();
         if (oldValue != null) {
-            oldValue.getItems().removeListener(collectionContentChangeListener);
+            oldValue.getItems().removeListener(this::collectionContentChangeListener);
         }
         if (newValue == null) {
             return;
@@ -117,8 +117,24 @@ public class CollectionsController extends BaseController implements Initializab
 
         collectionItems.setAll(collectionContent.get().getItems().stream()
             .map(ItemEntry::new).collect(Collectors.toList()));
-        newValue.getItems().addListener(collectionContentChangeListener);
+        newValue.getItems().addListener(this::collectionContentChangeListener);
     }
+
+    // region Method handlers
+
+    private void collectionContentChangeListener(ListChangeListener.Change<? extends ItemBase> c) {
+        while(c.next()) {
+            collectionItems.addAll(c.getAddedSubList().stream().map(ItemEntry::new).collect(
+                Collectors.toList()));
+            c.getRemoved().stream()
+                .forEach(o -> collectionItems.stream()
+                    .filter(itemEntry -> o.getId().equals(itemEntry.getId()))
+                    .findFirst()
+                    .ifPresent(itemEntry -> collectionItems.remove(itemEntry)));
+        }
+    }
+
+    // endregion
 
     // endregion
 
@@ -215,18 +231,6 @@ public class CollectionsController extends BaseController implements Initializab
     }
 
     // endregion
-
-    private final ListChangeListener<ItemBase> collectionContentChangeListener = c -> {
-        while(c.next()) {
-            collectionItems.addAll(c.getAddedSubList().stream().map(ItemEntry::new).collect(
-                Collectors.toList()));
-            c.getRemoved().stream()
-                .forEach(o -> collectionItems.stream()
-                    .filter(itemEntry -> o.getId().equals(itemEntry.getId()))
-                    .findFirst()
-                    .ifPresent(itemEntry -> collectionItems.remove(itemEntry)));
-        }
-    };
 
     public static final class ItemEntry implements WithItemBase {
         public final StringProperty name = new SimpleStringProperty(this, "name");

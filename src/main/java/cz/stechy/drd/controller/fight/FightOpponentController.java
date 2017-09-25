@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,7 +33,11 @@ import javafx.scene.control.Label;
  */
 public class FightOpponentController implements Initializable, IFightChild, InjectableChild {
 
+    // region Constants
+
     private static final int ACTION_MONEY = 1;
+
+    // endregion
 
     // region Variables
 
@@ -70,10 +74,32 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
 
     // endregion
 
+    // region Constructors
+
     public FightOpponentController(BestiaryService bestiaryService) {
         this.bestiary = bestiaryService;
         this.mobs = bestiary.selectAll();
     }
+
+    // endregion
+
+    // region Private methods
+
+    // region Method handlers
+
+    private void mobHandler(ObservableValue<? extends Mob> observable, Mob oldValue, Mob newValue) {
+        lblViability.setText(String.valueOf(newValue.getViability()));
+        lblImmunity.bind(newValue.getImmunity());
+        lblIntelligence.bind(newValue.getIntelligence());
+        lblCharisma.bind(newValue.getCharisma());
+        lblAttackNumber.setText(String.valueOf(newValue.getAttackNumber()));
+        lblDefenceNumber.setText(String.valueOf(newValue.getDefenceNumber()));
+        lblLive.bind(newValue.getLive());
+    }
+
+    // endregion
+
+    // endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -86,7 +112,7 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
                 }
                 return selectedItem.duplicate();
             }, cmbBestiary.getSelectionModel().selectedItemProperty()));
-        this.selectedMob.addListener(mobListener);
+        this.selectedMob.addListener(this::mobHandler);
         btnRevive.disableProperty().bind(cmbBestiary.getSelectionModel().selectedItemProperty().isNull());
         lblPrice.textProperty().bind(treasure.text);
     }
@@ -113,16 +139,6 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
     public void setHero(Hero hero) {
         // Zde opravdu nic není
     }
-
-    private ChangeListener<? super Mob> mobListener = (observable, oldValue, newValue) -> {
-        lblViability.setText(String.valueOf(newValue.getViability()));
-        lblImmunity.bind(newValue.getImmunity());
-        lblIntelligence.bind(newValue.getIntelligence());
-        lblCharisma.bind(newValue.getCharisma());
-        lblAttackNumber.setText(String.valueOf(newValue.getAttackNumber()));
-        lblDefenceNumber.setText(String.valueOf(newValue.getDefenceNumber()));
-        lblLive.bind(newValue.getLive());
-    };
 
     // region Button handlers
 

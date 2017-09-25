@@ -81,6 +81,32 @@ public class DiceController extends BaseController implements Initializable {
 
     // endregion
 
+    // region Private methods
+
+    /**
+     * Inicializuje tabulku pro přidávání konstant k hodu kostkou
+     */
+    private void initTable() {
+        columnAdditionType.setCellFactory(ComboBoxTableCell.forTableColumn(translator.getConvertor(
+            Key.DICE_ADDITION_PROPERTIES), AdditionType.values()));
+        columnAdditionType.setOnEditCommit(
+            event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
+                .setAdditionType(event.getNewValue()));
+
+        columnUseRepair.setCellFactory(CheckBoxTableCell.forTableColumn(columnUseRepair));
+        columnUseRepair.setOnEditCommit(
+            event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
+                .setUseRepair(event.getNewValue()));
+
+        columnUseSubtract.setCellFactory(CheckBoxTableCell.forTableColumn(columnUseSubtract));
+        columnUseSubtract.setOnEditCommit(
+            event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
+                .setUseSubtract(event.getNewValue()));
+        btnAddAddition.setDisable(hero == null);
+    }
+
+    // endregion
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.DICE_TITLE);
@@ -106,28 +132,6 @@ public class DiceController extends BaseController implements Initializable {
         FormUtils.initTextFormater(txtRollCount, diceRollCount);
 
         initTable();
-    }
-
-    /**
-     * Inicializuje tabulku pro přidávání konstant k hodu kostkou
-     */
-    private void initTable() {
-        columnAdditionType.setCellFactory(ComboBoxTableCell.forTableColumn(translator.getConvertor(
-            Key.DICE_ADDITION_PROPERTIES), AdditionType.values()));
-        columnAdditionType.setOnEditCommit(
-            event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
-                .setAdditionType(event.getNewValue()));
-
-        columnUseRepair.setCellFactory(CheckBoxTableCell.forTableColumn(columnUseRepair));
-        columnUseRepair.setOnEditCommit(
-            event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
-                .setUseRepair(event.getNewValue()));
-
-        columnUseSubtract.setCellFactory(CheckBoxTableCell.forTableColumn(columnUseSubtract));
-        columnUseSubtract.setOnEditCommit(
-            event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
-                .setUseSubtract(event.getNewValue()));
-        btnAddAddition.setDisable(hero == null);
     }
 
     @Override

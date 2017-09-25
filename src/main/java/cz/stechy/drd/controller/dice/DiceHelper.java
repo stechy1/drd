@@ -14,15 +14,31 @@ import javafx.collections.ObservableList;
  */
 public final class DiceHelper {
 
+    // region Variables
+
     public final ObservableList<DiceAddition> additions = FXCollections.observableArrayList();
     //public final IntegerProperty rollResult = new SimpleIntegerProperty();
     public final ObservableList<Integer> rollResults = FXCollections.observableArrayList();
     private final Hero hero;
 
+    // endregion
+
+    // region Constructors
+
     public DiceHelper(Hero hero) {
         this.hero = hero;
     }
 
+    // endregion
+
+    // region Public methods
+
+    /**
+     * Provede hod kostkou
+     *
+     * @param sides Počet stěn kostky
+     * @param count Počet hodů
+     */
     public void roll(int sides, int count) {
         rollResults.clear();
         Dice dice = new Dice(sides);
@@ -65,6 +81,8 @@ public final class DiceHelper {
             rollResults.add(result);
         }
     }
+
+    // endregion
 
     public enum DiceType {
         CUSTOM(0), TWO(2), SIX(6), TEN(10), TWENTY(20), HUNDRED(100);
