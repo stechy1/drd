@@ -175,6 +175,7 @@ public class ItemSlot {
         imgItem.setFitHeight(SLOT_SIZE);
         imgItem.setCursor(Cursor.HAND);
 
+        addImageHandlers();
         tooltip.setOnShowing(tooltipShowing);
 
         lblAmmount.setMaxSize(SLOT_SIZE, LABEL_AMMOUNT_HEGHT);
@@ -200,20 +201,6 @@ public class ItemSlot {
         imgItem.setOnDragDropped(onDragDropped);
 
         Tooltip.install(imgItem, tooltip);
-    }
-
-    private void removeImageHandlers() {
-        imgItem.setOnMouseClicked(null);
-
-        // Source slot drag events
-        imgItem.setOnDragDetected(null);
-        imgItem.setOnDragDone(null);
-
-        // Destination slot drag events
-        imgItem.setOnDragOver(null);
-        imgItem.setOnDragDropped(null);
-
-        Tooltip.uninstall(imgItem, tooltip);
     }
 
     private void setImage(byte[] image) {
@@ -255,7 +242,7 @@ public class ItemSlot {
         imgItem.setImage(backgroundImage);
         lblAmmount.setText(null);
         clickListener = null;
-        removeImageHandlers();
+        //removeImageHandlers();
     }
 
     /**
@@ -274,7 +261,7 @@ public class ItemSlot {
             setImage(item.getImage());
             this.itemStack.getItem().imageProperty().addListener(imageChangeListener);
             this.filter = itemBase -> itemBase.getItemType() == item.getItemType();
-            addImageHandlers();
+//            addImageHandlers();
             return;
         }
 
