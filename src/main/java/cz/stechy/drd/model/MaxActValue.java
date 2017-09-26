@@ -4,7 +4,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 /**
  * Třída obsahující tři hodnoty
@@ -46,11 +46,40 @@ public final class MaxActValue {
      * @param actValue Aktuální hodnota
      */
     public MaxActValue(Number minValue, Number maxValue, Number actValue) {
-        this.actValue.addListener(valueListener);
+        this.actValue.addListener(this::numberHandler);
         setMinValue(minValue);
         setMaxValue(maxValue);
         setActValue(actValue);
     }
+
+    // endregion
+
+    // region Private methods
+
+    // region Method handlers
+
+    private void numberHandler(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        if (newValue == null) {
+            return;
+        }
+
+        if (locked) {
+            return;
+        }
+
+        locked = true;
+
+        int value = newValue.intValue();
+        if (value > getMaxValue().doubleValue() && !canOverflow()) {
+            setActValue(getMaxValue());
+        } else if (value < getMinValue().doubleValue() && !canUnderflow()) {
+            setActValue(getMinValue());
+        }
+
+        locked = false;
+    }
+
+    // endregion
 
     // endregion
 
@@ -129,10 +158,6 @@ public final class MaxActValue {
         this.actValue.set(actValue);
     }
 
-    public ChangeListener<Number> getValueListener() {
-        return valueListener;
-    }
-
     public final boolean canOverflow() {
         return overflow.get();
     }
@@ -158,25 +183,4 @@ public final class MaxActValue {
     }
 
     // endregion
-
-    private final ChangeListener<Number> valueListener = (observable, oldValue, newValue) -> {
-        if (newValue == null) {
-            return;
-        }
-
-        if (locked) {
-            return;
-        }
-
-        locked = true;
-
-        int value = newValue.intValue();
-        if (value > getMaxValue().doubleValue() && !canOverflow()) {
-            setActValue(getMaxValue());
-        } else if (value < getMinValue().doubleValue() && !canUnderflow()) {
-            setActValue(getMinValue());
-        }
-
-        locked = false;
-    };
 }

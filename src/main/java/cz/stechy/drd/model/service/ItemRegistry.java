@@ -26,6 +26,9 @@ public final class ItemRegistry {
 
     // region Constructors
 
+    /**
+     * Privátní konstruktor k zabránění vytvoření instance
+     */
     private ItemRegistry() {
     }
 

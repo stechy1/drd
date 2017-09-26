@@ -76,6 +76,8 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
 
     // endregion
 
+    // region Private methods
+
     @Override
     public ItemCollection parseDataSnapshot(DataSnapshot snapshot) {
         final Builder builder = new Builder()
@@ -104,6 +106,8 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
     public void deleteRemote(ItemCollection item, boolean remote) {
         firebaseReference.child(item.getId()).removeValue();
     }
+
+    // endregion
 
     // region Getters & Setters
 

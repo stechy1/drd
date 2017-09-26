@@ -4,7 +4,6 @@ package cz.stechy.drd.model.item;
  * Výčet typů předmětů
  */
 public enum ItemType {
-
     GENERAL, WEAPON_MELE, WEAPON_RANGED, ARMOR, BACKPACK;
 
     public static ItemType valueOf(int index) {

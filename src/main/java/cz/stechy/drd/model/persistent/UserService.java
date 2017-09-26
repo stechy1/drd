@@ -20,6 +20,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Služba spravující CRUD operace nad třídou {@link User}
@@ -66,6 +67,21 @@ public final class UserService implements Firebase<User> {
                 firebaseReference.addChildEventListener(childEventListener);
             }
         });
+    }
+
+    // endregion
+
+    // region Private methods
+
+    @Override
+    public void upload(User user) {
+        final DatabaseReference child = firebaseReference.child(user.getId());
+        child.setValue(toFirebaseMap(user));
+    }
+
+    @Override
+    public void deleteRemote(User user, boolean remote) {
+        throw new NotImplementedException();
     }
 
     // endregion
@@ -149,17 +165,6 @@ public final class UserService implements Firebase<User> {
     }
 
     // endregion
-
-    @Override
-    public void upload(User user) {
-        final DatabaseReference child = firebaseReference.child(user.getId());
-        child.setValue(toFirebaseMap(user));
-    }
-
-    @Override
-    public void deleteRemote(User user, boolean remote) {
-
-    }
 
     private final ChildEventListener childEventListener = new ChildEventListener() {
         @Override

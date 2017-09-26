@@ -65,9 +65,19 @@ public class User {
 
     // endregion
 
+    // region Public static methods
+
+    /**
+     * Zvaliduje jméno uživatele
+     *
+     * @param name Jméno uživatele
+     * @return True, pokud je jméno validní, jinak false
+     */
     public static boolean isNameValid(String name) {
         return LOGIN_PATTERN.matcher(name).matches();
     }
+
+    // endregion
 
     // region Public methods
 

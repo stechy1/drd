@@ -11,9 +11,13 @@ import javafx.beans.property.SimpleIntegerProperty;
  */
 public abstract class ValidatedModel {
 
-    protected final IntegerProperty validityFlag = new SimpleIntegerProperty();
-    protected final BooleanProperty valid = new SimpleBooleanProperty();
-    protected final BooleanProperty changed = new SimpleBooleanProperty();
+    // region Variables
+
+    protected final IntegerProperty validityFlag = new SimpleIntegerProperty(this, "validityFlag");
+    protected final BooleanProperty valid = new SimpleBooleanProperty(this, "valid");
+    protected final BooleanProperty changed = new SimpleBooleanProperty(this, "changed");
+
+    // endregion
 
     // region Public methods
 

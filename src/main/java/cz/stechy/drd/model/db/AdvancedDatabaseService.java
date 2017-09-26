@@ -92,26 +92,28 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
      */
     protected abstract String getFirebaseChildName();
 
-    private ListChangeListener<T> makeChangeListener() {
-        return c -> {
-            while(c.next()) {
-                this.usedItems.addAll(c.getAddedSubList());
-                this.usedItems.removeAll(c.getRemoved());
-            }
-        };
-    }
-
     private void attachOfflineListener() {
-        this.onlineDatabase.removeListener(listChangeListener);
-        super.items.addListener(listChangeListener);
+        this.onlineDatabase.removeListener(this::listChangeHandler);
+        super.items.addListener(this::listChangeHandler);
         this.usedItems.setAll(super.items);
     }
 
     private void attachOnlineListener() {
-        super.items.removeListener(listChangeListener);
-        this.onlineDatabase.addListener(listChangeListener);
+        super.items.removeListener(this::listChangeHandler);
+        this.onlineDatabase.addListener(this::listChangeHandler);
         this.usedItems.setAll(this.onlineDatabase);
     }
+
+    // region Method handlers
+
+    private void listChangeHandler(ListChangeListener.Change<? extends T> c) {
+        while(c.next()) {
+            this.usedItems.addAll(c.getAddedSubList());
+            this.usedItems.removeAll(c.getRemoved());
+        }
+    }
+
+    // endregion
 
     // endregion
 
@@ -274,7 +276,10 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             LOGGER.trace("Přidávám online item {} do svého povědomí.", item.toString());
 
             Platform.runLater(() -> {
-                items.stream().filter(t -> item.getId().equals(t.getId())).findFirst().ifPresent(itemBase -> {
+                items.stream()
+                    .filter(t -> item.getId().equals(t.getId()))
+                    .findFirst()
+                    .ifPresent(itemBase -> {
                     item.setDownloaded(true);
                     itemBase.setUploaded(true);
                 });
@@ -306,8 +311,6 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
         }
     };
-
-    private final ListChangeListener<T> listChangeListener = makeChangeListener();
 
     /**
      * Třída představující synchronizační úlohu prováděnou asynchroně

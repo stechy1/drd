@@ -7,6 +7,8 @@ import javafx.application.Preloader.PreloaderNotification;
  */
 public final class MyPreloaderNotification implements PreloaderNotification {
 
+    // region Variables
+
     private static double oldProgress = 0;
     private static String oldDescription = "";
 
@@ -14,6 +16,10 @@ public final class MyPreloaderNotification implements PreloaderNotification {
     private final double progress;
     // Detail aktuálního průběhu
     private final String description;
+
+    // endregion
+
+    // region Constructors
 
     /**
      * Aktualizuje popis aktuálního průběhu bez inkrementace průběhu
@@ -46,11 +52,27 @@ public final class MyPreloaderNotification implements PreloaderNotification {
         MyPreloaderNotification.oldDescription = description;
     }
 
+    // endregion
+
+    // region Getters & Setters
+
+    /**
+     * Vrátí aktuální stav průběhu načítání
+     *
+     * @return stav průběhu načítání
+     */
     public double getProgress() {
         return progress;
     }
 
+    /**
+     * Vrátí popis průběhu načítání
+     *
+     * @return Popis průběhu
+     */
     public String getDescription() {
         return description;
     }
+
+    // endregion
 }

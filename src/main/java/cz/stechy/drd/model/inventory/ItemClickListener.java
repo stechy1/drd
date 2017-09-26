@@ -5,6 +5,11 @@ package cz.stechy.drd.model.inventory;
  */
 public interface ItemClickListener {
 
+    /**
+     * Metoda se zavolá při kliknutí na slot s předmětem
+     *
+     * @param itemSlot {@link ItemSlot} na který se kliklo
+     */
     void onClick(ItemSlot itemSlot);
 
 }

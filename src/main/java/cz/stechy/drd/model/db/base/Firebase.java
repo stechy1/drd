@@ -39,19 +39,4 @@ public interface Firebase<T> {
      * odstraní vzdálen item z lokální databáze
      */
     void deleteRemote(T item, boolean remote);
-
-    @FunctionalInterface
-    interface OnUploadItem<T> {
-        void onUploadRequest(T item);
-    }
-
-    @FunctionalInterface
-    interface OnDownloadItem<T> {
-        void onDownloadRequest(T item);
-    }
-
-    @FunctionalInterface
-    interface OnDeleteItem<T> {
-        void onDeleteRequest(T item, boolean remote);
-    }
 }

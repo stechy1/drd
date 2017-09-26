@@ -11,11 +11,15 @@ import javafx.beans.property.SimpleObjectProperty;
 /**
  * Položka v obchodě představující brnění
  */
-public class ArmorEntry extends ShopEntry {
+public final class ArmorEntry extends ShopEntry {
 
-    private final IntegerProperty defenceNumber = new SimpleIntegerProperty();
-    private final IntegerProperty minimumStrength = new SimpleIntegerProperty();
-    private final ObjectProperty<ArmorType> armorType = new SimpleObjectProperty<>();
+    // region Variables
+
+    private final IntegerProperty defenceNumber = new SimpleIntegerProperty(this, "defenceNumber");
+    private final IntegerProperty minimumStrength = new SimpleIntegerProperty(this, "minimumStrength");
+    private final ObjectProperty<ArmorType> armorType = new SimpleObjectProperty<>(this, "armorType");
+
+    // endregion
 
     // endregion
 

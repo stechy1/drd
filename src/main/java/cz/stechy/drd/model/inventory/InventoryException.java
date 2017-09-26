@@ -1,7 +1,7 @@
 package cz.stechy.drd.model.inventory;
 
 /**
- *
+ * Třída představující vyjímku, která může být vyvolána při práci s inventářem
  */
 public class InventoryException extends Exception {
 

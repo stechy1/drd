@@ -8,8 +8,18 @@ import java.util.Optional;
  */
 public interface IShoppingCart {
 
+    /**
+     * Přidá obchodní položku do košíku
+     *
+     * @param entry {@link ShopEntry}
+     */
     void addItem(ShopEntry entry);
 
+    /**
+     * Odebere obchodní položku z košíku
+     *
+     * @param entry {@link ShopEntry}
+     */
     void removeItem(ShopEntry entry);
 
     /**

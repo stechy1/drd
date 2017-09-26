@@ -1,6 +1,5 @@
 package cz.stechy.drd.model.entity;
 
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +7,7 @@ import java.util.Map;
 /**
  * Zranitelnost entity
  */
-public class Vulnerabilities {
+public final class Vulnerabilities {
 
     // region Constants
 
@@ -53,7 +52,14 @@ public class Vulnerabilities {
 
     // endregion
 
+    // region Constructors
+
+    /**
+     * Privátní konstruktor k zamezení vytvoření instance
+     */
     private Vulnerabilities() {}
+
+    // endregion
 
     public enum VulnerabilityType {
         ANIMAL(B | C | D | G | H | I | J | K | L),

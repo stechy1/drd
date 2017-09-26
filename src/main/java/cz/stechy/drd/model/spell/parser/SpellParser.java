@@ -162,6 +162,9 @@ public final class SpellParser {
         }
     }
 
+    /**
+     * Pomocná třída pro snažší čtení vstupního řetězce
+     */
     private static final class SimpleReader {
         final String source;
 
