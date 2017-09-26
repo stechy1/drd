@@ -130,7 +130,7 @@ public class Warior {
     public boolean intimidation(int mettle, int enemyCount) {
         mettle = Math.max(INTIMIDATION_MIN_METTLE, Math.min(INTIMIDATION_MAX_METTLE, mettle));
         final int roll = Dice.K100.roll() * enemyCount - INTIMIDATION_HERO_LEVEL_MULTIPLIER * hero.getLevel();
-        return roll <= INTIMIDATION_TABLE[mettle][hero.getCharisma().getValue() - 1];
+        return roll <= INTIMIDATION_TABLE[hero.getCharisma().getValue() - 1][mettle];
     }
 
     /**
