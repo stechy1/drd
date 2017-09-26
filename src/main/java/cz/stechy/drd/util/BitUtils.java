@@ -5,9 +5,16 @@ package cz.stechy.drd.util;
  */
 public final class BitUtils {
 
-    private BitUtils() {
-        throw new AssertionError();
-    }
+    // region Constructors
+
+    /**
+     * Privátní konstruktor k zamezení vytvoření instance
+     */
+    private BitUtils() { }
+
+    // endregion
+
+    // region Public static methods
 
     public static int setBit(int original, int flag, boolean value) {
         if (value) {
@@ -26,4 +33,6 @@ public final class BitUtils {
     public static int clearBit(int original, int index) {
         return setBit(original, index, false);
     }
+
+    // endregion
 }

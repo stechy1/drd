@@ -159,6 +159,7 @@ public class App extends Application {
         }
     }
 
+    @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(manager.getScreenManagerConfiguration().baseFxml);
         loader.setResources(manager.getResources());

@@ -18,17 +18,27 @@ public final class Base64Util {
 
     // region Public static methods
 
+    /**
+     * Zakóduje vstupní data do Base64
+     *
+     * @param data Vstupní data
+     * @return Textová reprezentace dat v podobě Base64
+     */
     public static String encode(byte[] data) {
         String result = encoder.encodeToString(data);
         return result.replaceAll("/", SLASH_REPLACE);
     }
 
+    /**
+     * Dekóduje vstupní data v podobě Base64 do binární podoby
+     *
+     * @param data Vstupní data
+     * @return Binární reprezentace dat
+     */
     public static byte[] decode(String data) {
         String toDecode = data.replaceAll(SLASH_REPLACE, "/");
         return decoder.decode(toDecode);
     }
-
-    // endregion
 
     // endregion
 
