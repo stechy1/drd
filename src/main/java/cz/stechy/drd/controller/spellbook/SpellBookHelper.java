@@ -46,20 +46,20 @@ public final class SpellBookHelper {
 
     public static void toBundle(Bundle bundle, Spell spell) {
         bundle.putString(ID, spell.getId());
-            bundle.putString(AUTHOR, spell.getAuthor());
-            bundle.putString(NAME, spell.getName());
-            bundle.putString(MAGIC_NAME, spell.getMagicName());
-            bundle.putString(DESCRIPTION, spell.getDescription());
-            bundle.putInt(PROFESSION_TYPE, spell.getType().ordinal());
-            bundle.putString(PRICE, spell.getPrice().pack());
-            bundle.putInt(RADIUS, spell.getRadius());
-            bundle.putInt(RANGE, spell.getRange());
-            bundle.putInt(TARGET, spell.getTarget().ordinal());
-            bundle.putInt(CAST_TIME, spell.getCastTime());
-            bundle.putInt(DURATION, spell.getDuration());
-            bundle.put(IMAGE, spell.getImage());
-            bundle.putBoolean(UPLOADED, spell.isUploaded());
-            bundle.putBoolean(DOWNLOADED, spell.isDownloaded());
+        bundle.putString(AUTHOR, spell.getAuthor());
+        bundle.putString(NAME, spell.getName());
+        bundle.putString(MAGIC_NAME, spell.getMagicName());
+        bundle.putString(DESCRIPTION, spell.getDescription());
+        bundle.putInt(PROFESSION_TYPE, spell.getType().ordinal());
+        bundle.putString(PRICE, spell.getPrice().pack());
+        bundle.putInt(RADIUS, spell.getRadius());
+        bundle.putInt(RANGE, spell.getRange());
+        bundle.putInt(TARGET, spell.getTarget().ordinal());
+        bundle.putInt(CAST_TIME, spell.getCastTime());
+        bundle.putInt(DURATION, spell.getDuration());
+        bundle.put(IMAGE, spell.getImage());
+        bundle.putBoolean(UPLOADED, spell.isUploaded());
+        bundle.putBoolean(DOWNLOADED, spell.isDownloaded());
     }
 
     public static Spell fromBundle(Bundle bundle) {
