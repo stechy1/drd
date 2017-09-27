@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.main.profession;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.profession.Warior;
@@ -54,6 +55,8 @@ public class WarriorController implements IProfessionController, Initializable {
     private final ObservableList<WeaponBase> items = FXCollections.observableArrayList();
     private final BestiaryService bestiary;
 
+    private String successText;
+    private String failText;
     private Hero hero;
     private Warior warior;
 
@@ -69,6 +72,8 @@ public class WarriorController implements IProfessionController, Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.successText = resources.getString(R.Translate.SUCCESS);
+        this.failText = resources.getString(R.Translate.UNSUCCESS);
         cmbBestiaryIntimidation.setItems(mobs);
         cmbBestiaryIntimidation.setCellFactory(param -> new CellUtils.RawImageListCell());
 
@@ -107,11 +112,12 @@ public class WarriorController implements IProfessionController, Initializable {
         final Mob enemy = cmbBestiaryIntimidation.getValue();
         final int mettle = enemy.getMettle();
         final int count = Integer.parseInt(txtEnemyCountIntimidation.getText());
+        final boolean success = warior.intimidation(mettle, count);
 
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setHeaderText("Header");
-        alert.setContentText(String.valueOf(warior.intimidation(mettle, count)));
-        alert.setTitle("Title");
+        final Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setHeaderText("Zastrašení nepřátel");
+        alert.setTitle("Úspěšnost válečníka");
+        alert.setContentText(success ? successText : failText);
         alert.showAndWait();
     }
 
@@ -119,11 +125,12 @@ public class WarriorController implements IProfessionController, Initializable {
     private void handleDetectArtefact(ActionEvent actionEvent) {
         final WeaponBase weaponBase = cmbItemsDetectArtefact.getValue();
         final int fame = weaponBase.getRenown();
+        final boolean success = warior.detectArtefact(fame);
 
         final Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setHeaderText("Header");
-        alert.setContentText(String.valueOf(warior.detectArtefact(fame)));
-        alert.setTitle("Title");
+        alert.setHeaderText("Odhad artefaktu");
+        alert.setTitle("Úspěšnost válečníka");
+        alert.setContentText(success ? successText : failText);
         alert.showAndWait();
     }
 
