@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.main.profession;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.Dice;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.profession.Thief;
@@ -45,6 +46,8 @@ public class ThiefController implements IProfessionController, Initializable {
     private final ObjectProperty<Ability> selectedAbility = new SimpleObjectProperty<>();
     private final IntegerProperty success = new SimpleIntegerProperty();
     private final Translator translator;
+    private String successText;
+    private String failText;
     private Hero hero;
     private Thief thief;
 
@@ -60,6 +63,8 @@ public class ThiefController implements IProfessionController, Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        this.successText = resources.getString(R.Translate.SUCCESS);
+        this.failText = resources.getString(R.Translate.UNSUCCESS);
         cmbAbilities.setItems(abilities);
         cmbAbilities.setConverter(translator.getConvertor(Key.THIEF_ABILITIES));
 
@@ -90,9 +95,9 @@ public class ThiefController implements IProfessionController, Initializable {
         final boolean fail = Dice.K100.roll() > success.get();
 
         final Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("title");
-        alert.setHeaderText("header");
-        alert.setContentText(String.valueOf(!fail));
+        alert.setTitle("Úspěšnost zloděje");
+        alert.setHeaderText(translator.getSingleTranslationFor(Key.THIEF_ABILITIES, selectedAbility.get()));
+        alert.setContentText(fail ? failText : successText);
         alert.showAndWait();
     }
 
