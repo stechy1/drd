@@ -139,7 +139,7 @@ public class SpellBookEditController extends BaseController implements Initializ
         action = bundle.getInt(SpellBookHelper.SPELL_ACTION);
         if (action == BestiaryHelper.MOB_ACTION_UPDATE) {
             model.id.setValue(bundle.getString(SpellBookHelper.ID));
-            model.id.setValue(bundle.getString(SpellBookHelper.AUTHOR));
+            model.author.setValue(bundle.getString(SpellBookHelper.AUTHOR));
             model.name.setValue(bundle.getString(SpellBookHelper.NAME));
             model.magicName.setValue(bundle.getString(SpellBookHelper.MAGIC_NAME));
             model.description.setValue(bundle.getString(SpellBookHelper.DESCRIPTION));
