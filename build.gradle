@@ -22,7 +22,7 @@ targetCompatibility = 1.8
 
 task buildResources(type:Exec) {
     println 'Generuji soubor R.java'
-    commandLine 'python', './scripts/src/resource_generator.py'
+    commandLine 'python3', './scripts/src/resource_generator.py'
 }
 processResources.dependsOn buildResources
 
