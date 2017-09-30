@@ -1,37 +1,48 @@
 package cz.stechy.drd.controller.shop;
 
+import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
+
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.db.AdvancedDatabaseManager;
+import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.item.Armor;
+import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.model.persistent.ArmorService;
+import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.shop.IShoppingCart;
-import cz.stechy.drd.model.shop.OnDeleteItem;
-import cz.stechy.drd.model.shop.OnDownloadItem;
-import cz.stechy.drd.model.shop.OnUploadItem;
 import cz.stechy.drd.model.shop.entry.ArmorEntry;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
+import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.util.Comparator;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +50,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Pomocný kontroler pro obchod se zbrojí
  */
-public class ShopArmorController implements Initializable, ShopItemController {
+public class ShopArmorController implements Initializable, ShopItemController<ArmorEntry> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(ShopArmorController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShopArmorController.class);
 
     // endregion
 
@@ -61,13 +72,15 @@ public class ShopArmorController implements Initializable, ShopItemController {
     @FXML
     private TableColumn<ArmorEntry, String> columnAuthor;
     @FXML
+    private TableColumn<ArmorEntry, ArmorType> columnArmorType;
+    @FXML
     private TableColumn<ArmorEntry, Integer> columnDefenceNumber;
     @FXML
     private TableColumn<ArmorEntry, Integer> columnMinimumStrength;
     @FXML
     private TableColumn<ArmorEntry, Integer> columnWeight;
     @FXML
-    private TableColumn<ArmorEntry, Integer> columnPrice;
+    private TableColumn<ArmorEntry, Money> columnPrice;
     @FXML
     private TableColumn<ArmorEntry, MaxActValue> columnAmmount;
     @FXML
@@ -76,8 +89,12 @@ public class ShopArmorController implements Initializable, ShopItemController {
     // endregion
 
     private final ObservableList<ArmorEntry> armors = FXCollections.observableArrayList();
+    private final SortedList<ArmorEntry> sortedList = new SortedList<>(armors,
+        Comparator.comparing(ShopEntry::getName));
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
-    private final AdvancedDatabaseManager<Armor> manager;
+    private final AdvancedDatabaseService<Armor> service;
+    private final Translator translator;
     private final User user;
 
     private IntegerProperty selectedRowIndex;
@@ -87,9 +104,10 @@ public class ShopArmorController implements Initializable, ShopItemController {
 
     // region Constructors
 
-    public ShopArmorController(Context context) {
-        this.manager = context.getManager(Context.MANAGER_ARMOR);
-        user = context.getUserManager().getUser().get();
+    public ShopArmorController(UserService userService, ArmorService armorService, Translator translator) {
+        this.service = armorService;
+        this.translator = translator;
+        this.user = userService.getUser();
     }
 
     // endregion
@@ -110,31 +128,46 @@ public class ShopArmorController implements Initializable, ShopItemController {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.resources = resources;
-        tableArmor.setItems(armors);
+        tableArmor.setItems(sortedList);
         tableArmor.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
+        tableArmor.setFixedCellSize(SHOP_ROW_HEIGHT);
+        sortedList.comparatorProperty().bind(tableArmor.comparatorProperty());
 
-        columnImage.setCellValueFactory(new PropertyValueFactory<>("image"));
+        columnWeight.setCellFactory(param -> CellUtils.forWeight());
         columnImage.setCellFactory(param -> CellUtils.forImage());
-        columnName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        columnAuthor.setCellValueFactory(new PropertyValueFactory<>("author"));
-        columnDefenceNumber.setCellValueFactory(new PropertyValueFactory<>("defenceNumber"));
-        columnMinimumStrength.setCellValueFactory(new PropertyValueFactory<>("minimumStrength"));
-        columnWeight.setCellValueFactory(new PropertyValueFactory<>("weight"));
-        columnPrice.setCellValueFactory(new PropertyValueFactory<>("price"));
-        columnAmmount.setCellValueFactory(new PropertyValueFactory<>("ammount"));
-        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue());
-
-        ObservableMergers.mergeList(armor -> new ArmorEntry(armor, height),
-            armors, manager.selectAll());
+        columnArmorType.setCellFactory(
+            TextFieldTableCell.forTableColumn(translator.getConvertor(Key.ARMOR_TYPES)));
+        columnPrice.setCellFactory(param -> CellUtils.forMoney());
+        columnAmmount.setCellFactory(param -> CellUtils.forMaxActValue(ammountEditable));
     }
 
     @Override
-    public void setShoppingCart(IShoppingCart shoppingCart, OnUploadItem uploadHandler,
-        OnDownloadItem downloadHandler, OnDeleteItem deleteHandler) {
-        columnAction.setCellFactory(param -> CellUtils
-            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem, uploadHandler,
-                downloadHandler, deleteHandler, user, resources));
+    public void setShoppingCart(IShoppingCart shoppingCart) {
+        columnAction.setCellFactory(param -> ShopHelper
+            .forActionButtons(shoppingCart::addItem, shoppingCart::removeItem,
+                resources, ammountEditable));
+
+        final Function<Armor, ArmorEntry> mapper = armor -> {
+            final ArmorEntry entry;
+            final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(armor.getId());
+            if (cartEntry.isPresent()) {
+                entry = (ArmorEntry) cartEntry.get();
+            } else {
+                entry = new ArmorEntry(armor, height);
+            }
+
+            return entry;
+        };
+
+        final Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                ObservableMergers.mergeList(mapper, armors, service.selectAll());
+                return null;
+            }
+        };
+        ThreadPool.getInstance().submit(task);
     }
 
     @Override
@@ -149,8 +182,13 @@ public class ShopArmorController implements Initializable, ShopItemController {
                 return;
             }
 
-            manager.toggleDatabase(newValue);
+            service.toggleDatabase(newValue);
         });
+    }
+
+    @Override
+    public void setAmmountEditableProperty(BooleanProperty ammountEditable) {
+        this.ammountEditable.bind(ammountEditable);
     }
 
     @Override
@@ -161,28 +199,24 @@ public class ShopArmorController implements Initializable, ShopItemController {
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
         try {
-            manager.insert((Armor) item);
-            armors.get(
-                armors.indexOf(
-                    new ArmorEntry((Armor) item, height)))
-                .setDownloaded(true);
+            service.insert((Armor) item);
         } catch (DatabaseException e) {
-            logger.warn("Item {} se nepodařilo vložit do databáze", item.toString());
+            LOGGER.warn("Item {} se nepodařilo vložit do databáze", item.toString());
         }
     }
 
     @Override
     public void onUpdateItem(ItemBase item) {
         try {
-            manager.update((Armor) item);
+            service.update((Armor) item);
         } catch (DatabaseException e) {
-            logger.warn("Item {} se napodařilo aktualizovat", item.toString());
+            LOGGER.warn("Item {} se napodařilo aktualizovat", item.toString());
         }
     }
 
     @Override
     public void insertItemToBundle(Bundle bundle, int index) {
-        ItemArmorController.toBundle(bundle, (Armor) armors.get(index).getItemBase());
+        ItemArmorController.toBundle(bundle, (Armor) sortedList.get(index).getItemBase());
     }
 
     @Override
@@ -192,23 +226,23 @@ public class ShopArmorController implements Initializable, ShopItemController {
 
     @Override
     public void requestRemoveItem(int index) {
-        final ArmorEntry entry = armors.get(index);
+        final ArmorEntry entry = sortedList.get(index);
         final String name = entry.getName();
         try {
-            manager.delete(entry.getId());
+            service.delete(entry.getId());
         } catch (DatabaseException e) {
-            logger.warn("Item {} se nepodařilo odebrat z databáze", name);
+            LOGGER.warn("Item {} se nepodařilo odebrat z databáze", name);
         }
     }
 
     @Override
     public void requestRemoveItem(ShopEntry item, boolean remote) {
-        manager.deleteRemote((Armor) item.getItemBase(), remote);
+        service.deleteRemote((Armor) item.getItemBase(), remote);
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        manager.upload((Armor) item);
+        service.upload((Armor) item);
     }
 
     @Override
@@ -217,7 +251,17 @@ public class ShopArmorController implements Initializable, ShopItemController {
     }
 
     @Override
-    public void onClose() {
-        manager.toggleDatabase(false);
+    public void synchronizeItems() {
+        service.synchronize(this.user.getName(), total ->
+            LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu brnění."));
+    }
+
+    @Override
+    public Optional<ArmorEntry> getSelectedItem() {
+        if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
+            return Optional.empty();
+        }
+
+        return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
 }

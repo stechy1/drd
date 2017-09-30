@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.112"
-  xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.shop.ShopController2">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
+  xmlns="http://javafx.com/javafx/8.0.121"
+  fx:controller="cz.stechy.drd.controller.shop.ShopController2">
   <center>
-    <TableView fx:id="tableView" BorderPane.alignment="CENTER">
+    <TableView BorderPane.alignment="CENTER" fx:id="tableView">
       <columnResizePolicy>
         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
       </columnResizePolicy>
+      <placeholder>
+        <Label text="%drd_notify_table_is_empty"/>
+      </placeholder>
       <columns>
-        <TableColumn fx:id="columnName" prefWidth="75.0" text="%drd_item_name"/>
-        <TableColumn fx:id="columnAmmount" prefWidth="75.0" text="%drd_item_ammount"/>
-        <TableColumn fx:id="columnPrice" prefWidth="75.0" text="%drd_item_price"/>
+        <TableColumn prefWidth="75.0" text="%drd_item_name" fx:id="columnName"/>
+        <TableColumn prefWidth="75.0" text="%drd_item_ammount" fx:id="columnAmmount"/>
+        <TableColumn prefWidth="75.0" text="%drd_item_price" fx:id="columnPrice"/>
       </columns>
     </TableView>
   </center>
   <bottom>
-    <HBox prefHeight="50.0" BorderPane.alignment="CENTER">
-      <padding>
-        <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
-      </padding>
-      <Button onAction="#handleBack" text="%drd_back"/>
+    <HBox prefHeight="50.0">
+      <JFXButton onAction="#handleBack" prefHeight="34.0" styleClass="btn, btn-danger"
+        text="%drd_back"/>
       <Region HBox.hgrow="ALWAYS"/>
-      <Button onAction="#handleFinishShopping" text="%drd_finish"/>
+      <JFXButton onAction="#handleFinishShopping" prefHeight="34.0" styleClass="btn, btn-primary, btn-raised"
+        text="%drd_finish"/>
+      <padding>
+        <Insets topRightBottomLeft="8.0"/>
+      </padding>
     </HBox>
   </bottom>
 </BorderPane>

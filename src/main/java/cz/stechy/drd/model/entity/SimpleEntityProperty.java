@@ -3,7 +3,9 @@ package cz.stechy.drd.model.entity;
 /**
  * Základní implementace vlastnosti entity
  */
-public class SimpleEntityProperty extends EntityProperty {
+public final class SimpleEntityProperty extends EntityProperty {
+
+    // region Constants
 
     private static final int MIN_VALUE = 1;
     private static final int MAX_VALUE;
@@ -13,16 +15,23 @@ public class SimpleEntityProperty extends EntityProperty {
         19, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, 25
     };
 
+    // endregion
+
     static {
         MAX_VALUE = REPAIRS.length;
     }
 
+    // region Constructors
+
     public SimpleEntityProperty() {
         super(MIN_VALUE, MAX_VALUE);
+
         value.addListener((observable, oldValue, newValue) -> {
             int index = limit(newValue).intValue();
             int repairValue = REPAIRS[index - 1];
             repair.setValue(repairValue);
         });
     }
+
+    // endregion
 }

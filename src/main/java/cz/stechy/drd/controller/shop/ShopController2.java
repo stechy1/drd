@@ -1,17 +1,11 @@
 package cz.stechy.drd.controller.shop;
 
-import cz.stechy.drd.Money;
-import cz.stechy.drd.model.Context;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.DatabaseException;
-import cz.stechy.drd.model.inventory.Inventory;
-import cz.stechy.drd.model.inventory.InventoryException;
-import cz.stechy.drd.model.inventory.InventoryRecord;
-import cz.stechy.drd.model.inventory.InventoryType;
-import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemRegistry;
-import cz.stechy.drd.model.persistent.HeroManager;
-import cz.stechy.drd.model.persistent.InventoryContent;
-import cz.stechy.drd.model.persistent.InventoryManager;
+import cz.stechy.drd.model.entity.hero.Hero;
+import cz.stechy.drd.model.inventory.InventoryHelper;
+import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.model.persistent.InventoryService;
 import cz.stechy.drd.model.shop.ShoppingCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.screens.BaseController;
@@ -60,16 +54,16 @@ public class ShopController2 extends BaseController implements Initializable {
     // endregion
 
     private final ObservableList<ItemResultEntry> items = FXCollections.observableArrayList();
-    private final HeroManager heroManager;
+    private final HeroService heroService;
 
-    private String heroId;
+    private ShoppingCart shoppingCart;
 
     // endregion
 
     // region Constructors
 
-    public ShopController2(Context context) {
-        this.heroManager = context.getManager(Context.MANAGER_HERO);
+    public ShopController2(HeroService heroService) {
+        this.heroService = heroService;
     }
 
     // endregion
@@ -85,10 +79,9 @@ public class ShopController2 extends BaseController implements Initializable {
 
     @Override
     protected void onCreate(Bundle bundle) {
-        this.heroId = bundle.getString(HERO_ID);
-        ShoppingCart shoppingCart = (ShoppingCart) bundle.get(SHOPPING_CART);
+        this.shoppingCart = bundle.get(SHOPPING_CART);
         items.setAll(shoppingCart.orderList.stream()
-            .map(shopEntry -> new ItemResultEntry(shopEntry))
+            .map(ItemResultEntry::new)
             .collect(Collectors.toList()));
     }
 
@@ -99,54 +92,40 @@ public class ShopController2 extends BaseController implements Initializable {
 
     // region Button handlers
 
-    public void handleFinishShopping(ActionEvent actionEvent) {
+    @FXML
+    private void handleFinishShopping(ActionEvent actionEvent) {
         try {
-            final InventoryManager inventoryManager = heroManager.getInventory();
-            final Inventory inventory = inventoryManager.selectAll().stream()
-                .filter(i -> i.getInventoryType() == InventoryType.MAIN).findFirst().get();
-            final InventoryContent inventoryContent = inventoryManager
-                .getInventoryContent(inventory);
-            for (ItemResultEntry item : items) {
-                final ItemBase itemBase = ItemRegistry.getINSTANCE().getItemById(item.getId());
-                try {
-                    final int slotIndex = inventoryContent.getItemSlotIndexById(itemBase);
-                    final InventoryRecord inventoryRecord = inventoryContent
-                        .select(record -> slotIndex == record.getSlotId());
-                    final InventoryRecord inventoryRecordCopy = inventoryRecord.duplicate();
-                    inventoryRecordCopy.setAmmount(inventoryRecord.getAmmount() + item.getAmmount());
-                    inventoryContent.update(inventoryRecordCopy);
+            // Odečtení peněz
+            heroService.beginTransaction();
+            final Hero heroCopy = heroService.getHero().duplicate();
+            heroCopy.getMoney().subtract(shoppingCart.totalPrice);
+            heroService.update(heroCopy);
 
-                } catch (InventoryException e) {
-                    try {
-                        final int slotIndex = inventoryContent.getFreeSlot();
-                        InventoryRecord inventoryRecord = new InventoryRecord.Builder()
-                            .inventoryId(inventoryContent.getInventory().getId())
-                            .slotId(slotIndex)
-                            .itemId(item.getId())
-                            .ammount(item.getAmmount())
-                            .build();
-                        inventoryContent.insert(inventoryRecord);
-                    } catch (InventoryException e1) {
-                        e1.printStackTrace();
-                        return;
-                    }
-                }
-            }
+            final InventoryService inventoryManager = heroService.getInventory();
+            InventoryHelper.insertItemsToInventory(inventoryManager, items);
+
+            heroService.commit();
 
         } catch (DatabaseException e) {
             e.printStackTrace();
+            try {
+                heroService.rollback();
+            } catch (DatabaseException e1) {
+                e1.printStackTrace();
+            }
             return;
         }
         finish();
     }
 
-    public void handleBack(ActionEvent actionEvent) {
+    @FXML
+    private void handleBack(ActionEvent actionEvent) {
         back();
     }
 
     // endregion
 
-    public static class ItemResultEntry {
+    public static class ItemResultEntry implements InventoryHelper.ItemRecord {
 
         // region Variables
 

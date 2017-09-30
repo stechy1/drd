@@ -11,10 +11,8 @@ public final class Dice {
     public static final Dice K6 = new Dice(6);
     // Deseti-stěnná kostka
     public static final Dice K10 = new Dice(10);
-    // Dvaceti-stěnná kostka
-    public static final Dice K20 = new Dice(20);
     // Pravděpodobnostní kostka
-    public static final Dice K100 = new Dice(0, 100);
+    public static final Dice K100 = new Dice(100);
 
     // endregion
 
@@ -51,6 +49,57 @@ public final class Dice {
 
     // endregion
 
+    // region Public static methods
+
+    /**
+     * Vygeneruje hodnotu podle pravidel pro generování hodnot ze zadaného rozsahu
+     *
+     * @param min Dolní mez
+     * @param max Horní mez
+     * @return Hodnotu ze zadaného intervalu
+     */
+    public static int generateValue(int min, int max) {
+        // Odečteme dolní mez od horní
+        final int delta = max - min;
+        Dice dice = K6;
+        int rollCount = 1;
+        boolean special = false;
+        // Test, jestli budu házet 6-stěnnou kostkou
+        if (delta % 5 == 0) {
+            dice = K6;
+            rollCount = (int) Math.floor(delta / 5.0);
+         // Test, jestli budu házet 10-stěnnou kostkou
+        } else if (delta % 9 == 0) {
+            dice = K10;
+            rollCount = (int) Math.floor(delta / 9.0);
+        } else {
+            special = true;
+            if (max == 3) {
+                dice = K6;
+            } else if (max == 5) {
+                dice = K10;
+            }
+        }
+
+        // Určený počet hodů odečtu od dolní meze
+        // tím získám číslo které musím přičíst na konci
+        final int addon = min - rollCount;
+        int result = 0;
+        do {
+            int roll = dice.roll();
+            if (special) {
+                roll = (int) Math.round(roll / 2.0);
+            }
+            result += roll;
+            rollCount--;
+        } while (rollCount > 0);
+        result += addon;
+
+        return result;
+    }
+
+    // endregion
+
     // region Public methods
 
     /**
@@ -63,4 +112,9 @@ public final class Dice {
     }
 
     // endregion
+
+    @Override
+    public String toString() {
+        return "K" + maximum;
+    }
 }

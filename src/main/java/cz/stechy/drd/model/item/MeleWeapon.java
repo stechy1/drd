@@ -1,27 +1,32 @@
 package cz.stechy.drd.model.item;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.IClonable;
+import cz.stechy.drd.model.ITranslatedEnum;
 import cz.stechy.drd.model.db.base.DatabaseItem;
+import java.util.Map;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * Třída představující zbraň pro boj na blízko
  */
-public class MeleWeapon extends WeaponBase {
+public final class MeleWeapon extends WeaponBase {
 
     // region Variables
 
     // Obrana zbraně
-    protected final IntegerProperty defence = new SimpleIntegerProperty();
+    protected final IntegerProperty defence = new SimpleIntegerProperty(this, "defence");
     // Třída zbraně
-    protected final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(
-        MeleWeaponClass.LIGHT);
+    protected final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(this,
+        "weaponClass", MeleWeaponClass.LIGHT);
     // Typ zbraně
-    protected final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(
-        MeleWeaponType.ONE_HAND);
+    protected final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(this,
+        "weaponType", MeleWeaponType.ONE_HAND);
 
     // endregion
 
@@ -32,17 +37,17 @@ public class MeleWeapon extends WeaponBase {
      *
      * @param weapon Kopírovaná zbraň
      */
-    public MeleWeapon(MeleWeapon weapon) {
+    private MeleWeapon(MeleWeapon weapon) {
         this(weapon.getId(), weapon.getName(), weapon.getDescription(), weapon.getAuthor(),
             weapon.getWeight(), weapon.getPrice().getRaw(), weapon.getStrength(),
             weapon.getRampancy(), weapon.getDefence(), weapon.getWeaponClass(),
-            weapon.getWeaponType(), weapon.getImage(), weapon.isDownloaded(), weapon.isUploaded());
+            weapon.getWeaponType(), weapon.getRenown(), weapon.getImage(), weapon.getStackSize(),
+            weapon.isDownloaded(), weapon.isUploaded());
     }
 
     /**
      * Konstruktor pro zbraně k boji z blízka
-     *
-     * @param id Id zbraně
+     *  @param id Id zbraně
      * @param name Název zbraně
      * @param description Popis zbraně
      * @param author Autor zbraně
@@ -53,60 +58,22 @@ public class MeleWeapon extends WeaponBase {
      * @param defence Obrana zbraně
      * @param weaponClass Třída zbraně
      * @param weaponType Typ zbraně
+     * @param renown Sláva/známost zbraně
      * @param image Obrázek zbraně
+     * @param stackSize Maximální počet zbraní, který může být v jednom stacku ve slotu inventáře
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      * @param downloaded Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public MeleWeapon(String id, String name, String description, String author, int weight,
+    private MeleWeapon(String id, String name, String description, String author, int weight,
         int price, int strength, int rampancy, int defence, MeleWeaponClass weaponClass,
-        MeleWeaponType weaponType, byte[] image, boolean uploaded,
-        boolean downloaded) {
-        super(id, name, description, weight, price, strength, rampancy, author, image,
-            downloaded, uploaded);
+        MeleWeaponType weaponType, int renown, byte[] image, int stackSize, boolean downloaded,
+        boolean uploaded) {
+        super(id, name, description, weight, price, strength, rampancy, renown, author, image,
+            stackSize, downloaded, uploaded);
 
-        this.defence.setValue(defence);
-        this.weaponClass.setValue(weaponClass);
-        this.weaponType.setValue(weaponType);
-    }
-
-    // endregion
-
-    // region Getters & Setters
-
-    public int getDefence() {
-        return defence.get();
-    }
-
-    public IntegerProperty defenceProperty() {
-        return defence;
-    }
-
-    public void setDefence(int defence) {
-        this.defence.set(defence);
-    }
-
-    public MeleWeaponClass getWeaponClass() {
-        return weaponClass.get();
-    }
-
-    public ObjectProperty<MeleWeaponClass> weaponClassProperty() {
-        return weaponClass;
-    }
-
-    public void setWeaponClass(MeleWeaponClass weaponClass) {
-        this.weaponClass.set(weaponClass);
-    }
-
-    public MeleWeaponType getWeaponType() {
-        return weaponType.get();
-    }
-
-    public ObjectProperty<MeleWeaponType> weaponTypeProperty() {
-        return weaponType;
-    }
-
-    public void setWeaponType(MeleWeaponType weaponType) {
-        this.weaponType.set(weaponType);
+        setDefence(defence);
+        setWeaponClass(weaponClass);
+        setWeaponType(weaponType);
     }
 
     // endregion
@@ -116,10 +83,21 @@ public class MeleWeapon extends WeaponBase {
     @Override
     public void update(DatabaseItem other) {
         super.update(other);
-        MeleWeapon otherWeapon = (MeleWeapon) other;
-        this.defence.setValue(otherWeapon.getDefence());
-        this.weaponClass.setValue(otherWeapon.getWeaponClass());
-        this.weaponType.setValue(otherWeapon.getWeaponType());
+
+        MeleWeapon weapon = (MeleWeapon) other;
+        setDefence(weapon.getDefence());
+        setWeaponClass(weapon.getWeaponClass());
+        setWeaponType(weapon.getWeaponType());
+    }
+
+    @Override
+    public Map<String, String> getMapDescription() {
+        final Map<String, String> map = super.getMapDescription();
+        map.put(R.Translate.ITEM_WEAPON_MELE_ARMOR_DEFENCE_NUMBER, String.valueOf(getDefence()));
+        map.put(R.Translate.ITEM_WEAPON_MELE_CLASS, getWeaponClass().getKeyForTranslation());
+        map.put(R.Translate.ITEM_WEAPON_MELE_RANGED_TYPE, getWeaponType().getKeyForTranslation());
+
+        return map;
     }
 
     @Override
@@ -135,21 +113,86 @@ public class MeleWeapon extends WeaponBase {
 
     // endregion
 
+    // region Getters & Setters
+
+    public final int getDefence() {
+        return defence.get();
+    }
+
+    public final ReadOnlyIntegerProperty defenceProperty() {
+        return defence;
+    }
+
+    private void setDefence(int defence) {
+        this.defence.set(defence);
+    }
+
+    public final MeleWeaponClass getWeaponClass() {
+        return weaponClass.get();
+    }
+
+    public final ReadOnlyObjectProperty<MeleWeaponClass> weaponClassProperty() {
+        return weaponClass;
+    }
+
+    private void setWeaponClass(MeleWeaponClass weaponClass) {
+        this.weaponClass.set(weaponClass);
+    }
+
+    public final MeleWeaponType getWeaponType() {
+        return weaponType.get();
+    }
+
+    public final ReadOnlyObjectProperty<MeleWeaponType> weaponTypeProperty() {
+        return weaponType;
+    }
+
+    private void setWeaponType(MeleWeaponType weaponType) {
+        this.weaponType.set(weaponType);
+    }
+
+    // endregion
+
     // Třída zbraně
-    public enum MeleWeaponClass {
-        LIGHT, MEDIUM, HEAVY;
+    public enum MeleWeaponClass implements ITranslatedEnum {
+        LIGHT(R.Translate.ITEM_WEAPON_MELE_CLASS_LIGHT),
+        MEDIUM(R.Translate.ITEM_WEAPON_MELE_CLASS_MEDIUM),
+        HEAVY(R.Translate.ITEM_WEAPON_MELE_CLASS_HEAVY);
+
+        private final String key;
 
         public static MeleWeaponClass valueOf(int index) {
             return MeleWeaponClass.values()[index];
         }
+
+        MeleWeaponClass(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public String getKeyForTranslation() {
+            return key;
+        }
     }
 
     // Typ zbraně
-    public enum MeleWeaponType {
-        ONE_HAND, DOUBLE_HAND;
+    public enum MeleWeaponType implements ITranslatedEnum {
+        ONE_HAND(R.Translate.ITEM_WEAPON_MELE_TYPE_ONE_HAND),
+        DOUBLE_HAND(R.Translate.ITEM_WEAPON_MELE_TYPE_DOUBLE_HAND);
+
+        private final String key;
 
         public static MeleWeaponType valueOf(int index) {
             return MeleWeaponType.values()[index];
+        }
+
+        MeleWeaponType(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public String getKeyForTranslation() {
+            return key;
         }
     }
 
@@ -167,7 +210,9 @@ public class MeleWeapon extends WeaponBase {
         private MeleWeaponClass weaponClass = MeleWeaponClass.LIGHT;
         private MeleWeaponType weaponType = MeleWeaponType.ONE_HAND;
         private String author;
+        private int renown;
         private byte[] image;
+        private int stackSize;
         private boolean uploaded;
         private boolean downloaded;
 
@@ -226,8 +271,18 @@ public class MeleWeapon extends WeaponBase {
             return this;
         }
 
+        public Builder renown(int renown) {
+            this.renown = renown;
+            return this;
+        }
+
         public Builder image(byte[] image) {
             this.image = image;
+            return this;
+        }
+
+        public Builder stackSize(int stackSize) {
+            this.stackSize = stackSize;
             return this;
         }
 
@@ -243,7 +298,7 @@ public class MeleWeapon extends WeaponBase {
 
         public MeleWeapon build() {
             return new MeleWeapon(id, name, description, author, weight, price, strength, rampancy,
-                defence, weaponClass, weaponType, image, downloaded, uploaded);
+                defence, weaponClass, weaponType, renown, image, stackSize, downloaded, uploaded);
         }
     }
 

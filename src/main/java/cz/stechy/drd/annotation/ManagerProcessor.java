@@ -58,7 +58,8 @@ public class ManagerProcessor extends AbstractProcessor {
             }
             TypeElement typeElement = (TypeElement) annotatedElement;
             TableAnnotatedClass tableAnnotatedClass = new TableAnnotatedClass(typeElement);
-            messager.printMessage(Kind.NOTE, "Zpracovávám třídu: " + tableAnnotatedClass.getSimpleTypeName());
+            messager.printMessage(Kind.NOTE,
+                "Zpracovávám třídu: " + tableAnnotatedClass.getSimpleTypeName());
 
             final List<ColumnInfo> columnInfos = new ArrayList<>();
             final Field[] fields = annotatedElement.getClass().getDeclaredFields();
@@ -79,14 +80,15 @@ public class ManagerProcessor extends AbstractProcessor {
                 final JavaFileObject fileObject = processingEnv.getFiler().createSourceFile(
                     typeElement.getQualifiedName() + "." + className);
 
-                try(Writer writter = fileObject.openWriter()) {
-                    writter.append( "package " + typeElement.getQualifiedName() + ";" );
-                    writter.append( "\\n\\n");
-                    writter.append( "public class " + className + " {" );
-                    writter.append( "\\n");
-                    writter.append( "}");
+                try (Writer writter = fileObject.openWriter()) {
+                    writter.append("package ")
+                        .append(String.valueOf(typeElement.getQualifiedName())).append(";");
+                    writter.append("\\n\\n");
+                    writter.append("public class ").append(className).append(" {");
+                    writter.append("\\n");
+                    writter.append("}");
                 }
-            } catch( final IOException ex ) {
+            } catch (final IOException ex) {
                 processingEnv.getMessager().printMessage(Kind.ERROR, ex.getMessage());
             }
 

@@ -1,6 +1,8 @@
 package cz.stechy.drd.model.db.base;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -13,11 +15,11 @@ public abstract class OnlineItem extends DatabaseItem {
     // region Variables
 
     // Autor entity
-    protected final StringProperty author = new SimpleStringProperty();
+    protected final StringProperty author = new SimpleStringProperty(this, "author");
     // Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
-    protected final BooleanProperty downloaded = new SimpleBooleanProperty(false);
+    protected final BooleanProperty downloaded = new SimpleBooleanProperty(this, "downloaded", false);
     // Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
-    private final BooleanProperty uploaded = new SimpleBooleanProperty(false);
+    private final BooleanProperty uploaded = new SimpleBooleanProperty(this, "uploaded", false);
 
     // endregion
 
@@ -31,12 +33,12 @@ public abstract class OnlineItem extends DatabaseItem {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public OnlineItem(String id, String author, boolean downloaded, boolean uploaded) {
+    protected OnlineItem(String id, String author, boolean downloaded, boolean uploaded) {
         super(id);
 
-        this.author.set(author);
-        this.downloaded.set(downloaded);
-        this.uploaded.set(uploaded);
+        setAuthor(author);
+        setDownloaded(downloaded);
+        setUploaded(uploaded);
     }
 
     // endregion
@@ -46,9 +48,10 @@ public abstract class OnlineItem extends DatabaseItem {
     @Override
     public void update(DatabaseItem other) {
         super.update(other);
+
         OnlineItem onlineItem = (OnlineItem) other;
-        this.downloaded.set(onlineItem.isDownloaded());
-        this.uploaded.set(onlineItem.isUploaded());
+        setDownloaded(onlineItem.isDownloaded());
+        setUploaded(onlineItem.isUploaded());
     }
 
     // endregion
@@ -59,7 +62,7 @@ public abstract class OnlineItem extends DatabaseItem {
         return downloaded.get();
     }
 
-    public BooleanProperty downloadedProperty() {
+    public ReadOnlyBooleanProperty downloadedProperty() {
         return downloaded;
     }
 
@@ -71,7 +74,7 @@ public abstract class OnlineItem extends DatabaseItem {
         return uploaded.get();
     }
 
-    public BooleanProperty uploadedProperty() {
+    public ReadOnlyBooleanProperty uploadedProperty() {
         return uploaded;
     }
 
@@ -83,7 +86,7 @@ public abstract class OnlineItem extends DatabaseItem {
         return author.get();
     }
 
-    public StringProperty authorProperty() {
+    public ReadOnlyStringProperty authorProperty() {
         return author;
     }
 

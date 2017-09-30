@@ -18,7 +18,7 @@ class LoginModel {
     final StringProperty login = new SimpleStringProperty();
     final StringProperty password = new SimpleStringProperty();
     final BooleanProperty valid = new SimpleBooleanProperty(false);
-    final IntegerProperty flags = new SimpleIntegerProperty(LOGIN_FLAG + PASSWORD_FLAG);
+    private final IntegerProperty flags = new SimpleIntegerProperty(LOGIN_FLAG + PASSWORD_FLAG);
 
     LoginModel() {
         login.addListener(loginChangeListener);

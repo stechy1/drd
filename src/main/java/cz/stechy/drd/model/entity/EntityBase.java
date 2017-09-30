@@ -3,7 +3,15 @@ package cz.stechy.drd.model.entity;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.OnlineItem;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -11,7 +19,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Základní společná třída pro všechny entity ve světě Dračího doupěte
  */
-public abstract class EntityBase extends OnlineItem {
+public abstract class EntityBase extends OnlineItem implements IAggressive {
 
     // region Variales
 
@@ -28,6 +36,12 @@ public abstract class EntityBase extends OnlineItem {
         Conviction.NEUTRAL);
     // Velikost
     protected final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
+    // Útočné číslo
+    protected final IntegerProperty attackNumber = new SimpleIntegerProperty();
+    // Obranné číslo
+    protected final IntegerProperty defenceNumber = new SimpleIntegerProperty(this,
+        "defenceNumber");
+    protected final BooleanProperty alive = new SimpleBooleanProperty();
 
     // endregion
 
@@ -49,98 +63,155 @@ public abstract class EntityBase extends OnlineItem {
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public EntityBase(String id, String author, String name, String description, int live,
+    protected EntityBase(String id, String author, String name, String description, int live,
         int maxLive, int mag, int maxMag, Conviction conviction, Height height, boolean downloaded,
         boolean uploaded) {
         super(id, author, downloaded, uploaded);
-        this.id.setValue(id);
-        this.name.setValue(name);
-        this.description.setValue(description);
+
+        initBindings();
+
+        setId(id);
+        setName(name);
+        setDescription(description);
         this.live.setMaxValue(maxLive);
         this.live.setActValue(live);
         this.mag.setMaxValue(maxMag);
         this.mag.setActValue(mag);
-        this.conviction.setValue(conviction);
-        this.height.setValue(height);
+        setConviction(conviction);
+        setHeight(height);
+    }
+
+    // endregion
+
+    // region Private methods
+
+    private void initBindings() {
+        alive.bind(Bindings.createBooleanBinding(() -> getLive().getActValue().intValue() > 0,
+            live.actValueProperty()));
+    }
+
+    // endregion
+
+    // region Public methods
+
+    @Override
+    public void update(DatabaseItem other) {
+        super.update(other);
+
+        EntityBase entity = (EntityBase) other;
+
+        setName(entity.getName());
+        setDescription(entity.getDescription());
+        this.live.update(entity.live);
+        this.mag.update(entity.mag);
+        setConviction(entity.getConviction());
+        setHeight(entity.getHeight());
+        if (!attackNumber.isBound()) {
+            setAttackNumber(entity.getAttackNumber());
+        }
+        if (!defenceNumber.isBound()) {
+            setDefenceNumber(entity.getDefenceNumber());
+        }
+    }
+
+    @Override
+    public void subtractLive(int live) {
+        this.live.subtract(live);
     }
 
     // endregion
 
     // region Getters & Setters
 
-    public String getName() {
+    public final String getName() {
         return name.get();
     }
 
-    public StringProperty nameProperty() {
+    public final ReadOnlyStringProperty nameProperty() {
         return name;
     }
 
-    public void setName(String name) {
+    private void setName(String name) {
         this.name.set(name);
     }
 
-    public String getDescription() {
+    public final String getDescription() {
         return description.get();
     }
 
-    public StringProperty descriptionProperty() {
+    public final ReadOnlyStringProperty descriptionProperty() {
         return description;
     }
 
-    public void setDescription(String description) {
+    private void setDescription(String description) {
         this.description.set(description);
     }
 
-    public MaxActValue getLive() {
+    public final MaxActValue getLive() {
         return live;
     }
 
-    public MaxActValue getMag() {
+    public final MaxActValue getMag() {
         return mag;
     }
 
-    public Conviction getConviction() {
+    public final Conviction getConviction() {
         return conviction.get();
     }
 
-    public ObjectProperty<Conviction> convictionProperty() {
+    public final ReadOnlyObjectProperty<Conviction> convictionProperty() {
         return conviction;
     }
 
-    public void setConviction(Conviction conviction) {
+    private void setConviction(Conviction conviction) {
         this.conviction.set(conviction);
     }
 
-    public Height getHeight() {
+    public final Height getHeight() {
         return height.get();
     }
 
-    public ObjectProperty<Height> heightProperty() {
+    public final ReadOnlyObjectProperty<Height> heightProperty() {
         return height;
     }
 
-    public void setHeight(Height height) {
+    private void setHeight(Height height) {
         this.height.set(height);
     }
 
-    // endregion
-
-    @Override
-    public void update(DatabaseItem other) {
-        super.update(other);
-        EntityBase entity = (EntityBase) other;
-        this.name.setValue(entity.getName());
-        this.description.setValue(entity.getDescription());
-        this.live.setMaxValue(entity.live.getMaxValue());
-        this.live.setMinValue(entity.live.getMinValue());
-        this.live.setActValue(entity.live.getActValue());
-        this.mag.setMaxValue(entity.mag.getMaxValue());
-        this.mag.setMinValue(entity.mag.getMinValue());
-        this.mag.setActValue(entity.mag.getActValue());
-        this.conviction.setValue(entity.getConviction());
-        this.height.setValue(entity.getHeight());
+    public final int getAttackNumber() {
+        return attackNumber.get();
     }
+
+    public final ReadOnlyIntegerProperty attackNumberProperty() {
+        return attackNumber;
+    }
+
+    protected void setAttackNumber(int attackNumber) {
+        this.attackNumber.set(attackNumber);
+    }
+
+    public final int getDefenceNumber() {
+        return defenceNumber.get();
+    }
+
+    public final ReadOnlyIntegerProperty defenceNumberProperty() {
+        return defenceNumber;
+    }
+
+    protected void setDefenceNumber(int defenceNumber) {
+        this.defenceNumber.set(defenceNumber);
+    }
+
+    public boolean isAlive() {
+        return alive.get();
+    }
+
+    public BooleanProperty aliveProperty() {
+        return alive;
+    }
+
+    // endregion
 
     @Override
     public String toString() {

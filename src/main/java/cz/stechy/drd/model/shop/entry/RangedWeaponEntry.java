@@ -10,15 +10,21 @@ import javafx.beans.property.SimpleObjectProperty;
 /**
  * Položka v obchodě představující zbraň na dálku
  */
-public class RangedWeaponEntry extends ShopEntry {
+public final class RangedWeaponEntry extends ShopEntry {
 
-    private final IntegerProperty strength = new SimpleIntegerProperty();
-    private final IntegerProperty rampancy = new SimpleIntegerProperty();
-    private final ObjectProperty<RangedWeaponType> weaponType = new SimpleObjectProperty<>(
+    // region Variables
+
+    private final IntegerProperty strength = new SimpleIntegerProperty(this, "strength");
+    private final IntegerProperty rampancy = new SimpleIntegerProperty(this, "rampancy");
+    private final ObjectProperty<RangedWeaponType> weaponType = new SimpleObjectProperty<>(this, "weaponType",
         RangedWeaponType.FIRE);
-    private final IntegerProperty rangeLow = new SimpleIntegerProperty();
-    private final IntegerProperty rangeMedium = new SimpleIntegerProperty();
-    private final IntegerProperty rangeLong = new SimpleIntegerProperty();
+    private final IntegerProperty rangeLow = new SimpleIntegerProperty(this, "rangeLow");
+    private final IntegerProperty rangeMedium = new SimpleIntegerProperty(this, "rangeMedium");
+    private final IntegerProperty rangeLong = new SimpleIntegerProperty(this, "rangeLong");
+
+    // endregion
+
+    // region Constructors
 
     /**
      * Vytvoří novou nákupní položku obsahující zbraň na dálku
@@ -35,6 +41,8 @@ public class RangedWeaponEntry extends ShopEntry {
         rangeMedium.bind(weapon.rangeMediumProperty());
         rangeLong.bind(weapon.rangeLongProperty());
     }
+
+    // endregion
 
     // region Getters & Setters
 

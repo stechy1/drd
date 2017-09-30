@@ -1,49 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import cz.stechy.drd.widget.LabeledProgressBar?>
-<?import cz.stechy.drd.widget.LabeledText?>
-<?import cz.stechy.drd.widget.MoneyLabel?>
+<?import cz.stechy.drd.widget.Card?>
+<?import cz.stechy.drd.widget.LabeledMaxActValue?>
+<?import cz.stechy.drd.widget.MoneyWidget?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<VBox xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="cz.stechy.drd.controller.main.DefaultStaffController">
-  <HBox>
-    <ImageView fitHeight="100.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
-      <HBox.margin>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
-      </HBox.margin>
-    </ImageView>
-    <GridPane HBox.hgrow="ALWAYS">
-      <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10" prefWidth="150"/>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10" prefWidth="150"/>
-      </columnConstraints>
-      <rowConstraints>
-        <RowConstraints minHeight="10" prefHeight="20" vgrow="SOMETIMES"/>
-        <RowConstraints minHeight="10" prefHeight="20" vgrow="SOMETIMES"/>
-        <RowConstraints minHeight="10" prefHeight="20" vgrow="SOMETIMES"/>
-      </rowConstraints>
-      <LabeledText fx:id="lblHeroName" text="Stechy1" title="%drd_hero_name"/>
-      <LabeledText fx:id="lblHeroRaceAndProfession" text="Kudůk alchymista"
-        title="%drd_hero_race_and_profession" GridPane.columnIndex="1"
-        VBox.vgrow="ALWAYS"/>
-      <LabeledProgressBar fx:id="lblLive" displayMode="LIVE" label="%drd_hero_live"
-        prefWidth="10.0" GridPane.rowIndex="1"/>
-      <LabeledProgressBar fx:id="lblMag" displayMode="MAG" label="%drd_hero_mag"
-        prefWidth="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-      <MoneyLabel fx:id="lblMoney" label="%drd_hero_money" GridPane.columnIndex="1"
-        GridPane.rowIndex="2"/>
-    </GridPane>
+<VBox xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.main.defaultstaff.DefaultStaffController">
+  <HBox spacing="8.0" VBox.vgrow="NEVER">
+    <LabeledMaxActValue fx:id="lblLive" caption="%drd_hero_lives" description="%drd_hero_live">
+        <image>
+          <Image url="@/images/icon/zivoty.png"/>
+        </image>
+    </LabeledMaxActValue>
+    <Region HBox.hgrow="ALWAYS" />
+    <LabeledMaxActValue fx:id="lblMag" caption="%drd_hero_mags" description="%drd_hero_mag">
+      <image>
+        <Image url="@/images/icon/mana.png"/>
+      </image>
+    </LabeledMaxActValue>
+    <Region HBox.hgrow="ALWAYS" />
+    <LabeledMaxActValue fx:id="lblExperience" caption="%drd_hero_experience" description="%drd_hero_experience_count">
+      <image>
+        <Image url="@/images/icon/exp.png"/>
+      </image>
+    </LabeledMaxActValue>
   </HBox>
-  <HBox VBox.vgrow="ALWAYS">
-    <fx:include fx:id="defaultStaffLeft" source="default_staff_left.fxml"
-      HBox.hgrow="ALWAYS"/>
-    <fx:include fx:id="defaultStaffRight" source="default_staff_right.fxml"
-      HBox.hgrow="ALWAYS"/>
+  <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+    <fx:include fx:id="defaultStaffLeft" source="default_staff_left.fxml" />
+    <Region HBox.hgrow="ALWAYS" />
+    <Card caption="Základní informace">
+      <content>
+        <GridPane prefHeight="300.0" prefWidth="250.0">
+          <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" percentWidth="40.0" />
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="60.0" />
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+            <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+            <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+            <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+            <RowConstraints percentHeight="20.0" valignment="CENTER" vgrow="ALWAYS" />
+          </rowConstraints>
+          <Label text="%drd_hero_name" />
+          <Label text="%drd_hero_race" GridPane.rowIndex="1" />
+          <Label text="%drd_hero_profession" GridPane.rowIndex="2" />
+          <Label text="%drd_hero_specialization" GridPane.rowIndex="3" />
+          <Label text="%drd_hero_money" GridPane.rowIndex="4" />
+          <Label fx:id="lblName" text="Label" GridPane.columnIndex="1" />
+          <Label fx:id="lblRace" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+          <Label fx:id="lblProfession" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+          <Label fx:id="lblSpecialization" text="Žádná" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+          <MoneyWidget fx:id="lblMoney" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+        </GridPane>
+      </content>
+    </Card>
+    <Region HBox.hgrow="ALWAYS" />
+    <fx:include fx:id="defaultStaffRight" source="default_staff_right.fxml" />
   </HBox>
+  <padding>
+    <Insets topRightBottomLeft="8.0" />
+  </padding>
 </VBox>

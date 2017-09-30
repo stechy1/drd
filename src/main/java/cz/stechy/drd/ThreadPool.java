@@ -11,8 +11,14 @@ import java.util.concurrent.TimeUnit;
  */
 public final class ThreadPool {
 
+    // region Constants
+
     // Velikost threadpoolu
     private static final int EXECUTORS_COUNT = 4;
+
+    // endregion
+
+    // region Variables
 
     // Jediná instance této třídy
     private static ThreadPool INSTANCE;
@@ -20,12 +26,25 @@ public final class ThreadPool {
     // Samotný threadpool
     private final ExecutorService executor = Executors.newFixedThreadPool(EXECUTORS_COUNT);
 
+    // endregion
+
+    // region Constructors k zabránění vytvoření instance
+
     /**
      * Privátní konstruktor
      */
     private ThreadPool() {
     }
 
+    // endregion
+
+    // region Public static methods
+
+    /**
+     * Vrátí jedinou instanci třídy
+     *
+     * @return {@link ThreadPool}
+     */
     public static ThreadPool getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new ThreadPool();
@@ -34,13 +53,27 @@ public final class ThreadPool {
         return INSTANCE;
     }
 
+    // endregion
+
+    // region Public methods
+
     /**
-     * Zařadí task do fronty tasků
+     * Zařadí úlohu do fronty
      *
      * @param task {@link Callable}
      */
     public <T> Future<T> submit(Callable<T> task) {
         return executor.submit(task);
+    }
+
+    /**
+     * Zařadí úlohu do fronty
+     *
+     * @param runnable {@link Runnable}
+     * @return {@link Future}
+     */
+    public Future<?> submit(Runnable runnable) {
+        return executor.submit(runnable);
     }
 
     /**
@@ -54,4 +87,6 @@ public final class ThreadPool {
             e.printStackTrace();
         }
     }
+
+    // endregion
 }

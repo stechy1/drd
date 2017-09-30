@@ -89,7 +89,8 @@ public final class HashGenerator {
     public static String createHash(char[] password, byte[] salt) {
         final byte[] hash = pbkdf2(password, salt, PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
 
-        return String.format("%s%s%s", Base64Util.encode(hash), SEPARATOR_CHAR, Base64Util.encode(salt));
+        return String
+            .format("%s%s%s", Base64Util.encode(hash), SEPARATOR_CHAR, Base64Util.encode(salt));
     }
 
     /**

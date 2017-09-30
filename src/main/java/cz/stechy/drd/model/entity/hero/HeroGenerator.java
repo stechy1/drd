@@ -1,6 +1,7 @@
 package cz.stechy.drd.model.entity.hero;
 
 import cz.stechy.drd.model.Dice;
+import cz.stechy.drd.model.entity.EntityProperty;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
 import cz.stechy.drd.model.entity.hero.Hero.Race;
@@ -62,6 +63,21 @@ public final class HeroGenerator {
         Height.A, Height.A, Height.A, Height.B, Height.B, Height.B, Height.C
     };
 
+    private static final int EXPERIENCE_INDEX = 0;
+    private static final int PRICE_INDEX = 1;
+    private static final int[][][] EXPERIENCES = {
+        // Válečník
+        {{0, 0}, {450, 2}, {900, 4}, {1825, 8}, {3675, 13}, {7400, 19}, {15000, 26}, {30000, 34}, {55000, 43}, {80000, 53}, {105000, 64}, {130000, 77}, {155000, 90}, {180000, 105}, {205000, 120}, {230000, 137}, {255000, 155}, {280000, 173}, {305000, 193}, {330000, 214}, {355000, 237}, {380000, 260}, {405000, 284}, {430000, 309}, {455000, 336}, {480000, 363}, {505000, 392}, {530000, 422}, {555000, 452}, {580000, 484}, {605000, 517}, {630000, 551}, {655000, 486}, {680000, 622}, {705000, 660}, {730000,698}},
+        // Hraničář
+        {{0, 0}, {450, 2}, {900, 4}, {1825, 8}, {3675, 13}, {7400, 19}, {15000, 26}, {30000, 34}, {55000, 44}, {80000, 54}, {105000, 66}, {130000, 78}, {155000, 92}, {180000, 107}, {205000, 123}, {230000, 140}, {255000, 159}, {280000, 178}, {305000, 199}, {330000, 220}, {355000, 243}, {380000, 267}, {405000, 292}, {430000, 318}, {455000, 345}, {480000, 373}, {505000, 403}, {530000, 433}, {555000, 465}, {580000, 498}, {605000, 532}, {630000, 567}, {655000, 603}, {680000, 640}, {705000, 678}, {730000,718}},
+        // Kouzelník
+        {{0, 0}, {575, 2}, {1150, 4}, {2300, 8}, {4650, 13}, {9325, 19}, {18700, 27}, {37500, 35}, {62500, 45}, {87500, 55}, {112500, 67}, {137500, 80}, {162500, 94}, {187500, 110}, {212500, 126}, {237500, 144}, {262500, 162}, {287500, 182}, {312500, 203}, {337500, 225}, {362500, 249}, {387500, 273}, {412500, 298}, {437500, 325}, {462500, 353}, {487500, 382}, {512500, 412}, {537500, 443}, {562500, 476}, {587500, 509}, {612500, 544}, {637500, 580}, {662500, 617}, {687500, 655}, {712500, 694}, {737500, 734}},
+        // Alchymista
+        {{0, 0}, {610, 2}, {1250, 4}, {2575, 8}, {5250, 13}, {10750, 19}, {22000, 26}, {45000, 35}, {70000, 44}, {95000, 55}, {120000, 67}, {145000, 79}, {170000, 94}, {195000, 109}, {220000, 125}, {245000, 142}, {270000, 161}, {295000, 181}, {320000, 201}, {345000, 223}, {370000, 246}, {395000, 271}, {420000, 296}, {445000, 322}, {470000, 350}, {495000, 379}, {520000, 409}, {545000, 440}, {570000, 472}, {595000, 505}, {620000, 539}, {645000, 575}, {670000, 611}, {695000, 649}, {720000, 688}, {745000, 728}},
+        // Zloděj
+        {{0, 0}, {325, 2}, {730, 4}, {1575, 8}, {3450, 12}, {7450, 18}, {16150, 25}, {35000, 32}, {60000, 41}, {85000, 51}, {110000, 61}, {135000, 73}, {160000, 86}, {185000, 99}, {210000, 114}, {235000, 130}, {260000, 147}, {285000, 164}, {310000, 183}, {335000, 203}, {360000, 224}, {385000, 245}, {410000, 268}, {435000, 292}, {460000, 317}, {485000, 343}, {510000, 369}, {535000, 397}, {560000, 426}, {585000, 456}, {610000, 487}, {635000, 519}, {660000, 552}, {685000, 585}, {710000, 620}, {735000, 656}}
+    };
+
     // endregion
 
     // region Variables
@@ -86,39 +102,6 @@ public final class HeroGenerator {
 
     // endregion
 
-    // region Private methods
-
-    /**
-     * Vypočte, kolikrát se bude házet šestistěnnou kostkou
-     *
-     * @param value Hodnota, která určí, kolikrát se bude házet kostkou
-     * @return Kolikrát bude potřeba hodit šestistěnnou kostkou
-     */
-    private int getRollCount(int value) {
-        return (int) Math.floor(value / (double) 5) + 1;
-    }
-
-    /**
-     * Vygeneruje hodnotu z intervalu
-     *
-     * @param left Levá strana intervalue
-     * @param right Pravá strana intervalue
-     * @return Hodnota z intervalu
-     */
-    private int generateValue(int left, int right) {
-        int delta = right - left;
-        int rollCount = getRollCount(delta);
-        int addon = left - rollCount;
-        int result = 0;
-        for (int i = 0; i < rollCount; i++) {
-            result += Dice.K6.roll();
-        }
-        result += addon;
-        return result;
-    }
-
-    // endregion
-
     // region Public methods
 
     /**
@@ -127,17 +110,18 @@ public final class HeroGenerator {
      * @return Síla postavy
      */
     public int strength() {
-        int left, right;
-        int raceOrdinal = race.ordinal();
-        int professionOrdinal = profession.ordinal();
+        final int left, right;
+        final int raceOrdinal = race.ordinal();
+        final int professionOrdinal = profession.ordinal();
         if (profession == Profession.WARIOR || profession == Profession.RANGER) {
-            left = PROPERTIES_BY_PROFESSION[professionOrdinal][0];
-            right = PROPERTIES_BY_PROFESSION[professionOrdinal][1];
+            final int repair = REPAIRS_BY_RACE[raceOrdinal][INDEX_STRENGTH];
+            left = PROPERTIES_BY_PROFESSION[professionOrdinal][0] + repair;
+            right = PROPERTIES_BY_PROFESSION[professionOrdinal][1] + repair;
         } else {
             left = PROPERTIES[professionOrdinal][2 * INDEX_STRENGTH];
             right = PROPERTIES[professionOrdinal][2 * INDEX_STRENGTH + 1];
         }
-        return generateValue(left, right) + REPAIRS_BY_RACE[raceOrdinal][INDEX_STRENGTH];
+        return Dice.generateValue(left, right);
     }
 
     /**
@@ -146,17 +130,18 @@ public final class HeroGenerator {
      * @return Obratnost postavy
      */
     public int dexterity() {
-        int left, right;
-        int raceOrdinal = race.ordinal();
-        int professionOrdinal = profession.ordinal();
+        final int left, right;
+        final int raceOrdinal = race.ordinal();
+        final int professionOrdinal = profession.ordinal();
         if (profession == Profession.ALCHEMIST || profession == Profession.THIEF) {
-            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_DEXTERITY];
-            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_DEXTERITY + 1];
+            final int repair = REPAIRS_BY_RACE[raceOrdinal][INDEX_DEXTERITY];
+            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_DEXTERITY] + repair;
+            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_DEXTERITY + 1] + repair;
         } else {
             left = PROPERTIES[professionOrdinal][2 * INDEX_DEXTERITY];
             right = PROPERTIES[professionOrdinal][2 * INDEX_DEXTERITY + 1];
         }
-        return generateValue(left, right) + REPAIRS_BY_RACE[raceOrdinal][INDEX_DEXTERITY];
+        return Dice.generateValue(left, right);
     }
 
     /**
@@ -169,13 +154,14 @@ public final class HeroGenerator {
         int raceOrdinal = race.ordinal();
         int professionOrdinal = profession.ordinal();
         if (profession == Profession.WARIOR || profession == Profession.ALCHEMIST) {
-            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_IMMUNITY];
-            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_IMMUNITY + 1];
+            final int repair = REPAIRS_BY_RACE[raceOrdinal][INDEX_IMMUNITY];
+            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_IMMUNITY] + repair;
+            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_IMMUNITY + 1] + repair;
         } else {
             left = PROPERTIES[professionOrdinal][2 * INDEX_IMMUNITY];
             right = PROPERTIES[professionOrdinal][2 * INDEX_IMMUNITY + 1];
         }
-        return generateValue(left, right) + REPAIRS_BY_RACE[raceOrdinal][INDEX_IMMUNITY];
+        return Dice.generateValue(left, right);
     }
 
     /**
@@ -187,14 +173,15 @@ public final class HeroGenerator {
         int left, right;
         int raceOrdinal = race.ordinal();
         int professionOrdinal = profession.ordinal();
-        if (profession == Profession.RANGER || profession == Profession.MAGICIAN) {
-            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_INTELLIGENCE];
-            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_INTELLIGENCE + 1];
+        if (profession == Profession.RANGER || profession == Profession.WIZARD) {
+            final int repair = REPAIRS_BY_RACE[raceOrdinal][INDEX_INTELLIGENCE];
+            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_INTELLIGENCE] + repair;
+            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_INTELLIGENCE + 1] + repair;
         } else {
             left = PROPERTIES[professionOrdinal][2 * INDEX_INTELLIGENCE];
             right = PROPERTIES[professionOrdinal][2 * INDEX_INTELLIGENCE + 1];
         }
-        return generateValue(left, right) + REPAIRS_BY_RACE[raceOrdinal][INDEX_INTELLIGENCE];
+        return Dice.generateValue(left, right);
     }
 
     /**
@@ -206,35 +193,75 @@ public final class HeroGenerator {
         int left, right;
         int raceOrdinal = race.ordinal();
         int professionOrdinal = profession.ordinal();
-        if (profession == Profession.MAGICIAN || profession == Profession.THIEF) {
-            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_CHARISMA];
-            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_CHARISMA + 1];
+        if (profession == Profession.WIZARD || profession == Profession.THIEF) {
+            final int repair = REPAIRS_BY_RACE[raceOrdinal][INDEX_CHARISMA];
+            left = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_CHARISMA] + repair;
+            right = PROPERTIES_BY_PROFESSION[professionOrdinal][2 * INDEX_CHARISMA + 1] + repair;
         } else {
             left = PROPERTIES[professionOrdinal][2 * INDEX_CHARISMA];
             right = PROPERTIES[professionOrdinal][2 * INDEX_CHARISMA + 1];
         }
-        return generateValue(left, right) + REPAIRS_BY_RACE[raceOrdinal][INDEX_CHARISMA];
+        return Dice.generateValue(left, right);
     }
 
     /**
      * Vygeneruje počet životů pro postavu
-     * live = baseLive + dice.roll() + addon
+     * baseLive = baseLive + immunity
      *
+     * @param immunity Odolnost hrdiny
      * @return Počet životů
      */
-    public int live() {
-        int baseLive = LIVES_BASE[profession.ordinal()];
-        Dice dice = LIVES_DICE[profession.ordinal()];
-        int addon = LIVES_ADDON[profession.ordinal()];
-
-        return baseLive + dice.roll() + addon;
+    public int baseLive(EntityProperty immunity) {
+        return LIVES_BASE[profession.ordinal()] + immunity.getRepair();
     }
+
+    /**
+     * Vypočítá kolik životů se přidá při přechodu na novou úroveň
+     * live = max(1, dice.roll() + addon
+     *
+     * @param immunity Odolnost hrdiny
+     * @return Počet životů, který se má přičíst ke stávající hodnotě
+     */
+    public int live(EntityProperty immunity) {
+            Dice dice = LIVES_DICE[profession.ordinal()];
+            int addon = LIVES_ADDON[profession.ordinal()];
+
+            return Math.max(1, dice.roll() + addon + immunity.getRepair());
+        }
 
     /**
      * @return Vrátí výšku postavy ve formé výčtového typu {@link Height}
      */
     public Height height() {
         return HEIGHT_BY_RACE[race.ordinal()];
+    }
+
+    /**
+     * Vypočítá zkušenosti na základě rasy a úrovni postavy
+     *
+     * @param profession Rasa postavy
+     * @param level Úroveň postavy
+     * @return Počet zkušeností k dosažení další úrovně
+     */
+    public static int experience(Profession profession, int level) {
+        if (profession == null) {
+            return 0;
+        }
+        return EXPERIENCES[profession.ordinal()][level][EXPERIENCE_INDEX];
+    }
+
+    /**
+     * Vypočítá cenu za přechod na vyšší úroveň
+     *
+     * @param profession Rasa za kterou postava
+     * @param level Úroveň postavy
+     * @return Cena za přestup na novou úroveň
+     */
+    public static int priceForLevelUp(Profession profession, int level) {
+        if (profession == null) {
+            return 0;
+        }
+        return EXPERIENCES[profession.ordinal()][level][PRICE_INDEX];
     }
 
     // endregion

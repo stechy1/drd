@@ -1,10 +1,10 @@
 package cz.stechy.drd.controller.user;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
-import cz.stechy.drd.model.persistent.UserManager;
-import cz.stechy.drd.model.persistent.UserManager.UserException;
+import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.persistent.UserService.UserException;
 import cz.stechy.screens.BaseController;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -24,7 +24,7 @@ public class RegisterController extends BaseController implements Initializable 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RegisterController.class);
 
     // endregion
 
@@ -41,17 +41,18 @@ public class RegisterController extends BaseController implements Initializable 
 
     // endregion
 
-    private final UserManager userManager;
+    private final UserService userService;
     private final LoginModel loginModel = new LoginModel();
 
     private String title;
+    private String registerFail;
 
     // endregion
 
     // region Constructors
 
-    public RegisterController(Context context) {
-        userManager = context.getUserManager();
+    public RegisterController(UserService userService) {
+        this.userService = userService;
     }
 
     // endregion
@@ -59,6 +60,7 @@ public class RegisterController extends BaseController implements Initializable 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.USER_REGISTER_TITLE);
+        registerFail = resources.getString(R.Translate.NOTIFY_REGISTER_FAIL);
 
         txtLogin.textProperty().bindBidirectional(loginModel.login);
         txtPassword.textProperty().bindBidirectional(loginModel.password);
@@ -68,27 +70,21 @@ public class RegisterController extends BaseController implements Initializable 
     @Override
     protected void onResume() {
         setTitle(title);
-        setScreenSize(500, 160);
+        setScreenSize(400, 260);
     }
 
     // region Button handlers
-    public void handleRegister(ActionEvent actionEvent) {
+    @FXML
+    private void handleRegister(ActionEvent actionEvent) {
         try {
-            userManager.register(loginModel.login.getValue(), loginModel.password.getValue());
+            userService.register(loginModel.login.getValue(), loginModel.password.getValue());
             setResult(RESULT_SUCCESS);
             finish();
         } catch (UserException e) {
-            logger.info("Registrace se nezdařila", e);
+            LOGGER.info("Registrace se nezdařila");
+            showNotification(new Notification(registerFail));
             loginModel.valid.set(false);
         }
-    }
-
-    public void handleBack(ActionEvent actionEvent) {
-        back();
-    }
-
-    public void handleCancel(ActionEvent actionEvent) {
-        finish();
     }
 
     // endregion

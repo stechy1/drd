@@ -11,21 +11,27 @@ import javafx.beans.property.SimpleIntegerProperty;
  */
 public abstract class ValidatedModel {
 
-    protected final IntegerProperty validityFlag = new SimpleIntegerProperty();
-    protected final BooleanProperty valid = new SimpleBooleanProperty();
-    protected final BooleanProperty changed = new SimpleBooleanProperty();
+    // region Variables
+
+    protected final IntegerProperty validityFlag = new SimpleIntegerProperty(this, "validityFlag");
+    protected final BooleanProperty valid = new SimpleBooleanProperty(this, "valid");
+    protected final BooleanProperty changed = new SimpleBooleanProperty(this, "changed");
+
+    // endregion
+
+    // region Public methods
 
     /**
      * Nastaví validitu zadanému příznaku
      *
-     * @param flag  Příznak
+     * @param flag Příznak
      * @param value True, pokud je příznak validní, jinak false
      */
-    protected void setValidityFlag(int flag, boolean value) {
+    public void setValidityFlag(int flag, boolean value) {
         int oldFlagValue = validityFlag.get();
         int newFlag = BitUtils.setBit(oldFlagValue, flag, value);
 
-        if (newFlag== oldFlagValue) {
+        if (newFlag == oldFlagValue) {
             return;
         }
 
@@ -36,6 +42,8 @@ public abstract class ValidatedModel {
             setValid(true);
         }
     }
+
+    // endregion
 
     // region Getters & Setters
 

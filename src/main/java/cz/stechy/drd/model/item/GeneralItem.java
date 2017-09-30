@@ -5,7 +5,7 @@ import cz.stechy.drd.model.IClonable;
 /**
  * Třída reprezentující běžný předmět
  */
-public class GeneralItem extends ItemBase {
+public final class GeneralItem extends ItemBase {
 
     // region Constructors
 
@@ -14,28 +14,28 @@ public class GeneralItem extends ItemBase {
      *
      * @param item Kopírovaný item
      */
-    public GeneralItem(GeneralItem item) {
-        this(item.getId(), item.getName(), item.getDescription(), item.getAuthor(),
-            item.getWeight(), item.getPrice().getRaw(), item.getImage(), item.isDownloaded(),
-            item.isUploaded());
+    private GeneralItem(GeneralItem item) {
+        this(item.getId(), item.getAuthor(), item.getName(), item.getDescription(),
+            item.getWeight(), item.getPrice().getRaw(), item.getImage(), item.getStackSize(),
+            item.isDownloaded(), item.isUploaded());
     }
 
     /**
      * Konstruktor pro běžný předmět
-     *
-     * @param id Id předmětu
+     *  @param id Id předmětu
      * @param author Autor předmětu
      * @param name Název předmětu
      * @param description Popis předmětu
      * @param weight Váha předmětu
      * @param price Cena předmětu
      * @param image Obrázek předmětu
+     * @param stackSize
      * @param downloaded Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
      * @param uploaded Příznak určující, zda-li je položka nahrána v online databázi, či nikoliv
      */
-    public GeneralItem(String id, String author, String name, String description, int weight,
-        int price, byte[] image, boolean downloaded, boolean uploaded) {
-        super(id, author, name, description, weight, price, image, downloaded, uploaded);
+    private GeneralItem(String id, String author, String name, String description, int weight,
+        int price, byte[] image, int stackSize, boolean downloaded, boolean uploaded) {
+        super(id, author, name, description, weight, price, image, stackSize, downloaded, uploaded);
     }
 
     // endregion
@@ -64,6 +64,7 @@ public class GeneralItem extends ItemBase {
         private int weight;
         private int price;
         private byte[] image;
+        private int stackSize;
         private boolean downloaded;
         private boolean uploaded;
 
@@ -102,6 +103,11 @@ public class GeneralItem extends ItemBase {
             return this;
         }
 
+        public Builder stackSize(int stackSize) {
+            this.stackSize = stackSize;
+            return this;
+        }
+
         public Builder downloaded(boolean downloaded) {
             this.downloaded = downloaded;
             return this;
@@ -113,8 +119,8 @@ public class GeneralItem extends ItemBase {
         }
 
         public GeneralItem build() {
-            return new GeneralItem(id, author, name, description, weight, price, image, downloaded,
-                uploaded);
+            return new GeneralItem(id, author, name, description, weight, price, image, stackSize,
+                downloaded, uploaded);
         }
     }
 

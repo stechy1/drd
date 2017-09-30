@@ -1,11 +1,11 @@
 package cz.stechy.drd.controller.user;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Context;
-import cz.stechy.drd.model.persistent.UserManager;
-import cz.stechy.drd.model.persistent.UserManager.UserException;
+import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.persistent.UserService.UserException;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -25,7 +25,7 @@ public class LoginController extends BaseController implements Initializable {
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
     private static final int ACTION_REGISTRATION = 1;
     private static final int ACTION_LOST_PASSWORD = 2;
@@ -46,16 +46,19 @@ public class LoginController extends BaseController implements Initializable {
     // endregion
 
     private final LoginModel loginModel = new LoginModel();
-    private final UserManager userManager;
+    private final UserService userService;
 
     private String title;
+    private String loginFail;
+    private String registerSuccess;
+    private String functionNotImplemented;
 
     // endregion
 
     // region Constructors
 
-    public LoginController(Context context) {
-        userManager = context.getUserManager();
+    public LoginController(UserService userService) {
+        this.userService = userService;
     }
 
     // endregion
@@ -63,6 +66,9 @@ public class LoginController extends BaseController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.USER_LOGIN_TITLE);
+        loginFail = resources.getString(R.Translate.NOTIFY_LOGIN_FAIL);
+        registerSuccess = resources.getString(R.Translate.NOTIFY_REGISTER_SUCCESS);
+        functionNotImplemented = resources.getString(R.Translate.NOTIFY_FUNCTION_NOT_IMPLEMENTED);
 
         txtLogin.textProperty().bindBidirectional(loginModel.login);
         txtPassword.textProperty().bindBidirectional(loginModel.password);
@@ -72,7 +78,7 @@ public class LoginController extends BaseController implements Initializable {
     @Override
     protected void onResume() {
         setTitle(title);
-        setScreenSize(500, 160);
+        setScreenSize(500, 260);
     }
 
     @Override
@@ -82,6 +88,7 @@ public class LoginController extends BaseController implements Initializable {
                 if (statusCode != RESULT_SUCCESS) {
                     return;
                 }
+                showNotification(new Notification(registerSuccess));
 
                 break;
             case ACTION_LOST_PASSWORD:
@@ -92,27 +99,28 @@ public class LoginController extends BaseController implements Initializable {
     }
 
     // region Button handlers
-    public void handleLogin(ActionEvent actionEvent) {
+
+    @FXML
+    private void handleLogin(ActionEvent actionEvent) {
         try {
-            userManager.login(loginModel.login.getValue(), loginModel.password.getValue());
+            userService.login(loginModel.login.getValue(), loginModel.password.getValue());
             setResult(RESULT_SUCCESS);
             finish();
         } catch (UserException e) {
-            logger.info("Přihlášení se nezdařilo", e);
+            LOGGER.info("Přihlášení se nezdařilo");
+            showNotification(new Notification(loginFail));
             loginModel.valid.set(false);
         }
     }
 
-    public void handleCancel(ActionEvent actionEvent) {
-        finish();
-    }
-
-    public void handleRegistration(ActionEvent actionEvent) {
+    @FXML
+    private void handleRegistration(ActionEvent actionEvent) {
         startNewDialogForResult(R.FXML.REGISTER, ACTION_REGISTRATION);
     }
 
-    public void handleLostPassword(ActionEvent actionEvent) {
-        //startScreenForResult("lost_password", ACTION_LOST_PASSWORD);
+    @FXML
+    private void handleLostPassword(ActionEvent actionEvent) {
+        showNotification(new Notification(functionNotImplemented));
     }
 
     // endregion

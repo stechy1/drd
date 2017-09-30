@@ -11,16 +11,16 @@ import javafx.beans.property.SimpleObjectProperty;
 /**
  * Položka v obchodě představující zbraň na blízko
  */
-public class MeleWeaponEntry extends ShopEntry {
+public final class MeleWeaponEntry extends ShopEntry {
 
     // region Variables
 
-    private final IntegerProperty strength = new SimpleIntegerProperty();
-    private final IntegerProperty rampancy = new SimpleIntegerProperty();
-    private final IntegerProperty defence = new SimpleIntegerProperty();
-    private final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(
+    private final IntegerProperty strength = new SimpleIntegerProperty(this, "strength");
+    private final IntegerProperty rampancy = new SimpleIntegerProperty(this, "rampancy");
+    private final IntegerProperty defence = new SimpleIntegerProperty(this, "defence");
+    private final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(this, "weaponClass",
         MeleWeaponClass.LIGHT);
-    private final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(
+    private final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(this, "weaponType",
         MeleWeaponType.ONE_HAND);
 
     // endregion

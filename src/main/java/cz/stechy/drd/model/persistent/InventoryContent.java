@@ -1,23 +1,25 @@
 package cz.stechy.drd.model.persistent;
 
-import cz.stechy.drd.model.db.BaseDatabaseManager;
+import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryException;
 import cz.stechy.drd.model.inventory.InventoryRecord;
+import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
@@ -26,14 +28,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Třída představující obsah jednoho inventáře
+ * Služba spravující CRUD operace nad třídou {@link InventoryRecord}
  */
-public final class InventoryContent extends BaseDatabaseManager<InventoryRecord> {
+public final class InventoryContent extends BaseDatabaseService<InventoryRecord> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(InventoryContent.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryContent.class);
+
+    private static final int SLOT_OCCUPIED = 1;
+    private static final int SLOT_NOT_OCCUPIED = 0;
 
     // Název tabulky
     private static final String TABLE = "inventory_content";
@@ -44,9 +49,10 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
     private static final String COLUMN_ITEM_ID = TABLE + "_item_id";
     private static final String COLUMN_ITEM_AMMOUNT = TABLE + "_ammount";
     private static final String COLUMN_SLOT = TABLE + "_slot";
+    private static final String COLUMN_METADATA = TABLE + "_metadata";
     // TODO poškození itemu?
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_INVENTORY_ID,
-        COLUMN_ITEM_ID, COLUMN_ITEM_AMMOUNT, COLUMN_SLOT};
+        COLUMN_ITEM_ID, COLUMN_ITEM_AMMOUNT, COLUMN_SLOT, COLUMN_METADATA};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -55,23 +61,25 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
             + "%s VARCHAR(255) NOT NULL,"                       // inventory id
             + "%s VARCHAR(255) NOT NULL,"                       // item id
             + "%S INT NOT NULL,"                                // ammount
-            + "%s INT NOT NULL"                                // slot index
+            + "%s INT NOT NULL,"                                // slot index
+            + "%s BLOB"                                         // image
             + ");", TABLE, COLUMN_ID, COLUMN_INVENTORY_ID, COLUMN_ITEM_ID, COLUMN_ITEM_AMMOUNT,
-        COLUMN_SLOT);
+        COLUMN_SLOT, COLUMN_METADATA);
 
     // endregion
 
     // region Variables
 
-     /* Celková hmotnost VŠECH inventáře
-     Normálně to nedělám, ale zde mi to příjde jako vhodné
-     Statickou finální metodou získám globální hmotnost všech inventářů, které má postava
-     u sebe */
-    private static final ReadOnlyIntegerWrapper WEIGHT = new ReadOnlyIntegerWrapper();
+    /* Celková hmotnost VŠECH inventáře
+    Normálně to nedělám, ale zde mi to příjde jako vhodné
+    Statickou finální metodou získám globální hmotnost všech inventářů, které má postava
+    u sebe */
+    private static final ReadOnlyIntegerWrapper weight = new ReadOnlyIntegerWrapper();
 
     private static boolean tableInitialized = false;
     // Inventář
     private final Inventory inventory;
+    private int[] occupiedSlots;
 
     // endregion
 
@@ -87,13 +95,14 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
         super(db);
 
         this.inventory = inventory;
+        this.occupiedSlots = new int[inventory.getCapacity()];
         try {
             createTable();
         } catch (DatabaseException e) {
             e.printStackTrace();
         }
 
-        items.addListener(itemsListener);
+        items.addListener(this::itemsHandler);
     }
 
     // endregion
@@ -105,12 +114,41 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
      * Mělo by se volat před změnou hrdiny
      */
     public static void clearWeight() {
-        WEIGHT.set(0);
+        weight.set(0);
     }
 
     // endregion
 
     // region Private methods
+
+    // region Method handlers
+
+    private void itemsHandler(ListChangeListener.Change<? extends InventoryRecord> c) {
+        while (c.next()) {
+            if (c.wasAdded()) {
+                final int w = weight.get();
+                weight.set(w + c.getAddedSubList().stream().mapToInt(this::mapper).sum());
+            }
+            if (c.wasRemoved()) {
+                final int w = weight.get();
+                weight.set(w - c.getRemoved().stream().mapToInt(this::mapper).sum());
+            }
+        }
+    }
+
+    /**
+     * Pomocná funkce, která vypočítá celkovou cenu předmětů v zadaném záznamu
+     *
+     * @param value {@link InventoryRecord}
+     * @return Cena předmětů v zadaném záznamu
+     */
+    private int mapper(InventoryRecord value) {
+        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
+            .getItemById(value.getItemId());
+        return itemOptional.map(itemBase -> value.getAmmount() * itemBase.getWeight()).orElse(0);
+    }
+
+    // endregion
 
     @Override
     protected InventoryRecord parseResultSet(ResultSet resultSet) throws SQLException {
@@ -120,6 +158,7 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
             .itemId(resultSet.getString(COLUMN_ITEM_ID))
             .ammount(resultSet.getInt(COLUMN_ITEM_AMMOUNT))
             .slotId(resultSet.getInt(COLUMN_SLOT))
+            .metadata(Metadata.deserialize(readBlob(resultSet, COLUMN_METADATA)))
             .build();
     }
 
@@ -130,7 +169,8 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
             record.getInventoryId(),
             record.getItemId(),
             record.getAmmount(),
-            record.getSlotId()
+            record.getSlotId(),
+            Metadata.serialize(record.getMetadata())
         ));
     }
 
@@ -191,17 +231,23 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
     @Override
     public void update(InventoryRecord inventoryRecord) throws DatabaseException {
         final Optional<InventoryRecord> inventoryRecordOptional = items.stream()
-            .filter(record -> Objects.equals(record, record))
+            .filter(record -> Objects.equals(record, inventoryRecord))
             .findFirst();
-        final ItemBase item = ItemRegistry.getINSTANCE().getItemById(inventoryRecord.getItemId());
+
+        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
+            .getItemById(inventoryRecord.getItemId());
+        if (!itemOptional.isPresent()) {
+            return;
+        }
+        final ItemBase item = itemOptional.get();
         int oldAmmount = 0;
         if (inventoryRecordOptional.isPresent()) {
             oldAmmount = inventoryRecordOptional.get().getAmmount() * item.getWeight();
         }
 
         super.update(inventoryRecord);
-        final int w = WEIGHT.get();
-        WEIGHT.set(w - oldAmmount + inventoryRecord.getAmmount() * item.getWeight());
+        final int w = weight.get();
+        weight.set(w - oldAmmount + inventoryRecord.getAmmount() * item.getWeight());
     }
 
     /**
@@ -236,53 +282,52 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
     /**
      * Najde index volného slotu
      *
+     * @param item Předmět, pro který se hledá volná slot
+     * @param ammount Množství předmětů které se má vložit do inventáře
      * @return Index volného slotu
      * @throws InventoryException Pokud volný slot neexistuje
      */
-    public int getFreeSlot() throws InventoryException {
-        final int size = items.size();
-        // Pokud mám maximální počet itemů v inventáři, vyhodím vyjímku
-        if (size == inventory.getCapacity()) {
-            throw new InventoryException("No free slot");
-        }
-        // Pokud nemám žádné itemy v inventáři, vrátím první index
-        if (size == 0) {
-            return 0;
-        }
-        // Namapuji všechny sloty podle ID slotu a seřadím vzestupně
-        final List<Integer> ids = items.stream()
-            .sorted(Comparator.comparingInt(InventoryRecord::getSlotId))
-            .mapToInt(InventoryRecord::getSlotId).boxed().collect(Collectors.toList());
+    public synchronized Map<Integer, Integer> getFreeSlot(ItemBase item, int ammount) throws InventoryException {
+        final Map<Integer, Integer> mapSlots = new HashMap<>();
+        final int stackSize = item.getStackSize();
+        items.stream().forEach(inventoryRecord -> occupiedSlots[inventoryRecord.getSlotId()] = SLOT_OCCUPIED);
+        final Map<Integer, Integer> map = items.stream()
+            .filter(inventoryRecord -> inventoryRecord.getItemId().equals(item.getId()))
+            .collect(Collectors.toMap(o -> o.getSlotId(), t -> stackSize - t.getAmmount()));
 
-        // Získám nejmenší index
-        final int min = ids.get(0);
-        // Pokud minimum není 0. index, tak vrátím 0
-        if (min > 0) {
-            return 0;
-        }
-
-        // Záskám nejvyšší index
-        final int max = ids.get(size - 1);
-        // Pokud je nejvyšší index menší než kapacita inventáře, vrátím index zvětšený o jedničku
-        if (max < inventory.getCapacity()) {
-            return max + 1;
-        }
-
-        // Kdyz jsou hraniční indexy obsazeny, budu hledat uvnitř otevřeného intervalu (min; max)
-        // Inicializuji výsledek jaku 0. index
-        int result = 0;
-        for (int i = 0; i < inventory.getCapacity(); i++) {
-            // Získám index podle I
-            int index = ids.get(i);
-            // Pokud index neodpovídá proměnné result, tak jsem nalezl odpověď a vracím I
-            if (result != index) {
-                return i;
+        int remaining = ammount;
+        for (Entry<Integer, Integer> entry : map.entrySet()) {
+            final int slotId = entry.getKey();
+            final int freeSpace = entry.getValue();
+            final int insertAmmount = Math.min(remaining, freeSpace);
+            mapSlots.put(slotId, insertAmmount);
+            remaining -= insertAmmount;
+            if (remaining <= 0) {
+                break;
             }
-            // Jinak inkrementují proměnnou result o jedničku
-            result++;
         }
 
-        return 0;
+        if (remaining - stackSize * (inventory.getCapacity() - items.size()) > 0) {
+            throw new InventoryException("Not enought space for insert");
+        }
+
+        final int capacity = inventory.getCapacity();
+        int index = 0;
+        while (remaining > 0) {
+            if (occupiedSlots[index] != SLOT_NOT_OCCUPIED) {
+                index++;
+                continue;
+            }
+
+            final int insertAmmount = Math.min(remaining, stackSize);
+            mapSlots.put(index, insertAmmount);
+            remaining -= insertAmmount;
+            occupiedSlots[index] = SLOT_OCCUPIED;
+            index++;
+            assert index != capacity;
+        }
+
+        return mapSlots;
     }
 
     // endregion
@@ -294,25 +339,8 @@ public final class InventoryContent extends BaseDatabaseManager<InventoryRecord>
     }
 
     public static ReadOnlyIntegerProperty getWeight() {
-        return WEIGHT.getReadOnlyProperty();
+        return weight.getReadOnlyProperty();
     }
 
     // endregion
-
-    // Pomocná mapovací funkce pro získání váhy předmětu podle počtu
-    private static final ToIntFunction<InventoryRecord> mapper = value -> value.getAmmount()
-        * ((ItemBase) ItemRegistry.getINSTANCE().getItemById(value.getItemId())).getWeight();
-
-    private final ListChangeListener<? super InventoryRecord> itemsListener = c -> {
-        while (c.next()) {
-            if (c.wasAdded()) {
-                final int w = WEIGHT.get();
-                WEIGHT.set(w + c.getAddedSubList().stream().mapToInt(mapper).sum());
-            }
-            if (c.wasRemoved()) {
-                final int w = WEIGHT.get();
-                WEIGHT.set(w - c.getRemoved().stream().mapToInt(mapper).sum());
-            }
-        }
-    };
 }

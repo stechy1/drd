@@ -7,14 +7,20 @@ import javafx.beans.property.SimpleIntegerProperty;
 /**
  * Položka v obchodě představující batoh
  */
-public class BackpackEntry extends ShopEntry {
+public final class BackpackEntry extends ShopEntry {
 
-    protected final IntegerProperty maxLoad = new SimpleIntegerProperty();
+    // region Variables
+
+    private final IntegerProperty maxLoad = new SimpleIntegerProperty(this, "maxLoad");
+
+    // endregion
 
     // region Constructors
 
     /**
      * Vytvoří batoh jako nákupní položku
+     *
+     * @param backpack {@link Backpack}
      */
     public BackpackEntry(Backpack backpack) {
         super(backpack);

@@ -1,7 +1,7 @@
 package cz.stechy.drd.model.inventory;
 
+import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemRegistry.ItemException;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
@@ -20,20 +20,31 @@ public class ItemStack {
 
     private final ItemBase item;
     private final IntegerProperty ammount = new SimpleIntegerProperty();
+    private final Metadata metadata;
 
     // endregion
 
     // region Constructors
 
     /**
-     * Vytvoří nový {@link ItemStack} s definovaným počtem itemů
+     * Kopy konstruktor
      *
-     * @param item {@link ItemBase}
-     * @param ammount Počet itemů na stacku
+     * @param itemStack {@link ItemStack} Kopírovaný stack
      */
-    public ItemStack(ItemBase item, int ammount) {
+    public ItemStack(ItemStack itemStack) {
+        this(itemStack.getItem(), itemStack.getAmmount(), itemStack.getMetadata());
+    }
+
+    /**
+     * Vytvoří nový {@link ItemStack} s definovaným počtem itemů
+     *  @param item {@link ItemBase}
+     * @param ammount Počet itemů na stacku
+     * @param metadata {@link Metadata}
+     */
+    public ItemStack(ItemBase item, int ammount, Metadata metadata) {
         this.item = item;
-        this.ammount.set(ammount);
+        setAmmount(ammount);
+        this.metadata = metadata;
     }
 
     // endregion
@@ -48,7 +59,7 @@ public class ItemStack {
     public void addAmmount(int ammount) {
         //if (this.ammount.get() + ammount > )
         // TODO implementovat stack size
-        this.ammount.set(this.ammount.get() + ammount);
+        setAmmount(getAmmount() + ammount);
     }
 
     /**
@@ -56,13 +67,8 @@ public class ItemStack {
      *
      * @param ammount Počet itemů, který se má odebrat
      */
-    public void subtractAmmount(int ammount) throws ItemException {
-        final int tmpAmmount = this.ammount.get();
-        final int resAmmount = ammount - tmpAmmount;
-        if (resAmmount < 0) {
-            throw new ItemException("Not enought items to remove");
-        }
-        this.ammount.set(resAmmount);
+    public void subtractAmmount(int ammount) {
+        setAmmount(getAmmount() - ammount);
     }
 
     /**
@@ -77,6 +83,29 @@ public class ItemStack {
         }
 
         return this.item.getItemType() == other.getItemType();
+    }
+
+    /**
+     * Vypočítá, kolik se ještě vejde na předmětů do naplnění celého stacku
+     *
+     * @return Počet předmětu, který se ještě vejde do stacku
+     */
+    public int getFreeAmmmount() {
+        if (item == null) {
+            return 0;
+        }
+
+        return item.getStackSize() - getAmmount();
+    }
+
+    /**
+     * Zjistí, zda-li je možné vložit požadované množství předmětů na stack
+     *
+     * @param ammount Množství, které chci vložit
+     * @return True, pokud se množství vejden na staci, jinak False
+     */
+    public boolean canInsertAmmount(int ammount) {
+        return getFreeAmmmount() - ammount >= 0;
     }
 
     // endregion
@@ -95,8 +124,12 @@ public class ItemStack {
         return ammount;
     }
 
-    public void setAmmount(int ammount) {
+    private void setAmmount(int ammount) {
         this.ammount.set(ammount);
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
     }
 
     // endregion

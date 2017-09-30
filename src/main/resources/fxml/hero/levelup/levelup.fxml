@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import cz.stechy.drd.widget.LabeledHeroProperty?>
+<?import cz.stechy.drd.widget.MoneyWidget?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0"
+  xmlns="http://javafx.com/javafx/8.0.121"
+  fx:controller="cz.stechy.drd.controller.hero.levelup.LevelUpController">
+  <top>
+    <HBox styleClass="title-container">
+      <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_hero_level_up"/>
+    </HBox>
+  </top>
+  <center>
+    <GridPane BorderPane.alignment="CENTER">
+      <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" minWidth="10.0" percentWidth="30.0"/>
+        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0"/>
+        <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" percentWidth="30.0"/>
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+      </rowConstraints>
+      <Label text="%drd_hero_live"/>
+      <Label GridPane.rowIndex="1" text="%drd_hero_strength"/>
+      <Label GridPane.rowIndex="2" text="%drd_hero_dexterity"/>
+      <Label GridPane.rowIndex="3" text="%drd_hero_immunity"/>
+      <Label GridPane.rowIndex="4" text="%drd_hero_intelligence"/>
+      <Label GridPane.rowIndex="5" text="%drd_hero_charisma"/>
+      <Label GridPane.columnIndex="1" fx:id="lblLive"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="lblStrength"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="lblDexterity"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="3" fx:id="lblImmunity"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="4" fx:id="lblIntelligence"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="5" fx:id="lblCharisma"/>
+      <JFXButton GridPane.columnIndex="2" disable="true" onAction="#handleIncreaseLive"
+        styleClass="btn, btn-secondary" text="%drd_hero_increase_live" fx:id="btnLive"/>
+      <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="1" onAction="#handleIncreaseStrength"
+        styleClass="btn, btn-secondary" text="%drd_hero_increase_strength" fx:id="btnStrength"/>
+      <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="2" onAction="#handleIncreaseDexterity"
+        styleClass="btn, btn-secondary" text="%drd_hero_increase_dexterity" fx:id="btnDexterity"/>
+      <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="3" onAction="#handleIncreaseImmunity"
+        styleClass="btn, btn-secondary" text="%drd_hero_increase_immunity" fx:id="btnImmunity"/>
+      <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="4"
+        onAction="#handleIncreaseIntelligence" styleClass="btn, btn-secondary"
+        text="%drd_hero_increase_intelligence" fx:id="btnIntelligence"/>
+      <JFXButton GridPane.columnIndex="2" GridPane.rowIndex="5" onAction="#handleIncreaseCharisma"
+        styleClass="btn, btn-secondary" text="%drd_hero_increase_charisma" fx:id="btnCharisma"/>
+    </GridPane>
+  </center>
+  <bottom>
+    <HBox BorderPane.alignment="CENTER" prefHeight="50.0">
+      <Label prefHeight="34.0" text="%drd_level_up_price"/>
+      <MoneyWidget prefHeight="34.0" fx:id="widgetMoney"/>
+      <Region HBox.hgrow="ALWAYS"/>
+      <JFXButton onAction="#handleFinish" prefHeight="34.0" styleClass="btn, btn-primary"
+        text="%drd_finish" fx:id="btnFinish"/>
+      <padding>
+        <Insets topRightBottomLeft="8.0"/>
+      </padding>
+    </HBox>
+  </bottom>
+</BorderPane>

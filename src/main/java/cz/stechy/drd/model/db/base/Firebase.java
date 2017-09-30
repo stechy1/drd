@@ -1,9 +1,28 @@
 package cz.stechy.drd.model.db.base;
 
+import com.google.firebase.database.DataSnapshot;
+import java.util.Map;
+
 /**
  * Rozhraní definující metody pro komunikaci s firebase
  */
 public interface Firebase<T> {
+
+    /**
+     * Konvertuje {@link DataSnapshot} na instanci třídy {@link T}
+     *
+     * @param snapshot Snapshot itemu
+     * @return Instanci třídy {@link T}
+     */
+    T parseDataSnapshot(DataSnapshot snapshot);
+
+    /**
+     * Namapuje vybraný item do mapy
+     *
+     * @param item Item, který se má převést do mapy
+     * @return Mapu, kde klíč je název sloupce a hodnota je hodnota sloupce
+     */
+    Map<String, Object> toFirebaseMap(T item);
 
     /**
      * Nahraje item do sdílené databáze
@@ -20,5 +39,4 @@ public interface Firebase<T> {
      * odstraní vzdálen item z lokální databáze
      */
     void deleteRemote(T item, boolean remote);
-
 }
