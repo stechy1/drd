@@ -1,5 +1,5 @@
 group 'cz.stechy'
-version '1.0-SNAPSHOT'
+version 'alfa-0.1'
 
 
 buildscript {
