@@ -20,7 +20,6 @@ import cz.stechy.drd.model.persistent.SpellBookService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import net.harawata.appdirs.AppDirs;
@@ -169,7 +168,7 @@ public class Context {
      * @throws Exception Pokud se inicializace nezdařila
      */
     private void initFirebase(String credentialsPath) throws Exception {
-        firebaseWrapper.initDatabase(new FileInputStream(new File(credentialsPath)));
+        firebaseWrapper.initDatabase(new File(credentialsPath));
     }
 
     // endregion
