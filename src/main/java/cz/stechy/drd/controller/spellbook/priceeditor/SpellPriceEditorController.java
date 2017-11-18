@@ -1,6 +1,7 @@
 package cz.stechy.drd.controller.spellbook.priceeditor;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.controller.spellbook.SpellBookHelper;
 import cz.stechy.drd.model.DragContainer;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
@@ -12,6 +13,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
@@ -160,6 +162,12 @@ public class SpellPriceEditorController extends BaseController implements Initia
             componentSourceContainer.getChildren().add(label);
         }
 
+        Button btn = new Button("Press me");
+        btn.setOnAction(event -> {
+            SpellBookHelper.showGraph(rootNode);
+        });
+        componentSourceContainer.getChildren().add(btn);
+
         componentPlayground.setOnDragDropped(this::onDragDropped);
         componentPlayground.setOnDragOver(this::onDragOver);
     }
@@ -213,8 +221,22 @@ public class SpellPriceEditorController extends BaseController implements Initia
             nodes.stream()
                 .filter(draggableSpellNode -> draggableSpellNode.getId().equals(id))
                 .findFirst()
-                .ifPresent(dragDestinationNode ->
-                    dragLink.bindEnds(dragSourceNode, dragDestinationNode, position));
+                .ifPresent(dragDestinationNode -> {
+                    // Propojení pomocí linku
+                    dragLink.bindEnds(dragSourceNode, dragDestinationNode, position);
+                    // Propojení do grafu
+                    dragSourceNode.bottomNode = dragDestinationNode;
+                    switch (position) {
+                        case LEFT:
+                            dragDestinationNode.leftNode = dragSourceNode;
+                            break;
+                        case RIGHT:
+                            dragDestinationNode.rightNode = dragSourceNode;
+                            break;
+                        default:
+                            throw new IllegalStateException("Tohle by niky nemelo nastat");
+                    }
+                });
         }
     }
 }

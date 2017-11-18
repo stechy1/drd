@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.spellbook.priceeditor;
 
+import cz.stechy.drd.controller.spellbook.ISpellGraphNode;
 import cz.stechy.drd.model.DragContainer;
 import cz.stechy.drd.util.Translator;
 import java.io.IOException;
@@ -27,8 +28,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
+import javafx.util.Pair;
 
-abstract class DraggableSpellNode extends Group implements Initializable {
+abstract class DraggableSpellNode extends Group implements Initializable, ISpellGraphNode {
 
     // region Constants
 
@@ -137,6 +139,16 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         });
     }
 
+    @Override
+    public Pair<ISpellGraphNode, ISpellGraphNode> getParentNodes() {
+        return new Pair<>(leftNode, rightNode);
+    }
+
+    @Override
+    public ISpellGraphNode getChildNode() {
+        return bottomNode;
+    }
+
     // region Private methods
 
     /**
@@ -157,6 +169,7 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     private NodeLink getLink(LinkPosition position) {
         switch (position) {
             case BOTTOM:
@@ -165,6 +178,20 @@ abstract class DraggableSpellNode extends Group implements Initializable {
                 return leftLink;
             case RIGHT:
                 return rightLink;
+            default:
+                throw new IllegalStateException();
+        }
+    }
+
+    @SuppressWarnings("Duplicates")
+    private DraggableSpellNode getNode(LinkPosition position) {
+        switch (position) {
+            case BOTTOM:
+                return bottomNode;
+            case LEFT:
+                return leftNode;
+            case RIGHT:
+                return rightNode;
             default:
                 throw new IllegalStateException();
         }
@@ -229,9 +256,7 @@ abstract class DraggableSpellNode extends Group implements Initializable {
     private void onLinkDragDetect(MouseEvent event) {
         final Circle source = (Circle) event.getSource();
         final LinkPosition position = getPosition(source);
-        System.out.println(position);
         final boolean connected = hasConnection(position);
-        System.out.println(connected);
         if ((position == LinkPosition.LEFT || position == LinkPosition.RIGHT)) {
             event.consume();
             return;
@@ -244,6 +269,10 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         if (connected) {
             dragLink = getLink(position);
             dragLink.setEnd(localToParent(new Point2D(source.getLayoutX(), source.getLayoutY())));
+            // opositeNode = muj left | right node
+            // jehož bottomNode je tento node
+            DraggableSpellNode opositeNode = getNode(position);
+            opositeNode.bottomNode = null;
 
             linkListener.saveNodeLink(dragLink);
         } else {
@@ -328,4 +357,8 @@ abstract class DraggableSpellNode extends Group implements Initializable {
 
     // endregion
 
+    @Override
+    public String toString() {
+        return lblTitle.getText() + " - " + super.toString();
+    }
 }

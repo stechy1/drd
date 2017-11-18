@@ -82,5 +82,18 @@ public final class SpellBookHelper {
             .build();
     }
 
+    public static void showGraph(ISpellGraphNode node) {
+        System.out.println("Aktualni node: " + node);
+        System.out.println("Rodice============================");
+        System.out.println("Levy: " + node.getParentNodes().getKey());
+        System.out.println("Pravy: " + node.getParentNodes().getValue());
+        ISpellGraphNode child = node.getChildNode();
+        if (child != null) {
+            showGraph(child);
+        } else {
+            System.out.println("Toto je startovni node: " + node);
+        }
+    }
+
     // endregion
 }
