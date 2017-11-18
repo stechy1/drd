@@ -70,6 +70,7 @@ public class NodeLink extends CubicCurve {
      * @param startPoint {@link Point2D}
      */
     public void setStart(Point2D startPoint) {
+        unbindStart();
         setStartX(startPoint.getX());
         setStartY(startPoint.getY());
     }
@@ -80,6 +81,7 @@ public class NodeLink extends CubicCurve {
      * @param endPoint {@link Point2D}
      */
     public void setEnd(Point2D endPoint) {
+        unbindEnd();
         setEndX(endPoint.getX());
         setEndY(endPoint.getY());
     }
@@ -111,13 +113,27 @@ public class NodeLink extends CubicCurve {
     }
 
     /**
+     * Zruší pozorování startovního bodu
+     */
+    public void unbindStart() {
+        startXProperty().unbind();
+        startYProperty().unbind();
+    }
+
+    /**
+     * Zruší pozorování koncového bodu
+     */
+    public void unbindEnd() {
+        endXProperty().unbind();
+        endYProperty().unbind();
+    }
+
+    /**
      * Zruší pozorování vlastností
      */
     public void unbind() {
-        startXProperty().unbind();
-        startYProperty().unbind();
-        endXProperty().unbind();
-        endYProperty().unbind();
+        unbindStart();
+        unbindEnd();
     }
 
     // endregion

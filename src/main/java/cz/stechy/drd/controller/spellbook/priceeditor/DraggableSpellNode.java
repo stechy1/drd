@@ -210,7 +210,7 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         System.out.println(position);
         final boolean connected = hasConnection(position);
         System.out.println(connected);
-        if (!connected && (position == LinkPosition.LEFT || position == LinkPosition.RIGHT)) {
+        if ((position == LinkPosition.LEFT || position == LinkPosition.RIGHT)) {
             event.consume();
             return;
         }
@@ -221,8 +221,7 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         linkListener.saveSourceNode(this);
         if (connected) {
             dragLink = getLink(position);
-            dragLink.unbind();
-            dragLink.setStart(localToParent(new Point2D(source.getLayoutX(), source.getLayoutY())));
+            dragLink.setEnd(localToParent(new Point2D(source.getLayoutX(), source.getLayoutY())));
 
             linkListener.saveNodeLink(dragLink);
         } else {
@@ -280,6 +279,7 @@ abstract class DraggableSpellNode extends Group implements Initializable {
 
         final Optional<Object> optional = container.getValue(LINK_ADD_STATUS);
         if (!optional.isPresent()) {
+            bottomLink = null;
             linkListener.deleteNodeLink(dragLink);
         }
         nodeManipulator.setOnDragOverHandler(null);
