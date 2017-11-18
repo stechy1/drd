@@ -183,12 +183,34 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         }
     }
 
+    /**
+     * Přesune node "dopředu"
+     */
+    private void goFront() {
+        toFront();
+        linkToFront(leftLink);
+        linkToFront(rightLink);
+        linkToFront(bottomLink);
+    }
+
+    /**
+     * Přesune link "dopředu" pokud není null
+     *
+     * @param link {@link NodeLink}
+     */
+    private void linkToFront(NodeLink link) {
+        if (link != null) {
+            link.toFront();
+        }
+    }
+
     // region Node drag&drop
 
     private void onNodeMousePressed(MouseEvent event) {
         mouse = new Point2D(event.getSceneX(), event.getSceneY());
         mouse = sceneToLocal(mouse);
         moveCursor.setValue(MOVE_CURSOR);
+        goFront();
 
         event.consume();
     }
