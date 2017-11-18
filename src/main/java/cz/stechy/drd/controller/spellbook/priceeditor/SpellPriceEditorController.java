@@ -53,6 +53,8 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     private final List<DraggableSpellNode> nodes = new ArrayList<>();
     private final List<NodeLink> links = new ArrayList<>();
+    private final INodeManipulator manipulator = new NodeManipulator();
+    private final ILinkListener linkListener = new LinkListener();
     private final Translator translator;
 
     private String title;
@@ -168,9 +170,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
         setScreenSize(800, 600);
     }
 
-    // Implementace node manipulatoru
-    private final INodeManipulator manipulator = new INodeManipulator() {
-
+    private final class NodeManipulator implements INodeManipulator {
         @Override
         public void setOnDragOverHandler(EventHandler<? super DragEvent> event) {
             if (event == null) {
@@ -179,10 +179,9 @@ public class SpellPriceEditorController extends BaseController implements Initia
                 componentPlayground.setOnDragOver(event);
             }
         }
+    }
 
-    };
-
-    private final ILinkListener linkListener = new ILinkListener() {
+    private final class LinkListener implements ILinkListener {
         @Override
         public void saveSourceNode(DraggableSpellNode node) {
             SpellPriceEditorController.this.dragSourceNode = node;
@@ -217,5 +216,5 @@ public class SpellPriceEditorController extends BaseController implements Initia
                 .ifPresent(dragDestinationNode ->
                     dragLink.bindEnds(dragSourceNode, dragDestinationNode, position));
         }
-    };
+    }
 }
