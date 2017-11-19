@@ -105,5 +105,20 @@ public final class SpellBookHelper {
         }
     }
 
+    /**
+     * Najde kořenový node, ze kterého se bude tvořit graf
+     *
+     * @param node {@link ISpellGraphNode} Startovní hode
+     * @return Kořenový node grafu
+     */
+    public static ISpellGraphNode findRootNode(ISpellGraphNode node) {
+        ISpellGraphNode bottom = node;
+        while(bottom.getChildNode() != null) {
+            bottom = bottom.getChildNode();
+        }
+
+        return bottom;
+    }
+
     // endregion
 }
