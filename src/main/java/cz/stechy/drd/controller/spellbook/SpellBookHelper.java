@@ -85,8 +85,18 @@ public final class SpellBookHelper {
     public static void showGraph(ISpellGraphNode node) {
         System.out.println("Aktualni node: " + node);
         System.out.println("Rodice============================");
-        System.out.println("Levy: " + node.getParentNodes().getKey());
-        System.out.println("Pravy: " + node.getParentNodes().getValue());
+        final ISpellGraphNode left = node.getParentNodes().getKey();
+        System.out.println("Levy: " + left);
+        if (left != null && left.getChildNode() != node) {
+            System.out.println("Rodice leveho nodu:");
+            showGraph(left);
+        }
+        final ISpellGraphNode right = node.getParentNodes().getValue();
+        System.out.println("Pravy: " + right);
+        if (right != null && right.getChildNode() != node) {
+            System.out.println("Rodice praveho nodu:");
+            showGraph(right);
+        }
         ISpellGraphNode child = node.getChildNode();
         if (child != null) {
             showGraph(child);
