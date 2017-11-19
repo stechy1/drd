@@ -169,7 +169,6 @@ abstract class DraggableSpellNode extends Group implements Initializable, ISpell
         }
     }
 
-    @SuppressWarnings("Duplicates")
     private NodeLink getLink(LinkPosition position) {
         switch (position) {
             case BOTTOM:
@@ -183,17 +182,17 @@ abstract class DraggableSpellNode extends Group implements Initializable, ISpell
         }
     }
 
-    @SuppressWarnings("Duplicates")
-    private DraggableSpellNode getNode(LinkPosition position) {
-        switch (position) {
-            case BOTTOM:
-                return bottomNode;
-            case LEFT:
-                return leftNode;
-            case RIGHT:
-                return rightNode;
-            default:
-                throw new IllegalStateException();
+    /**
+     * Odstraní fyzické spojení mezi this.bottomNode a nodem s ním spojeným
+     */
+    private void disconectParent() {
+
+        if (bottomNode.leftNode == this) {
+            bottomNode.leftNode = null;
+            bottomNode.leftLink = null;
+        } else if (bottomNode.rightNode == this) {
+            bottomNode.rightNode = null;
+            bottomNode.rightLink = null;
         }
     }
 
@@ -269,10 +268,9 @@ abstract class DraggableSpellNode extends Group implements Initializable, ISpell
         if (connected) {
             dragLink = getLink(position);
             dragLink.setEnd(localToParent(new Point2D(source.getLayoutX(), source.getLayoutY())));
-            // opositeNode = muj left | right node
-            // jehož bottomNode je tento node
-            DraggableSpellNode opositeNode = getNode(position);
-            opositeNode.bottomNode = null;
+            // opositeNode = muj bottom node
+            // jehož left | right node jsem ja
+            disconectParent();
 
             linkListener.saveNodeLink(dragLink);
         } else {
@@ -331,6 +329,7 @@ abstract class DraggableSpellNode extends Group implements Initializable, ISpell
         final Optional<Object> optional = container.getValue(LINK_ADD_STATUS);
         if (!optional.isPresent()) {
             bottomLink = null;
+            bottomNode = null;
             linkListener.deleteNodeLink(dragLink);
         }
         nodeManipulator.setOnDragOverHandler(null);
