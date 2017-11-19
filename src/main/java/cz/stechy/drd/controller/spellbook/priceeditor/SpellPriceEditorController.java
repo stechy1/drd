@@ -9,11 +9,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
@@ -162,12 +162,6 @@ public class SpellPriceEditorController extends BaseController implements Initia
             componentSourceContainer.getChildren().add(label);
         }
 
-        Button btn = new Button("Press me");
-        btn.setOnAction(event -> {
-            SpellBookHelper.showGraph(rootNode);
-        });
-        componentSourceContainer.getChildren().add(btn);
-
         componentPlayground.setOnDragDropped(this::onDragDropped);
         componentPlayground.setOnDragOver(this::onDragOver);
     }
@@ -177,6 +171,21 @@ public class SpellPriceEditorController extends BaseController implements Initia
         setTitle(title);
         setScreenSize(800, 600);
     }
+
+    // region Button handlers
+
+    @FXML
+    private void handleFinish(ActionEvent actionEvent) {
+        System.out.println("Byl nalezen kořenový prvek grafu: " + SpellBookHelper.findRootNode(rootNode));
+//        finish();
+    }
+
+    @FXML
+    private void handleCancel(ActionEvent actionEvent) {
+        finish();
+    }
+
+    // endregion
 
     private final class NodeManipulator implements INodeManipulator {
         @Override
