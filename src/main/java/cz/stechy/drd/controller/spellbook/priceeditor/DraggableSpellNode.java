@@ -1,5 +1,6 @@
 package cz.stechy.drd.controller.spellbook.priceeditor;
 
+import cz.stechy.drd.controller.spellbook.ISpellGraphNode;
 import cz.stechy.drd.model.DragContainer;
 import cz.stechy.drd.util.Translator;
 import java.io.IOException;
@@ -27,8 +28,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
+import javafx.util.Pair;
 
-abstract class DraggableSpellNode extends Group implements Initializable {
+abstract class DraggableSpellNode extends Group implements Initializable, ISpellGraphNode {
 
     // region Constants
 
@@ -137,6 +139,16 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         });
     }
 
+    @Override
+    public Pair<ISpellGraphNode, ISpellGraphNode> getParentNodes() {
+        return new Pair<>(leftNode, rightNode);
+    }
+
+    @Override
+    public ISpellGraphNode getChildNode() {
+        return bottomNode;
+    }
+
     // region Private methods
 
     /**
@@ -170,6 +182,20 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         }
     }
 
+    /**
+     * Odstraní fyzické spojení mezi this.bottomNode a nodem s ním spojeným
+     */
+    private void disconectParent() {
+
+        if (bottomNode.leftNode == this) {
+            bottomNode.leftNode = null;
+            bottomNode.leftLink = null;
+        } else if (bottomNode.rightNode == this) {
+            bottomNode.rightNode = null;
+            bottomNode.rightLink = null;
+        }
+    }
+
     private boolean hasConnection(LinkPosition position) {
         switch (position) {
             case BOTTOM:
@@ -183,12 +209,34 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         }
     }
 
+    /**
+     * Přesune node "dopředu"
+     */
+    private void goFront() {
+        toFront();
+        linkToFront(leftLink);
+        linkToFront(rightLink);
+        linkToFront(bottomLink);
+    }
+
+    /**
+     * Přesune link "dopředu" pokud není null
+     *
+     * @param link {@link NodeLink}
+     */
+    private void linkToFront(NodeLink link) {
+        if (link != null) {
+            link.toFront();
+        }
+    }
+
     // region Node drag&drop
 
     private void onNodeMousePressed(MouseEvent event) {
         mouse = new Point2D(event.getSceneX(), event.getSceneY());
         mouse = sceneToLocal(mouse);
         moveCursor.setValue(MOVE_CURSOR);
+        goFront();
 
         event.consume();
     }
@@ -208,7 +256,7 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         final Circle source = (Circle) event.getSource();
         final LinkPosition position = getPosition(source);
         final boolean connected = hasConnection(position);
-        if (!connected && (position == LinkPosition.LEFT || position == LinkPosition.RIGHT)) {
+        if ((position == LinkPosition.LEFT || position == LinkPosition.RIGHT)) {
             event.consume();
             return;
         }
@@ -219,8 +267,10 @@ abstract class DraggableSpellNode extends Group implements Initializable {
         linkListener.saveSourceNode(this);
         if (connected) {
             dragLink = getLink(position);
-            dragLink.unbind();
-            dragLink.setStart(localToParent(new Point2D(source.getLayoutX(), source.getLayoutY())));
+            dragLink.setEnd(localToParent(new Point2D(source.getLayoutX(), source.getLayoutY())));
+            // opositeNode = muj bottom node
+            // jehož left | right node jsem ja
+            disconectParent();
 
             linkListener.saveNodeLink(dragLink);
         } else {
@@ -279,6 +329,8 @@ abstract class DraggableSpellNode extends Group implements Initializable {
 
         final Optional<Object> optional = container.getValue(LINK_ADD_STATUS);
         if (!optional.isPresent()) {
+            bottomLink = null;
+            bottomNode = null;
             linkListener.deleteNodeLink(dragLink);
         }
         nodeManipulator.setOnDragOverHandler(null);
@@ -305,4 +357,8 @@ abstract class DraggableSpellNode extends Group implements Initializable {
 
     // endregion
 
+    @Override
+    public String toString() {
+        return lblTitle.getText() + " - " + super.toString();
+    }
 }

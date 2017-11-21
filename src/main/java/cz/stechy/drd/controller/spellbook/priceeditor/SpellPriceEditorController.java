@@ -1,6 +1,7 @@
 package cz.stechy.drd.controller.spellbook.priceeditor;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.controller.spellbook.SpellBookHelper;
 import cz.stechy.drd.model.DragContainer;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
@@ -8,6 +9,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -53,6 +55,8 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     private final List<DraggableSpellNode> nodes = new ArrayList<>();
     private final List<NodeLink> links = new ArrayList<>();
+    private final INodeManipulator manipulator = new NodeManipulator();
+    private final ILinkListener linkListener = new LinkListener();
     private final Translator translator;
 
     private String title;
@@ -168,9 +172,22 @@ public class SpellPriceEditorController extends BaseController implements Initia
         setScreenSize(800, 600);
     }
 
-    // Implementace node manipulatoru
-    private final INodeManipulator manipulator = new INodeManipulator() {
+    // region Button handlers
 
+    @FXML
+    private void handleFinish(ActionEvent actionEvent) {
+        System.out.println("Byl nalezen kořenový prvek grafu: " + SpellBookHelper.findRootNode(rootNode));
+//        finish();
+    }
+
+    @FXML
+    private void handleCancel(ActionEvent actionEvent) {
+        finish();
+    }
+
+    // endregion
+
+    private final class NodeManipulator implements INodeManipulator {
         @Override
         public void setOnDragOverHandler(EventHandler<? super DragEvent> event) {
             if (event == null) {
@@ -179,10 +196,9 @@ public class SpellPriceEditorController extends BaseController implements Initia
                 componentPlayground.setOnDragOver(event);
             }
         }
+    }
 
-    };
-
-    private final ILinkListener linkListener = new ILinkListener() {
+    private final class LinkListener implements ILinkListener {
         @Override
         public void saveSourceNode(DraggableSpellNode node) {
             SpellPriceEditorController.this.dragSourceNode = node;
@@ -214,8 +230,22 @@ public class SpellPriceEditorController extends BaseController implements Initia
             nodes.stream()
                 .filter(draggableSpellNode -> draggableSpellNode.getId().equals(id))
                 .findFirst()
-                .ifPresent(dragDestinationNode ->
-                    dragLink.bindEnds(dragSourceNode, dragDestinationNode, position));
+                .ifPresent(dragDestinationNode -> {
+                    // Propojení pomocí linku
+                    dragLink.bindEnds(dragSourceNode, dragDestinationNode, position);
+                    // Propojení do grafu
+                    dragSourceNode.bottomNode = dragDestinationNode;
+                    switch (position) {
+                        case LEFT:
+                            dragDestinationNode.leftNode = dragSourceNode;
+                            break;
+                        case RIGHT:
+                            dragDestinationNode.rightNode = dragSourceNode;
+                            break;
+                        default:
+                            throw new IllegalStateException("Tohle by niky nemelo nastat");
+                    }
+                });
         }
-    };
+    }
 }
