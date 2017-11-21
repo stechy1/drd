@@ -12,6 +12,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -185,7 +186,10 @@ abstract class DraggableSpellNode extends Group implements Initializable, ISpell
     /**
      * Odstraní fyzické spojení mezi this.bottomNode a nodem s ním spojeným
      */
-    private void disconectParent() {
+    private boolean disconectParent() {
+        if (bottomNode == null) {
+            return false;
+        }
 
         if (bottomNode.leftNode == this) {
             bottomNode.leftNode = null;
@@ -193,6 +197,37 @@ abstract class DraggableSpellNode extends Group implements Initializable, ISpell
         } else if (bottomNode.rightNode == this) {
             bottomNode.rightNode = null;
             bottomNode.rightLink = null;
+        }
+
+        return true;
+    }
+
+    private boolean disconnectChild(DraggableSpellNode node) {
+        if (node == null) {
+            return false;
+        }
+
+        node.bottomNode = null;
+        node.bottomLink = null;
+
+        return true;
+    }
+
+    private void disconnectAll() {
+        if (disconectParent()) {
+            linkListener.deleteNodeLink(bottomLink);
+            bottomNode = null;
+            bottomLink = null;
+        }
+        if (disconnectChild(leftNode)) {
+            linkListener.deleteNodeLink(leftLink);
+            leftNode = null;
+            leftLink = null;
+        }
+        if (disconnectChild(rightNode)) {
+            linkListener.deleteNodeLink(rightLink);
+            rightNode = null;
+            rightLink = null;
         }
     }
 
@@ -348,6 +383,16 @@ abstract class DraggableSpellNode extends Group implements Initializable, ISpell
     }
 
     // endregion
+
+    // endregion
+
+    // region Button handlers
+
+    @FXML
+    private void handleCloseNode(ActionEvent actionEvent) {
+        disconnectAll();
+        nodeManipulator.removeNode(this);
+    }
 
     // endregion
 

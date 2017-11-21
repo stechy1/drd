@@ -112,6 +112,10 @@ public final class SpellBookHelper {
      * @return Kořenový node grafu
      */
     public static ISpellGraphNode findRootNode(ISpellGraphNode node) {
+        if (node == null) {
+            return null;
+        }
+
         ISpellGraphNode bottom = node;
         while(bottom.getChildNode() != null) {
             bottom = bottom.getChildNode();

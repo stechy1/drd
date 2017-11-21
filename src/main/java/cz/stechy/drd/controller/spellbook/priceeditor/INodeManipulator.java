@@ -16,4 +16,11 @@ interface INodeManipulator {
      */
     void setOnDragOverHandler(EventHandler<? super DragEvent> event);
 
+    /**
+     * Odebere {@link DraggableSpellNode} z plochy
+     *
+     * @param node {@link DraggableSpellNode}
+     */
+    void removeNode(DraggableSpellNode node);
+
 }

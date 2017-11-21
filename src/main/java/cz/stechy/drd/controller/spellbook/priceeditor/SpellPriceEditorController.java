@@ -54,7 +54,6 @@ public class SpellPriceEditorController extends BaseController implements Initia
     // endregion
 
     private final List<DraggableSpellNode> nodes = new ArrayList<>();
-    private final List<NodeLink> links = new ArrayList<>();
     private final INodeManipulator manipulator = new NodeManipulator();
     private final ILinkListener linkListener = new LinkListener();
     private final Translator translator;
@@ -196,6 +195,20 @@ public class SpellPriceEditorController extends BaseController implements Initia
                 componentPlayground.setOnDragOver(event);
             }
         }
+
+        @Override
+        public void removeNode(DraggableSpellNode node) {
+            System.out.println("Odstraňuji node: " + node.toString());
+            nodes.remove(node);
+            componentPlayground.getChildren().remove(node);
+            if (rootNode == node) {
+                if (nodes.isEmpty()) {
+                    rootNode = null;
+                } else {
+                    rootNode = nodes.get(0);
+                }
+            }
+        }
     }
 
     private final class LinkListener implements ILinkListener {
@@ -209,7 +222,6 @@ public class SpellPriceEditorController extends BaseController implements Initia
             dragLink = new NodeLink();
             dragLink.setStart(start);
             componentPlayground.getChildren().add(dragLink);
-            links.add(dragLink);
             return dragLink;
         }
 
@@ -220,9 +232,9 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
         @Override
         public void deleteNodeLink(NodeLink nodeLink) {
-            componentPlayground.getChildren().remove(nodeLink);
-            links.remove(nodeLink);
+            System.out.println("Odstraňuji link: " + nodeLink);
             nodeLink.unbind();
+            componentPlayground.getChildren().remove(nodeLink);
         }
 
         @Override
@@ -243,7 +255,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
                             dragDestinationNode.rightNode = dragSourceNode;
                             break;
                         default:
-                            throw new IllegalStateException("Tohle by niky nemelo nastat");
+                            throw new IllegalStateException("Tohle by nikdy nemelo nastat");
                     }
                 });
         }

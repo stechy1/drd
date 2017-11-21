@@ -50,7 +50,7 @@
       </Label>
       <Region HBox.hgrow="ALWAYS"/>
       <Button style="-fx-background-color: derive(orange, +20%);" prefHeight="25.0" text="X"
-        fx:id="btnCloseNode">
+        fx:id="btnCloseNode" onAction="#handleCloseNode">
         <cursor>
           <Cursor fx:constant="HAND"/>
         </cursor>
