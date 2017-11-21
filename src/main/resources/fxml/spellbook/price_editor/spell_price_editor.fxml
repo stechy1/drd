@@ -15,11 +15,7 @@
     <SplitPane dividerPositions="0.2">
       <VBox fx:id="componentSourceContainer" alignment="TOP_CENTER" prefHeight="400" prefWidth="120.0" spacing="16.0" SplitPane.resizableWithParent="false" />
       <ScrollPane fitToHeight="true" fitToWidth="true">
-        <Pane fx:id="componentPlayground" prefHeight="349.0" prefWidth="444.0" style="-fx-background-color: green">
-          <cursor>
-            <Cursor fx:constant="MOVE" />
-          </cursor>
-        </Pane>
+        <Pane fx:id="componentPlayground" prefHeight="349.0" prefWidth="444.0" style="-fx-background-color: green"/>
       </ScrollPane>
     </SplitPane>
   </center>

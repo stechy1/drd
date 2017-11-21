@@ -3,6 +3,8 @@ package cz.stechy.drd.controller.spellbook.priceeditor;
 import com.jfoenix.controls.JFXComboBox;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.spell.parser.SpellParser.SpellVariable;
+import cz.stechy.drd.model.spell.price.ISpellPrice;
+import cz.stechy.drd.model.spell.price.VariableSpellPrice;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
 import java.net.URL;
@@ -41,4 +43,8 @@ class VariableDraggableSpellNode extends DraggableSpellNode {
 
     }
 
+    @Override
+    public ISpellPrice getPrice() {
+        return new VariableSpellPrice(cmbVariable.getValue());
+    }
 }

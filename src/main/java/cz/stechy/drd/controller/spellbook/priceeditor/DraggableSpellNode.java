@@ -31,7 +31,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.util.Pair;
 
-abstract class DraggableSpellNode extends Group implements Initializable, ISpellGraphNode {
+abstract class DraggableSpellNode extends Group implements Initializable, ISpellGraphNode,
+    ISpellPriceCreator {
 
     // region Constants
 

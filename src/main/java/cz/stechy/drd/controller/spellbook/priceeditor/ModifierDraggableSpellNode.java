@@ -3,6 +3,11 @@ package cz.stechy.drd.controller.spellbook.priceeditor;
 import com.jfoenix.controls.JFXComboBox;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.ITranslatedEnum;
+import cz.stechy.drd.model.spell.price.ISpellPrice;
+import cz.stechy.drd.model.spell.price.modifier.SpellPriceAdder;
+import cz.stechy.drd.model.spell.price.modifier.SpellPriceDivider;
+import cz.stechy.drd.model.spell.price.modifier.SpellPriceMultiplier;
+import cz.stechy.drd.model.spell.price.modifier.SpellPriceSubtracter;
 import cz.stechy.drd.util.Translator;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -50,6 +55,22 @@ public class ModifierDraggableSpellNode extends DraggableSpellNode {
         container.getChildren().setAll(cmbOperation);
 
         showLeftRightCircles();
+    }
+
+    @Override
+    public ISpellPrice getPrice() {
+        switch (cmbOperation.getValue()) {
+            case ADD:
+                return new SpellPriceAdder(leftNode.getPrice(), rightNode.getPrice());
+            case SUBTRACT:
+                return new SpellPriceSubtracter(leftNode.getPrice(), rightNode.getPrice());
+            case MULTIPLE:
+                return new SpellPriceMultiplier(leftNode.getPrice(), rightNode.getPrice());
+            case DIVIDE:
+                return new SpellPriceDivider(leftNode.getPrice(), rightNode.getPrice());
+            default:
+                throw new IllegalStateException("Tohle by nikdy nemelo nastat");
+        }
     }
 
     private enum Operation implements ITranslatedEnum {

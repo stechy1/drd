@@ -3,6 +3,8 @@ package cz.stechy.drd.controller.spellbook.priceeditor;
 import com.jfoenix.controls.JFXTextField;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.spell.price.BasicSpellPrice;
+import cz.stechy.drd.model.spell.price.ISpellPrice;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.Translator;
 import java.net.URL;
@@ -47,5 +49,10 @@ class ConstantDraggableSpellNode extends DraggableSpellNode {
 
         container.getChildren().setAll(inputValue, inputExtention);
         anchorRoot.setPrefHeight(150);
+    }
+
+    @Override
+    public ISpellPrice getPrice() {
+        return new BasicSpellPrice(value.getActValue().intValue(), valueExtention.getActValue().intValue());
     }
 }
