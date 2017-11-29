@@ -175,7 +175,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     @FXML
     private void handleFinish(ActionEvent actionEvent) {
-        System.out.println("Byl nalezen kořenový prvek grafu: " + SpellBookHelper.findRootNode(rootNode));
+        System.out.println("Vypocitana cena: " + SpellBookHelper.findRootNode(rootNode).getPrice().calculateMainPrice());
 //        finish();
     }
 
