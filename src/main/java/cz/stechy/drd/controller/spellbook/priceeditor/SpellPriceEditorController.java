@@ -5,6 +5,7 @@ import cz.stechy.drd.controller.spellbook.SpellBookHelper;
 import cz.stechy.drd.model.DragContainer;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
+import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -166,6 +167,16 @@ public class SpellPriceEditorController extends BaseController implements Initia
     }
 
     @Override
+    protected void onCreate(Bundle bundle) {
+        final String price = bundle.getString(SpellBookHelper.PRICE);
+        if (price.isEmpty()) {
+            return;
+        }
+
+
+    }
+
+    @Override
     protected void onResume() {
         setTitle(title);
         setScreenSize(800, 600);
@@ -176,7 +187,11 @@ public class SpellPriceEditorController extends BaseController implements Initia
     @FXML
     private void handleFinish(ActionEvent actionEvent) {
         System.out.println("Vypocitana cena: " + SpellBookHelper.findRootNode(rootNode).getPrice().calculateMainPrice());
-//        finish();
+        final String priceRaw = SpellBookHelper.findRootNode(rootNode).getPrice().pack();
+        final Bundle bundle = new Bundle();
+        bundle.putString(SpellBookHelper.PRICE, priceRaw);
+        setResult(RESULT_SUCCESS);
+        finish(bundle);
     }
 
     @FXML

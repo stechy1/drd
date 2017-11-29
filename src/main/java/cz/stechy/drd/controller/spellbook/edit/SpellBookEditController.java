@@ -138,7 +138,7 @@ public class SpellBookEditController extends BaseController implements Initializ
         action = bundle.getInt(SpellBookHelper.SPELL_ACTION);
         if (action == BestiaryHelper.MOB_ACTION_UPDATE) {
             model.id.setValue(bundle.getString(SpellBookHelper.ID));
-            model.id.setValue(bundle.getString(SpellBookHelper.AUTHOR));
+            model.author.setValue(bundle.getString(SpellBookHelper.AUTHOR));
             model.name.setValue(bundle.getString(SpellBookHelper.NAME));
             model.magicName.setValue(bundle.getString(SpellBookHelper.MAGIC_NAME));
             model.description.setValue(bundle.getString(SpellBookHelper.DESCRIPTION));
@@ -161,6 +161,24 @@ public class SpellBookEditController extends BaseController implements Initializ
         setTitle(title);
         lblTitle.setText(title);
         setScreenSize(550, 500);
+    }
+
+    @Override
+    protected void onScreenResult(int statusCode, int actionId, Bundle bundle) {
+        ISpellPrice spellPrice;
+        switch (actionId) {
+            case SpellBookHelper.SPELL_PRICE_ACTION_UPDATE:
+                if (statusCode != RESULT_SUCCESS) {
+                    return;
+                }
+
+                spellPrice = new SpellParser(bundle.getString(SpellBookHelper.PRICE))
+                    .parse();
+
+                this.model.price.set(spellPrice);
+                break;
+        }
+
     }
 
     // region Button handlers
@@ -203,7 +221,13 @@ public class SpellBookEditController extends BaseController implements Initializ
 
     @FXML
     private void handlePrice(ActionEvent actionEvent) {
-        startNewDialog(R.FXML.SPELL_PRICE_EDITOR);
+        Bundle bundle = new Bundle();
+        String price = "";
+        if (model.price.get() != null) {
+            price = model.price.get().pack();
+        }
+        bundle.putString(SpellBookHelper.PRICE, price);
+        startNewDialogForResult(R.FXML.SPELL_PRICE_EDITOR, SpellBookHelper.SPELL_PRICE_ACTION_UPDATE);
     }
 
     // endregion
