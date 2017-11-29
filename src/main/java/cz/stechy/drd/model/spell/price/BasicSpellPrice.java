@@ -64,6 +64,16 @@ public class BasicSpellPrice implements ISpellPrice {
     }
 
     @Override
+    public ISpellPrice getLeft() {
+        return null;
+    }
+
+    @Override
+    public ISpellPrice getRight() {
+        return null;
+    }
+
+    @Override
     public String toString() {
         return String.valueOf(price);
     }

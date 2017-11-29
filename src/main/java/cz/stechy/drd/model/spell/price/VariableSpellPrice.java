@@ -74,6 +74,16 @@ public class VariableSpellPrice implements ISpellPrice {
     }
 
     @Override
+    public ISpellPrice getLeft() {
+        return null;
+    }
+
+    @Override
+    public ISpellPrice getRight() {
+        return null;
+    }
+
+    @Override
     public String toString() {
         return variable.getKeyForTranslation();
     }

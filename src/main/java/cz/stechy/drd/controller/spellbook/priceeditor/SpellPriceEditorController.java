@@ -3,6 +3,8 @@ package cz.stechy.drd.controller.spellbook.priceeditor;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.spellbook.SpellBookHelper;
 import cz.stechy.drd.model.DragContainer;
+import cz.stechy.drd.model.spell.parser.SpellParser;
+import cz.stechy.drd.model.spell.price.ISpellPrice;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -149,6 +151,10 @@ public class SpellPriceEditorController extends BaseController implements Initia
         event.consume();
     }
 
+    private void buildViewGraph(ISpellPrice price) {
+
+    }
+
     // endregion
 
     @Override
@@ -173,7 +179,8 @@ public class SpellPriceEditorController extends BaseController implements Initia
             return;
         }
 
-
+        ISpellPrice spellPrice = new SpellParser(price).parse();
+        buildViewGraph(spellPrice);
     }
 
     @Override

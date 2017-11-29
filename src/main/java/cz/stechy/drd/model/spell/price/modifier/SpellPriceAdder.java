@@ -84,6 +84,16 @@ public class SpellPriceAdder implements ISpellPrice {
     }
 
     @Override
+    public ISpellPrice getLeft() {
+        return left;
+    }
+
+    @Override
+    public ISpellPrice getRight() {
+        return right;
+    }
+
+    @Override
     public String toString() {
         return left.toString() + " + " + right.toString();
     }
