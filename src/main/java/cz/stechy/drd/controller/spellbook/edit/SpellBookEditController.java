@@ -227,7 +227,7 @@ public class SpellBookEditController extends BaseController implements Initializ
             price = model.price.get().pack();
         }
         bundle.putString(SpellBookHelper.PRICE, price);
-        startNewDialogForResult(R.FXML.SPELL_PRICE_EDITOR, SpellBookHelper.SPELL_PRICE_ACTION_UPDATE);
+        startNewDialogForResult(R.FXML.SPELL_PRICE_EDITOR, SpellBookHelper.SPELL_PRICE_ACTION_UPDATE, bundle);
     }
 
     // endregion

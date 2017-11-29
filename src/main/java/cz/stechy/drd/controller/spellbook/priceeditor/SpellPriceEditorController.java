@@ -4,7 +4,9 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.controller.spellbook.SpellBookHelper;
 import cz.stechy.drd.model.DragContainer;
 import cz.stechy.drd.model.spell.parser.SpellParser;
+import cz.stechy.drd.model.spell.price.BasicSpellPrice;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
+import cz.stechy.drd.model.spell.price.VariableSpellPrice;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -42,6 +44,10 @@ public class SpellPriceEditorController extends BaseController implements Initia
     private static final int PROPERTY_PRICE_TYPE_CONSTANT = 0;
     private static final int PROPERTY_PRICE_TYPE_VARIABLE = 1;
     private static final int PROPERTY_PRICE_TYPE_MODIFIER = 2;
+
+    private static final int MOUSE_TO_NODE_X_CENTER_OFFSET = 100;
+    private static final int MOUSE_TO_NODE_Y_CENTER_OFFSET = 15;
+    private static final int DEFAULT_NODE_Y_SPACING = 10;
 
     // endregion
 
@@ -110,7 +116,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
         Point2D point = node.getParent().sceneToLocal(new Point2D(screenX, screenY));
         // 100 = polovina šířky draggable nodu
         // 15 = polovina výšky záhlaví draggable nodu
-        node.relocate(point.getX() - 100, point.getY() - 15);
+        node.relocate(point.getX() - MOUSE_TO_NODE_X_CENTER_OFFSET, point.getY() - MOUSE_TO_NODE_Y_CENTER_OFFSET);
     }
 
     private void onDragDetected(MouseEvent event) {
@@ -151,8 +157,22 @@ public class SpellPriceEditorController extends BaseController implements Initia
         event.consume();
     }
 
-    private void buildViewGraph(ISpellPrice price) {
+    private int getSpellPriceType(ISpellPrice price) {
+        if (price instanceof BasicSpellPrice) {
+            return PROPERTY_PRICE_TYPE_CONSTANT;
+        }
+        if (price instanceof VariableSpellPrice) {
+            return PROPERTY_PRICE_TYPE_VARIABLE;
+        }
+        return PROPERTY_PRICE_TYPE_MODIFIER;
+    }
 
+    private void buildViewGraph(ISpellPrice price, int layer) {
+        assert price != null;
+        final double x = componentPlayground.getPrefWidth() / (layer + 2);
+        final double y = componentPlayground.getPrefHeight() - ((layer+1) * DraggableSpellNode.HEIGHT) + DEFAULT_NODE_Y_SPACING;
+        final int priceType = getSpellPriceType(price);
+        addNode(priceType, x + MOUSE_TO_NODE_X_CENTER_OFFSET, y + MOUSE_TO_NODE_Y_CENTER_OFFSET);
     }
 
     // endregion
@@ -180,7 +200,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
         }
 
         ISpellPrice spellPrice = new SpellParser(price).parse();
-        buildViewGraph(spellPrice);
+        buildViewGraph(spellPrice, 0);
     }
 
     @Override

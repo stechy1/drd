@@ -43,6 +43,8 @@ abstract class DraggableSpellNode extends Group implements Initializable, ISpell
     private static final String LINK_ADD_STATUS = "link_add_status";
     private static final String LINK_ID = "link_id";
 
+    public static final int HEIGHT = 120;
+
     // endregion
 
     // region Variables
