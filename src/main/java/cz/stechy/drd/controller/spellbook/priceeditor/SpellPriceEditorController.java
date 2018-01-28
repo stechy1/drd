@@ -12,7 +12,9 @@ import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -87,12 +89,11 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     /**
      * Přidá node určitého typu na scénu
-     *
-     * @param type Typ nodu
+     *  @param type Typ nodu
      * @param screenX X-ová souřadnice středu nodu v X-ové ose
      * @param screenY Y-ová souřadnice reprezentující horní část nodu
      */
-    private void addNode(int type, double screenX, double screenY) {
+    private DraggableSpellNode addNode(int type, double screenX, double screenY) {
         DraggableSpellNode node;
         switch (type) {
             case PROPERTY_PRICE_TYPE_CONSTANT:
@@ -105,7 +106,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
                 node = new ModifierDraggableSpellNode(manipulator, linkListener, translator);
                 break;
             default:
-                return;
+                return null;
         }
         if (this.rootNode == null) {
             this.rootNode = node;
@@ -117,6 +118,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
         // 100 = polovina šířky draggable nodu
         // 15 = polovina výšky záhlaví draggable nodu
         node.relocate(point.getX() - MOUSE_TO_NODE_X_CENTER_OFFSET, point.getY() - MOUSE_TO_NODE_Y_CENTER_OFFSET);
+        return node;
     }
 
     private void onDragDetected(MouseEvent event) {
@@ -167,12 +169,48 @@ public class SpellPriceEditorController extends BaseController implements Initia
         return PROPERTY_PRICE_TYPE_MODIFIER;
     }
 
-    private void buildViewGraph(ISpellPrice price, int layer) {
-        assert price != null;
+    private DraggableSpellNode putSpellNode(ISpellPrice price, int layer) {
         final double x = componentPlayground.getPrefWidth() / (layer + 2);
         final double y = componentPlayground.getPrefHeight() - ((layer+1) * DraggableSpellNode.HEIGHT) + DEFAULT_NODE_Y_SPACING;
         final int priceType = getSpellPriceType(price);
-        addNode(priceType, x + MOUSE_TO_NODE_X_CENTER_OFFSET, y + MOUSE_TO_NODE_Y_CENTER_OFFSET);
+        return addNode(priceType, x + MOUSE_TO_NODE_X_CENTER_OFFSET, y + MOUSE_TO_NODE_Y_CENTER_OFFSET);
+    }
+
+    private void buildViewGraph(ISpellPrice price) {
+        assert price != null;
+        int layer = 0;
+
+        final DraggableSpellNode parentDraggableSpellNode = putSpellNode(price, layer++);
+
+        Queue<ISpellPrice> priceQueue = new LinkedList<>();
+        Queue<DraggableSpellNode> parentNodes = new LinkedList<>();
+        priceQueue.add(price);
+        parentNodes.add(parentDraggableSpellNode);
+
+        while (!priceQueue.isEmpty()) {
+            final ISpellPrice localPrice = priceQueue.poll();
+            final DraggableSpellNode localParent = parentNodes.poll();
+
+            if (localPrice.getLeft() != null) {
+                final ISpellPrice left = localPrice.getLeft();
+                final DraggableSpellNode draggableSpellNode = putSpellNode(left, layer);
+                priceQueue.add(left);
+                parentNodes.add(draggableSpellNode);
+                NodeLink link = new NodeLink();
+                link.bindEnds(draggableSpellNode, localParent, LinkPosition.LEFT);
+                componentPlayground.getChildren().add(link);
+            }
+
+            if (localPrice.getRight() != null) {
+                final ISpellPrice right = localPrice.getRight();
+                final DraggableSpellNode draggableSpellNode = putSpellNode(right, layer);
+                priceQueue.add(right);
+                parentNodes.add(draggableSpellNode);
+                NodeLink link = new NodeLink();
+                link.bindEnds(draggableSpellNode, localParent, LinkPosition.RIGHT);
+                componentPlayground.getChildren().add(link);
+            }
+        }
     }
 
     // endregion
@@ -200,7 +238,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
         }
 
         ISpellPrice spellPrice = new SpellParser(price).parse();
-        buildViewGraph(spellPrice, 0);
+        buildViewGraph(spellPrice);
     }
 
     @Override
@@ -287,18 +325,6 @@ public class SpellPriceEditorController extends BaseController implements Initia
                 .ifPresent(dragDestinationNode -> {
                     // Propojení pomocí linku
                     dragLink.bindEnds(dragSourceNode, dragDestinationNode, position);
-                    // Propojení do grafu
-                    dragSourceNode.bottomNode = dragDestinationNode;
-                    switch (position) {
-                        case LEFT:
-                            dragDestinationNode.leftNode = dragSourceNode;
-                            break;
-                        case RIGHT:
-                            dragDestinationNode.rightNode = dragSourceNode;
-                            break;
-                        default:
-                            throw new IllegalStateException("Tohle by nikdy nemelo nastat");
-                    }
                 });
         }
     }

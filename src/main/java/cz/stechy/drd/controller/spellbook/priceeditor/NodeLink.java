@@ -96,16 +96,19 @@ public class NodeLink extends CubicCurve {
         startXProperty().bind(source.layoutXProperty().add(source.circleBottomLink.getLayoutX()));
         startYProperty().bind(source.layoutYProperty().add(source.circleBottomLink.getLayoutY()));
         source.bottomLink = this;
+        source.bottomNode = target;
 
         Circle targetCircle = null;
         switch (position) {
             case LEFT:
                 targetCircle = target.circleLeftLink;
                 target.leftLink = this;
+                target.leftNode = source;
                 break;
             case RIGHT:
                 targetCircle = target.circleRightLink;
                 target.rightLink = this;
+                target.rightNode = source;
                 break;
         }
         endXProperty().bind(target.layoutXProperty().add(targetCircle.getLayoutX()));

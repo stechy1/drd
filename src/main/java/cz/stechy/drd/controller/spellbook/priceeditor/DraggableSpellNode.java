@@ -299,7 +299,7 @@ abstract class DraggableSpellNode extends Group implements Initializable, ISpell
         }
 
         nodeManipulator.setOnDragOverHandler(this::onParentDragOver);
-
+/**/
         // Instanci ukládám pouze, abych mohl lehce měnit koncové souřadnice čáry podle myši
         linkListener.saveSourceNode(this);
         if (connected) {
