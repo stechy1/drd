@@ -196,7 +196,7 @@ public class SpellBookController extends BaseController implements Initializable
 
             final Spell entry = sortedList.get(newValue.intValue()).getSpellBase();
             final BooleanBinding authorBinding = Bindings.createBooleanBinding(() ->
-                    (user == null) ? false : entry.getAuthor().equals(user.getName()),
+                    (user != null) && entry.getAuthor().equals(user.getName()),
                 entry.authorProperty());
             disableDownloadBtn.bind(entry.downloadedProperty());
             disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding.not()));
