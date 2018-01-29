@@ -115,7 +115,6 @@ public class BestiaryEditGeneralController implements Initializable, IEditContro
 
             // Nastavení validačních příznaků - žádné pole není vyplněno
             validityFlag.set(FLAG_NAME + FLAG_RULE + FLAG_MOB_CLASS + FLAG_CONVICTION + FLAG_HEIGHT);
-            setValid(false);
         }
     }
 }

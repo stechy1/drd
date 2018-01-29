@@ -107,8 +107,7 @@ public class BestiaryEditPropertiesController implements IEditController, Initia
             charisma.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_CHARISMA));
 
             // Automatické nastavení validity na true
-            validityFlag.set(0);
-            setValid(true);
+            validityFlag.set(ValidatedModel.VALID_FLAG_VALUE);
         }
     }
 }

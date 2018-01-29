@@ -332,7 +332,6 @@ public class ItemWeaponRangedController extends BaseController implements Initia
             stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_WEAPON_TYPE + FLAG_IMAGE);
-            setValid(false);
         }
 
     }

@@ -323,7 +323,6 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
             stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_WEAPON_CLASS + FLAG_WEAPON_TYPE + FLAG_IMAGE);
-            setValid(false);
         }
 
     }

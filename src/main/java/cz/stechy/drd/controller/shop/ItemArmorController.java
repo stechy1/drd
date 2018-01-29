@@ -352,7 +352,6 @@ public class ItemArmorController extends BaseController implements Initializable
             stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_TYPE + FLAG_IMAGE);
-            setValid(false);
         }
     }
 }

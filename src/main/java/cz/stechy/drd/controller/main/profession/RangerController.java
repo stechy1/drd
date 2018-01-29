@@ -170,7 +170,6 @@ public class RangerController implements IProfessionController, Initializable {
             count.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_COUNT));
 
             validityFlag.set(FLAG_TERRAIN);
-            setValid(false);
         }
 
         public TrackingProperties getProperties() {

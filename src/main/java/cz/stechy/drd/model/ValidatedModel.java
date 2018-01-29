@@ -11,13 +11,23 @@ import javafx.beans.property.SimpleIntegerProperty;
  */
 public abstract class ValidatedModel {
 
-    // region Variables
+    // region Constants
 
-    protected final IntegerProperty validityFlag = new SimpleIntegerProperty(this, "validityFlag");
-    protected final BooleanProperty valid = new SimpleBooleanProperty(this, "valid");
-    protected final BooleanProperty changed = new SimpleBooleanProperty(this, "changed");
+    public static final int VALID_FLAG_VALUE = 0;
 
     // endregion
+
+    // region Variables
+
+    protected final IntegerProperty validityFlag = new SimpleIntegerProperty(this, "validityFlag", VALID_FLAG_VALUE);
+    protected final BooleanProperty valid = new SimpleBooleanProperty(this, "valid", true);
+    private final BooleanProperty changed = new SimpleBooleanProperty(this, "changed", false);
+
+    // endregion
+
+    {
+        valid.bind(validityFlag.isEqualTo(VALID_FLAG_VALUE));
+    }
 
     // region Public methods
 
@@ -35,28 +45,17 @@ public abstract class ValidatedModel {
             return;
         }
 
-        setChanged(true);
+        this.changed.setValue(true);
 
         validityFlag.set(newFlag);
-        if (newFlag == 0) {
-            setValid(true);
-        }
     }
 
     // endregion
 
     // region Getters & Setters
 
-    public void setValid(boolean valid) {
-        this.valid.set(valid);
-    }
-
     public BooleanProperty validProperty() {
         return valid;
-    }
-
-    public void setChanged(boolean changed) {
-        this.changed.set(changed);
     }
 
     public BooleanProperty changedProperty() {

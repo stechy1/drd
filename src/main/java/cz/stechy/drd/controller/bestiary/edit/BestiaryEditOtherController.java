@@ -150,8 +150,7 @@ public class BestiaryEditOtherController implements InjectableChild, IEditContro
             domestication.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_DOMESTICATION));
 
             // Automatické nastavení validity na true
-            validityFlag.set(0);
-            setValid(true);
+            validityFlag.set(ValidatedModel.VALID_FLAG_VALUE);
         }
 
     }

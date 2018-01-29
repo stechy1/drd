@@ -279,7 +279,6 @@ public class ItemBackpackController extends BaseController implements Initializa
             size.addListener(FormUtils.notEmptyCondition(this, FLAG_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_IMAGE + FLAG_SIZE);
-            setValid(false);
         }
 
     }

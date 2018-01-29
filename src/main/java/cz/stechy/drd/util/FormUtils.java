@@ -50,7 +50,7 @@ public final class FormUtils {
     public static <T> ChangeListener<? super T> notEmptyCondition(final ValidatedModel model, final int flag) {
         return (observable, oldValue, newValue) -> {
             if (newValue == null) {
-                model.setValid(false);
+                //model.setValid(false);
                 model.setValidityFlag(flag, true);
             } else {
                 model.setValidityFlag(flag, false);
@@ -65,7 +65,7 @@ public final class FormUtils {
             }
 
             if (newValue == null || Arrays.equals(newValue, new byte[0])) {
-                model.setValid(false);
+                //model.setValid(false);
                 model.setValidityFlag(flag, true);
             } else {
                 model.setValidityFlag(flag, false);

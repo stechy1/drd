@@ -277,7 +277,7 @@ public class SpellBookEditController extends BaseController implements Initializ
             imageRaw.addListener(FormUtils.notEmptyImageRawCondition(this, FLAG_IMAGE, image, b));
             image.addListener(FormUtils.notEmptyImageSetter(imageRaw, b));
 
-            setValid(true);
+            validityFlag.set(ValidatedModel.VALID_FLAG_VALUE);
         }
     }
 }

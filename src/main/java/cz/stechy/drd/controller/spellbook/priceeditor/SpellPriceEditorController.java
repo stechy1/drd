@@ -16,6 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.ResourceBundle;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -64,6 +66,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     // endregion
 
+    private final BooleanProperty valid = new SimpleBooleanProperty(this, "valid", false);
     private final List<DraggableSpellNode> nodes = new ArrayList<>();
     private final INodeManipulator manipulator = new NodeManipulator();
     private final ILinkListener linkListener = new LinkListener();

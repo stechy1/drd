@@ -243,7 +243,6 @@ public class ItemGeneralController extends BaseController implements Initializab
             stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_IMAGE);
-            setValid(false);
         }
     }
 }
