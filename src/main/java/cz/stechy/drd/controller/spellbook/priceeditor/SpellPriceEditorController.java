@@ -185,15 +185,12 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
         Queue<ISpellPrice> priceQueue = new LinkedList<>();
         Queue<DraggableSpellNode> parentNodes = new LinkedList<>();
-        Queue<Integer> layers = new LinkedList<>();
         priceQueue.add(price);
         parentNodes.add(parentDraggableSpellNode);
-        layers.add(layer);
 
         while (!priceQueue.isEmpty()) {
             final ISpellPrice localPrice = priceQueue.poll();
             final DraggableSpellNode localParent = parentNodes.poll();
-            final int localLayer = layers.poll();
             int addToLayer = 0;
 
             if (localPrice.getLeft() != null) {
