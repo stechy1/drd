@@ -2,7 +2,7 @@ package cz.stechy.drd.controller.spellbook.priceeditor;
 
 import com.jfoenix.controls.JFXComboBox;
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.spell.parser.SpellParser.SpellVariable;
+import cz.stechy.drd.model.spell.price.VariableSpellPrice.VariableType;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import cz.stechy.drd.model.spell.price.VariableSpellPrice;
 import cz.stechy.drd.util.Translator;
@@ -14,7 +14,7 @@ class VariableDraggableSpellNode extends DraggableSpellNode {
 
     // region Variables
 
-    private JFXComboBox<SpellVariable> cmbVariable;
+    private JFXComboBox<VariableType> cmbVariable;
 
     // endregion
 
@@ -36,7 +36,7 @@ class VariableDraggableSpellNode extends DraggableSpellNode {
 
         lblTitle.setText(translator.translate(R.Translate.SPELL_PRICE_TYPE_VARIABLE));
 
-        cmbVariable.getItems().setAll(SpellVariable.values());
+        cmbVariable.getItems().setAll(VariableSpellPrice.VariableType.values());
         cmbVariable.setConverter(translator.getConvertor(Key.SPELL_VARIABLE_TYPES));
 
         container.getChildren().setAll(cmbVariable);

@@ -2,7 +2,7 @@ package cz.stechy.drd.spell;
 
 import static org.junit.Assert.assertEquals;
 
-import cz.stechy.drd.model.spell.parser.SpellParser.SpellVariable;
+import cz.stechy.drd.model.spell.price.VariableSpellPrice.VariableType;
 import cz.stechy.drd.model.spell.price.BasicSpellPrice;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import cz.stechy.drd.model.spell.price.VariableSpellPrice;
@@ -28,7 +28,7 @@ public class SpelPackTests {
 
     @Test
     public void variableSpellPricePackTest() throws Exception {
-        final SpellVariable variable = SpellVariable.VIABILITY;
+        final VariableType variable = VariableSpellPrice.VariableType.VIABILITY;
         final ISpellPrice spellPrice = new VariableSpellPrice(variable);
         final String expectedPackResult = "[1:0]";
 

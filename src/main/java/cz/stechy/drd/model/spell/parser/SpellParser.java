@@ -1,7 +1,5 @@
 package cz.stechy.drd.model.spell.parser;
 
-import cz.stechy.drd.R;
-import cz.stechy.drd.model.ITranslatedEnum;
 import cz.stechy.drd.model.spell.price.BasicSpellPrice;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import cz.stechy.drd.model.spell.price.VariableSpellPrice;
@@ -69,7 +67,7 @@ public final class SpellParser {
             case 0:
                 return new BasicSpellPrice(variableValue, extention);
             case 1:
-                return new VariableSpellPrice(SpellVariable.values()[variableValue]);
+                return new VariableSpellPrice(VariableSpellPrice.VariableType.values()[variableValue]);
             default:
                 return null;
         }
@@ -142,32 +140,12 @@ public final class SpellParser {
         CONSTANT, VARIABLE
     }
 
-    public enum SpellVariable implements ITranslatedEnum {
-        VIABILITY(R.Translate.BESTIARY_VIABILITY),
-        STRENGTH(R.Translate.HERO_STRENGTH),
-        DEXTERITY(R.Translate.HERO_DEXTERITY),
-        IMMUNITY(R.Translate.HERO_IMMUNITY),
-        INTELLIGENCE(R.Translate.HERO_INTELLIGENCE),
-        CHARISMA(R.Translate.HERO_CHARISMA);
-
-        private final String key;
-
-        SpellVariable(String key) {
-            this.key = key;
-        }
-
-        @Override
-        public String getKeyForTranslation() {
-            return key;
-        }
-    }
-
     private static final class SimpleReader {
         final String source;
 
         int index = 0;
 
-        public SimpleReader(String source) {
+        SimpleReader(String source) {
             this.source = source;
         }
 

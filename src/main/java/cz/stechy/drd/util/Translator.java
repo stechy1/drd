@@ -17,7 +17,7 @@ import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.spell.SpellProfessionType;
 import cz.stechy.drd.model.spell.SpellTarget;
-import cz.stechy.drd.model.spell.parser.SpellParser.SpellVariable;
+import cz.stechy.drd.model.spell.price.VariableSpellPrice.VariableType;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -72,7 +72,7 @@ public final class Translator {
         TERRAIN_DIFICULTY(TERRAIN_DIFICULTY_VALUES, Terrain.class),
         SPELL_PROFESSION_TYPES(SPELL_PROFESSION_TYPES_VALUES, SpellProfessionType.class),
         SPELL_TARGET_TYPES(SPELL_TARGET_TYPES_VALUES, SpellTarget.class),
-        SPELL_VARIABLE_TYPES(SPELL_VARIABLE_TYPES_VALUES, SpellVariable.class);
+        SPELL_VARIABLE_TYPES(SPELL_VARIABLE_TYPES_VALUES, VariableType.class);
 
         private final String[] values;
         public final Class<? extends Enum> enumType;

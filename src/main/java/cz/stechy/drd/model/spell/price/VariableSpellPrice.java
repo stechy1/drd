@@ -1,7 +1,8 @@
 package cz.stechy.drd.model.spell.price;
 
+import cz.stechy.drd.R;
+import cz.stechy.drd.model.ITranslatedEnum;
 import cz.stechy.drd.model.spell.parser.SpellParser.SpellPriceType;
-import cz.stechy.drd.model.spell.parser.SpellParser.SpellVariable;
 import java.util.Map;
 
 /**
@@ -20,7 +21,7 @@ public class VariableSpellPrice implements ISpellPrice {
 
     // region Variables
 
-    private final SpellVariable variable;
+    private final VariableType variable;
 
     // endregion
 
@@ -29,9 +30,9 @@ public class VariableSpellPrice implements ISpellPrice {
     /**
      * Vytvoří novou cenu kouzla s proměnnou cenou a vlastním názvem proměnné
      *
-     * @param variable {@link SpellVariable}
+     * @param variable {@link VariableType}
      */
-    public VariableSpellPrice(SpellVariable variable) {
+    public VariableSpellPrice(VariableType variable) {
         this.variable = variable;
     }
 
@@ -88,7 +89,27 @@ public class VariableSpellPrice implements ISpellPrice {
         return variable.getKeyForTranslation();
     }
 
-    public SpellVariable getVariable() {
+    public VariableType getVariable() {
         return variable;
+    }
+
+    public enum VariableType implements ITranslatedEnum {
+        VIABILITY(R.Translate.BESTIARY_VIABILITY),
+        STRENGTH(R.Translate.HERO_STRENGTH),
+        DEXTERITY(R.Translate.HERO_DEXTERITY),
+        IMMUNITY(R.Translate.HERO_IMMUNITY),
+        INTELLIGENCE(R.Translate.HERO_INTELLIGENCE),
+        CHARISMA(R.Translate.HERO_CHARISMA);
+
+        private final String key;
+
+        VariableType(String key) {
+            this.key = key;
+        }
+
+        @Override
+        public String getKeyForTranslation() {
+            return key;
+        }
     }
 }
