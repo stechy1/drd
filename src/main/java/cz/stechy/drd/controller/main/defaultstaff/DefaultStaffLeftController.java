@@ -66,6 +66,8 @@ public class DefaultStaffLeftController implements Initializable {
 
     // endregion
 
+    // region Public methods
+
     void bindWithHero(Hero hero) {
         if (hero == null) {
             unbind();
@@ -73,5 +75,7 @@ public class DefaultStaffLeftController implements Initializable {
             bind(hero);
         }
     }
+
+    // endregion
 
 }

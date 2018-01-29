@@ -157,6 +157,8 @@ public class FightController extends BaseController implements Initializable {
         stopFight();
     }
 
+    // region Button handlers
+
     @FXML
     private void handleBeginFight(ActionEvent actionEvent) throws DatabaseException {
         stopFight();
@@ -189,4 +191,6 @@ public class FightController extends BaseController implements Initializable {
         stopFight();
         closeChildScreens();
     }
+
+    // endregion
 }

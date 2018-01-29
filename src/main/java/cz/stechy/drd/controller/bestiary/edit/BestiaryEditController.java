@@ -24,12 +24,6 @@ import javafx.scene.layout.VBox;
  */
 public class BestiaryEditController extends BaseController implements Initializable {
 
-    // region Constants
-
-
-
-    // endregion
-
     // region Variables
 
     // region FXML

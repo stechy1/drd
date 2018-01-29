@@ -8,5 +8,10 @@ package cz.stechy.drd.model.shop;
 @FunctionalInterface
 public interface OnAddItemToCart<S> {
 
+    /**
+     * Metoda se zavolá vždy, když se do košíku vloží nová nákupní položky
+     *
+     * @param entry {@link S}
+     */
     void onAdd(S entry);
 }

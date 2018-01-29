@@ -10,8 +10,6 @@ import javafx.scene.control.Label;
 
 public class WizardController implements IProfessionController, Initializable {
 
-
-
     // region Variables
 
     // region FXML

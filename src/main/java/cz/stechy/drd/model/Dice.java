@@ -49,6 +49,8 @@ public final class Dice {
 
     // endregion
 
+    // region Public static methods
+
     /**
      * Vygeneruje hodnotu podle pravidel pro generování hodnot ze zadaného rozsahu
      *
@@ -95,6 +97,8 @@ public final class Dice {
 
         return result;
     }
+
+    // endregion
 
     // region Public methods
 

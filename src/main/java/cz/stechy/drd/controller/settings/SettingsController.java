@@ -8,7 +8,6 @@ import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
 import cz.stechy.screens.Notification.Length;
 import java.io.File;
-import java.io.FileInputStream;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.BooleanProperty;
@@ -113,7 +112,7 @@ public class SettingsController extends BaseController implements Initializable 
         }
 
         try {
-            firebaseWrapper.initDatabase(new FileInputStream(file));
+            firebaseWrapper.initDatabase(file);
             config.onlineDatabaseCredentials.setValue(file.getPath());
             showNotification(new Notification("Inicializace se zdařila."));
         } catch (Exception e) {

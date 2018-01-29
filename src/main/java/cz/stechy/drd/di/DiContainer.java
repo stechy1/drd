@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Třída reprezentující DI kontejner se službami
  */
-public final class DiContainer {
+public final class DiContainer implements IDependencyManager {
 
     // region Constants
 
@@ -92,23 +92,12 @@ public final class DiContainer {
 
     // region Public methods
 
-    /**
-     * Přidá službu do mapy instancí
-     *
-     * @param klass Třída, která službu reprezentuje
-     * @param instance Instance služby
-     */
+    @Override
     public void addService(Class klass, Object instance) {
         instances.put(klass, instance);
     }
 
-    /**
-     * Vytvoří a vrátí požadovanou instanci
-     *
-     * @param klass Třída, která se ma instancovat
-     * @param <T> Datový typ, který se vrátí
-     * @return Instance třídy
-     */
+    @Override
     public <T> T getInstance(Class klass) {
         if (!instances.containsKey(klass)) {
             final Constructor<T>[] constructors = klass.getConstructors();

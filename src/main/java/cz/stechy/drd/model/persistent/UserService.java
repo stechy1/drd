@@ -20,6 +20,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Služba spravující CRUD operace nad třídou {@link User}
@@ -72,7 +73,23 @@ public final class UserService implements Firebase<User> {
 
     // region Private methods
 
-    private User parseDataSnapshot(DataSnapshot snapshot) {
+    @Override
+    public void upload(User user) {
+        final DatabaseReference child = firebaseReference.child(user.getId());
+        child.setValue(toFirebaseMap(user));
+    }
+
+    @Override
+    public void deleteRemote(User user, boolean remote) {
+        throw new NotImplementedException();
+    }
+
+    // endregion
+
+    // region Public methods
+
+    @Override
+    public User parseDataSnapshot(DataSnapshot snapshot) {
         return new User.Builder()
             .id(snapshot.getKey())
             .name(snapshot.child(COLUMN_NAME).getValue(String.class))
@@ -80,16 +97,13 @@ public final class UserService implements Firebase<User> {
             .build();
     }
 
-    private Map<String, Object> toMap(User user) {
+    @Override
+    public Map<String, Object> toFirebaseMap(User user) {
         Map<String, Object> map = new HashMap<>();
         map.put(COLUMN_NAME, user.getName());
         map.put(COLUMN_PASSWORD, user.getPassword());
         return map;
     }
-
-    // endregion
-
-    // region Public methods
 
     /**
      * Přihlásí uživatele do aplikace
@@ -104,7 +118,7 @@ public final class UserService implements Firebase<User> {
                 .checkSame(user.getPassword(), password))
             .findFirst();
         if (!result.isPresent()) {
-            throw new UserException("User not found");
+            throw new UserException();
         }
 
         this.user.set(result.get());
@@ -131,7 +145,7 @@ public final class UserService implements Firebase<User> {
             .filter(user -> user.getName().equals(username))
             .findFirst();
         if (result.isPresent()) {
-            throw new UserException("User not found");
+            throw new UserException();
         }
 
         User user = new User(username, password);
@@ -151,17 +165,6 @@ public final class UserService implements Firebase<User> {
     }
 
     // endregion
-
-    @Override
-    public void upload(User user) {
-        final DatabaseReference child = firebaseReference.child(user.getId());
-        child.setValue(toMap(user));
-    }
-
-    @Override
-    public void deleteRemote(User user, boolean remote) {
-
-    }
 
     private final ChildEventListener childEventListener = new ChildEventListener() {
         @Override

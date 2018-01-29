@@ -8,7 +8,7 @@ import cz.stechy.drd.model.inventory.InventoryException;
 import cz.stechy.drd.model.inventory.InventoryRecord;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,7 +20,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
@@ -103,7 +102,7 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
             e.printStackTrace();
         }
 
-        items.addListener(itemsListener);
+        items.addListener(this::itemsHandler);
     }
 
     // endregion
@@ -121,6 +120,35 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
     // endregion
 
     // region Private methods
+
+    // region Method handlers
+
+    private void itemsHandler(ListChangeListener.Change<? extends InventoryRecord> c) {
+        while (c.next()) {
+            if (c.wasAdded()) {
+                final int w = weight.get();
+                weight.set(w + c.getAddedSubList().stream().mapToInt(this::mapper).sum());
+            }
+            if (c.wasRemoved()) {
+                final int w = weight.get();
+                weight.set(w - c.getRemoved().stream().mapToInt(this::mapper).sum());
+            }
+        }
+    }
+
+    /**
+     * Pomocná funkce, která vypočítá celkovou cenu předmětů v zadaném záznamu
+     *
+     * @param value {@link InventoryRecord}
+     * @return Cena předmětů v zadaném záznamu
+     */
+    private int mapper(InventoryRecord value) {
+        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
+            .getItemById(value.getItemId());
+        return itemOptional.map(itemBase -> value.getAmmount() * itemBase.getWeight()).orElse(0);
+    }
+
+    // endregion
 
     @Override
     protected InventoryRecord parseResultSet(ResultSet resultSet) throws SQLException {
@@ -315,24 +343,4 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
     }
 
     // endregion
-
-    // Pomocná mapovací funkce pro získání váhy předmětu podle počtu
-    private static final ToIntFunction<InventoryRecord> mapper = value -> {
-        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
-            .getItemById(value.getItemId());
-        return itemOptional.map(itemBase -> value.getAmmount() * itemBase.getWeight()).orElse(0);
-    };
-
-    private final ListChangeListener<? super InventoryRecord> itemsListener = c -> {
-        while (c.next()) {
-            if (c.wasAdded()) {
-                final int w = weight.get();
-                weight.set(w + c.getAddedSubList().stream().mapToInt(mapper).sum());
-            }
-            if (c.wasRemoved()) {
-                final int w = weight.get();
-                weight.set(w - c.getRemoved().stream().mapToInt(mapper).sum());
-            }
-        }
-    };
 }

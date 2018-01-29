@@ -34,6 +34,10 @@ public class FightHeroController implements IFightChild {
     @FXML
     private Label lblDefenceNumber;
 
+    // endregion
+
+    // endregion
+
     @Override
     public void setHero(Hero hero) {
         if (hero == null) {

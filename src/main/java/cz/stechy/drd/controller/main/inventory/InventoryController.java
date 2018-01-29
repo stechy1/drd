@@ -9,8 +9,8 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.InventoryType;
-import cz.stechy.drd.model.inventory.ItemClickListener;
 import cz.stechy.drd.model.inventory.ItemContainer;
+import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.inventory.TooltipTranslator;
 import cz.stechy.drd.model.inventory.container.EquipItemContainer;
 import cz.stechy.drd.model.inventory.container.GridItemContainer;
@@ -26,7 +26,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -66,41 +66,17 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
         this.translator = translator;
         this.heroManager = heroManager;
 
-        mainItemContainer.setItemClickListener(itemClickListener);
-        equipItemContainer.setItemClickListener(itemClickListener);
+        mainItemContainer.setItemClickListener(this::itemClickHandler);
+        equipItemContainer.setItemClickListener(this::itemClickHandler);
     }
 
     // endregion
 
-    @Override
-    public void setHero(final ReadOnlyObjectProperty<Hero> hero) {
-        if (this.hero != null) {
-            this.hero.removeListener(heroChangeListener);
-        }
+    // region Private methods
 
-        this.hero = hero;
-        this.hero.addListener(heroChangeListener);
-    }
+    // region Method handlers
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        container.setLeft(equipItemContainer.getGraphics());
-        container.setCenter(mainItemContainer.getGraphics());
-
-        lblWeight.textProperty().bind(InventoryContent.getWeight().asString());
-    }
-
-    @Override
-    public void injectParent(BaseController parent) {
-        this.parent = parent;
-    }
-
-    @Override
-    public void onTooltipTranslateRequest(Map<String, String> map) {
-        translator.translateTooltipKeys(map);
-    }
-
-    private final ChangeListener<? super Hero> heroChangeListener = (observable, oldValue, newValue) -> {
+    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue, Hero newValue) {
         InventoryContent.clearWeight();
         if (newValue == null) {
             mainItemContainer.clear();
@@ -133,9 +109,9 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
             mainItemContainer.clear();
             equipItemContainer.clear();
         }
-    };
+    }
 
-    private final ItemClickListener itemClickListener = itemSlot -> {
+    private void itemClickHandler(ItemSlot itemSlot) {
         final ItemBase item = itemSlot.getItemStack().getItem();
         switch (item.getItemType()) {
             case BACKPACK:
@@ -150,5 +126,37 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
                 parent.startNewDialog(R.FXML.BACKPACK, bundle);
                 break;
         }
-    };
+    }
+
+    // endregion
+
+    // endregion
+
+    @Override
+    public void setHero(final ReadOnlyObjectProperty<Hero> hero) {
+        if (this.hero != null) {
+            this.hero.removeListener(this::heroHandler);
+        }
+
+        this.hero = hero;
+        this.hero.addListener(this::heroHandler);
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        container.setLeft(equipItemContainer.getGraphics());
+        container.setCenter(mainItemContainer.getGraphics());
+
+        lblWeight.textProperty().bind(InventoryContent.getWeight().asString());
+    }
+
+    @Override
+    public void injectParent(BaseController parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public void onTooltipTranslateRequest(Map<String, String> map) {
+        translator.translateTooltipKeys(map);
+    }
 }

@@ -1,6 +1,7 @@
-package cz.stechy.drd.model.item;
+package cz.stechy.drd.model.service;
 
 import cz.stechy.drd.model.db.base.DatabaseItem;
+import cz.stechy.drd.model.item.ItemBase;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
@@ -11,11 +12,11 @@ import javafx.collections.ObservableMap;
 /**
  * Registr všech offline itemů
  */
-public final class ItemRegistry {
+public final class OnlineItemRegistry {
 
     // region Variables
 
-    private static ItemRegistry INSTANCE;
+    private static OnlineItemRegistry INSTANCE;
 
     private final ObservableMap<String, DatabaseItem> registry = FXCollections.observableHashMap();
 
@@ -23,16 +24,19 @@ public final class ItemRegistry {
 
     // region Constructors
 
-    private ItemRegistry() {
+    /**
+     * Privátní konstruktor k zamezení vytvoření instance
+     */
+    private OnlineItemRegistry() {
     }
 
     // endregion
 
     // region Public static methods
 
-    public static ItemRegistry getINSTANCE() {
+    public static OnlineItemRegistry getINSTANCE() {
         if (INSTANCE == null) {
-            INSTANCE = new ItemRegistry();
+            INSTANCE = new OnlineItemRegistry();
         }
 
         return INSTANCE;
@@ -43,7 +47,7 @@ public final class ItemRegistry {
     // region Public methods
 
     /**
-     * Pridá kolekci do registru
+     * Přidá kolekci do registru
      *
      * @param items Kolekce, která se má přidat
      */
@@ -79,23 +83,5 @@ public final class ItemRegistry {
     }
 
     // endregion
-
-    public static class ItemException extends Exception {
-
-        public ItemException() {
-        }
-
-        public ItemException(String message) {
-            super(message);
-        }
-
-        public ItemException(String message, Throwable cause) {
-            super(message, cause);
-        }
-
-        public ItemException(Throwable cause) {
-            super(cause);
-        }
-    }
 
 }

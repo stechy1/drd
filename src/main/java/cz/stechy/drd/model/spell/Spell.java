@@ -368,4 +368,9 @@ public final class Spell extends OnlineItem {
                 target, castTime, duration, image, downloaded, uploaded);
         }
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

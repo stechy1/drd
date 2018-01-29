@@ -16,8 +16,14 @@ import org.sqlite.javax.SQLiteConnectionPoolDataSource;
  */
 public class SQLite implements Database {
 
+    // region Constants
+
     private static final String CONNECTION_PREFIX = "jdbc:sqlite:";
     private static final int MAX_CONNECTIONS = 10;
+
+    // endregion
+
+    // region Variables
 
     private final SQLiteConnectionPoolDataSource dataSource = new SQLiteConnectionPoolDataSource();
     private final MiniConnectionPoolManager pool;
@@ -26,6 +32,10 @@ public class SQLite implements Database {
     private final int localVersion;
 
     private Connection transactionalConnection = null;
+
+    // endregion
+
+    // region Constructors
 
     /**
      * Vytvoří novou instanci databází pro SQLite
@@ -37,6 +47,10 @@ public class SQLite implements Database {
         pool = new MiniConnectionPoolManager(dataSource, MAX_CONNECTIONS);
         this.localVersion = localVersion;
     }
+
+    // endregion
+
+    // region Private methods
 
     private long queryTransactional(String query, Object... params) throws SQLException {
         try (Connection connection = pool.getConnection()) {
@@ -62,6 +76,8 @@ public class SQLite implements Database {
 
         return result;
     }
+
+    // endregion
 
     @Override
     public synchronized long query(String query, Object... params) throws SQLException {

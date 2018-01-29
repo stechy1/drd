@@ -2,6 +2,7 @@ package cz.stechy.drd;
 
 import cz.stechy.drd.R.Config;
 import cz.stechy.drd.di.DiContainer;
+import cz.stechy.drd.di.IDependencyManager;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.DatabaseService;
 import cz.stechy.drd.model.db.FirebaseWrapper;
@@ -12,13 +13,13 @@ import cz.stechy.drd.model.persistent.BackpackService;
 import cz.stechy.drd.model.persistent.BestiaryService;
 import cz.stechy.drd.model.persistent.GeneralItemService;
 import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.model.persistent.ItemCollectionService;
 import cz.stechy.drd.model.persistent.MeleWeaponService;
 import cz.stechy.drd.model.persistent.RangedWeaponService;
 import cz.stechy.drd.model.persistent.SpellBookService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import net.harawata.appdirs.AppDirs;
@@ -64,7 +65,7 @@ public class Context {
     // region Variables
 
     // DI kontejner obsahující všechny služby v aplikaci
-    private final DiContainer container = new DiContainer();
+    private final IDependencyManager container = new DiContainer();
     // Pomocný wrapper na pozdější inicializaci firebase databáze
     private final FirebaseWrapper firebaseWrapper = new FirebaseWrapper();
     // Pracovní adresář, kam můžu ukládat potřebné soubory
@@ -147,6 +148,8 @@ public class Context {
 
         // Inicializace UserService
         container.getInstance(UserService.class);
+        // Inicializace ItemCollectionService
+        container.getInstance(ItemCollectionService.class);
     }
 
     /**
@@ -165,7 +168,7 @@ public class Context {
      * @throws Exception Pokud se inicializace nezdařila
      */
     private void initFirebase(String credentialsPath) throws Exception {
-        firebaseWrapper.initDatabase(new FileInputStream(new File(credentialsPath)));
+        firebaseWrapper.initDatabase(new File(credentialsPath));
     }
 
     // endregion
@@ -223,7 +226,7 @@ public class Context {
         firebaseWrapper.closeDatabase();
     }
 
-    public DiContainer getContainer() {
+    public IDependencyManager getContainer() {
         return container;
     }
 

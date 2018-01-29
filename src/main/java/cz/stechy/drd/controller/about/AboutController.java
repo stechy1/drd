@@ -14,7 +14,11 @@ import javafx.scene.control.Hyperlink;
  */
 public class AboutController extends BaseController implements Initializable {
 
+    // region Variables
+
     private String title;
+
+    // endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -27,10 +31,14 @@ public class AboutController extends BaseController implements Initializable {
         setScreenSize(600, 400);
     }
 
+    // region Button handlers
+
     public void handleShowBrowser(ActionEvent actionEvent) {
         final String link = ((Hyperlink) actionEvent.getSource()).getTooltip().getText();
         try {
             new ProcessBuilder("x-www-browser", link).start();
         } catch (IOException e) {}
     }
+
+    // endregion
 }

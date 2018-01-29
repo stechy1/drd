@@ -3,36 +3,27 @@ package cz.stechy.drd.controller.hero.creator;
 import cz.stechy.drd.R;
 import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.WithImage;
-import cz.stechy.drd.model.db.base.DatabaseItem;
-import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.util.CellUtils;
+import cz.stechy.drd.util.DialogUtils;
+import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceDialog;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
 
 /**
  * Třetí kontroler z průvodce vytvoření postavy Nastavení základních předmětů a zbraní
@@ -79,10 +70,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnItemCount.setCellFactory(param -> CellUtils.forMaxActValue());
 
-        final List<ChoiceEntry> items = ItemRegistry.getINSTANCE().getRegistry().entrySet()
-            .stream()
-            .map(entry -> new ChoiceEntry(entry.getValue()))
-            .collect(Collectors.toList());
+        final List<ChoiceEntry> items = ItemRegistry.getINSTANCE().getChoices();
         itemRegistry.setAll(items);
 
         btnRemoveItem.disableProperty().bind(selectedItem.lessThan(0));
@@ -125,24 +113,10 @@ public class HeroCreatorController3 extends BaseController implements Initializa
 
     @FXML
     private void handleAddItem(ActionEvent actionEvent) {
-        final ChoiceDialog<ChoiceEntry> dialog = new ChoiceDialog<>(null, itemRegistry);
-        dialog.setTitle("Přidat item");
-        dialog.setHeaderText("Výběr itemu");
-        dialog.setContentText("Vyberte...");
-        // Trocha čarování k získání reference na combobox abych ho mohl upravit
-        @SuppressWarnings("unchecked") final ComboBox<ChoiceEntry> comboBox = (ComboBox) (((GridPane) dialog
-            .getDialogPane()
-            .getContent())
-            .getChildren().get(1));
-        comboBox.setPrefWidth(100);
-        comboBox.setButtonCell(new CellUtils.RawImageListCell());
-        comboBox.setCellFactory(param -> new CellUtils.RawImageListCell());
-        comboBox.setMinWidth(200);
-        comboBox.setMinHeight(40);
-        final Optional<ChoiceEntry> result = dialog.showAndWait();
+        final Optional<ChoiceEntry> result = DialogUtils.selectItem(itemRegistry);
         result.ifPresent(choiceEntry -> {
             final Optional<ItemEntry> entry = items.stream()
-                .filter(itemEntry -> itemEntry.getId().equals(choiceEntry.id.get()))
+                .filter(itemEntry -> itemEntry.getId().equals(choiceEntry.getId()))
                 .findFirst();
             if (!entry.isPresent()) {
                 items.add(new ItemEntry(choiceEntry));
@@ -156,30 +130,5 @@ public class HeroCreatorController3 extends BaseController implements Initializa
     }
 
     // endregion
-
-    static final class ChoiceEntry implements WithImage {
-
-        final StringProperty id = new SimpleStringProperty();
-        final StringProperty name = new SimpleStringProperty();
-        final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
-
-        ChoiceEntry(DatabaseItem databaseItem) {
-            assert databaseItem instanceof ItemBase;
-            final ItemBase itemBase = (ItemBase) databaseItem;
-            this.id.setValue(itemBase.getId());
-            this.name.setValue(itemBase.getName());
-            imageRaw.set(itemBase.getImage());
-        }
-
-        @Override
-        public String toString() {
-            return name.get();
-        }
-
-        @Override
-        public byte[] getImage() {
-            return imageRaw.get();
-        }
-    }
 
 }

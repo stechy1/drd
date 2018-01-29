@@ -150,8 +150,8 @@ public class App extends Application {
 
     @Override
     public void init() throws Exception {
-        ScreenManager.setKeyPressedHandler(KeyboardService.getINSTANCE().keyPressHandler);
-        ScreenManager.setKeyReleasedHandler(KeyboardService.getINSTANCE().keyReleasedHandler);
+        ScreenManager.setKeyPressedHandler(KeyboardService.getINSTANCE()::keyPressHandler);
+        ScreenManager.setKeyReleasedHandler(KeyboardService.getINSTANCE()::keyReleasedHandler);
         if (Boolean.getBoolean("quick")) {
             quickInit();
         } else {
@@ -159,6 +159,7 @@ public class App extends Application {
         }
     }
 
+    @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(manager.getScreenManagerConfiguration().baseFxml);
         loader.setResources(manager.getResources());

@@ -6,7 +6,8 @@ import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.item.Armor;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
+import cz.stechy.drd.model.service.OnlineItemRegistry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -88,6 +89,7 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
         super(db);
 
         ItemRegistry.getINSTANCE().addColection(items);
+        OnlineItemRegistry.getINSTANCE().addColection(onlineDatabase);
     }
 
     // endregion
@@ -95,7 +97,7 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
     // region Private methods
 
     @Override
-    protected Armor parseDataSnapshot(DataSnapshot snapshot) {
+    public Armor parseDataSnapshot(DataSnapshot snapshot) {
         return new Armor.Builder()
             .id(snapshot.child(COLUMN_ID).getValue(String.class))
             .name(snapshot.child(COLUMN_NAME).getValue(String.class))
@@ -196,7 +198,7 @@ public final class ArmorService extends AdvancedDatabaseService<Armor> {
     }
 
     @Override
-    protected Map<String, Object> toFirebaseMap(Armor item) {
+    public Map<String, Object> toFirebaseMap(Armor item) {
         final Map<String, Object> map = super.toFirebaseMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;

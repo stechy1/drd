@@ -5,8 +5,14 @@ package cz.stechy.drd.model;
  */
 public final class Range {
 
+    // region Variables
+
     public final int left;
     public final int right;
+
+    // endregion
+
+    // region Constructors
 
     /**
      * Vytvoří nový rozsah o zadaných rozměrech
@@ -18,4 +24,6 @@ public final class Range {
         this.left = left;
         this.right = right;
     }
+
+    // endregion
 }

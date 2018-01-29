@@ -124,6 +124,9 @@ public class SpellBookController extends BaseController implements Initializable
         this.spellBook = spellBook;
         this.user = userService.getUser();
         this.translator = translator;
+        if (this.user != null) {
+            userLogged.bind(this.user.loggedProperty());
+        }
     }
 
     // endregion
@@ -164,19 +167,19 @@ public class SpellBookController extends BaseController implements Initializable
             selectedRowBinding,
             showOnlineDatabase));
         btnDownloadItem.disableProperty().bind(
-            userLogged.or(
+            userLogged.not().or(
                 disableDownloadBtn.or(
                     showOnlineDatabase.not())));
         btnUploadItem.disableProperty().bind(
-            userLogged.or(
+            userLogged.not().or(
                 disableUploadBtn.or(
                     showOnlineDatabase)));
         btnRemoveOnlineItem.disableProperty().bind(
-            userLogged.or(
+            userLogged.not().or(
                 disableRemoveOnlineBtn.or(
                     showOnlineDatabase.not())));
 
-        btnSynchronize.disableProperty().bind(userLogged);
+        btnSynchronize.disableProperty().bind(userLogged.not());
 
         selectedRowIndex.addListener((observable, oldValue, newValue) -> {
             if (newValue == null || newValue.intValue() < 0) {
@@ -193,11 +196,11 @@ public class SpellBookController extends BaseController implements Initializable
 
             final Spell entry = sortedList.get(newValue.intValue()).getSpellBase();
             final BooleanBinding authorBinding = Bindings.createBooleanBinding(() ->
-                    (user == null) ? true : entry.getAuthor().equals(user.getName()),
+                    (user == null) ? false : entry.getAuthor().equals(user.getName()),
                 entry.authorProperty());
             disableDownloadBtn.bind(entry.downloadedProperty());
-            disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding));
-            disableRemoveOnlineBtn.bind(authorBinding);
+            disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding.not()));
+            disableRemoveOnlineBtn.bind(authorBinding.not());
         });
         showOnlineDatabase.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
@@ -264,6 +267,11 @@ public class SpellBookController extends BaseController implements Initializable
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onClose() {
+        showOnlineDatabase.setValue(false);
     }
 
     // region Button handlers

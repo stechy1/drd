@@ -10,7 +10,6 @@ import cz.stechy.drd.di.Inject;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.Firebase;
 import cz.stechy.drd.model.db.base.OnlineItem;
-import cz.stechy.drd.model.item.ItemRegistry;
 import cz.stechy.drd.util.Base64Util;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +38,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     // region Variables
 
-    private final ObservableList<T> onlineDatabase = FXCollections.observableArrayList();
+    protected final ObservableList<T> onlineDatabase = FXCollections.observableArrayList();
     private final ObservableList<T> usedItems = FXCollections.observableArrayList();
 
     private DatabaseReference firebaseReference;
@@ -89,57 +88,32 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     // region Private methods
 
     /**
-     * Konvertuje {@link DataSnapshot} na instanci třídy {@link T}
-     *
-     * @param snapshot Snapshot itemu
-     * @return Instanci třídy {@link T}
-     */
-    protected abstract T parseDataSnapshot(DataSnapshot snapshot);
-
-    /**
      * @return Vrátí název potomka ve firebase
      */
     protected abstract String getFirebaseChildName();
 
-    /**
-     * Namapuje vybraný item do mapy
-     *
-     * @param item Item, který se má převést do mapy
-     * @return Mapu, kde klíč je název sloupce a hodnota je hodnota sloupce
-     */
-    protected Map<String, Object> toFirebaseMap(T item) {
-        String[] columns = getColumnsKeys().split(",");
-        Object[] values = itemToParams(item).toArray();
-        assert columns.length == values.length;
-        final Map<String, Object> map = new HashMap<>(columns.length);
-
-        for (int i = 0; i < columns.length; i++) {
-            map.put(columns[i], values[i]);
-        }
-
-        return map;
-    }
-
-    private ListChangeListener<T> makeChangeListener() {
-        return c -> {
-            while(c.next()) {
-                this.usedItems.addAll(c.getAddedSubList());
-                this.usedItems.removeAll(c.getRemoved());
-            }
-        };
-    }
-
     private void attachOfflineListener() {
-        this.onlineDatabase.removeListener(listChangeListener);
-        super.items.addListener(listChangeListener);
+        this.onlineDatabase.removeListener(this::listChangeHandler);
+        super.items.addListener(this::listChangeHandler);
         this.usedItems.setAll(super.items);
     }
 
     private void attachOnlineListener() {
-        super.items.removeListener(listChangeListener);
-        this.onlineDatabase.addListener(listChangeListener);
+        super.items.removeListener(this::listChangeHandler);
+        this.onlineDatabase.addListener(this::listChangeHandler);
         this.usedItems.setAll(this.onlineDatabase);
     }
+
+    // region Method handlers
+
+    private void listChangeHandler(ListChangeListener.Change<? extends T> c) {
+        while(c.next()) {
+            this.usedItems.addAll(c.getAddedSubList());
+            this.usedItems.removeAll(c.getRemoved());
+        }
+    }
+
+    // endregion
 
     // endregion
 
@@ -184,6 +158,19 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             .filter(item -> item.getId().equals(id))
             .findFirst()
             .ifPresent(t -> t.setDownloaded(false));
+    }
+
+    public Map<String, Object> toFirebaseMap(T item) {
+        String[] columns = getColumnsKeys().split(",");
+        Object[] values = itemToParams(item).toArray();
+        assert columns.length == values.length;
+        final Map<String, Object> map = new HashMap<>(columns.length);
+
+        for (int i = 0; i < columns.length; i++) {
+            map.put(columns[i], values[i]);
+        }
+
+        return map;
     }
 
     @Override
@@ -283,15 +270,16 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     private final ChildEventListener childEventListener = new ChildEventListener() {
 
-        final ItemRegistry itemRegistry = ItemRegistry.getINSTANCE();
-
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String s) {
             final T item = parseDataSnapshot(dataSnapshot);
             LOGGER.trace("Přidávám online item {} do svého povědomí.", item.toString());
 
             Platform.runLater(() -> {
-                itemRegistry.getItemById(item.getId()).ifPresent(itemBase -> {
+                items.stream()
+                    .filter(t -> item.getId().equals(t.getId()))
+                    .findFirst()
+                    .ifPresent(itemBase -> {
                     item.setDownloaded(true);
                     itemBase.setUploaded(true);
                 });
@@ -323,8 +311,6 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
         }
     };
-
-    private final ListChangeListener<T> listChangeListener = makeChangeListener();
 
     /**
      * Třída představující synchronizační úlohu prováděnou asynchroně

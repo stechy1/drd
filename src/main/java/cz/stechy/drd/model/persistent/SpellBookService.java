@@ -92,7 +92,7 @@ public class SpellBookService extends AdvancedDatabaseService<Spell> {
     // region Private methods
 
     @Override
-    protected Spell parseDataSnapshot(DataSnapshot snapshot) {
+    public Spell parseDataSnapshot(DataSnapshot snapshot) {
         return new Spell.Builder()
             .id(snapshot.child(COLUMN_ID).getValue(String.class))
             .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
@@ -187,7 +187,7 @@ public class SpellBookService extends AdvancedDatabaseService<Spell> {
     }
 
     @Override
-    protected Map<String, Object> toFirebaseMap(Spell item) {
+    public Map<String, Object> toFirebaseMap(Spell item) {
         final Map<String, Object> map = super.toFirebaseMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;

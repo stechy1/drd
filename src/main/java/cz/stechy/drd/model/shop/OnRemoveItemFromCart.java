@@ -8,5 +8,10 @@ package cz.stechy.drd.model.shop;
 @FunctionalInterface
 public interface OnRemoveItemFromCart<S> {
 
+    /**
+     * Metoda se zavolá vždy, když se z nákupního košíku odebere položky
+     *
+     * @param entry {@link S}
+     */
     void onRemove(S entry);
 }

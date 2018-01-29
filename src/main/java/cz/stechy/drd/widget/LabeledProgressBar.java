@@ -2,7 +2,7 @@ package cz.stechy.drd.widget;
 
 import cz.stechy.drd.model.MaxActValue;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.StackPane;
@@ -76,6 +76,18 @@ public class LabeledProgressBar extends VBox {
         this.maxValue = maxValue;
     }
 
+    // region Method handlers
+
+    private void actValueHandler(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        sync(newValue.intValue(), maxValue);
+    }
+
+    private void maxValueHandler(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        sync(this.actValue, newValue.intValue());
+    }
+
+    // endregion
+
     // endregion
 
     // region Public methods
@@ -86,8 +98,8 @@ public class LabeledProgressBar extends VBox {
      * @param maxActValue
      */
     public void bind(final MaxActValue maxActValue) {
-        maxActValue.actValueProperty().addListener(actValueListener);
-        maxActValue.maxValueProperty().addListener(maxValueListener);
+        maxActValue.actValueProperty().addListener(this::actValueHandler);
+        maxActValue.maxValueProperty().addListener(this::maxValueHandler);
 
         sync(maxActValue.getActValue().intValue(), maxActValue.getMaxValue().intValue());
     }
@@ -99,8 +111,8 @@ public class LabeledProgressBar extends VBox {
      */
     public void unbind(MaxActValue maxActValue) {
         assert maxActValue != null;
-        maxActValue.actValueProperty().removeListener(actValueListener);
-        maxActValue.maxValueProperty().removeListener(maxValueListener);
+        maxActValue.actValueProperty().removeListener(this::actValueHandler);
+        maxActValue.maxValueProperty().removeListener(this::maxValueHandler);
 
         sync(DEFAULT_PROGRESS, DEFAULT_MAX_PROGRESS);
     }
@@ -131,11 +143,6 @@ public class LabeledProgressBar extends VBox {
     }
 
     // endregion
-
-    private final ChangeListener<Number> actValueListener = (observable, oldValue, newValue) ->
-        sync(newValue.intValue(), maxValue);
-    private final ChangeListener<Number> maxValueListener = (observable, oldValue, newValue) ->
-        sync(this.actValue, newValue.intValue());
 
     public enum DisplayMode {
         LIVE, MAG, EXPERIENCE

@@ -51,6 +51,7 @@ public class LoginController extends BaseController implements Initializable {
     private String title;
     private String loginFail;
     private String registerSuccess;
+    private String functionNotImplemented;
 
     // endregion
 
@@ -67,6 +68,7 @@ public class LoginController extends BaseController implements Initializable {
         title = resources.getString(R.Translate.USER_LOGIN_TITLE);
         loginFail = resources.getString(R.Translate.NOTIFY_LOGIN_FAIL);
         registerSuccess = resources.getString(R.Translate.NOTIFY_REGISTER_SUCCESS);
+        functionNotImplemented = resources.getString(R.Translate.NOTIFY_FUNCTION_NOT_IMPLEMENTED);
 
         txtLogin.textProperty().bindBidirectional(loginModel.login);
         txtPassword.textProperty().bindBidirectional(loginModel.password);
@@ -118,7 +120,7 @@ public class LoginController extends BaseController implements Initializable {
 
     @FXML
     private void handleLostPassword(ActionEvent actionEvent) {
-        showNotification(new Notification("Funkce není implementována"));
+        showNotification(new Notification(functionNotImplemented));
     }
 
     // endregion

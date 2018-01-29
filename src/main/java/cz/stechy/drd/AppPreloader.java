@@ -24,6 +24,7 @@ public class AppPreloader extends Preloader {
 
     // endregion
 
+    @Override
     public void start(Stage stage) throws Exception {
         this.stage = stage;
         final FXMLLoader loader = new FXMLLoader(getClass().getResource(PRELOADER_FXML));

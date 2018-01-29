@@ -7,15 +7,38 @@ import javafx.collections.ObservableList;
  */
 public abstract class TransactionOperation<T extends DatabaseItem> {
 
+    // region Variables
+
     final T before;
     final T after;
 
+    // endregion
+
+    // region Constructors
+
+    /**
+     * Vytvoří novou transakční operaci
+     *
+     * @param before {@link T} Stav předmětu před operací
+     * @param after Stav předmětu po operaci
+     */
     TransactionOperation(T before, T after) {
         this.before = before;
         this.after = after;
     }
 
+    // endregion
+
+    // region Public methods
+
+    /**
+     * Provede operaci na kolekci předmětů
+     *
+     * @param items {@link ObservableList<T>}
+     */
     public abstract void commit(final ObservableList<T> items);
+
+    // endregion
 
     public static final class InsertOperation<T extends DatabaseItem> extends TransactionOperation<T> {
 

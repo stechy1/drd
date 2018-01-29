@@ -16,6 +16,8 @@ public class PreloaderController {
 
     // endregion
 
+    // region Public methods
+
     /**
      * Aktualizuje stav načítacího procesu
      *
@@ -26,4 +28,6 @@ public class PreloaderController {
         progressBar.setProgress(progress);
         lblDescription.setText(description);
     }
+
+    // endregion
 }

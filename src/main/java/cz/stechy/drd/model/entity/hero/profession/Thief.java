@@ -83,7 +83,6 @@ public  class Thief {
         }
     }
 
-
     private interface AbilityModifier {
 
         /**

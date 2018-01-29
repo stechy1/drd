@@ -19,7 +19,7 @@ import javafx.collections.SetChangeListener;
 /**
  * Třída představující nákupní košík
  */
-public class ShoppingCart implements IShoppingCart {
+public final class ShoppingCart implements IShoppingCart {
 
     // region Variables
 
@@ -33,6 +33,8 @@ public class ShoppingCart implements IShoppingCart {
 
     // endregion
 
+    // region Constructors
+
     /**
      * Vytvoří novou instanci nákupnho košíku
      *
@@ -41,37 +43,16 @@ public class ShoppingCart implements IShoppingCart {
     public ShoppingCart(Hero hero) {
         this.hero = hero;
         enoughtMoney.set(hero != null);
-        orderList.addListener(orderListListener);
+        orderList.addListener(this::orderListHandler);
     }
 
-    @Override
-    public void addItem(ShopEntry entry) {
-        orderList.add(entry);
-        entry.setInShoppingCart(true);
-    }
+    // endregion
 
-    @Override
-    public void removeItem(ShopEntry entry) {
-        orderList.remove(entry);
-        entry.setInShoppingCart(false);
-    }
+    // region Private methods
 
-    @Override
-    public boolean containsEntry(ShopEntry entry) {
-        return orderList.contains(entry);
-    }
+    // region Method handlers
 
-    @Override
-    public Optional<ShopEntry> getEntry(String id) {
-        return orderList.stream()
-            .filter(entry -> id.equals(entry.getId())).findFirst();
-    }
-
-    public ReadOnlyBooleanProperty enoughtMoneyProperty() {
-        return enoughtMoney;
-    }
-
-    private final SetChangeListener<ShopEntry> orderListListener = change -> {
+    private void orderListHandler(SetChangeListener.Change<? extends ShopEntry> change) {
         if (change.wasAdded()) {
             final ShopEntry entry = change.getElementAdded();
             final Money price = entry.getPrice();
@@ -100,9 +81,44 @@ public class ShoppingCart implements IShoppingCart {
         if (hero != null) {
             enoughtMoney.set(hero.getMoney().getRaw() >= totalPrice.getRaw());
         }
-    };
+    }
 
-    private class AmmountListener implements ChangeListener<Number> {
+    // endregion
+
+    // endregion
+
+    @Override
+    public void addItem(ShopEntry entry) {
+        orderList.add(entry);
+        entry.setInShoppingCart(true);
+    }
+
+    @Override
+    public void removeItem(ShopEntry entry) {
+        orderList.remove(entry);
+        entry.setInShoppingCart(false);
+    }
+
+    @Override
+    public boolean containsEntry(ShopEntry entry) {
+        return orderList.contains(entry);
+    }
+
+    @Override
+    public Optional<ShopEntry> getEntry(String id) {
+        return orderList.stream()
+            .filter(entry -> id.equals(entry.getId())).findFirst();
+    }
+
+    // region Getters & Setters
+
+    public ReadOnlyBooleanProperty enoughtMoneyProperty() {
+        return enoughtMoney;
+    }
+
+    // endregion
+
+    private final class AmmountListener implements ChangeListener<Number> {
 
         private final Money price;
 

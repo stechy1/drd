@@ -19,7 +19,7 @@ import cz.stechy.drd.model.user.User;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
-import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -27,7 +27,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -110,17 +110,94 @@ public class MainController extends BaseController implements Initializable {
     private String logoutText;
     private String loginSuccess;
     private String actionFailed;
+    private String heroNotFound;
 
     // endregion
+
+    // region Constructors
 
     public MainController(HeroService heroService, UserService userService, AppSettings settings) {
         this.heroService = heroService;
         this.userService = userService;
         this.hero = heroService.heroProperty();
         this.user = userService.userProperty();
-        settings.addListener(R.Config.USE_ONLINE_DATABASE, useOnlineDatabaseListener);
+        settings.addListener(R.Config.USE_ONLINE_DATABASE, this::useOnlineDatabaseHandler);
         useFirebase.set(Boolean.parseBoolean(settings.getProperty(R.Config.USE_ONLINE_DATABASE)));
     }
+
+    // endregion
+
+    // region Private methods
+
+    /**
+     * Nastaví vlastnosti menu tlačítku pro přihlášení/odhlášení
+     */
+    private void bindMenuLogin(BooleanProperty loggedProperty) {
+        if (loggedProperty == null) {
+            this.menuLogin.textProperty().unbind();
+            this.menuLogin.onActionProperty().unbind();
+
+            this.menuLogin.setText(loginText);
+            this.menuLogin.setOnAction(this::handleMenuLogin);
+            return;
+        }
+
+        this.menuLogin.textProperty().bind(Bindings
+            .when(loggedProperty)
+            .then(logoutText)
+            .otherwise(loginText));
+        this.menuLogin.onActionProperty().bind(Bindings
+            .when(loggedProperty)
+            .then(new SimpleObjectProperty<EventHandler<ActionEvent>>(this::handleMenuLogout))
+            .otherwise(new SimpleObjectProperty<>(this::handleMenuLogin)));
+    }
+
+    private void resetChildScreensAndHero() {
+        closeChildScreens();
+        heroService.resetHero();
+    }
+
+    // region Method handlers
+
+    private void useOnlineDatabaseHandler(PropertyChangeEvent event) {
+        useFirebase.set(Boolean.parseBoolean((String) event.getNewValue()));
+    }
+
+    private void levelUpHandler(ObservableValue<? extends Boolean> observable,
+        Boolean oldValue, Boolean newValue) {
+        showNotification(new Notification("levelUp"));
+    }
+
+    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue, Hero newValue) {
+        if (newValue == null) {
+            if (oldValue != null) {
+                oldValue.levelUpProperty().removeListener(this::levelUpHandler);
+            }
+            btnLevelUp.visibleProperty().unbind();
+            btnLevelUp.setVisible(false);
+        } else {
+            newValue.levelUpProperty().addListener(this::levelUpHandler);
+            btnLevelUp.visibleProperty().bind(newValue.levelUpProperty());
+        }
+
+        tabPane.getSelectionModel().selectFirst();
+    }
+
+    private void userHandler(ObservableValue<? extends User> observable, User oldValue, User newValue) {
+        if (newValue == null) {
+            bindMenuLogin(null);
+        } else {
+            bindMenuLogin(newValue.loggedProperty());
+            newValue.loggedProperty().addListener((observable1, oldValue1, newValue1) ->
+                resetChildScreensAndHero());
+        }
+
+        resetChildScreensAndHero();
+    }
+
+    // endregion
+
+    // endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -129,6 +206,7 @@ public class MainController extends BaseController implements Initializable {
         this.logoutText = resources.getString(R.Translate.MAIN_MENU_FILE_LOGOUT);
         this.loginSuccess = resources.getString(R.Translate.NOTIFY_LOGIN_SUCCESS);
         this.actionFailed = resources.getString(R.Translate.ACTION_FAILED);
+        this.heroNotFound = resources.getString(R.Translate.NOTIFY_HERO_NOT_FOUND);
 
         this.controllers = new MainScreen[]{
             defaultStaffController,
@@ -146,8 +224,8 @@ public class MainController extends BaseController implements Initializable {
         tabProfession.disableProperty().bind(this.hero.isNull());
         menuLogin.disableProperty().bind(useFirebase.not());
 
-        this.hero.addListener(heroListener);
-        this.user.addListener(userListener);
+        this.hero.addListener(this::heroHandler);
+        this.user.addListener(this::userHandler);
     }
 
     @Override
@@ -191,7 +269,7 @@ public class MainController extends BaseController implements Initializable {
                     this.heroService.load(heroId);
                 } catch (DatabaseException e) {
                     LOGGER.warn(e.getMessage());
-                    showNotification(new Notification("Hrdina nebyl nalezen"));
+                    showNotification(new Notification(heroNotFound));
                 }
                 break;
             case ACTION_LOGIN:
@@ -239,39 +317,7 @@ public class MainController extends BaseController implements Initializable {
         closeChildScreens();
     }
 
-    // region Private methods
-
-    /**
-     * Nastaví vlastnosti menu tlačítku pro přihlášení/odhlášení
-     */
-    private void bindMenuLogin(BooleanProperty loggedProperty) {
-        if (loggedProperty == null) {
-            this.menuLogin.textProperty().unbind();
-            this.menuLogin.onActionProperty().unbind();
-
-            this.menuLogin.setText(loginText);
-            this.menuLogin.setOnAction(this::handleMenuLogin);
-            return;
-        }
-
-        this.menuLogin.textProperty().bind(Bindings
-            .when(loggedProperty)
-            .then(logoutText)
-            .otherwise(loginText));
-        this.menuLogin.onActionProperty().bind(Bindings
-            .when(loggedProperty)
-            .then(new SimpleObjectProperty<EventHandler<ActionEvent>>(this::handleMenuLogout))
-            .otherwise(new SimpleObjectProperty<>(this::handleMenuLogin)));
-    }
-
-    private void resetChildScreensAndHero() {
-        closeChildScreens();
-        heroService.resetHero();
-    }
-
-    // endregion
-
-    // region Button handle
+    // region Button handlers
 
     @FXML
     private void handleMenuNewHero(ActionEvent actionEvent) {
@@ -336,6 +382,11 @@ public class MainController extends BaseController implements Initializable {
     }
 
     @FXML
+    private void handleMenuCollections(ActionEvent actionEvent) {
+        startNewDialog(R.FXML.COLLECTIONS);
+    }
+
+    @FXML
     private void handleMenuSpellBook(ActionEvent actionEvent) {
         startNewDialog(R.FXML.SPELLBOOK);
     }
@@ -373,34 +424,4 @@ public class MainController extends BaseController implements Initializable {
     }
 
     // endregion
-
-    private final ChangeListener<? super Boolean> levelUpListener = (observable, oldValue, newValue) ->
-        showNotification(new Notification("levelUp"));
-    private final ChangeListener<? super Hero> heroListener = (observable, oldValue, newValue) -> {
-        if (newValue == null) {
-            if (oldValue != null) {
-                oldValue.levelUpProperty().removeListener(levelUpListener);
-            }
-            btnLevelUp.visibleProperty().unbind();
-            btnLevelUp.setVisible(false);
-        } else {
-            newValue.levelUpProperty().addListener(levelUpListener);
-            btnLevelUp.visibleProperty().bind(newValue.levelUpProperty());
-        }
-
-        tabPane.getSelectionModel().selectFirst();
-    };
-    private final ChangeListener<? super User> userListener = (observable, oldValue, newValue) -> {
-        if (newValue == null) {
-            bindMenuLogin(null);
-        } else {
-            bindMenuLogin(newValue.loggedProperty());
-            newValue.loggedProperty().addListener((observable1, oldValue1, newValue1) ->
-                resetChildScreensAndHero());
-        }
-
-        resetChildScreensAndHero();
-    };
-    private final PropertyChangeListener useOnlineDatabaseListener = evt ->
-        useFirebase.set(Boolean.parseBoolean((String) evt.getNewValue()));
 }

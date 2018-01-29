@@ -5,8 +5,9 @@ import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
-import cz.stechy.drd.model.item.ItemRegistry;
+import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.model.item.RangedWeapon;
+import cz.stechy.drd.model.service.OnlineItemRegistry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -91,6 +92,7 @@ public final class RangedWeaponService extends AdvancedDatabaseService<RangedWea
         super(db);
 
         ItemRegistry.getINSTANCE().addColection(items);
+        OnlineItemRegistry.getINSTANCE().addColection(onlineDatabase);
     }
 
     // endregion
@@ -98,7 +100,7 @@ public final class RangedWeaponService extends AdvancedDatabaseService<RangedWea
     // region Private methods
 
     @Override
-    protected RangedWeapon parseDataSnapshot(DataSnapshot snapshot) {
+    public RangedWeapon parseDataSnapshot(DataSnapshot snapshot) {
         return new RangedWeapon.Builder()
             .id(snapshot.child(COLUMN_ID).getValue(String.class))
             .name(snapshot.child(COLUMN_NAME).getValue(String.class))
@@ -199,7 +201,7 @@ public final class RangedWeaponService extends AdvancedDatabaseService<RangedWea
     }
 
     @Override
-    protected Map<String, Object> toFirebaseMap(RangedWeapon item) {
+    public Map<String, Object> toFirebaseMap(RangedWeapon item) {
         final Map<String, Object> map = super.toFirebaseMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;

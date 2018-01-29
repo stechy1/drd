@@ -2,7 +2,6 @@ package cz.stechy.drd.model.service;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
-import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
@@ -11,19 +10,19 @@ import javafx.scene.input.KeyEvent;
  */
 public final class KeyboardService {
 
+    // region Variables
+
     private static KeyboardService INSTANCE;
 
     private final ObservableSet<KeyCode> pressedKeys = FXCollections.observableSet();
 
-    public final EventHandler<? super KeyEvent> keyPressHandler = event -> {
-        pressedKeys.add(event.getCode());
-    };
-    public EventHandler<? super KeyEvent> keyReleasedHandler = event -> {
-        pressedKeys.remove(event.getCode());
-    };
+    // endregion
 
     // region Constructors
 
+    /**
+     * Privátní konstruktor k zabránění vytvoření dalších instancí
+     */
     private KeyboardService() {}
 
     // endregion
@@ -57,6 +56,18 @@ public final class KeyboardService {
     public boolean isAltGrDown() {
         return pressedKeys.contains(KeyCode.ALT_GRAPH);
     }
+
+    // region Method handlers
+
+    public void keyPressHandler(KeyEvent event) {
+        pressedKeys.add(event.getCode());
+    }
+
+    public void keyReleasedHandler(KeyEvent event) {
+        pressedKeys.remove(event.getCode());
+    }
+
+    // endregion
 
     // endregion
 

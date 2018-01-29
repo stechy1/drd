@@ -1,7 +1,7 @@
 package cz.stechy.drd.util;
 
-import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.WithImage;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.widget.MoneyWidget;
@@ -23,6 +23,12 @@ import javafx.scene.text.TextAlignment;
  */
 public final class CellUtils {
 
+    /**
+     * Pomocná metoda pro vygenerování tabulkové buňky, která obsahuje obrázek
+     *
+     * @param <S> Datový typ modelu tabulky
+     * @return {@link TableCell}
+     */
     public static <S> TableCell<S, Image> forImage() {
         final ImageView imageView = new ImageView();
         {
@@ -45,10 +51,25 @@ public final class CellUtils {
         };
     }
 
+    /**
+     * Pomocná metody pro vygenerování tabulkové buňky, která obsahuje editační pole pro zadání
+     * hodnoty ze zadaného rozsahu
+     *
+     * @param <S> Datový typ modelu tabulky
+     * @return {@link TableCell}
+     */
     public static <S> TableCell<S, MaxActValue> forMaxActValue() {
         return forMaxActValue(null);
     }
 
+    /**
+     * Pomocná metody pro vygenerování tabulkové buňky, která obsahuje editační pole pro zadání
+     * hodnoty ze zadaného rozsahu
+     *
+     * @param editable {@link BooleanProperty} Pomocná vlastnost, která nastavuje editovatelnost buňky
+     * @param <S> Datový typ modelu tabulky
+     * @return {@link TableCell}
+     */
     public static <S> TableCell<S, MaxActValue> forMaxActValue(
         final BooleanProperty editable) {
         return new TableCell<S, MaxActValue>() {
@@ -89,6 +110,12 @@ public final class CellUtils {
         };
     }
 
+    /**
+     * Pomocná metody pro vygenerování tabulkové buňky, která obsahuje grafickou reprezentaci peněz
+     *
+     * @param <S> Datový typ modelu tabulky
+     * @return {@link TableCell}
+     */
     public static <S> TableCell<S, Money> forMoney() {
 
         return new TableCell<S, Money>() {
@@ -110,6 +137,12 @@ public final class CellUtils {
         };
     }
 
+    /**
+     * Pomocná metody pro vygenerování tabulkové buňky, která obsahuje váhy předmětů
+     *
+     * @param <S> Datový typ modelu tabulky
+     * @return {@link TableCell}
+     */
     public static <S> TableCell<S, Integer> forWeight() {
         return new TableCell<S, Integer>() {
             @Override
@@ -126,6 +159,11 @@ public final class CellUtils {
         };
     }
 
+    /**
+     * Generická třída pro buňky v listView, která obsahuje obrázek
+     *
+     * @param <T> Datový typ modelu listView
+     */
     public static class RawImageListCell<T extends WithImage> extends ListCell<T> {
         final ImageView imageView = new ImageView();
         final Label label = new Label();

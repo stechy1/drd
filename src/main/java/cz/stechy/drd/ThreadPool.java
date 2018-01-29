@@ -28,7 +28,7 @@ public final class ThreadPool {
 
     // endregion
 
-    // region Constructors
+    // region Constructors k zabránění vytvoření instance
 
     /**
      * Privátní konstruktor
@@ -37,6 +37,8 @@ public final class ThreadPool {
     }
 
     // endregion
+
+    // region Public static methods
 
     /**
      * Vrátí jedinou instanci třídy
@@ -50,6 +52,8 @@ public final class ThreadPool {
 
         return INSTANCE;
     }
+
+    // endregion
 
     // region Public methods
 
