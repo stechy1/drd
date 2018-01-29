@@ -2,7 +2,7 @@ package cz.stechy.drd.spell;
 
 import static org.junit.Assert.assertEquals;
 
-import cz.stechy.drd.model.spell.parser.SpellParser.SpellVariable;
+import cz.stechy.drd.model.spell.price.VariableSpellPrice.VariableType;
 import cz.stechy.drd.model.spell.price.BasicSpellPrice;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import cz.stechy.drd.model.spell.price.VariableSpellPrice;
@@ -36,13 +36,13 @@ public class SpellTests {
 
     @Test
     public void variableSpellTest() throws Exception {
-        final SpellVariable spellVariable = SpellVariable.VIABILITY;
+        final VariableType variableType = VariableSpellPrice.VariableType.VIABILITY;
         final int value = 2;
         final Map<String, Integer> modifiers = new HashMap<>();
-        modifiers.put(VariableSpellPrice.buildKey(spellVariable.name()), value);
-        final ISpellPrice spellPrice = new VariableSpellPrice(spellVariable);
+        modifiers.put(VariableSpellPrice.buildKey(variableType.name()), value);
+        final ISpellPrice spellPrice = new VariableSpellPrice(variableType);
 
-        assertEquals("Chyba, cena má špatně přepsanou metodu toString.", spellVariable.getKeyForTranslation(), spellPrice.toString());
+        assertEquals("Chyba, cena má špatně přepsanou metodu toString.", variableType.getKeyForTranslation(), spellPrice.toString());
         assertEquals("Chyba, cena byla špatně nastavena.", value, spellPrice.calculateMainPrice(modifiers));
     }
 }

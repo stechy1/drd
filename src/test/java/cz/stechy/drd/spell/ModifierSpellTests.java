@@ -2,7 +2,7 @@ package cz.stechy.drd.spell;
 
 import static org.junit.Assert.assertEquals;
 
-import cz.stechy.drd.model.spell.parser.SpellParser.SpellVariable;
+import cz.stechy.drd.model.spell.price.VariableSpellPrice.VariableType;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import cz.stechy.drd.model.spell.price.VariableSpellPrice;
 import cz.stechy.drd.model.spell.price.modifier.SpellPriceAdder;
@@ -34,11 +34,11 @@ public class ModifierSpellTests {
     public void modifierAdderWithVariableSpellPriceTest() throws Exception {
         final int left = 1;
         final int right = 2;
-        final SpellVariable spellVariable = SpellVariable.VIABILITY;
-        final String stringRepresentation = String.format("%s + %d", spellVariable.getKeyForTranslation(), right);
+        final VariableType variableType = VariableSpellPrice.VariableType.VIABILITY;
+        final String stringRepresentation = String.format("%s + %d", variableType.getKeyForTranslation(), right);
         final Map<String, Integer> modifiers = new HashMap<>();
-        modifiers.put(VariableSpellPrice.buildKey(spellVariable.name()), left);
-        final ISpellPrice spellPrice = new SpellPriceAdder(new VariableSpellPrice(spellVariable), right);
+        modifiers.put(VariableSpellPrice.buildKey(variableType.name()), left);
+        final ISpellPrice spellPrice = new SpellPriceAdder(new VariableSpellPrice(variableType), right);
 
         assertEquals("Chyba, výstup metody toString neodpovídá očekávanému řetězci.", stringRepresentation, spellPrice.toString());
         assertEquals("Chyba, sčítačka špatně vypočetla cenu kouzla.", left + right, spellPrice.calculateMainPrice(modifiers));
@@ -46,15 +46,17 @@ public class ModifierSpellTests {
 
     @Test
     public void modifierAdderWithDoubleVariableSpellTest() throws Exception {
-        final SpellVariable spellVariable1 = SpellVariable.VIABILITY;
-        final SpellVariable spellVariable2 = SpellVariable.STRENGTH;
+        final VariableType variableType1 = VariableSpellPrice.VariableType.VIABILITY;
+        final VariableType variableType2 = VariableSpellPrice.VariableType.STRENGTH;
         final int value1 = 1;
         final int value2 = 2;
-        final String stringRepresentation = String.format("%s + %s", spellVariable1.getKeyForTranslation(), spellVariable2.getKeyForTranslation());
+        final String stringRepresentation = String.format("%s + %s", variableType1.getKeyForTranslation(), variableType2
+            .getKeyForTranslation());
         final Map<String, Integer> modifiers = new HashMap<>();
-        modifiers.put(VariableSpellPrice.buildKey(spellVariable1.name()), value1);
-        modifiers.put(VariableSpellPrice.buildKey(spellVariable2.name()), value2);
-        final ISpellPrice spellPrice = new SpellPriceAdder(new VariableSpellPrice(spellVariable1), new VariableSpellPrice(spellVariable2));
+        modifiers.put(VariableSpellPrice.buildKey(variableType1.name()), value1);
+        modifiers.put(VariableSpellPrice.buildKey(variableType2.name()), value2);
+        final ISpellPrice spellPrice = new SpellPriceAdder(new VariableSpellPrice(variableType1), new VariableSpellPrice(
+            variableType2));
 
         assertEquals("Chyba, výstup metody toString neodpovídá očekávanému řetězci.", stringRepresentation, spellPrice.toString());
         assertEquals("Chyba, sčítačka špatně vypočetla cenu kouzla.", value1 + value2, spellPrice.calculateMainPrice(modifiers));
@@ -75,11 +77,11 @@ public class ModifierSpellTests {
     public void modifierSubtracterWithVariableSpellPriceTest() throws Exception {
         final int left = 1;
         final int right = 2;
-        final SpellVariable spellVariable = SpellVariable.VIABILITY;
-        final String stringRepresentation = String.format("%s - %d", spellVariable.getKeyForTranslation(), right);
+        final VariableType variableType = VariableSpellPrice.VariableType.VIABILITY;
+        final String stringRepresentation = String.format("%s - %d", variableType.getKeyForTranslation(), right);
         final Map<String, Integer> modifiers = new HashMap<>();
-        modifiers.put(VariableSpellPrice.buildKey(spellVariable.name()), left);
-        final ISpellPrice spellPrice = new SpellPriceSubtracter(new VariableSpellPrice(spellVariable), right);
+        modifiers.put(VariableSpellPrice.buildKey(variableType.name()), left);
+        final ISpellPrice spellPrice = new SpellPriceSubtracter(new VariableSpellPrice(variableType), right);
 
         assertEquals("Chyba, výstup metody toString neodpovídá očekávanému řetězci.", stringRepresentation, spellPrice.toString());
         assertEquals("Chyba, odčítačka špatně vypočetla cenu kouzla.", left - right, spellPrice.calculateMainPrice(modifiers));
@@ -100,12 +102,12 @@ public class ModifierSpellTests {
     public void modifierMultiplierWithVariableSpellPriceTest() throws Exception {
         final int left = 1;
         final int right = 2;
-        final SpellVariable spellVariable = SpellVariable.VIABILITY;
+        final VariableType variableType = VariableSpellPrice.VariableType.VIABILITY;
         final String stringRepresentation = String.format("(%s * %d)",
-            spellVariable.getKeyForTranslation(), right);
+            variableType.getKeyForTranslation(), right);
         final Map<String, Integer> modifiers = new HashMap<>();
-        modifiers.put(VariableSpellPrice.buildKey(spellVariable.name()), left);
-        final ISpellPrice spellPrice = new SpellPriceMultiplier(new VariableSpellPrice(spellVariable), right);
+        modifiers.put(VariableSpellPrice.buildKey(variableType.name()), left);
+        final ISpellPrice spellPrice = new SpellPriceMultiplier(new VariableSpellPrice(variableType), right);
 
         assertEquals("Chyba, výstup metody toString neodpovídá očekávanému řetězci.", stringRepresentation, spellPrice.toString());
         assertEquals("Chyba, násobička špatně vypočetla cenu kouzla.", left * right, spellPrice.calculateMainPrice(modifiers));
@@ -126,12 +128,12 @@ public class ModifierSpellTests {
     public void modifierDividerWithVariableSpellPriceTest() throws Exception {
         final int left = 1;
         final int right = 2;
-        final SpellVariable spellVariable = SpellVariable.VIABILITY;
+        final VariableType variableType = VariableSpellPrice.VariableType.VIABILITY;
         final String stringRepresentation = String.format("(%s / %d)",
-            spellVariable.getKeyForTranslation(), right);
+            variableType.getKeyForTranslation(), right);
         final Map<String, Integer> modifiers = new HashMap<>();
-        modifiers.put(VariableSpellPrice.buildKey(spellVariable.name()), left);
-        final ISpellPrice spellPrice = new SpellPriceDivider(new VariableSpellPrice(spellVariable), right);
+        modifiers.put(VariableSpellPrice.buildKey(variableType.name()), left);
+        final ISpellPrice spellPrice = new SpellPriceDivider(new VariableSpellPrice(variableType), right);
 
         assertEquals("Chyba, výstup metody toString neodpovídá očekávanému řetězci.", stringRepresentation, spellPrice.toString());
         assertEquals("Chyba, dělička špatně vypočetla cenu kouzla.", left / right, spellPrice.calculateMainPrice(modifiers));

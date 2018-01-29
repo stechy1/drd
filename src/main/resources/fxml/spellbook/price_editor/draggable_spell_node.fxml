@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.Double?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<fx:root xmlns:fx="http://javafx.com/fxml/1" type="javafx.scene.Group"
+  xmlns="http://javafx.com/javafx/8.0.121">
+  <fx:define>
+    <Double fx:id="linkRadius" fx:value="10.0"/>
+    <Double fx:id="linkLayoutY" fx:value="65.0"/>
+    <Color fx:id="linkFill" fx:value="aquamarine"/>
+    <Color fx:id="linkStroke" fx:value="#e12d2d"/>
+    <Double fx:id="linkPadding" fx:value="-7.5"/>
+  </fx:define>
+  <AnchorPane style="-fx-effect: dropshadow(three-pass-box, derive(cadetblue, -20%), 10, 0, 4, 4);"
+    prefHeight="120.0" prefWidth="200.0" fx:id="anchorRoot">
+    <cursor>
+      <Cursor fx:constant="DEFAULT"/>
+    </cursor>
+    <VBox style="-fx-background-color: yellow" AnchorPane.bottomAnchor="0.0"
+      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0"
+      alignment="CENTER" fx:id="container" spacing="16.0">
+      <fx:define>
+        <Double fx:id="padding" fx:value="20.0"/>
+      </fx:define>
+      <padding>
+        <Insets left="$padding" right="$padding"/>
+      </padding>
+    </VBox>
+    <HBox style="-fx-background-color: orange;" AnchorPane.leftAnchor="0.0"
+      AnchorPane.rightAnchor="0.0"
+      AnchorPane.topAnchor="0.0" alignment="CENTER_LEFT" fx:id="moveContainer">
+      <padding>
+        <Insets left="8.0"/>
+      </padding>
+      <Label text="Sčítačka" fx:id="lblTitle">
+        <font>
+          <Font name="Roboto" size="14"/>
+        </font>
+      </Label>
+      <Region HBox.hgrow="ALWAYS"/>
+      <Button style="-fx-background-color: derive(orange, +20%);" prefHeight="25.0" text="X"
+        fx:id="btnCloseNode" onAction="#handleCloseNode">
+        <cursor>
+          <Cursor fx:constant="HAND"/>
+        </cursor>
+      </Button>
+    </HBox>
+    <Circle AnchorPane.leftAnchor="$linkPadding" fill="$linkFill" layoutY="$linkLayoutY"
+      radius="$linkRadius" stroke="$linkStroke" visible="false" fx:id="circleLeftLink">
+      <cursor>
+        <Cursor fx:constant="HAND"/>
+      </cursor>
+    </Circle>
+    <Circle AnchorPane.rightAnchor="$linkPadding" fill="$linkFill" layoutY="$linkLayoutY"
+      radius="$linkRadius" stroke="$linkStroke" visible="false" fx:id="circleRightLink">
+      <cursor>
+        <Cursor fx:constant="HAND"/>
+      </cursor>
+    </Circle>
+    <Circle AnchorPane.bottomAnchor="$linkPadding" fill="$linkFill" layoutX="100.0"
+      radius="$linkRadius" stroke="$linkStroke" fx:id="circleBottomLink">
+      <cursor>
+        <Cursor fx:constant="HAND"/>
+      </cursor>
+    </Circle>
+  </AnchorPane>
+</fx:root>

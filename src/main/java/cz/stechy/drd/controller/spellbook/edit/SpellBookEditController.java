@@ -19,7 +19,6 @@ import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.EnumComboBox;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
-import cz.stechy.screens.Notification;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -164,6 +163,24 @@ public class SpellBookEditController extends BaseController implements Initializ
         setScreenSize(550, 500);
     }
 
+    @Override
+    protected void onScreenResult(int statusCode, int actionId, Bundle bundle) {
+        ISpellPrice spellPrice;
+        switch (actionId) {
+            case SpellBookHelper.SPELL_PRICE_ACTION_UPDATE:
+                if (statusCode != RESULT_SUCCESS) {
+                    return;
+                }
+
+                spellPrice = new SpellParser(bundle.getString(SpellBookHelper.PRICE))
+                    .parse();
+
+                this.model.price.set(spellPrice);
+                break;
+        }
+
+    }
+
     // region Button handlers
 
     @FXML
@@ -204,7 +221,13 @@ public class SpellBookEditController extends BaseController implements Initializ
 
     @FXML
     private void handlePrice(ActionEvent actionEvent) {
-        showNotification(new Notification("Tato funkce zatím není implementována"));
+        Bundle bundle = new Bundle();
+        String price = "";
+        if (model.price.get() != null) {
+            price = model.price.get().pack();
+        }
+        bundle.putString(SpellBookHelper.PRICE, price);
+        startNewDialogForResult(R.FXML.SPELL_PRICE_EDITOR, SpellBookHelper.SPELL_PRICE_ACTION_UPDATE, bundle);
     }
 
     // endregion

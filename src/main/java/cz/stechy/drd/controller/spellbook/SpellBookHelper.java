@@ -27,6 +27,7 @@ public final class SpellBookHelper {
     public static final String SPELL_ACTION = "action_type";
     public static final int SPELL_ACTION_ADD = 1;
     public static final int SPELL_ACTION_UPDATE = 2;
+    public static final int SPELL_PRICE_ACTION_UPDATE = 1;
     public static final int SPELL_ROW_HEIGHT = 40;
 
     // endregion
@@ -80,6 +81,48 @@ public final class SpellBookHelper {
             .uploaded(bundle.getBoolean(UPLOADED))
             .downloaded(bundle.getBoolean(DOWNLOADED))
             .build();
+    }
+
+    public static void showGraph(ISpellGraphNode node) {
+        System.out.println("Aktualni node: " + node);
+        System.out.println("Rodice============================");
+        final ISpellGraphNode left = node.getParentNodes().getKey();
+        System.out.println("Levy: " + left);
+        if (left != null && left.getChildNode() != node) {
+            System.out.println("Rodice leveho nodu:");
+            showGraph(left);
+        }
+        final ISpellGraphNode right = node.getParentNodes().getValue();
+        System.out.println("Pravy: " + right);
+        if (right != null && right.getChildNode() != node) {
+            System.out.println("Rodice praveho nodu:");
+            showGraph(right);
+        }
+        ISpellGraphNode child = node.getChildNode();
+        if (child != null) {
+            showGraph(child);
+        } else {
+            System.out.println("Toto je startovni node: " + node);
+        }
+    }
+
+    /**
+     * Najde kořenový node, ze kterého se bude tvořit graf
+     *
+     * @param node {@link ISpellGraphNode} Startovní hode
+     * @return Kořenový node grafu
+     */
+    public static ISpellGraphNode findRootNode(ISpellGraphNode node) {
+        if (node == null) {
+            return null;
+        }
+
+        ISpellGraphNode bottom = node;
+        while(bottom.getChildNode() != null) {
+            bottom = bottom.getChildNode();
+        }
+
+        return bottom;
     }
 
     // endregion

@@ -60,6 +60,8 @@ public final class R {
         public static final String SHOP_RANGED_WEAPON = "shop_ranged_weapon";
         public static final String SPELLBOOK = "spellbook";
         public static final String SPELLBOOK_EDIT = "spellbook_edit";
+        public static final String DRAGGABLE_SPELL_NODE = "draggable_spell_node";
+        public static final String SPELL_PRICE_EDITOR = "spell_price_editor";
         public static final String LOGIN = "login";
         public static final String REGISTER = "register";
     }
@@ -291,6 +293,10 @@ public final class R {
         public static final String SPELL_DESCRIPTION = "drd_spell_description";
         public static final String SPELL_PROFESSION_TYPE = "drd_spell_profession_type";
         public static final String SPELL_PRICE = "drd_spell_price";
+        public static final String SPELL_PRICE_EXTENTION = "drd_spell_price_extention";
+        public static final String SPELL_PRICE_TYPE_CONSTANT = "drd_spell_price_type_constant";
+        public static final String SPELL_PRICE_TYPE_VARIABLE = "drd_spell_price_type_variable";
+        public static final String SPELL_PRICE_TYPE_MODIFIER = "drd_spell_price_type_modifier";
         public static final String SPELL_RADIUS = "drd_spell_radius";
         public static final String SPELL_RANGE = "drd_spell_range";
         public static final String SPELL_TARGET_TYPE = "drd_spell_target_type";
@@ -301,6 +307,12 @@ public final class R {
         public static final String SPELL_CAST_TIME = "drd_spell_cast_time";
         public static final String SPELL_DURATION = "drd_spell_duration";
         public static final String SPELL_IMAGE = "drd_spell_image";
+        public static final String SPELL_PRICE_EDITOR_TITLE = "drd_spell_price_editor_title";
+        public static final String SPELL_PRICE_MODIFIER_TYPE = "drd_spell_price_modifier_type";
+        public static final String SPELL_PRICE_MODIFIER_TYPE_ADDER = "drd_spell_price_modifier_type_adder";
+        public static final String SPELL_PRICE_MODIFIER_TYPE_SUBTRACTER = "drd_spell_price_modifier_type_subtracter";
+        public static final String SPELL_PRICE_MODIFIER_TYPE_MULTIPLIER = "drd_spell_price_modifier_type_multiplier";
+        public static final String SPELL_PRICE_MODIFIER_TYPE_DIVIDER = "drd_spell_price_modifier_type_divider";
         public static final String RULES_PPZ = "drd_rules_ppz";
         public static final String RULES_PPP = "drd_rules_ppp";
         public static final String RULES_PPE = "drd_rules_ppe";

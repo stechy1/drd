@@ -2,13 +2,13 @@ package cz.stechy.drd.model.spell.price.modifier;
 
 import cz.stechy.drd.model.spell.price.BasicSpellPrice;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
+import cz.stechy.drd.model.spell.price.ModifierPrice;
 import java.util.Map;
 
 /**
  * Třída reprezentující jednoduchou sčítačku ceny kouzla
  */
-// TODO vylepšit modifikátory o proměnný počet proměnných
-public class SpellPriceAdder implements ISpellPrice {
+public class SpellPriceAdder extends ModifierPrice {
 
     // region Constants
 
@@ -81,6 +81,21 @@ public class SpellPriceAdder implements ISpellPrice {
     @Override
     public String pack() {
         return String.format(PACK_FORMAT, left.pack(), right.pack());
+    }
+
+    @Override
+    public ISpellPrice getLeft() {
+        return left;
+    }
+
+    @Override
+    public ISpellPrice getRight() {
+        return right;
+    }
+
+    @Override
+    public ModifierType getType() {
+        return ModifierType.ADD;
     }
 
     @Override

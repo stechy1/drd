@@ -39,4 +39,18 @@ public interface ISpellPrice {
      * @return Uložitelný stav ceny
      */
     String pack();
+
+    /**
+     * Vrátí levou stranu vzorce od aktuálního modifikátoru, nebo null
+     *
+     * @return {@link ISpellPrice}
+     */
+    ISpellPrice getLeft();
+
+    /**
+     * Vrátí pravou stranu vzorce od aktuálního modifikátoru, nebo null
+     *
+     * @return {@link ISpellPrice}
+     */
+    ISpellPrice getRight();
 }
