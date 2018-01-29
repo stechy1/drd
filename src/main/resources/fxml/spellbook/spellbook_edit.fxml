@@ -13,59 +13,56 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.121"
-  fx:controller="cz.stechy.drd.controller.spellbook.edit.SpellBookEditController" prefWidth="550"
-  prefHeight="500">
+
+<BorderPane prefHeight="500" prefWidth="550" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.spellbook.edit.SpellBookEditController">
   <top>
     <HBox styleClass="title-container">
-      <Label HBox.hgrow="ALWAYS" styleClass="title-label" fx:id="lblTitle"/>
+      <Label fx:id="lblTitle" styleClass="title-label" HBox.hgrow="ALWAYS" />
     </HBox>
   </top>
   <center>
     <VBox spacing="16.0">
-      <HBox VBox.vgrow="ALWAYS" spacing="16.0">
-        <VBox HBox.hgrow="ALWAYS" spacing="16.0">
-          <JFXTextField labelFloat="true" promptText="%drd_spell_name" fx:id="txtName"/>
-          <JFXTextField labelFloat="true" promptText="%drd_spell_magic_name" fx:id="txtMagicName"/>
+      <HBox spacing="16.0" VBox.vgrow="ALWAYS">
+        <VBox spacing="16.0" HBox.hgrow="ALWAYS">
+          <JFXTextField fx:id="txtName" labelFloat="true" promptText="%drd_spell_name" />
+          <JFXTextField fx:id="txtMagicName" labelFloat="true" promptText="%drd_spell_magic_name" />
         </VBox>
-        <VBox HBox.hgrow="ALWAYS" spacing="16.0">
-          <EnumComboBox enumType="cz.stechy.drd.model.spell.SpellProfessionType"
-            labelFloat="true" promptText="%drd_spell_profession_type" fx:id="cmbType"/>
-          <Hyperlink text="%drd_spell_price" fx:id="linkPrice" onAction="#handlePrice"/>
-          <EnumComboBox enumType="cz.stechy.drd.model.spell.SpellTarget"
-            labelFloat="true" promptText="%drd_spell_target_type" fx:id="cmbTarget"/>
+        <VBox spacing="16.0" HBox.hgrow="ALWAYS">
+          <EnumComboBox fx:id="cmbType" enumType="cz.stechy.drd.model.spell.SpellProfessionType" labelFloat="true" promptText="%drd_spell_profession_type" />
+          <EnumComboBox fx:id="cmbTarget" enumType="cz.stechy.drd.model.spell.SpellTarget" labelFloat="true" promptText="%drd_spell_target_type" />
+          <VBox>
+            <Label text="%drd_spell_price"/>
+            <Hyperlink fx:id="linkPrice" onAction="#handlePrice" text="0"/>
+          </VBox>
         </VBox>
-        <VBox HBox.hgrow="ALWAYS" spacing="16.0">
-          <JFXTextField labelFloat="true" promptText="%drd_spell_radius" fx:id="txtRadius"/>
-          <JFXTextField labelFloat="true" promptText="%drd_spell_range" fx:id="txtRange"/>
-          <JFXTextField labelFloat="true" promptText="%drd_spell_cast_time" fx:id="txtCastTime"/>
-          <JFXTextField labelFloat="true" promptText="%drd_spell_duration" fx:id="txtDuration"/>
+        <VBox spacing="16.0" HBox.hgrow="ALWAYS">
+          <JFXTextField fx:id="txtRadius" labelFloat="true" promptText="%drd_spell_radius" />
+          <JFXTextField fx:id="txtRange" labelFloat="true" promptText="%drd_spell_range" />
+          <JFXTextField fx:id="txtCastTime" labelFloat="true" promptText="%drd_spell_cast_time" />
+          <JFXTextField fx:id="txtDuration" labelFloat="true" promptText="%drd_spell_duration" />
         </VBox>
         <padding>
-          <Insets top="8.0"/>
+          <Insets top="8.0" />
         </padding>
       </HBox>
-      <HBox VBox.vgrow="NEVER" spacing="8.0">
+      <HBox spacing="8.0" VBox.vgrow="NEVER">
         <StackPane>
-          <ImageView fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleSelectImage"
-            pickOnBounds="true" preserveRatio="true" fx:id="imageView"/>
-          <Label text="%drd_image_click_for_image" visible="true" fx:id="lblSelectImage"/>
+          <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" onMouseClicked="#handleSelectImage" pickOnBounds="true" preserveRatio="true" />
+          <Label fx:id="lblSelectImage" text="%drd_image_click_for_image" visible="true" />
         </StackPane>
-        <JFXTextArea VBox.vgrow="ALWAYS" labelFloat="true" promptText="%drd_item_description"
-          fx:id="txtDescription"/>
+        <JFXTextArea fx:id="txtDescription" labelFloat="true" promptText="%drd_item_description" VBox.vgrow="ALWAYS" />
       </HBox>
       <padding>
-        <Insets topRightBottomLeft="8.0"/>
+        <Insets topRightBottomLeft="8.0" />
       </padding>
     </VBox>
   </center>
   <bottom>
     <HBox prefHeight="50" styleClass="separator-line, line-top">
-      <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton onAction="#handleFinish" prefHeight="34.0" styleClass="btn, btn-primary, btn-raised"
-        text="%drd_finish" fx:id="btnFinish"/>
+      <Region HBox.hgrow="ALWAYS" />
+      <JFXButton fx:id="btnFinish" onAction="#handleFinish" prefHeight="34.0" styleClass="btn, btn-primary, btn-raised" text="%drd_finish" />
       <padding>
-        <Insets topRightBottomLeft="8.0"/>
+        <Insets topRightBottomLeft="8.0" />
       </padding>
     </HBox>
   </bottom>
