@@ -12,6 +12,7 @@ import cz.stechy.drd.model.spell.SpellTarget;
 import cz.stechy.drd.model.spell.parser.SpellParser;
 import cz.stechy.drd.model.spell.price.BasicSpellPrice;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
+import cz.stechy.drd.model.spell.price.VariableSpellPrice.VariableType;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.Translator;
@@ -24,6 +25,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -125,6 +127,22 @@ public class SpellBookEditController extends BaseController implements Initializ
 
         cmbType.valueProperty().bindBidirectional(model.type);
         cmbTarget.valueProperty().bindBidirectional(model.target);
+
+        linkPrice.textProperty().bind(Bindings.createStringBinding(() -> {
+            final ISpellPrice price = model.price.get();
+            if (price == null) {
+                return "";
+            }
+
+            String priceText = price.toString();
+            for (VariableType variableType : VariableType.values()) {
+                final String key = variableType.getKeyForTranslation();
+                priceText = priceText.replace(key, translator.translate(key));
+            }
+
+            return priceText;
+
+        }, model.price));
 
         imageView.imageProperty().bindBidirectional(model.image);
         model.imageRaw.addListener((observable, oldValue, newValue) ->
