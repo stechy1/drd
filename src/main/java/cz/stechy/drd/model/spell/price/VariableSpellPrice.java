@@ -87,4 +87,8 @@ public class VariableSpellPrice implements ISpellPrice {
     public String toString() {
         return variable.getKeyForTranslation();
     }
+
+    public SpellVariable getVariable() {
+        return variable;
+    }
 }

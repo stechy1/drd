@@ -2,6 +2,7 @@ package cz.stechy.drd.controller.spellbook.priceeditor;
 
 import cz.stechy.drd.controller.spellbook.ISpellGraphNode;
 import cz.stechy.drd.model.DragContainer;
+import cz.stechy.drd.model.spell.price.ISpellPrice;
 import cz.stechy.drd.util.Translator;
 import java.io.IOException;
 import java.net.URL;
@@ -151,6 +152,8 @@ abstract class DraggableSpellNode extends Group implements Initializable, ISpell
     public ISpellGraphNode getChildNode() {
         return bottomNode;
     }
+
+    public abstract void initValues(ISpellPrice spellPrice);
 
     // region Private methods
 

@@ -44,6 +44,16 @@ class VariableDraggableSpellNode extends DraggableSpellNode {
     }
 
     @Override
+    public void initValues(ISpellPrice spellPrice) {
+        if (!(spellPrice instanceof VariableSpellPrice)) {
+            return;
+        }
+
+        VariableSpellPrice price = (VariableSpellPrice) spellPrice;
+        cmbVariable.getSelectionModel().select(price.getVariable());
+    }
+
+    @Override
     public ISpellPrice getPrice() {
         return new VariableSpellPrice(cmbVariable.getValue());
     }

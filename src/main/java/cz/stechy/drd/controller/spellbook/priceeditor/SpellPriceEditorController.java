@@ -169,47 +169,63 @@ public class SpellPriceEditorController extends BaseController implements Initia
         return PROPERTY_PRICE_TYPE_MODIFIER;
     }
 
-    private DraggableSpellNode putSpellNode(ISpellPrice price, int layer) {
-        final double x = componentPlayground.getPrefWidth() / (layer + 2);
-        final double y = componentPlayground.getPrefHeight() - ((layer+1) * DraggableSpellNode.HEIGHT) + DEFAULT_NODE_Y_SPACING;
+    private DraggableSpellNode putSpellNode(ISpellPrice price, int layer, int index) {
+        final double x = index * componentPlayground.getPrefWidth() / (layer + 1);
+        final double y = componentPlayground.getPrefHeight() - ((layer) * DraggableSpellNode.HEIGHT) + DEFAULT_NODE_Y_SPACING;
         final int priceType = getSpellPriceType(price);
         return addNode(priceType, x + MOUSE_TO_NODE_X_CENTER_OFFSET, y + MOUSE_TO_NODE_Y_CENTER_OFFSET);
     }
 
     private void buildViewGraph(ISpellPrice price) {
         assert price != null;
-        int layer = 0;
+        int layer = 1;
 
-        final DraggableSpellNode parentDraggableSpellNode = putSpellNode(price, layer++);
+        final DraggableSpellNode parentDraggableSpellNode = putSpellNode(price, layer++, 1);
+        parentDraggableSpellNode.initValues(price);
 
         Queue<ISpellPrice> priceQueue = new LinkedList<>();
         Queue<DraggableSpellNode> parentNodes = new LinkedList<>();
+        Queue<Integer> layers = new LinkedList<>();
         priceQueue.add(price);
         parentNodes.add(parentDraggableSpellNode);
+        layers.add(layer);
 
         while (!priceQueue.isEmpty()) {
             final ISpellPrice localPrice = priceQueue.poll();
             final DraggableSpellNode localParent = parentNodes.poll();
+            final int localLayer = layers.poll();
+            int addToLayer = 0;
 
             if (localPrice.getLeft() != null) {
                 final ISpellPrice left = localPrice.getLeft();
-                final DraggableSpellNode draggableSpellNode = putSpellNode(left, layer);
+                final DraggableSpellNode draggableSpellNode = putSpellNode(left, layer, 1);
+                draggableSpellNode.initValues(left);
                 priceQueue.add(left);
                 parentNodes.add(draggableSpellNode);
                 NodeLink link = new NodeLink();
                 link.bindEnds(draggableSpellNode, localParent, LinkPosition.LEFT);
                 componentPlayground.getChildren().add(link);
+                addToLayer++;
             }
 
             if (localPrice.getRight() != null) {
                 final ISpellPrice right = localPrice.getRight();
-                final DraggableSpellNode draggableSpellNode = putSpellNode(right, layer);
+                final DraggableSpellNode draggableSpellNode = putSpellNode(right, layer, 2);
+                draggableSpellNode.initValues(right);
                 priceQueue.add(right);
                 parentNodes.add(draggableSpellNode);
                 NodeLink link = new NodeLink();
                 link.bindEnds(draggableSpellNode, localParent, LinkPosition.RIGHT);
                 componentPlayground.getChildren().add(link);
+                addToLayer++;
             }
+
+            if (localPrice.getLeft() != null && localPrice.getRight() != null) {
+                addToLayer--;
+            }
+
+            layer += addToLayer;
+
         }
     }
 

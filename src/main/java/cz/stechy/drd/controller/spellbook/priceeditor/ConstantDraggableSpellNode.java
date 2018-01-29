@@ -52,6 +52,17 @@ class ConstantDraggableSpellNode extends DraggableSpellNode {
     }
 
     @Override
+    public void initValues(ISpellPrice spellPrice) {
+        if (!(spellPrice instanceof BasicSpellPrice)) {
+            return;
+        }
+
+        BasicSpellPrice price = (BasicSpellPrice) spellPrice;
+        value.setActValue(price.calculateMainPrice());
+        valueExtention.setActValue(price.calculateExtention());
+    }
+
+    @Override
     public ISpellPrice getPrice() {
         return new BasicSpellPrice(value.getActValue().intValue(), valueExtention.getActValue().intValue());
     }

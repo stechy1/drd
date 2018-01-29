@@ -2,8 +2,9 @@ package cz.stechy.drd.controller.spellbook.priceeditor;
 
 import com.jfoenix.controls.JFXComboBox;
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.ITranslatedEnum;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
+import cz.stechy.drd.model.spell.price.ModifierPrice;
+import cz.stechy.drd.model.spell.price.ModifierPrice.ModifierType;
 import cz.stechy.drd.model.spell.price.modifier.SpellPriceAdder;
 import cz.stechy.drd.model.spell.price.modifier.SpellPriceDivider;
 import cz.stechy.drd.model.spell.price.modifier.SpellPriceMultiplier;
@@ -17,7 +18,7 @@ public class ModifierDraggableSpellNode extends DraggableSpellNode {
 
     // region Variables
 
-    private JFXComboBox<Operation> cmbOperation;
+    private JFXComboBox<ModifierType> cmbOperation;
 
     // endregion
 
@@ -41,20 +42,31 @@ public class ModifierDraggableSpellNode extends DraggableSpellNode {
         lblTitle.textProperty().bind(Bindings.concat(
             translator.translate(R.Translate.SPELL_PRICE_TYPE_MODIFIER),
             Bindings.createStringBinding(() -> {
-                final Operation operation = cmbOperation.getSelectionModel().selectedItemProperty()
+                final ModifierType modifierType = cmbOperation.getSelectionModel().selectedItemProperty()
                     .get();
-                if (operation == null) {
+                if (modifierType == null) {
                     return "";
                 }
 
-                return " - " + translator.translate(operation.getKeyForTranslation());
+                return " - " + translator.translate(modifierType.getKeyForTranslation());
             }, cmbOperation.getSelectionModel().selectedItemProperty())
         ));
 
-        cmbOperation.getItems().setAll(Operation.values());
+        cmbOperation.getItems().setAll(ModifierType.values());
         container.getChildren().setAll(cmbOperation);
 
         showLeftRightCircles();
+    }
+
+    @Override
+    public void initValues(ISpellPrice spellPrice) {
+        if (!(spellPrice instanceof ModifierPrice)) {
+            return;
+        }
+
+        ModifierPrice price = (ModifierPrice) spellPrice;
+        cmbOperation.getSelectionModel().select(price.getType());
+
     }
 
     @Override
@@ -72,30 +84,4 @@ public class ModifierDraggableSpellNode extends DraggableSpellNode {
                 throw new IllegalStateException("Tohle by nikdy nemelo nastat");
         }
     }
-
-    private enum Operation implements ITranslatedEnum {
-        ADD(R.Translate.SPELL_PRICE_MODIFIER_TYPE_ADDER, "+"),
-        SUBTRACT(R.Translate.SPELL_PRICE_MODIFIER_TYPE_SUBTRACTER, "-"),
-        MULTIPLE(R.Translate.SPELL_PRICE_MODIFIER_TYPE_MULTIPLIER, "*"),
-        DIVIDE(R.Translate.SPELL_PRICE_MODIFIER_TYPE_DIVIDER, "/");
-
-        private final String key;
-        private final String operator;
-
-        Operation(String key, String operator) {
-            this.key = key;
-            this.operator = operator;
-        }
-
-        @Override
-        public String getKeyForTranslation() {
-            return key;
-        }
-
-        @Override
-        public String toString() {
-            return operator;
-        }
-    }
-
 }
