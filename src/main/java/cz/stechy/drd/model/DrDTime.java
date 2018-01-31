@@ -39,11 +39,11 @@ public final class DrDTime implements Comparable<Money> {
     private static final int MASK_MONTH =  0b111100000000000000;
     private static final int MASK_YEAR =  ~0b111111111111111111;
 
-    private static final int CYCLE_IN_INNING = 10;
-    private static final int MONTH_IN_YEAR = 12;
-    private static final int INNING_IN_DAY = 24;
-    private static final int DAY_IN_MONTH = 30;
-    private static final int YEAR_IN_WORLD = Integer.MAX_VALUE;
+    public static final int MAX_CYCLE = 10;
+    public static final int MAX_INNING = 24;
+    public static final int MAX_DAY = 30;
+    public static final int MAX_MONTH = 12;
+    public static final int MAX_YEAR = Integer.MAX_VALUE;
 
     public static final int DEFAULT_VALUE = 0;
 
@@ -287,38 +287,38 @@ public final class DrDTime implements Comparable<Money> {
     }
 
     public DrDTime addYear(int year) {
-        return addInternal(year, YEAR_IN_WORLD, MULTIPLIER_YEAR, value -> {}, this::getYear);
+        return addInternal(year, MAX_YEAR, MULTIPLIER_YEAR, value -> {}, this::getYear);
     }
     public DrDTime subtractYear(int year) {
-        return subtractInternal(year, YEAR_IN_WORLD, MULTIPLIER_YEAR, value -> {}, this::getYear);
+        return subtractInternal(year, MAX_YEAR, MULTIPLIER_YEAR, value -> {}, this::getYear);
     }
 
     public DrDTime addMonth(int month) {
-        return addInternal(month, MONTH_IN_YEAR, MULTIPLIER_MONTH, this::addYear, this::getMonth);
+        return addInternal(month, MAX_MONTH, MULTIPLIER_MONTH, this::addYear, this::getMonth);
     }
     public DrDTime subtractMonth(int month) {
-        return subtractInternal(month, MONTH_IN_YEAR, MULTIPLIER_MONTH, this::subtractYear, this::getMonth);
+        return subtractInternal(month, MAX_MONTH, MULTIPLIER_MONTH, this::subtractYear, this::getMonth);
     }
 
     public DrDTime addDay(int day) {
-        return addInternal(day, DAY_IN_MONTH, MULTIPLIER_DAY, this::addMonth, this::getDay);
+        return addInternal(day, MAX_DAY, MULTIPLIER_DAY, this::addMonth, this::getDay);
     }
     public DrDTime subtractDay(int day) {
-        return subtractInternal(day, DAY_IN_MONTH, MULTIPLIER_DAY, this::subtractMonth, this::getDay);
+        return subtractInternal(day, MAX_DAY, MULTIPLIER_DAY, this::subtractMonth, this::getDay);
     }
 
     public DrDTime addInning(int inning) {
-        return addInternal(inning, INNING_IN_DAY, MULTIPLIER_INNING, this::addDay, this::getInning);
+        return addInternal(inning, MAX_INNING, MULTIPLIER_INNING, this::addDay, this::getInning);
     }
     public DrDTime subtractInning(int inning) {
-        return subtractInternal(inning, INNING_IN_DAY, MULTIPLIER_INNING, this::subtractDay, this::getInning);
+        return subtractInternal(inning, MAX_INNING, MULTIPLIER_INNING, this::subtractDay, this::getInning);
     }
 
     public DrDTime addCycle(int cycle) {
-        return addInternal(cycle, CYCLE_IN_INNING, MULTIPLIER_CYCLE, this::addInning, this::getCycle);
+        return addInternal(cycle, MAX_CYCLE, MULTIPLIER_CYCLE, this::addInning, this::getCycle);
     }
     public DrDTime subtractCycle(int cycle) {
-        return subtractInternal(cycle, CYCLE_IN_INNING, MULTIPLIER_CYCLE, this::subtractInning, this::getCycle);
+        return subtractInternal(cycle, MAX_CYCLE, MULTIPLIER_CYCLE, this::subtractInning, this::getCycle);
     }
 
     // endregion
@@ -338,7 +338,7 @@ public final class DrDTime implements Comparable<Money> {
     }
 
     public DrDTime setCycle(int cycle) {
-        return setInternal(cycle, CYCLE_IN_INNING, MULTIPLIER_CYCLE, this::setInning);
+        return setInternal(cycle, MAX_CYCLE, MULTIPLIER_CYCLE, this::setInning);
     }
 
     public int getInning() {
@@ -346,7 +346,7 @@ public final class DrDTime implements Comparable<Money> {
     }
 
     public DrDTime setInning(int inning) {
-        return setInternal(inning, INNING_IN_DAY, MULTIPLIER_INNING, this::setDay);
+        return setInternal(inning, MAX_INNING, MULTIPLIER_INNING, this::setDay);
     }
 
     public int getDay() {
@@ -354,7 +354,7 @@ public final class DrDTime implements Comparable<Money> {
     }
 
     public DrDTime setDay(int day) {
-        return setInternal(day, DAY_IN_MONTH, MULTIPLIER_DAY, this::setMonth);
+        return setInternal(day, MAX_DAY, MULTIPLIER_DAY, this::setMonth);
     }
 
     public int getMonth() {
@@ -362,7 +362,7 @@ public final class DrDTime implements Comparable<Money> {
     }
 
     public DrDTime setMonth(int month) {
-        return setInternal(month, MONTH_IN_YEAR, MULTIPLIER_MONTH, this::setYear);
+        return setInternal(month, MAX_MONTH, MULTIPLIER_MONTH, this::setYear);
     }
 
     public int getYear() {
