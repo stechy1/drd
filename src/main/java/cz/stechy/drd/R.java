@@ -13,6 +13,7 @@ public final class R {
         public static final String LABELED_MAX_ACT_VALUE = "labeled_max_act_value";
         public static final String MONEY = "money";
         public static final String PRELOADER = "preloader";
+        public static final String TIME = "time";
         public static final String VULNERABILITY = "vulnerability";
         public static final String BESTIARY = "bestiary";
         public static final String BESTIARY_EDIT = "bestiary_edit";
@@ -257,6 +258,11 @@ public final class R {
         public static final String MONEY_ADD = "drd_money_add";
         public static final String MONEY_SUBTRACT = "drd_money_subtract";
         public static final String XP_ADD = "drd_xp_add";
+        public static final String TIME_YEAR = "drd_time_year";
+        public static final String TIME_MONTH = "drd_time_month";
+        public static final String TIME_DAY = "drd_time_day";
+        public static final String TIME_INNING = "drd_time_inning";
+        public static final String TIME_CYCLE = "drd_time_cycle";
         public static final String BESTIARY_TITLE = "drd_bestiary_title";
         public static final String BESTIARY_EDIT_NEW_TITLE = "drd_bestiary_edit_new_title";
         public static final String BESTIARY_EDIT_UPDATE_TITLE = "drd_bestiary_edit_update_title";

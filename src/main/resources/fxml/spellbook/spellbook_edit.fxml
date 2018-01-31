@@ -39,7 +39,10 @@
           <JFXTextField fx:id="txtRadius" labelFloat="true" promptText="%drd_spell_radius" />
           <JFXTextField fx:id="txtRange" labelFloat="true" promptText="%drd_spell_range" />
           <JFXTextField fx:id="txtCastTime" labelFloat="true" promptText="%drd_spell_cast_time" />
-          <JFXTextField fx:id="txtDuration" labelFloat="true" promptText="%drd_spell_duration" />
+          <VBox>
+            <Label text="%drd_spell_duration"/>
+            <Hyperlink fx:id="linkDuration" onAction="#handleDuration" text="0"/>
+          </VBox>
         </VBox>
         <padding>
           <Insets top="8.0" />

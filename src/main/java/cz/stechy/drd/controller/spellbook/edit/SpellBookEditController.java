@@ -3,6 +3,7 @@ package cz.stechy.drd.controller.spellbook.edit;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import cz.stechy.drd.R;
+import cz.stechy.drd.controller.DrDTimeController;
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
 import cz.stechy.drd.controller.spellbook.SpellBookHelper;
 import cz.stechy.drd.model.MaxActValue;
@@ -47,7 +48,7 @@ public class SpellBookEditController extends BaseController implements Initializ
 
     // region Constants
 
-
+    private static final int ACTION_DURATION = 5;
 
     // endregion
 
@@ -75,7 +76,7 @@ public class SpellBookEditController extends BaseController implements Initializ
     @FXML
     private JFXTextField txtCastTime;
     @FXML
-    private JFXTextField txtDuration;
+    private Hyperlink linkDuration;
     @FXML
     private ImageView imageView;
     @FXML
@@ -123,7 +124,6 @@ public class SpellBookEditController extends BaseController implements Initializ
         FormUtils.initTextFormater(txtRadius, model.radius);
         FormUtils.initTextFormater(txtRange, model.range);
         FormUtils.initTextFormater(txtCastTime, model.castTime);
-        FormUtils.initTextFormater(txtDuration, model.duration);
 
         cmbType.valueProperty().bindBidirectional(model.type);
         cmbTarget.valueProperty().bindBidirectional(model.target);
@@ -195,8 +195,14 @@ public class SpellBookEditController extends BaseController implements Initializ
 
                 this.model.price.set(spellPrice);
                 break;
-        }
+            case ACTION_DURATION:
+                if (statusCode != RESULT_SUCCESS) {
+                    return;
+                }
 
+                this.model.duration.setActValue(bundle.getInt(DrDTimeController.TIME));
+                break;
+        }
     }
 
     // region Button handlers
@@ -246,6 +252,13 @@ public class SpellBookEditController extends BaseController implements Initializ
         }
         bundle.putString(SpellBookHelper.PRICE, price);
         startNewDialogForResult(R.FXML.SPELL_PRICE_EDITOR, SpellBookHelper.SPELL_PRICE_ACTION_UPDATE, bundle);
+    }
+
+    @FXML
+    private void handleDuration(ActionEvent actionEvent) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(DrDTimeController.TIME, model.duration.getActValue().intValue());
+        startNewPopupWindowForResult(R.FXML.TIME, ACTION_DURATION, bundle, (Node) actionEvent.getSource());
     }
 
     // endregion
