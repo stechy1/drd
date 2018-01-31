@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
+<?import cz.stechy.drd.widget.DrDTimeWidget?>
 <BorderPane prefHeight="500" prefWidth="550" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.spellbook.edit.SpellBookEditController">
   <top>
     <HBox styleClass="title-container">
@@ -41,7 +42,7 @@
           <JFXTextField fx:id="txtCastTime" labelFloat="true" promptText="%drd_spell_cast_time" />
           <VBox>
             <Label text="%drd_spell_duration"/>
-            <Hyperlink fx:id="linkDuration" onAction="#handleDuration" text="0"/>
+            <DrDTimeWidget fx:id="widgetDuration"/>
           </VBox>
         </VBox>
         <padding>

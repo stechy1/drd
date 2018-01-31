@@ -25,11 +25,11 @@
   <padding>
     <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
   </padding>
-  <Label text="%drd_time_year"/>
-  <Label text="%drd_time_month" GridPane.rowIndex="1"/>
-  <Label text="%drd_time_day" GridPane.rowIndex="2"/>
-  <Label text="%drd_time_inning" GridPane.rowIndex="3"/>
-  <Label text="%drd_time_cycle" GridPane.rowIndex="4"/>
+  <Label text="%drd_time_year_3"/>
+  <Label text="%drd_time_month_3" GridPane.rowIndex="1"/>
+  <Label text="%drd_time_day_3" GridPane.rowIndex="2"/>
+  <Label text="%drd_time_inning_3" GridPane.rowIndex="3"/>
+  <Label text="%drd_time_cycle_3" GridPane.rowIndex="4"/>
   <TextField fx:id="txtYear" GridPane.columnIndex="1" />
   <TextField fx:id="txtMonth" GridPane.rowIndex="1" GridPane.columnIndex="1" />
   <TextField fx:id="txtDay" GridPane.rowIndex="2" GridPane.columnIndex="1" />

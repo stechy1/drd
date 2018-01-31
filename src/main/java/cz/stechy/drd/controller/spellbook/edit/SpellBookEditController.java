@@ -6,6 +6,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.controller.DrDTimeController;
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
 import cz.stechy.drd.controller.spellbook.SpellBookHelper;
+import cz.stechy.drd.model.DrDTime;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.spell.SpellProfessionType;
@@ -18,6 +19,7 @@ import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
+import cz.stechy.drd.widget.DrDTimeWidget;
 import cz.stechy.drd.widget.EnumComboBox;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -76,7 +78,7 @@ public class SpellBookEditController extends BaseController implements Initializ
     @FXML
     private JFXTextField txtCastTime;
     @FXML
-    private Hyperlink linkDuration;
+    private DrDTimeWidget widgetDuration;
     @FXML
     private ImageView imageView;
     @FXML
@@ -148,6 +150,13 @@ public class SpellBookEditController extends BaseController implements Initializ
         model.imageRaw.addListener((observable, oldValue, newValue) ->
             lblSelectImage.setVisible(Arrays.equals(newValue, new byte[0])));
 
+        widgetDuration.bind(model.duration.get(), translator);
+        widgetDuration.setOnMouseClicked(event -> {
+            Bundle bundle = new Bundle();
+            bundle.putInt(DrDTimeController.TIME, model.duration.get().getRaw());
+            startNewPopupWindowForResult(R.FXML.TIME, ACTION_DURATION, bundle, (Node) event.getSource());
+        });
+
         btnFinish.disableProperty().bind(model.validProperty().not());
     }
 
@@ -166,7 +175,7 @@ public class SpellBookEditController extends BaseController implements Initializ
             model.range.setActValue(bundle.getInt(SpellBookHelper.RANGE));
             model.target.setValue(SpellTarget.values()[bundle.getInt(SpellBookHelper.TARGET)]);
             model.castTime.setActValue(bundle.getInt(SpellBookHelper.CAST_TIME));
-            model.duration.setActValue(bundle.getInt(SpellBookHelper.DURATION));
+            model.duration.get().setRaw(bundle.getInt(SpellBookHelper.DURATION));
             model.imageRaw.setValue(bundle.get(SpellBookHelper.IMAGE));
             model.uploaded.setValue(bundle.getBoolean(SpellBookHelper.UPLOADED));
             model.downloaded.setValue(bundle.getBoolean(SpellBookHelper.DOWNLOADED));
@@ -200,7 +209,7 @@ public class SpellBookEditController extends BaseController implements Initializ
                     return;
                 }
 
-                this.model.duration.setActValue(bundle.getInt(DrDTimeController.TIME));
+                this.model.duration.get().setRaw(bundle.getInt(DrDTimeController.TIME));
                 break;
         }
     }
@@ -223,7 +232,7 @@ public class SpellBookEditController extends BaseController implements Initializ
         bundle.putInt(SpellBookHelper.RANGE, model.range.getActValue().intValue());
         bundle.putInt(SpellBookHelper.TARGET, model.target.getValue().ordinal());
         bundle.putInt(SpellBookHelper.CAST_TIME, model.castTime.getActValue().intValue());
-        bundle.putInt(SpellBookHelper.DURATION, model.duration.getActValue().intValue());
+        bundle.putInt(SpellBookHelper.DURATION, model.duration.get().getRaw());
         bundle.put(SpellBookHelper.IMAGE, model.imageRaw.getValue());
         bundle.putBoolean(SpellBookHelper.UPLOADED, model.uploaded.getValue());
         bundle.putBoolean(SpellBookHelper.DOWNLOADED, model.downloaded.getValue());
@@ -254,13 +263,6 @@ public class SpellBookEditController extends BaseController implements Initializ
         startNewDialogForResult(R.FXML.SPELL_PRICE_EDITOR, SpellBookHelper.SPELL_PRICE_ACTION_UPDATE, bundle);
     }
 
-    @FXML
-    private void handleDuration(ActionEvent actionEvent) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(DrDTimeController.TIME, model.duration.getActValue().intValue());
-        startNewPopupWindowForResult(R.FXML.TIME, ACTION_DURATION, bundle, (Node) actionEvent.getSource());
-    }
-
     // endregion
 
     private static final class SpellModel extends ValidatedModel {
@@ -278,7 +280,7 @@ public class SpellBookEditController extends BaseController implements Initializ
         final MaxActValue range = new MaxActValue(Integer.MAX_VALUE);
         final ObjectProperty<SpellTarget> target = new SimpleObjectProperty<>(this, "target", null);
         final MaxActValue castTime = new MaxActValue(Integer.MAX_VALUE);
-        final MaxActValue duration = new MaxActValue(-1, Integer.MAX_VALUE, 0);
+        final ObjectProperty<DrDTime> duration = new SimpleObjectProperty<>(this, "duration", new DrDTime());
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "imageRaw");
         final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
         final BooleanProperty uploaded = new SimpleBooleanProperty(this, "uploaded");

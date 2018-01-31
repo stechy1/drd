@@ -1,6 +1,7 @@
 package cz.stechy.drd.model.spell;
 
 import cz.stechy.drd.model.IClonable;
+import cz.stechy.drd.model.db.base.DatabaseItem;
 import cz.stechy.drd.model.db.base.OnlineItem;
 import cz.stechy.drd.model.spell.parser.SpellParser;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
@@ -115,6 +116,24 @@ public final class Spell extends OnlineItem {
     // endregion
 
     // region Public methods
+
+    @Override
+    public void update(DatabaseItem other) {
+        super.update(other);
+
+        Spell spell = (Spell) other;
+        setName(spell.getName());
+        setMagicName(spell.getMagicName());
+        setDescription(spell.getDescription());
+        setType(spell.getType());
+        setPrice(new SpellParser(spell.price.get().pack()).parse());
+        setRadius(spell.getRadius());
+        setRange(spell.getRange());
+        setTarget(spell.getTarget());
+        setCastTime(spell.getCastTime());
+        setDuration(spell.getDuration());
+        setImage(spell.getImage());
+    }
 
     @Override
     public <T extends IClonable> T duplicate() {
