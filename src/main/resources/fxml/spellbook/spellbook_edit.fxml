@@ -40,8 +40,9 @@
         <VBox HBox.hgrow="ALWAYS" spacing="16.0">
           <JFXTextField labelFloat="true" promptText="%drd_spell_radius" fx:id="txtRadius"/>
           <JFXTextField labelFloat="true" promptText="%drd_spell_range" fx:id="txtRange"/>
-          <JFXTextField labelFloat="true" promptText="%drd_spell_cast_time" fx:id="txtCastTime"/>
-          <DrDTimeWidget styleClass="hyperlink" fx:id="widgetDuration"/>
+          <!--<JFXTextField labelFloat="true" promptText="%drd_spell_cast_time" fx:id="txtCastTime"/>-->
+          <DrDTimeWidget styleClass="hyperlink" fx:id="widgetCastTime" title="%drd_spell_cast_time"/>
+          <DrDTimeWidget styleClass="hyperlink" fx:id="widgetDuration" title="%drd_spell_duration"/>
         </VBox>
         <padding>
           <Insets top="8.0"/>
