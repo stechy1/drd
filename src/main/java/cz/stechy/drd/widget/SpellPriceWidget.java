@@ -6,6 +6,7 @@ import cz.stechy.drd.model.spell.price.VariableSpellPrice.VariableType;
 import cz.stechy.drd.util.Translator;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -25,6 +26,7 @@ public class SpellPriceWidget extends VBox {
 
     // region Variables
 
+    private final Label title = new Label();
     private final Text txtPrice = new Text();
     private final Text txtExtention = new Text();
 
@@ -34,12 +36,13 @@ public class SpellPriceWidget extends VBox {
     // endregion
 
     {
-        getChildren().setAll(txtPrice, txtExtention);
+        getChildren().setAll(title, txtPrice, txtExtention);
     }
 
     // region Private methods
 
     private void init() {
+        title.setText(translator.translate(R.Translate.SPELL_PRICE));
         final String translatedPrice = translator.translate(PRICE_KEY);
         final String translatedExtention = translator.translate(EXTENTION_KEY);
 

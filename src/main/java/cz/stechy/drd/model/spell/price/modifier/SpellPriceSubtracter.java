@@ -74,11 +74,6 @@ public class SpellPriceSubtracter extends ModifierPrice {
     }
 
     @Override
-    public int calculateExtention() {
-        return left.calculateExtention() - right.calculateExtention();
-    }
-
-    @Override
     public String pack() {
         return String.format(PACK_FORMAT, left.pack(), right.pack());
     }

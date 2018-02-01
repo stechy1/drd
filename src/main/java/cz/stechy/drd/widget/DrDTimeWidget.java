@@ -4,10 +4,12 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.model.DrDTime;
 import cz.stechy.drd.util.Translator;
 import javafx.beans.binding.Bindings;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
-public class DrDTimeWidget extends TextFlow {
+public class DrDTimeWidget extends VBox {
 
     // region Constants
 
@@ -46,6 +48,8 @@ public class DrDTimeWidget extends TextFlow {
 
     // region Variables
 
+    private final Label title = new Label();
+
     private final Text yearText = new Text();
     private final Text monthText = new Text();
     private final Text dayText = new Text();
@@ -57,17 +61,16 @@ public class DrDTimeWidget extends TextFlow {
 
     // endregion
 
-    // region Constructors
-
-    public DrDTimeWidget() {
-        getChildren().setAll(yearText, monthText, dayText, inningText, cycleText);
+    {
+        TextFlow textContainer = new TextFlow(yearText, monthText, dayText, inningText, cycleText);
+        getChildren().setAll(title, textContainer);
     }
-
-    // endregion
 
     // region Private methods
 
     private void init() {
+        title.setText(translator.translate(R.Translate.SPELL_DURATION));
+
         yearText.visibleProperty().bind(
             time.year.isNotEqualTo(0));
         monthText.visibleProperty().bind(

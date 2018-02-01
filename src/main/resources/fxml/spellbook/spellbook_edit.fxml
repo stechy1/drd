@@ -35,19 +35,13 @@
             promptText="%drd_spell_profession_type" fx:id="cmbType"/>
           <EnumComboBox enumType="cz.stechy.drd.model.spell.SpellTarget" labelFloat="true"
             promptText="%drd_spell_target_type" fx:id="cmbTarget"/>
-          <VBox>
-            <Label text="%drd_spell_price"/>
             <SpellPriceWidget fx:id="widgetSpellPrice" styleClass="hyperlink"/>
-          </VBox>
         </VBox>
         <VBox HBox.hgrow="ALWAYS" spacing="16.0">
           <JFXTextField labelFloat="true" promptText="%drd_spell_radius" fx:id="txtRadius"/>
           <JFXTextField labelFloat="true" promptText="%drd_spell_range" fx:id="txtRange"/>
           <JFXTextField labelFloat="true" promptText="%drd_spell_cast_time" fx:id="txtCastTime"/>
-          <VBox>
-            <Label text="%drd_spell_duration"/>
-            <DrDTimeWidget styleClass="hyperlink" fx:id="widgetDuration"/>
-          </VBox>
+          <DrDTimeWidget styleClass="hyperlink" fx:id="widgetDuration"/>
         </VBox>
         <padding>
           <Insets top="8.0"/>

@@ -31,7 +31,9 @@ public interface ISpellPrice {
      *
      * @return Cenu za prodloužení kouzla
      */
-    int calculateExtention();
+    default int calculateExtention() {
+        return getLeft().calculateExtention() + getRight().calculateExtention();
+    }
 
     /**
      * Převede cenu do uložitelného stavu
