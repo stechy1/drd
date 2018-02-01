@@ -11,8 +11,7 @@ public class DrDTimeWidget extends TextFlow {
 
     // region Constants
 
-    private static final String YEAR_TEXT_FORMAT = "%d %s";
-    private static final String DEFAULT_TEXT_FORMAT = ", %d %s";
+    private static final String DEFAULT_TEXT_FORMAT = " %d %s";
 
     private static final int YEAR = 0;
     private static final int MONTH = 1;
@@ -79,10 +78,15 @@ public class DrDTimeWidget extends TextFlow {
             time.inning.isNotEqualTo(0));
         cycleText.visibleProperty().bind(
             time.cycle.isNotEqualTo(0));
+        yearText.managedProperty().bind(yearText.visibleProperty());
+        monthText.managedProperty().bind(monthText.visibleProperty());
+        dayText.managedProperty().bind(dayText.visibleProperty());
+        inningText.managedProperty().bind(inningText.visibleProperty());
+        cycleText.managedProperty().bind(cycleText.visibleProperty());
 
         yearText.textProperty().bind(Bindings.createStringBinding(() -> {
             final int value = time.getYear();
-            return String.format(YEAR_TEXT_FORMAT, value, translator.translate(TRANSLATING_KEYS[YEAR][getIndex(value)]));
+            return String.format(DEFAULT_TEXT_FORMAT, value, translator.translate(TRANSLATING_KEYS[YEAR][getIndex(value)]));
         }, time.year));
         monthText.textProperty().bind(Bindings.createStringBinding(() -> {
             final int value = time.getMonth();
@@ -125,14 +129,38 @@ public class DrDTimeWidget extends TextFlow {
 
     // region Public methods
 
+    /**
+     * Nastaví listenery pro správné zobrazení textu
+     *
+     * @param time {@link DrDTime}
+     * @param translator {@link Translator}
+     */
     public void bind(DrDTime time, Translator translator) {
         this.time = time;
         this.translator = translator;
+        unbind();
         init();
     }
 
+    /**
+     * Odebere listenery
+     */
     public void unbind() {
-
+        yearText.visibleProperty().unbind();
+        monthText.visibleProperty().unbind();
+        dayText.visibleProperty().unbind();
+        inningText.visibleProperty().unbind();
+        cycleText.visibleProperty().unbind();
+        yearText.textProperty().unbind();
+        monthText.textProperty().unbind();
+        dayText.textProperty().unbind();
+        inningText.textProperty().unbind();
+        cycleText.textProperty().unbind();
+        yearText.managedProperty().unbind();
+        monthText.managedProperty().unbind();
+        dayText.managedProperty().unbind();
+        inningText.managedProperty().unbind();
+        cycleText.managedProperty().unbind();
     }
 
     // endregion

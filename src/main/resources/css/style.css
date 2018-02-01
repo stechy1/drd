@@ -152,3 +152,10 @@
     -fx-background-radius: 3px;
     -fx-background-insets: 0px;
 }
+
+.underline {
+    -fx-underline: true;
+}
+.underline:hover {
+    -fx-underline: true;
+}
