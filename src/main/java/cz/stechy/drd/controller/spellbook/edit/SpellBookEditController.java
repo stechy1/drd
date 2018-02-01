@@ -14,13 +14,13 @@ import cz.stechy.drd.model.spell.SpellTarget;
 import cz.stechy.drd.model.spell.parser.SpellParser;
 import cz.stechy.drd.model.spell.price.BasicSpellPrice;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
-import cz.stechy.drd.model.spell.price.VariableSpellPrice.VariableType;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.DrDTimeWidget;
 import cz.stechy.drd.widget.EnumComboBox;
+import cz.stechy.drd.widget.SpellPriceWidget;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.io.IOException;
@@ -28,7 +28,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -40,7 +39,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -68,7 +66,7 @@ public class SpellBookEditController extends BaseController implements Initializ
     @FXML
     private EnumComboBox<SpellProfessionType> cmbType;
     @FXML
-    private Hyperlink linkPrice;
+    private SpellPriceWidget widgetSpellPrice;
     @FXML
     private EnumComboBox<SpellTarget> cmbTarget;
     @FXML
@@ -130,32 +128,15 @@ public class SpellBookEditController extends BaseController implements Initializ
         cmbType.valueProperty().bindBidirectional(model.type);
         cmbTarget.valueProperty().bindBidirectional(model.target);
 
-        linkPrice.textProperty().bind(Bindings.createStringBinding(() -> {
-            final ISpellPrice price = model.price.get();
-            if (price == null) {
-                return "";
-            }
-
-            String priceText = price.toString();
-            for (VariableType variableType : VariableType.values()) {
-                final String key = variableType.getKeyForTranslation();
-                priceText = priceText.replace(key, translator.translate(key));
-            }
-
-            return priceText;
-
-        }, model.price));
+        widgetSpellPrice.bind(model.price, translator);
+        widgetSpellPrice.setOnMouseClicked(this::handlePrice);
 
         imageView.imageProperty().bindBidirectional(model.image);
         model.imageRaw.addListener((observable, oldValue, newValue) ->
             lblSelectImage.setVisible(Arrays.equals(newValue, new byte[0])));
 
         widgetDuration.bind(model.duration.get(), translator);
-        widgetDuration.setOnMouseClicked(event -> {
-            Bundle bundle = new Bundle();
-            bundle.putInt(DrDTimeController.TIME, model.duration.get().getRaw());
-            startNewPopupWindowForResult(R.FXML.TIME, ACTION_DURATION, bundle, (Node) event.getSource());
-        });
+        widgetDuration.setOnMouseClicked(this::handleDuration);
 
         btnFinish.disableProperty().bind(model.validProperty().not());
     }
@@ -253,7 +234,7 @@ public class SpellBookEditController extends BaseController implements Initializ
     }
 
     @FXML
-    private void handlePrice(ActionEvent actionEvent) {
+    private void handlePrice(MouseEvent mouseEvent) {
         Bundle bundle = new Bundle();
         String price = "";
         if (model.price.get() != null) {
@@ -261,6 +242,13 @@ public class SpellBookEditController extends BaseController implements Initializ
         }
         bundle.putString(SpellBookHelper.PRICE, price);
         startNewDialogForResult(R.FXML.SPELL_PRICE_EDITOR, SpellBookHelper.SPELL_PRICE_ACTION_UPDATE, bundle);
+    }
+
+    @FXML
+    private void handleDuration(MouseEvent mouseEvent) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(DrDTimeController.TIME, model.duration.get().getRaw());
+        startNewPopupWindowForResult(R.FXML.TIME, ACTION_DURATION, bundle, (Node) mouseEvent.getSource());
     }
 
     // endregion

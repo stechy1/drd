@@ -37,7 +37,6 @@ public class DragContainer implements Serializable {
      * @param value Hodnota dat
      */
     public void addData(String key, Object value) {
-        System.out.println("Put to: " + key + " value: " + value.toString());
         data.put(key, value);
     }
 

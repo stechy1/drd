@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import cz.stechy.drd.widget.SpellPriceWidget?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="500" prefWidth="550"
   xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.controller.spellbook.edit.SpellBookEditController">
@@ -36,7 +37,7 @@
             promptText="%drd_spell_target_type" fx:id="cmbTarget"/>
           <VBox>
             <Label text="%drd_spell_price"/>
-            <Hyperlink onAction="#handlePrice" text="0" fx:id="linkPrice"/>
+            <SpellPriceWidget fx:id="widgetSpellPrice" styleClass="hyperlink"/>
           </VBox>
         </VBox>
         <VBox HBox.hgrow="ALWAYS" spacing="16.0">

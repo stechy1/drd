@@ -267,12 +267,14 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     @FXML
     private void handleFinish(ActionEvent actionEvent) {
-        System.out.println("Vypocitana cena: " + SpellBookHelper.findRootNode(rootNode).getPrice().calculateMainPrice());
-        final String priceRaw = SpellBookHelper.findRootNode(rootNode).getPrice().pack();
-        final Bundle bundle = new Bundle();
-        bundle.putString(SpellBookHelper.PRICE, priceRaw);
-        setResult(RESULT_SUCCESS);
-        finish(bundle);
+        SpellBookHelper.findRootNode(rootNode).ifPresent(spellGraphNode -> {
+            final ISpellPrice price = spellGraphNode.getPrice();
+            final String pack = price.pack();
+            final Bundle bundle = new Bundle();
+            bundle.putString(SpellBookHelper.PRICE, pack);
+            setResult(RESULT_SUCCESS);
+            finish(bundle);
+        });
     }
 
     @FXML
@@ -294,7 +296,6 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
         @Override
         public void removeNode(DraggableSpellNode node) {
-            System.out.println("Odstraňuji node: " + node.toString());
             nodes.remove(node);
             componentPlayground.getChildren().remove(node);
             if (rootNode == node) {
@@ -328,7 +329,6 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
         @Override
         public void deleteNodeLink(NodeLink nodeLink) {
-            System.out.println("Odstraňuji link: " + nodeLink);
             nodeLink.unbind();
             componentPlayground.getChildren().remove(nodeLink);
         }

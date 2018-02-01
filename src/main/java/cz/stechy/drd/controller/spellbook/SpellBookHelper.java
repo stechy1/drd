@@ -3,6 +3,7 @@ package cz.stechy.drd.controller.spellbook;
 import cz.stechy.drd.model.spell.Spell;
 import cz.stechy.drd.model.spell.parser.SpellParser;
 import cz.stechy.screens.Bundle;
+import java.util.Optional;
 
 public final class SpellBookHelper {
 
@@ -112,9 +113,9 @@ public final class SpellBookHelper {
      * @param node {@link ISpellGraphNode} Startovní hode
      * @return Kořenový node grafu
      */
-    public static ISpellGraphNode findRootNode(ISpellGraphNode node) {
+    public static Optional<ISpellGraphNode> findRootNode(ISpellGraphNode node) {
         if (node == null) {
-            return null;
+            return Optional.empty();
         }
 
         ISpellGraphNode bottom = node;
@@ -122,7 +123,7 @@ public final class SpellBookHelper {
             bottom = bottom.getChildNode();
         }
 
-        return bottom;
+        return Optional.of(bottom);
     }
 
     // endregion
