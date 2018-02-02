@@ -1,12 +1,11 @@
 package cz.stechy.drd.model.db;
 
+import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.auth.FirebaseCredentials;
 import com.google.firebase.database.FirebaseDatabase;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -101,13 +100,14 @@ public final class FirebaseWrapper {
      * @param inputFile Soubor s přístupovými údaji k firebase databázi
      * @throws Exception Pokud se inicializace nezdařila
      */
-    public void initDatabase(File inputFile) throws FileNotFoundException {
+    public void initDatabase(File inputFile) throws IOException {
         final Map<String, Object> auth = new HashMap<>();
         auth.put("uid", "my_resources");
         final String url = resolveFirebaseUrl(new FileInputStream(inputFile));
 
         final FirebaseOptions options = new FirebaseOptions.Builder()
-            .setCredential(FirebaseCredentials.fromCertificate(new FileInputStream(inputFile)))
+            //.setCredential(FirebaseCredentials.fromCertificate(new FileInputStream(inputFile)))
+            .setCredentials(GoogleCredentials.fromStream(new FileInputStream(inputFile)))
             .setDatabaseUrl(url)
             .setDatabaseAuthVariableOverride(auth)
             .build();

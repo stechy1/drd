@@ -66,12 +66,12 @@ public class ItemCollectionContent implements Firebase<ItemBase> {
             return;
         }
 
-        reference.child(item.getId()).setValue(item.getId());
+        reference.child(item.getId()).setValue(item.getId(), null);
     }
 
     @Override
     public void deleteRemote(ItemBase item, boolean remote) {
-        reference.child(item.getId()).removeValue();
+        reference.child(item.getId()).removeValue(null);
     }
 
     // endregion

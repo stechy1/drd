@@ -99,12 +99,12 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
     @Override
     public void upload(ItemCollection item) {
         final DatabaseReference child = firebaseReference.child(item.getId());
-        child.setValue(toFirebaseMap(item));
+        child.setValue(toFirebaseMap(item), null);
     }
 
     @Override
     public void deleteRemote(ItemCollection item, boolean remote) {
-        firebaseReference.child(item.getId()).removeValue();
+        firebaseReference.child(item.getId()).removeValue(null);
     }
 
     // endregion

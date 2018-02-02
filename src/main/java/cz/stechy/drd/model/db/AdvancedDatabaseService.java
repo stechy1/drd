@@ -177,14 +177,16 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     public void deleteRemote(T item, boolean remote) {
         if (remote) {
             LOGGER.trace("Odebírám online item {} z online databáze", item.toString());
-            firebaseReference.child(item.getId()).removeValue();
-            T itemCopy = item.duplicate();
-            itemCopy.setUploaded(false);
-            try {
-                update(itemCopy);
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-            }
+            //firebaseReference.child(item.getId()).removeValue();
+            firebaseReference.child(item.getId()).removeValue((error, ref) -> {
+                T itemCopy = item.duplicate();
+                itemCopy.setUploaded(false);
+                try {
+                    update(itemCopy);
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                }
+            });
         } else {
             try {
                 delete(item.getId());
@@ -203,14 +205,16 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
         LOGGER.trace("Nahrávám item {} do online databáze", item.toString());
         DatabaseReference newReference = firebaseReference.child(item.getId());
-        newReference.setValue(toFirebaseMap(item));
-        T itemCopy = item.duplicate();
-        itemCopy.setUploaded(true);
-        try {
-            update(itemCopy);
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
+        //newReference.setValue(toFirebaseMap(item));
+        newReference.setValue(toFirebaseMap(item), (error, ref) -> {
+            T itemCopy = item.duplicate();
+            itemCopy.setUploaded(true);
+            try {
+                update(itemCopy);
+            } catch (DatabaseException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     /**

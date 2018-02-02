@@ -76,7 +76,8 @@ public final class UserService implements Firebase<User> {
     @Override
     public void upload(User user) {
         final DatabaseReference child = firebaseReference.child(user.getId());
-        child.setValue(toFirebaseMap(user));
+        //child.setValue(toFirebaseMap(user));
+        child.setValue(toFirebaseMap(user), null);
     }
 
     @Override
