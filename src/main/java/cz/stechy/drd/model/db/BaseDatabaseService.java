@@ -2,6 +2,7 @@ package cz.stechy.drd.model.db;
 
 import cz.stechy.drd.PreloaderNotifier;
 import cz.stechy.drd.R;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.di.Inject;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.DatabaseItem;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
@@ -262,6 +264,21 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     }
 
     @Override
+    public CompletableFuture<ObservableList<T>> selectAllAsync() {
+        if (items.isEmpty() && !selectAllCalled) {
+            return db
+                .selectAsync(this::parseResultSet, getQuerySelectAll(), getParamsForSelectAll())
+                .thenApplyAsync(resultItems -> {
+                    items.setAll(resultItems);
+                    selectAllCalled = true;
+                    return items;
+                }, ThreadPool.JAVAFX_EXECUTOR);
+        }
+
+        return CompletableFuture.completedFuture(items);
+    }
+
+    @Override
     public void insert(T item) throws DatabaseException {
         final String query = String
             .format("INSERT INTO %s (%s) VALUES (%s)", getTable(), getColumnsKeys(),
@@ -278,6 +295,25 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
         } catch (Exception e) {
             throw new DatabaseException(e);
         }
+    }
+
+    @Override
+    public CompletableFuture<T> insertAsync(T item) {
+        final String query = String
+            .format("INSERT INTO %s (%s) VALUES (%s)", getTable(), getColumnsKeys(),
+                getColumnValues());
+        LOGGER.trace("Vkládám položku {} do databáze.", item.toString());
+        return db.queryAsync(query, itemToParams(item).toArray())
+            .thenApply(value -> {
+                final TransactionOperation<T> operation = new InsertOperation<>(item);
+                if (db.isTransactional()) {
+                    operations.add(operation);
+                } else {
+                    operation.commit(items);
+                }
+
+                return item;
+            });
     }
 
     @Override

@@ -78,7 +78,7 @@ public class App extends Application {
             LOGGER.info("Ukončuji aplikaci");
             context.saveConfiguration();
             context.closeFirebase();
-            ThreadPool.getInstance().shutDown();
+            ThreadPool.shutDown();
         });
     }
 

@@ -1,5 +1,6 @@
 package cz.stechy.drd.model.db;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import javafx.collections.ObservableList;
 
@@ -31,6 +32,8 @@ public interface DatabaseService<T> {
      */
     ObservableList<T> selectAll();
 
+    CompletableFuture<ObservableList<T>> selectAllAsync();
+
     /**
      * Vloží předmět do databáze
      *
@@ -38,6 +41,8 @@ public interface DatabaseService<T> {
      * @throws DatabaseException Pokud se vložení nezdaří
      */
     void insert(T item) throws DatabaseException;
+
+    CompletableFuture<T> insertAsync(T item);
 
     /**
      * Aktualizuje předmět v databázi

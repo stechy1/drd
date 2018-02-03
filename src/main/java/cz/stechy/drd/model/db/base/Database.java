@@ -5,7 +5,7 @@ import java.sql.SQLException;
 /**
  * Rozhraní pro komunikaci s databází
  */
-public interface Database {
+public interface Database extends AsyncDatabase {
 
     /**
      * Zpracuje a provede zadaný příkaz.
@@ -18,7 +18,7 @@ public interface Database {
     long query(String query, Object... params) throws SQLException;
 
     /**
-     * Provede příkaz select.
+     * Provede příkaz selectAsync.
      *
      * @param handler {@link OnRowHandler}
      * @param query Dotaz pro výběr položek

@@ -5,7 +5,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.di.Inject;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.Firebase;
@@ -15,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -130,12 +130,32 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     }
 
     @Override
+    public CompletableFuture<ObservableList<T>> selectAllAsync() {
+        return super.selectAllAsync().thenApply(resultItems -> {
+            if (!showOnline) {
+                usedItems.setAll(resultItems);
+            }
+
+            return usedItems;
+        });
+    }
+
+    @Override
     public void insert(T item) throws DatabaseException {
         if (showOnline) {
             item.setUploaded(true);
         }
         item.setDownloaded(true);
         super.insert(item);
+    }
+
+    @Override
+    public CompletableFuture<T> insertAsync(T item) {
+        if (showOnline) {
+            item.setUploaded(true);
+        }
+        item.setDownloaded(true);
+        return super.insertAsync(item);
     }
 
     @Override
@@ -248,7 +268,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             }
         });
 
-        ThreadPool.getInstance().submit(task);
+        //ThreadPool.getInstance().submit(task);
     }
 
     // endregion
