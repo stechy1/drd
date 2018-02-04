@@ -2,6 +2,7 @@ package cz.stechy.drd.model.db.base;
 
 import com.google.firebase.database.DataSnapshot;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Rozhraní definující metody pro komunikaci s firebase
@@ -31,6 +32,8 @@ public interface Firebase<T> {
      */
     void upload(T item);
 
+    CompletableFuture<T> uploadAsync(T item);
+
     /**
      * Odstraní vzdálený item buď z lokální databáze, nebo ze vzdálené databáze
      *
@@ -39,4 +42,6 @@ public interface Firebase<T> {
      * odstraní vzdálen item z lokální databáze
      */
     void deleteRemote(T item, boolean remote);
+
+    CompletableFuture<T> deleteRemoteAsync(T item, boolean remote);
 }

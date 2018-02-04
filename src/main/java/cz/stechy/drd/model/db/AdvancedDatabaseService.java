@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -93,27 +94,24 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     protected abstract String getFirebaseChildName();
 
     private void attachOfflineListener() {
-        this.onlineDatabase.removeListener(this::listChangeHandler);
-        super.items.addListener(this::listChangeHandler);
+        this.onlineDatabase.removeListener(listChangeListener);
+        super.items.addListener(listChangeListener);
         this.usedItems.setAll(super.items);
     }
 
     private void attachOnlineListener() {
-        super.items.removeListener(this::listChangeHandler);
-        this.onlineDatabase.addListener(this::listChangeHandler);
+        super.items.removeListener(listChangeListener);
+        this.onlineDatabase.addListener(listChangeListener);
         this.usedItems.setAll(this.onlineDatabase);
     }
 
-    // region Method handlers
-
-    private void listChangeHandler(ListChangeListener.Change<? extends T> c) {
+    // Listener reagující na změnu ve zdrojovém listu a propagujíce změnu do výstupného listu
+    private final ListChangeListener<? super T> listChangeListener = (ListChangeListener<T>) c -> {
         while(c.next()) {
             this.usedItems.addAll(c.getAddedSubList());
             this.usedItems.removeAll(c.getRemoved());
         }
-    }
-
-    // endregion
+    };
 
     // endregion
 
@@ -121,23 +119,12 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     @Override
     public ObservableList<T> selectAll() {
-        ObservableList<T> tmp = super.selectAll();
-        if (!showOnline) {
-            usedItems.setAll(tmp);
-        }
-
         return usedItems;
     }
 
     @Override
     public CompletableFuture<ObservableList<T>> selectAllAsync() {
-        return super.selectAllAsync().thenApply(resultItems -> {
-            if (!showOnline) {
-                usedItems.setAll(resultItems);
-            }
-
-            return usedItems;
-        });
+        return super.selectAllAsync().thenApply(resultItems -> usedItems);
     }
 
     @Override
@@ -197,7 +184,6 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     public void deleteRemote(T item, boolean remote) {
         if (remote) {
             LOGGER.trace("Odebírám online item {} z online databáze", item.toString());
-            //firebaseReference.child(item.getId()).removeValue();
             firebaseReference.child(item.getId()).removeValue((error, ref) -> {
                 T itemCopy = item.duplicate();
                 itemCopy.setUploaded(false);
@@ -218,6 +204,27 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     }
 
     @Override
+    public CompletableFuture<T> deleteRemoteAsync(T item, boolean remote) {
+        if (remote) {
+            LOGGER.trace("Odebírám online item {} z online databáze", item.toString());
+            final DatabaseReference databaseReference = firebaseReference.child(item.getId());
+            return CompletableFuture.supplyAsync(() -> {
+                try {
+                    return databaseReference.removeValueAsync().get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            }).thenCompose(aVoid -> {
+                T itemCopy = item.duplicate();
+                itemCopy.setUploaded(false);
+                return updateAsync(itemCopy);
+            });
+        } else {
+            return deleteAsync(item);
+        }
+    }
+
+    @Override
     public void upload(T item) {
         if (firebaseReference == null) {
             return;
@@ -225,7 +232,6 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
         LOGGER.trace("Nahrávám item {} do online databáze", item.toString());
         DatabaseReference newReference = firebaseReference.child(item.getId());
-        //newReference.setValue(toFirebaseMap(item));
         newReference.setValue(toFirebaseMap(item), (error, ref) -> {
             T itemCopy = item.duplicate();
             itemCopy.setUploaded(true);
@@ -234,6 +240,30 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             } catch (DatabaseException e) {
                 e.printStackTrace();
             }
+        });
+    }
+
+    @Override
+    public CompletableFuture<T> uploadAsync(T item) {
+        if (firebaseReference == null) {
+            return CompletableFuture.completedFuture(item)
+                .thenApply(t -> {
+                    throw new RuntimeException();
+                });
+        }
+
+        LOGGER.trace("Nahrávám item {} do online databáze", item.toString());
+        final DatabaseReference newReference = firebaseReference.child(item.getId());
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return newReference.setValueAsync(toFirebaseMap(item)).get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException();
+            }
+        }).thenCompose(aVoid -> {
+            T itemCopy = item.duplicate();
+            itemCopy.setUploaded(true);
+            return updateAsync(itemCopy);
         });
     }
 
@@ -261,14 +291,12 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
      */
     public void synchronize(final String author,
         final OnSynchronizationCompleteListener completeListener) {
-        final Task<Integer> task = new SynchronizationTask(author);
-        task.setOnSucceeded(event -> {
-            if (completeListener != null) {
-                completeListener.onSynchronizationComplete(task.getValue());
-            }
-        });
-
-        //ThreadPool.getInstance().submit(task);
+//        final Task<Integer> task = new SynchronizationTask(author);
+//        task.setOnSucceeded(event -> {
+//            if (completeListener != null) {
+//                completeListener.onSynchronizationComplete(task.getValue());
+//            }
+//        });
     }
 
     // endregion
