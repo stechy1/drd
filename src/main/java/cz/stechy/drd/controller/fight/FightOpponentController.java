@@ -2,6 +2,7 @@ package cz.stechy.drd.controller.fight;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import cz.stechy.drd.R;
 import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.MoneyController;
 import cz.stechy.drd.controller.bestiary.BestiaryHelper;
@@ -20,7 +21,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -66,7 +66,6 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
 
     // endregion
 
-    private final ObservableList<Mob> mobs;
     private final BestiaryService bestiary;
     private final ObjectProperty<Mob> selectedMob = new SimpleObjectProperty<>();
     private final Money treasure = new Money();
@@ -78,7 +77,6 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
 
     public FightOpponentController(BestiaryService bestiaryService) {
         this.bestiary = bestiaryService;
-        this.mobs = bestiary.selectAll();
     }
 
     // endregion
@@ -103,7 +101,7 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.cmbBestiary.setItems(mobs);
+        bestiary.selectAllAsync().thenAccept(this.cmbBestiary::setItems);
 
         this.selectedMob.bind(Bindings.createObjectBinding(() -> {
                 final Mob selectedItem = cmbBestiary.getSelectionModel().getSelectedItem();
@@ -155,7 +153,7 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
     @FXML
     private void handleShowMoneyPopup(ActionEvent actionEvent) {
         Bundle bundle = new Bundle().put(MoneyController.MONEY, treasure.getRaw());
-        parent.startNewPopupWindowForResult("money", ACTION_MONEY, bundle, (Node) actionEvent.getSource());
+        parent.startNewPopupWindowForResult(R.FXML.MONEY, ACTION_MONEY, bundle, (Node) actionEvent.getSource());
     }
 
     // endregion
