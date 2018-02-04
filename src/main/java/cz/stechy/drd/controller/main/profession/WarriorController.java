@@ -6,10 +6,10 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.profession.Warior;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.model.item.WeaponBase;
 import cz.stechy.drd.model.persistent.BestiaryService;
+import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ObservableMergers;
@@ -91,7 +91,7 @@ public class WarriorController implements IProfessionController, Initializable {
         FormUtils.initTextFormater(txtEnemyCountIntimidation,
             new MaxActValue(1, Integer.MAX_VALUE, 1));
 
-        ObservableMergers.mergeList(mobs, bestiary.selectAll());
+        bestiary.selectAllAsync().thenAccept(mobList -> ObservableMergers.mergeList(mobs, mobList));
         final List<WeaponBase> list = ItemRegistry.getINSTANCE().getRegistry().values().stream()
             .filter(databaseItem -> ItemType.isSword(((ItemBase) databaseItem).getItemType()))
             .map(databaseItem -> (WeaponBase) databaseItem).collect(
