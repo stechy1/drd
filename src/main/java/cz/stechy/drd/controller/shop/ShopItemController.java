@@ -44,6 +44,13 @@ interface ShopItemController<T> {
     void setAmmountEditableProperty(BooleanProperty ammountEditable);
 
     /**
+     * Přidá referenci na {@link ShopNotificationProvider} který zpřístupnění zobrazování notifikací
+     *
+     * @param notificationProvider {@link ShopNotificationProvider}
+     */
+    void setNotificationProvider(ShopNotificationProvider notificationProvider);
+
+    /**
      * @return Vrátí název screenu pro editaci itemu / přidání nového itemu
      */
     String getEditScreenName();

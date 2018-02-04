@@ -123,6 +123,7 @@ public class ShopController1 extends BaseController implements Initializable {
         "disableUploadBtn", true);
     private final BooleanProperty disableRemoveOnlineBtn = new SimpleBooleanProperty(this,
         "disableRemoveOnlineBtn", true);
+    private final ShopNotificationProvider notificationProvider = this::showNotification;
 
     private final User user;
     private final Hero hero;
@@ -266,6 +267,7 @@ public class ShopController1 extends BaseController implements Initializable {
             controller.setRowSelectedIndexProperty(selectedRowIndex);
             controller.setShowOnlineDatabase(showOnlineDatabase);
             controller.setAmmountEditableProperty(ammountEditable);
+            controller.setNotificationProvider(notificationProvider);
         }
     }
 

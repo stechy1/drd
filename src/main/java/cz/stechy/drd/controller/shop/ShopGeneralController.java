@@ -3,11 +3,10 @@ package cz.stechy.drd.controller.shop;
 import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.ThreadPool;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.persistent.GeneralItemService;
@@ -18,7 +17,9 @@ import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
+import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.Optional;
@@ -30,7 +31,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -79,17 +79,21 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final AdvancedDatabaseService<GeneralItem> service;
+    private final Translator translator;
     private final User user;
 
     private IntegerProperty selectedRowIndex;
     private ResourceBundle resources;
+    private ShopNotificationProvider notifier;
 
     // endregion
 
     // region Constrollers
 
-    public ShopGeneralController(UserService userService, GeneralItemService generalItemService) {
+    public ShopGeneralController(UserService userService, GeneralItemService generalItemService,
+        Translator translator) {
         this.service = generalItemService;
+        this.translator = translator;
         this.user = userService.getUser();
     }
 
@@ -119,22 +123,14 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         final Function<GeneralItem, GeneralEntry> mapper = generalItem -> {
             final GeneralEntry entry;
             final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(generalItem.getId());
-            if (cartEntry.isPresent()) {
-                entry = (GeneralEntry) cartEntry.get();
-            } else {
-                entry = new GeneralEntry(generalItem);
-            }
+            entry = cartEntry.map(shopEntry -> (GeneralEntry) shopEntry)
+                .orElseGet(() -> new GeneralEntry(generalItem));
 
             return entry;
         };
-        final Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                ObservableMergers.mergeList(mapper, generalItems, service.selectAll());
-                return null;
-            }
-        };
-        ThreadPool.getInstance().submit(task);
+
+        service.selectAllAsync()
+            .thenAccept(generalItemsList -> ObservableMergers.mergeList(mapper, generalItems, generalItemsList));
     }
 
     @Override
@@ -159,26 +155,41 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     }
 
     @Override
+    public void setNotificationProvider(ShopNotificationProvider notificationProvider) {
+        this.notifier = notificationProvider;
+    }
+
+    @Override
     public String getEditScreenName() {
         return R.FXML.ITEM_GENERAL;
     }
 
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
-        try {
-            service.insert((GeneralItem) item);
-        } catch (DatabaseException e) {
-            LOGGER.warn("Item {} se nepodařilo vložit do databáze", item.toString());
-        }
+        service.insertAsync((GeneralItem) item)
+            .exceptionally(throwable -> {
+                notifier.showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_INSERTED), item.getName())));
+                LOGGER.error("Item {} se nepodařilo vložit do databáze", item.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(generalItem -> notifier
+                .showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_INSERTED), item.getName()))));
     }
 
     @Override
     public void onUpdateItem(ItemBase item) {
-        try {
-            service.update((GeneralItem) item);
-        } catch (DatabaseException e) {
-            LOGGER.warn("Item {} se napodařilo aktualizovat", item.toString());
-        }
+        service.updateAsync((GeneralItem) item)
+            .exceptionally(throwable -> {
+                notifier.showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), item.getName())));
+                LOGGER.error("Položku {} se napodařilo aktualizovat", item.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(generalItem -> notifier
+                .showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_NOT_UPDATED), item.getName()))));
     }
 
     @Override
@@ -194,22 +205,51 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     @Override
     public void requestRemoveItem(int index) {
         final GeneralEntry entry = sortedList.get(index);
-        final String name = entry.getName();
-        try {
-            service.delete(entry.getId());
-        } catch (DatabaseException e) {
-            LOGGER.warn("Item {} se nepodařilo odebrat z databáze", name);
-        }
+        service.deleteAsync((GeneralItem) entry.getItemBase())
+            .exceptionally(throwable -> {
+                notifier.showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED), entry.getName())));
+                LOGGER.error("Položku {} se napodařilo aktualizovat", entry.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(generalItem -> notifier
+                .showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_DELETED), entry.getName()))));
     }
 
     @Override
-    public void requestRemoveItem(ShopEntry item, boolean remote) {
-        service.deleteRemote((GeneralItem) item.getItemBase(), remote);
+    public void requestRemoveItem(ShopEntry entry, boolean remote) {
+        service.deleteRemoteAsync((GeneralItem) entry.getItemBase(), remote)
+            .exceptionally(throwable -> {
+                final String key = remote
+                    ? R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE
+                    : R.Translate.NOTIFY_RECORD_IS_NOT_DELETED;
+                notifier.showNotification(new Notification(String.format(translator.translate(
+                    key), entry.getName())));
+                LOGGER.error("Položku {} se napodařilo aktualizovat", entry.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(generalItem -> {
+                final String key = remote
+                    ? R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE
+                    : R.Translate.NOTIFY_RECORD_IS_DELETED;
+                notifier.showNotification(new Notification(String.format(translator.translate(
+                    key), entry.getName())));
+            });
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        service.upload((GeneralItem) item);
+        service.uploadAsync((GeneralItem) item)
+            .exceptionally(throwable -> {
+                notifier.showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), item.getName())));
+                LOGGER.error("Položku {} se napodařilo aktualizovat", item.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(generalItem -> notifier
+                .showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_DELETED), item.getName()))));
     }
 
     @Override

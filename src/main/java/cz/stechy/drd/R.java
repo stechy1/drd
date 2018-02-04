@@ -374,6 +374,8 @@ public final class R {
         public static final String NOTIFY_LOGIN_FAIL = "drd_notify_login_fail";
         public static final String NOTIFY_REGISTER_SUCCESS = "drd_notify_register_success";
         public static final String NOTIFY_REGISTER_FAIL = "drd_notify_register_fail";
+        public static final String NOTIFY_LOGOUT_SUCCESS = "drd_notify_logout_success";
+        public static final String NOTIFY_LOGOUT_FAIL = "drd_notify_logout_fail";
         public static final String NOTIFY_FIGHT_LIVE_UPDATE = "drd_notify_fight_live_update";
         public static final String NOTIFY_TABLE_IS_EMPTY = "drd_notify_table_is_empty";
         public static final String NOTIFY_LIST_IS_EMPTY = "drd_notify_list_is_empty";
@@ -381,11 +383,17 @@ public final class R {
         public static final String NOTIFY_FUNCTION_NOT_IMPLEMENTED = "drd_notify_function_not_implemented";
         public static final String NOTIFY_HERO_NOT_FOUND = "drd_notify_hero_not_found";
         public static final String NOTIFY_RECORD_IS_INSERTED = "drd_notify_record_is_inserted";
+        public static final String NOTIFY_RECORD_IS_NOT_INSERTED = "drd_notify_record_is_not_inserted";
         public static final String NOTIFY_RECORD_IS_UPDATED = "drd_notify_record_is_updated";
+        public static final String NOTIFY_RECORD_IS_NOT_UPDATED = "drd_notify_record_is_not_updated";
         public static final String NOTIFY_RECORD_IS_DELETED = "drd_notify_record_is_deleted";
+        public static final String NOTIFY_RECORD_IS_NOT_DELETED = "drd_notify_record_is_not_deleted";
         public static final String NOTIFY_RECORD_IS_UPLOADED = "drd_notify_record_is_uploaded";
+        public static final String NOTIFY_RECORD_IS_NOT_UPLOADED = "drd_notify_record_is_not_uploaded";
         public static final String NOTIFY_RECORD_IS_DOWNLOADED = "drd_notify_record_is_downloaded";
+        public static final String NOTIFY_RECORD_IS_NOT_DOWNLOADED = "drd_notify_record_is_not_downloaded";
         public static final String NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE = "drd_notify_record_is_deleted_from_online_database";
+        public static final String NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE = "drd_notify_record_is_not_deleted_from_online_database";
         public static final String MAIN_MENU_TOOLS_MONEY = "drd_main_menu_tools_money";
         public static final String SETTINGS = "drd_settings";
         public static final String ABOUT_CONTENT = "drd_about_content";
