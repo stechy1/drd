@@ -344,6 +344,32 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     }
 
     @Override
+    public CompletableFuture<T> updateAsync(T item) {
+        final String query = String
+            .format("UPDATE %s SET %s WHERE %s = ?", getTable(), getColumnsUpdate(),
+                getColumnWithId());
+        final List<Object> params = itemToParams(item);
+        params.add(item.getId());
+        LOGGER.trace("Aktualizuji položku {} v databázi", item.toString());
+
+        return db.queryAsync(query, params.toArray())
+            .thenApply(value -> {
+                final Optional<T> result = items.stream()
+                    .filter(t -> item.getId().equals(t.getId()))
+                    .findFirst();
+                assert result.isPresent();
+                final TransactionOperation<T> operation = new UpdateOperation<>(result.get(), item);
+                if (db.isTransactional()) {
+                    operations.add(operation);
+                } else {
+                    operation.commit(items);
+                }
+
+                return item;
+            });
+    }
+
+    @Override
     public void delete(String id) throws DatabaseException {
         final String query = String
             .format("DELETE FROM %s WHERE %s = ?", getTable(), getColumnWithId());
@@ -363,6 +389,25 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
         } catch (SQLException e) {
             throw new DatabaseException(e);
         }
+    }
+
+    @Override
+    public CompletableFuture<T> deleteAsync(T item) {
+        final String query = String
+            .format("DELETE FROM %s WHERE %s = ?", getTable(), getColumnWithId());
+        LOGGER.trace("Mažu položku {} z databáze.", item.getId());
+
+        return db.queryAsync(query, item.getId())
+            .thenApply(value -> {
+                final TransactionOperation<T> operation = new DeleteOperation<>(item);
+                if (db.isTransactional()) {
+                    operations.add(operation);
+                } else {
+                    operation.commit(items);
+                }
+
+                return item;
+            });
     }
 
     @Override

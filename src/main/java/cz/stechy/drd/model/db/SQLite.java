@@ -106,20 +106,15 @@ public class SQLite implements Database {
     private CompletableFuture<Long> queryAsync(Connection connection, String query,
         Object... params) {
         return CompletableFuture.supplyAsync(() -> {
-            long result = -1;
+            long result;
             try (PreparedStatement statement = connection
                 .prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 for (int i = 0; i < params.length; i++) {
                     // Indexy v databázi jsou od 1, proto i+1
                     statement.setObject(i + 1, params[i]);
                 }
-                statement.executeUpdate();
+                result = statement.executeUpdate();
 
-                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                    if (generatedKeys.next()) {
-                        result = generatedKeys.getLong(1);
-                    }
-                }
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

@@ -52,6 +52,8 @@ public interface DatabaseService<T> {
      */
     void update(T item) throws DatabaseException;
 
+    CompletableFuture<T> updateAsync(T item);
+
     /**
      * Smaže předmět z databáze podle ID předmětu
      *
@@ -59,6 +61,8 @@ public interface DatabaseService<T> {
      * @throws DatabaseException Pokud se smazání nezdaří
      */
     void delete(String id) throws DatabaseException;
+
+    CompletableFuture<T> deleteAsync(T item);
 
     /**
      * Započne novou transakci, během které lze provést více operací
