@@ -5,6 +5,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.drd.model.db.base.Firebase;
@@ -13,6 +14,8 @@ import cz.stechy.drd.util.HashGenerator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -76,12 +79,28 @@ public final class UserService implements Firebase<User> {
     @Override
     public void upload(User user) {
         final DatabaseReference child = firebaseReference.child(user.getId());
-        //child.setValue(toFirebaseMap(user));
         child.setValue(toFirebaseMap(user), null);
     }
 
     @Override
+    public CompletableFuture<User> uploadAsync(User user) {
+        final DatabaseReference child = firebaseReference.child(user.getId());
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return child.setValueAsync(toFirebaseMap(user)).get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }).thenApply(aVoid -> user);
+    }
+
+    @Override
     public void deleteRemote(User user, boolean remote) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public CompletableFuture<User> deleteRemoteAsync(User item, boolean remote) {
         throw new NotImplementedException();
     }
 
@@ -113,25 +132,33 @@ public final class UserService implements Firebase<User> {
      * @param password Uživatelské heslo
      * @throws UserException Pokud se přihlášení nepodaří
      */
-    public void login(String username, String password) throws UserException {
-        final Optional<User> result = onlineDatabase.stream()
-            .filter(user -> user.getName().equals(username) && HashGenerator
-                .checkSame(user.getPassword(), password))
-            .findFirst();
-        if (!result.isPresent()) {
-            throw new UserException();
-        }
+    public CompletableFuture<User> loginAsync(String username, String password) {
+        return CompletableFuture.supplyAsync(() -> {
+            final Optional<User> result = onlineDatabase.stream()
+                .filter(user -> user.getName().equals(username) && HashGenerator
+                    .checkSame(user.getPassword(), password))
+                .findFirst();
+            if (!result.isPresent()) {
+                throw new UserException();
+            }
 
-        this.user.set(result.get());
-        getUser().setLogged(true);
+            return result.get();
+        }).thenApplyAsync(user -> {
+            this.user.setValue(user);
+            getUser().setLogged(true);
+            return user;
+        }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     /**
      * Odhlásí uživatele z aplikace
      */
-    public void logout() {
-        getUser().setLogged(false);
-        user.set(null);
+    public CompletableFuture<Void> logoutAsync() {
+        return CompletableFuture.supplyAsync(() -> {
+            getUser().setLogged(false);
+            user.set(null);
+            return null;
+        });
     }
 
     /**
@@ -141,16 +168,21 @@ public final class UserService implements Firebase<User> {
      * @param password Uživatelské heslo
      * @throws UserException Pokud se registrace nezdaří
      */
-    public void register(String username, String password) throws UserException {
+    public CompletableFuture<User> registerAsync(String username, String password) {
         final Optional<User> result = onlineDatabase.stream()
             .filter(user -> user.getName().equals(username))
             .findFirst();
         if (result.isPresent()) {
-            throw new UserException();
+            return CompletableFuture.completedFuture(null)
+                .thenApply(o -> {
+                    throw new UserException();
+                });
         }
 
-        User user = new User(username, password);
-        upload(user);
+        final User user = new User(username, password);
+        return CompletableFuture
+            .supplyAsync(() -> uploadAsync(user))
+            .thenApplyAsync(userFuture -> user, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     // endregion
@@ -201,7 +233,7 @@ public final class UserService implements Firebase<User> {
         }
     };
 
-    public static class UserException extends Exception {
+    public static class UserException extends RuntimeException {
 
         public UserException() {
         }

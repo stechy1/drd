@@ -2,7 +2,6 @@ package cz.stechy.drd.controller.user;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.persistent.UserService;
-import cz.stechy.drd.model.persistent.UserService.UserException;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Notification;
 import java.net.URL;
@@ -76,15 +75,26 @@ public class RegisterController extends BaseController implements Initializable 
     // region Button handlers
     @FXML
     private void handleRegister(ActionEvent actionEvent) {
-        try {
-            userService.register(loginModel.login.getValue(), loginModel.password.getValue());
-            setResult(RESULT_SUCCESS);
-            finish();
-        } catch (UserException e) {
-            LOGGER.info("Registrace se nezdařila");
-            showNotification(new Notification(registerFail));
-            loginModel.valid.set(false);
-        }
+        userService.registerAsync(loginModel.login.getValue(), loginModel.password.getValue())
+            .thenAccept(user -> {
+                setResult(RESULT_SUCCESS);
+                finish();
+            })
+            .exceptionally(throwable -> {
+                LOGGER.info("Registrace se nezdařila", throwable);
+                showNotification(new Notification(registerFail));
+                loginModel.valid.set(false);
+                throw new RuntimeException(throwable);
+            });
+//        try {
+//            userService.register(loginModel.login.getValue(), loginModel.password.getValue());
+//            setResult(RESULT_SUCCESS);
+//            finish();
+//        } catch (UserException e) {
+//            LOGGER.info("Registrace se nezdařila");
+//            showNotification(new Notification(registerFail));
+//            loginModel.valid.set(false);
+//        }
     }
 
     // endregion

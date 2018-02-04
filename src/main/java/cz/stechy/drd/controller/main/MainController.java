@@ -98,7 +98,8 @@ public class MainController extends BaseController implements Initializable {
 
     // endregion
 
-    private final BooleanProperty useFirebase = new SimpleBooleanProperty(this, "useFirebase", false);
+    private final BooleanProperty useFirebase = new SimpleBooleanProperty(this, "useFirebase",
+        false);
     private final ReadOnlyObjectProperty<Hero> hero;
     private final ReadOnlyObjectProperty<User> user;
     private final HeroService heroService;
@@ -111,6 +112,8 @@ public class MainController extends BaseController implements Initializable {
     private String loginSuccess;
     private String actionFailed;
     private String heroNotFound;
+    private String logoutSuccess;
+    private String logoutFailed;
 
     // endregion
 
@@ -168,7 +171,8 @@ public class MainController extends BaseController implements Initializable {
         showNotification(new Notification("levelUp"));
     }
 
-    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue, Hero newValue) {
+    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue,
+        Hero newValue) {
         if (newValue == null) {
             if (oldValue != null) {
                 oldValue.levelUpProperty().removeListener(this::levelUpHandler);
@@ -183,7 +187,8 @@ public class MainController extends BaseController implements Initializable {
         tabPane.getSelectionModel().selectFirst();
     }
 
-    private void userHandler(ObservableValue<? extends User> observable, User oldValue, User newValue) {
+    private void userHandler(ObservableValue<? extends User> observable, User oldValue,
+        User newValue) {
         if (newValue == null) {
             bindMenuLogin(null);
         } else {
@@ -207,6 +212,8 @@ public class MainController extends BaseController implements Initializable {
         this.loginSuccess = resources.getString(R.Translate.NOTIFY_LOGIN_SUCCESS);
         this.actionFailed = resources.getString(R.Translate.ACTION_FAILED);
         this.heroNotFound = resources.getString(R.Translate.NOTIFY_HERO_NOT_FOUND);
+        this.logoutSuccess = resources.getString(R.Translate.NOTIFY_LOGOUT_SUCCESS);
+        this.logoutFailed = resources.getString(R.Translate.NOTIFY_LOGOUT_FAIL);
 
         this.controllers = new MainScreen[]{
             defaultStaffController,
@@ -352,7 +359,12 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuLogout(ActionEvent actionEvent) {
-        userService.logout();
+        userService.logoutAsync()
+            .thenAccept(aVoid -> showNotification(new Notification(logoutSuccess)))
+            .exceptionally(throwable -> {
+                showNotification(new Notification(logoutFailed));
+                throw new RuntimeException(throwable);
+            });
     }
 
     @FXML
