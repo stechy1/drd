@@ -382,6 +382,8 @@ public final class R {
         public static final String NOTIFY_MERGED_ITEMS = "drd_notify_merged_items";
         public static final String NOTIFY_FUNCTION_NOT_IMPLEMENTED = "drd_notify_function_not_implemented";
         public static final String NOTIFY_HERO_NOT_FOUND = "drd_notify_hero_not_found";
+        public static final String NOTIFY_HERO_IS_DELETED = "drd_notify_hero_is_deleted";
+        public static final String NOTIFY_HERO_IS_NOT_DELETED = "drd_notify_hero_is_not_deleted";
         public static final String NOTIFY_RECORD_IS_INSERTED = "drd_notify_record_is_inserted";
         public static final String NOTIFY_RECORD_IS_NOT_INSERTED = "drd_notify_record_is_not_inserted";
         public static final String NOTIFY_RECORD_IS_UPDATED = "drd_notify_record_is_updated";
