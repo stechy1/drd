@@ -25,6 +25,8 @@ public interface DatabaseService<T> {
      */
     T select(Predicate<? super T> filter) throws DatabaseException;
 
+    CompletableFuture<T> selectAsync(Predicate<? super T> filter);
+
     /**
      * Provede výběr všech předmětů a vrátí ho jako pozorovatelnou kolekci
      *

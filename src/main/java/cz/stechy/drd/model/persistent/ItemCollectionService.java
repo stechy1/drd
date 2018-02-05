@@ -11,6 +11,7 @@ import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.model.item.ItemCollection.Builder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
@@ -103,8 +104,19 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
     }
 
     @Override
+    public CompletableFuture<ItemCollection> uploadAsync(ItemCollection item) {
+        return null;
+    }
+
+    @Override
     public void deleteRemote(ItemCollection item, boolean remote) {
         firebaseReference.child(item.getId()).removeValue(null);
+    }
+
+    @Override
+    public CompletableFuture<ItemCollection> deleteRemoteAsync(ItemCollection item,
+        boolean remote) {
+        return null;
     }
 
     // endregion

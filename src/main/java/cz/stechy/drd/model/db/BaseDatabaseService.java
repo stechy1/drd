@@ -242,6 +242,20 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     }
 
     @Override
+    public CompletableFuture<T> selectAsync(Predicate<? super T> filter) {
+        return CompletableFuture.supplyAsync(() -> {
+            Optional<T> item = items.stream()
+                .filter(filter)
+                .findFirst();
+            if (item.isPresent()) {
+                return item.get();
+            }
+
+            throw new RuntimeException("Item not found");
+        });
+    }
+
+    @Override
     public ObservableList<T> selectAll() {
         if (items.isEmpty() && !selectAllCalled) {
             try {
@@ -304,7 +318,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
                 getColumnValues());
         LOGGER.trace("Vkládám položku {} do databáze.", item.toString());
         return db.queryAsync(query, itemToParams(item).toArray())
-            .thenApply(value -> {
+            .thenApplyAsync(value -> {
                 final TransactionOperation<T> operation = new InsertOperation<>(item);
                 if (db.isTransactional()) {
                     operations.add(operation);
@@ -313,7 +327,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
                 }
 
                 return item;
-            });
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     @Override
@@ -353,7 +367,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
         LOGGER.trace("Aktualizuji položku {} v databázi", item.toString());
 
         return db.queryAsync(query, params.toArray())
-            .thenApply(value -> {
+            .thenApplyAsync(value -> {
                 final Optional<T> result = items.stream()
                     .filter(t -> item.getId().equals(t.getId()))
                     .findFirst();
@@ -366,7 +380,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
                 }
 
                 return item;
-            });
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     @Override
@@ -398,7 +412,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
         LOGGER.trace("Mažu položku {} z databáze.", item.getId());
 
         return db.queryAsync(query, item.getId())
-            .thenApply(value -> {
+            .thenApplyAsync(value -> {
                 final TransactionOperation<T> operation = new DeleteOperation<>(item);
                 if (db.isTransactional()) {
                     operations.add(operation);
@@ -407,7 +421,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
                 }
 
                 return item;
-            });
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     @Override

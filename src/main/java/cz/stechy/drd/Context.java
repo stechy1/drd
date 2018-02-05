@@ -20,7 +20,11 @@ import cz.stechy.drd.model.persistent.SpellBookService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import javafx.application.Platform;
 import net.harawata.appdirs.AppDirs;
 import net.harawata.appdirs.AppDirsFactory;
@@ -136,17 +140,17 @@ public class Context {
      */
     private void initServices() {
         // Inicializace jednotlivých služeb
-        for (Class service : SERVICES) {
-            final DatabaseService instance = container.getInstance(service);
-            try {
-                instance.createTable();
-                instance.selectAll();
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Inicializace UserService
+        final List<CompletableFuture> futureList = new ArrayList<>(SERVICES.length);
+        Arrays.stream(SERVICES).forEach(service -> {
+                final DatabaseService instance = container.getInstance(service);
+                try {
+                    instance.createTable();
+                    futureList.add(instance.selectAllAsync());
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                }
+            });
+        CompletableFuture.allOf(futureList.toArray(new CompletableFuture[futureList.size()]));
         container.getInstance(UserService.class);
         // Inicializace ItemCollectionService
         container.getInstance(ItemCollectionService.class);

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -275,6 +276,18 @@ public final class HeroService extends BaseDatabaseService<Hero> {
         }
 
         return inventoryManager;
+    }
+
+    public CompletableFuture<InventoryService> getInventoryAsync() {
+        return getInventoryAsync(hero.get());
+    }
+
+    private  CompletableFuture<InventoryService> getInventoryAsync(Hero hero) {
+        if (inventoryManager == null) {
+            inventoryManager = new InventoryService(db, hero);
+        }
+
+        return inventoryManager.selectAllAsync().thenApply(inventories -> inventoryManager);
     }
 
     /**

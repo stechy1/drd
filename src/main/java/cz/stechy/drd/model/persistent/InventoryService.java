@@ -5,6 +5,7 @@ import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
+import cz.stechy.drd.model.inventory.InventoryRecord;
 import cz.stechy.drd.model.inventory.InventoryType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -203,6 +205,21 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
         super.delete(id);
     }
 
+    @Override
+    public CompletableFuture<Inventory> deleteAsync(Inventory item) {
+        return getInventoryContentByIdAsync(item.getId())
+            .thenCompose(inventoryContent ->
+                inventoryContent.selectAllAsync().thenCompose(inventoryRecords -> {
+                    List<CompletableFuture<InventoryRecord>> futureList = new ArrayList<>(
+                        inventoryRecords.size());
+                    inventoryRecords.forEach(inventoryRecord ->
+                        futureList.add(inventoryContent.deleteAsync(inventoryRecord)));
+                    return CompletableFuture
+                        .allOf(futureList.toArray(new CompletableFuture[futureList.size()]))
+                        .thenCompose(aVoid -> super.deleteAsync(item));
+                }));
+    }
+
     public InventoryContent getInventoryContentById(final String inventoryId)
         throws DatabaseException {
         final Inventory inventory = new Inventory.Builder().id(inventoryId).build();
@@ -212,6 +229,16 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
     public InventoryContent getInventoryContent(final Inventory inventory)
         throws DatabaseException {
         return getInventoryContent(inventory, SIMPLE_FILTER(inventory));
+    }
+
+    public CompletableFuture<InventoryContent> getInventoryContentByIdAsync(
+        final String inventoryId) {
+        final Inventory inventory = new Inventory.Builder().id(inventoryId).build();
+        return getInventoryContentAsync(inventory, ID_FILTER(inventory));
+    }
+
+    public CompletableFuture<InventoryContent> getInventoryContentAsync(final Inventory inventory) {
+        return getInventoryContentAsync(inventory, SIMPLE_FILTER(inventory));
     }
 
     /**
@@ -225,7 +252,8 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
     public InventoryContent getInventoryContent(final Inventory inventory,
         final Predicate<? super Inventory> filter) throws DatabaseException {
         final Optional<Inventory> result = inventoryContentMap.keySet()
-            .stream().filter(Predicate.isEqual(inventory))
+            .stream()
+            .filter(Predicate.isEqual(inventory))
             .findFirst();
         InventoryContent inventoryContent;
         if (result.isPresent()) {
@@ -238,6 +266,27 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
         }
 
         return inventoryContent;
+    }
+
+    private CompletableFuture<InventoryContent> getInventoryContentAsync(final Inventory inventory,
+        final Predicate<? super Inventory> filter) {
+        final Optional<Inventory> result = inventoryContentMap.keySet()
+            .stream()
+            .filter(Predicate.isEqual(inventory))
+            .findFirst();
+
+        if (result.isPresent()) {
+            final InventoryContent inventoryContent = inventoryContentMap.get(result.get());
+            return CompletableFuture.completedFuture(inventoryContent);
+        }
+
+        return selectAsync(filter)
+            .thenCompose(inventoryResult -> {
+                final InventoryContent inventoryContent = new InventoryContent(db, inventoryResult);
+                inventoryContentMap.put(inventoryResult, inventoryContent);
+                return inventoryContent.selectAllAsync()
+                    .thenApply(inventoryRecords -> inventoryContent);
+            });
     }
 
     /**

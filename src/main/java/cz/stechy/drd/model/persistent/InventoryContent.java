@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -248,6 +249,33 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
         super.update(inventoryRecord);
         final int w = weight.get();
         weight.set(w - oldAmmount + inventoryRecord.getAmmount() * item.getWeight());
+    }
+
+    @Override
+    public CompletableFuture<InventoryRecord> updateAsync(InventoryRecord inventoryRecord) {
+        final Optional<InventoryRecord> inventoryRecordOptional = items.stream()
+            .filter(record -> Objects.equals(record, inventoryRecord))
+            .findFirst();
+
+        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
+            .getItemById(inventoryRecord.getItemId());
+        if (!itemOptional.isPresent()) {
+            return CompletableFuture.completedFuture(null)
+                .thenApply(o -> {
+                throw new RuntimeException();
+            });
+        }
+        final ItemBase item = itemOptional.get();
+        final int oldAmmount;
+        oldAmmount = inventoryRecordOptional
+            .map(inventoryRecord1 -> inventoryRecord1.getAmmount() * item.getWeight()).orElse(0);
+
+        return super.updateAsync(inventoryRecord)
+            .thenApply(inventoryRecord1 -> {
+                final int w = weight.get();
+                weight.set(w - oldAmmount + inventoryRecord.getAmmount() * item.getWeight());
+                return inventoryRecord1;
+            });
     }
 
     /**

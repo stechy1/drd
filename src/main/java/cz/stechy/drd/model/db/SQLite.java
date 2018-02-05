@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ForkJoinPool;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 
 /**
@@ -164,7 +163,7 @@ public class SQLite implements Database {
     @Override
     public <T> CompletableFuture<List<T>> selectAsync(RowTransformHandler<T> handler, String query,
         Object... params) {
-        CompletableFuture<List<T>> future = CompletableFuture.supplyAsync(() -> {
+        return CompletableFuture.supplyAsync(() -> {
             final List<T> resultList = new ArrayList<>();
             try (
                 final Connection connection = pool.getConnection();
@@ -177,7 +176,6 @@ public class SQLite implements Database {
                 ResultSet result = statement.executeQuery();
                 while (result.next()) {
                     resultList.add(handler.transofrm(result));
-                    Thread.sleep(50);
                 }
 
             } catch (Exception ex) {
@@ -185,9 +183,7 @@ public class SQLite implements Database {
             }
 
             return resultList;
-        }, ForkJoinPool.commonPool());
-
-        return future;
+        }, ThreadPool.DB_EXECUTOR);
     }
 
     @Override

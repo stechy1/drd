@@ -1,10 +1,10 @@
 package cz.stechy.drd.controller.main.inventory;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.inventory.BackpackController;
 import cz.stechy.drd.controller.main.MainScreen;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
@@ -75,41 +75,90 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
     // region Private methods
 
     // region Method handlers
-
-    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue, Hero newValue) {
+    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue,
+        Hero newValue) {
         InventoryContent.clearWeight();
         if (newValue == null) {
             mainItemContainer.clear();
             equipItemContainer.clear();
             return;
         }
-        // Získám správce inventáře podle hrdiny
-        final InventoryService inventoryManager = heroManager.getInventory();
-        try {
-            // Získám záznam hlavního inventáře
-            final Inventory mainInventory = inventoryManager.select(InventoryService.MAIN_INVENTORY_FILTER);
-            mainItemContainer.setInventoryManager(inventoryManager, mainInventory);
-            // Inicializace inventáře výbavy hrdiny
-            Inventory equipInventory = null;
-            try {
-                equipInventory = inventoryManager.select(InventoryService.EQUIP_INVENTORY_FILTER);
-            } catch (DatabaseException e) {
-                // Ještě nebyl vytvořen záznam o equip inventáři pro danou postavu
-                equipInventory = new Inventory.Builder()
-                    .heroId(mainInventory.getHeroId())
-                    .inventoryType(InventoryType.EQUIP)
-                    .capacity(EquipItemContainer.CAPACITY)
-                    .build();
-                inventoryManager.insert(equipInventory);
-            } finally {
-                assert equipInventory != null;
-                equipItemContainer.setInventoryManager(inventoryManager, equipInventory);
-            }
-        } catch (DatabaseException e) {
-            mainItemContainer.clear();
-            equipItemContainer.clear();
-        }
+
+        heroManager.getInventoryAsync()
+            .thenCompose(inventoryService ->
+            {
+                return inventoryService.selectAsync(InventoryService.MAIN_INVENTORY_FILTER)
+                    .thenCompose(mainInventory ->
+                    {
+                        return mainItemContainer
+                            .setInventoryManager(inventoryService, mainInventory)
+                            .thenCompose(ignore ->
+                            {
+                                return inventoryService
+                                    .selectAsync(InventoryService.EQUIP_INVENTORY_FILTER)
+                                    .handle((equipInventory, throwable) -> {
+                                        if (throwable != null) {
+                                            equipInventory = new Inventory.Builder()
+                                                .heroId(mainInventory.getHeroId())
+                                                .inventoryType(InventoryType.EQUIP)
+                                                .capacity(EquipItemContainer.CAPACITY)
+                                                .build();
+                                            return inventoryService.insertAsync(equipInventory);
+                                        }
+
+                                        return equipInventory;
+                                    })
+                                    .thenApplyAsync(o -> {
+                                        assert o instanceof Inventory;
+                                        final Inventory inv = (Inventory) o;
+                                        return equipItemContainer.setInventoryManager(inventoryService, inv);
+                                    }, ThreadPool.JAVAFX_EXECUTOR);
+                            });
+                    });
+            })
+        .exceptionally(throwable -> {
+            throwable.printStackTrace();
+            throw new RuntimeException(throwable);
+        })
+        .thenAccept(ignore -> {
+            System.out.println("Načteno");
+        });
     }
+//    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue, Hero newValue) {
+//        InventoryContent.clearWeight();
+//        if (newValue == null) {
+//            mainItemContainer.clear();
+//            equipItemContainer.clear();
+//            return;
+//        }
+//        // Získám správce inventáře podle hrdiny
+//        final InventoryService inventoryManager = heroManager.getInventory();
+//        try {
+//            // Získám záznam hlavního inventáře
+//            final Inventory mainInventory = inventoryManager.select(InventoryService.MAIN_INVENTORY_FILTER);
+//            mainItemContainer.setInventoryManager(inventoryManager, mainInventory);
+//            // Inicializace inventáře výbavy hrdiny
+//            Inventory equipInventory = null;
+//            try {
+//                equipInventory = inventoryManager.select(InventoryService.EQUIP_INVENTORY_FILTER);
+//            } catch (DatabaseException e) {
+//                // Ještě nebyl vytvořen záznam o equip inventáři pro danou postavu
+//                equipInventory = new Inventory.Builder()
+//                    .heroId(mainInventory.getHeroId())
+//                    .inventoryType(InventoryType.EQUIP)
+//                    .capacity(EquipItemContainer.CAPACITY)
+//                    .build();
+//                inventoryManager.insert(equipInventory);
+//            } finally {
+//                assert equipInventory != null;
+//                equipItemContainer.setInventoryManager(inventoryManager, equipInventory);
+//            }
+//        } catch (DatabaseException e) {
+//            e.printStackTrace();
+//            mainItemContainer.clear();
+//            equipItemContainer.clear();
+//        }
+//    }
 
     private void itemClickHandler(ItemSlot itemSlot) {
         final ItemBase item = itemSlot.getItemStack().getItem();
