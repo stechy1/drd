@@ -1,11 +1,12 @@
 package cz.stechy.drd.controller.shop;
 
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
+import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.persistent.HeroService;
-import cz.stechy.drd.model.persistent.InventoryService;
 import cz.stechy.drd.model.shop.ShoppingCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.screens.BaseController;
@@ -95,27 +96,38 @@ public class ShopController2 extends BaseController implements Initializable {
     @FXML
     private void handleFinishShopping(ActionEvent actionEvent) {
         try {
-            // Odečtení peněz
             heroService.beginTransaction();
             final Hero heroCopy = heroService.getHero().duplicate();
             heroCopy.getMoney().subtract(shoppingCart.totalPrice);
-            heroService.update(heroCopy);
-
-            final InventoryService inventoryManager = heroService.getInventory();
-            InventoryHelper.insertItemsToInventory(inventoryManager, items);
-
-            heroService.commit();
-
+            heroService.updateAsync(heroCopy)
+                .thenCompose(hero ->
+                    heroService.getInventoryAsync()
+                        .thenCompose(inventoryService ->
+                            InventoryHelper.insertItemsToInventoryAsync(inventoryService, items)))
+            .thenAcceptAsync(aVoid -> {
+                try {
+                    heroService.commit();
+                    System.out.println("hotovo");
+                    finish();
+                } catch (DatabaseException e) {
+                    System.out.println("Commit se nezdařil");
+                    e.printStackTrace();
+                }
+            }, ThreadPool.JAVAFX_EXECUTOR)
+            .exceptionally(throwable -> {
+                try {
+                    System.out.println("rollback");
+                    heroService.rollback();
+                } catch (DatabaseException e) {
+                    System.out.println("Rollback se nezdařil");
+                    e.printStackTrace();
+                }
+                throwable.printStackTrace();
+                throw new RuntimeException(throwable);
+            });
         } catch (DatabaseException e) {
             e.printStackTrace();
-            try {
-                heroService.rollback();
-            } catch (DatabaseException e1) {
-                e1.printStackTrace();
-            }
-            return;
         }
-        finish();
     }
 
     @FXML
@@ -129,6 +141,7 @@ public class ShopController2 extends BaseController implements Initializable {
 
         // region Variables
 
+        private final ItemBase itemBase;
         protected final StringProperty id = new SimpleStringProperty();
         protected final StringProperty name = new SimpleStringProperty();
         protected final IntegerProperty ammount = new SimpleIntegerProperty();
@@ -144,6 +157,7 @@ public class ShopController2 extends BaseController implements Initializable {
          * @param entry {@link ShopEntry}
          */
         public ItemResultEntry(ShopEntry entry) {
+            this.itemBase = entry.getItemBase();
             this.id.set(entry.getId());
             this.name.set(entry.getName());
             this.ammount.set(entry.getAmmount().getActValue().intValue());
@@ -153,6 +167,11 @@ public class ShopController2 extends BaseController implements Initializable {
         // endregion
 
         // region Getters & Setters
+
+        @Override
+        public ItemBase getItemBase() {
+            return itemBase;
+        }
 
         public String getId() {
             return id.get();

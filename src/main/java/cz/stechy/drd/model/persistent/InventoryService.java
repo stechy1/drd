@@ -307,6 +307,21 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
         return subInventory.getId();
     }
 
+    /**
+     * Inicializuje nový inventář
+     *
+     * @param capacity Kapacita inventáře
+     * @return {@link Inventory} instanci inicializovaného inventáře
+     */
+    public CompletableFuture<Inventory> initSubInventoryAsync(final int capacity) {
+        Inventory subInventory = new Inventory.Builder()
+            .heroId(hero.getId())
+            .inventoryType(InventoryType.BACKPACK)
+            .capacity(capacity)
+            .build();
+        return insertAsync(subInventory);
+    }
+
     // endregion
 
     // region Getters & Setters

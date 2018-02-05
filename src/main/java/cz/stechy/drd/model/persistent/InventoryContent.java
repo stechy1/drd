@@ -269,6 +269,7 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
         final int oldAmmount;
         oldAmmount = inventoryRecordOptional
             .map(inventoryRecord1 -> inventoryRecord1.getAmmount() * item.getWeight()).orElse(0);
+        assert inventoryRecord.getAmmount() != 0;
 
         return super.updateAsync(inventoryRecord)
             .thenApply(inventoryRecord1 -> {
@@ -305,6 +306,56 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
         }
 
         return result.get().getSlotId();
+    }
+
+    public synchronized CompletableFuture<Map<Integer, Integer>> getFreeSlotAsync(ItemBase item, int ammount) {
+        return CompletableFuture.supplyAsync(() -> {
+            final Map<Integer, Integer> mapSlots = new HashMap<>();
+            final int stackSize = item.getStackSize();
+
+            items.forEach(inventoryRecord -> occupiedSlots[inventoryRecord.getSlotId()] = SLOT_OCCUPIED);
+            final Map<Integer, Integer> occupiedItemMap = new HashMap<>();
+            for (InventoryRecord inventoryRecord : items) {
+                if (inventoryRecord.getItemId().equals(item.getId())) {
+                    if (occupiedItemMap.put(inventoryRecord.getSlotId(), stackSize - inventoryRecord.getAmmount()) != null) {
+                        throw new IllegalStateException("Duplicate key");
+                    }
+                }
+            }
+            int remaining = ammount;
+            for (Entry<Integer, Integer> entry : occupiedItemMap.entrySet()) {
+                final int slotId = entry.getKey();
+                final int freeSpace = entry.getValue();
+                final int insertAmmount = Math.min(remaining, freeSpace);
+                mapSlots.put(slotId, insertAmmount);
+                remaining -= insertAmmount;
+                if (remaining <= 0) {
+                    break;
+                }
+            }
+
+            if (remaining - stackSize * (inventory.getCapacity() - items.size()) > 0) {
+                throw new RuntimeException("V inventáři není dostatek místa.");
+            }
+
+            final int capacity = inventory.getCapacity();
+            int index = 0;
+            while (remaining > 0) {
+                if (occupiedSlots[index] != SLOT_NOT_OCCUPIED) {
+                    index++;
+                    continue;
+                }
+
+                final int insertAmmount = Math.min(remaining, stackSize);
+                mapSlots.put(index, insertAmmount);
+                remaining -= insertAmmount;
+                occupiedSlots[index] = SLOT_OCCUPIED;
+                index++;
+                assert index != capacity;
+            }
+
+            return mapSlots;
+        });
     }
 
     /**

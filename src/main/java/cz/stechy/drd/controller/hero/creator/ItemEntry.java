@@ -3,10 +3,8 @@ package cz.stechy.drd.controller.hero.creator;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import java.io.ByteArrayInputStream;
-import java.util.Optional;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -17,6 +15,7 @@ import javafx.scene.image.Image;
 
 public final class ItemEntry implements InventoryHelper.ItemRecord {
 
+    private final ItemBase itemBase;
     private final StringProperty id = new SimpleStringProperty();
     private final StringProperty name = new SimpleStringProperty();
     private final ObjectProperty<Image> image = new SimpleObjectProperty<>();
@@ -24,20 +23,19 @@ public final class ItemEntry implements InventoryHelper.ItemRecord {
     private final MaxActValue itemCount = new MaxActValue();
 
     ItemEntry(ChoiceEntry entry) {
-        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
-            .getItemById(entry.getId());
-        if (!itemOptional.isPresent()) {
-            return;
-        }
-
-        final ItemBase itemBase = itemOptional.get();
-        this.id.setValue(itemBase.getId());
-        this.name.setValue(itemBase.getName());
-        this.weight.setValue(itemBase.getWeight());
-        final ByteArrayInputStream inputStream = new ByteArrayInputStream(itemBase.getImage());
+        this.itemBase = entry.getItemBase();
+        this.id.setValue(this.itemBase.getId());
+        this.name.setValue(this.itemBase.getName());
+        this.weight.setValue(this.itemBase.getWeight());
+        final ByteArrayInputStream inputStream = new ByteArrayInputStream(this.itemBase.getImage());
         image.set(new Image(inputStream));
         itemCount.setMinValue(1);
         itemCount.setActValue(1);
+    }
+
+    @Override
+    public ItemBase getItemBase() {
+        return itemBase;
     }
 
     public String getId() {
