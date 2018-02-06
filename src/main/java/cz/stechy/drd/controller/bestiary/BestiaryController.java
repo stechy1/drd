@@ -1,11 +1,10 @@
 package cz.stechy.drd.controller.bestiary;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.ThreadPool;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.bestiary.MobEntry;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
 import cz.stechy.drd.model.persistent.BestiaryService;
@@ -18,6 +17,7 @@ import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.Optional;
@@ -28,10 +28,10 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -122,7 +122,8 @@ public class BestiaryController extends BaseController implements Initializable 
 
     // region Constructors
 
-    public BestiaryController(UserService userService, BestiaryService bestiaryService, Translator translator) {
+    public BestiaryController(UserService userService, BestiaryService bestiaryService,
+        Translator translator) {
         this.service = bestiaryService;
         this.translator = translator;
         this.user = userService.getUser();
@@ -148,6 +149,29 @@ public class BestiaryController extends BaseController implements Initializable 
         return Optional.of(sortedList.get(selectedRowIndex.get()).getMobBase());
     }
 
+    private void selectedRowListener(ObservableValue<? extends Number> observable, Number oldValue,
+        Number newValue) {
+        if (newValue == null || newValue.intValue() < 0) {
+            disableDownloadBtn.unbind();
+            disableUploadBtn.unbind();
+            disableRemoveOnlineBtn.unbind();
+
+            disableDownloadBtn.set(true);
+            disableUploadBtn.set(true);
+            disableRemoveOnlineBtn.set(true);
+
+            return;
+        }
+
+        final MobEntry entry = sortedList.get(newValue.intValue());
+        final BooleanBinding authorBinding = Bindings.createBooleanBinding(() ->
+                (user != null) && entry.getAuthor().equals(user.getName()),
+            entry.authorProperty());
+        disableDownloadBtn.bind(entry.downloadedProperty());
+        disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding.not()));
+        disableRemoveOnlineBtn.bind(authorBinding.not());
+    }
+
     // endregion
 
     @Override
@@ -170,40 +194,20 @@ public class BestiaryController extends BaseController implements Initializable 
             showOnlineDatabase));
         btnDownloadItem.disableProperty().bind(
             userLogged.not().or(
-                    disableDownloadBtn.or(
-                        showOnlineDatabase.not())));
+                disableDownloadBtn.or(
+                    showOnlineDatabase.not())));
         btnUploadItem.disableProperty().bind(
             userLogged.not().or(
-                    disableUploadBtn.or(
-                        showOnlineDatabase)));
+                disableUploadBtn.or(
+                    showOnlineDatabase)));
         btnRemoveOnlineItem.disableProperty().bind(
             userLogged.not().or(
-                    disableRemoveOnlineBtn.or(
-                        showOnlineDatabase.not())));
+                disableRemoveOnlineBtn.or(
+                    showOnlineDatabase.not())));
 
         btnSynchronize.disableProperty().bind(userLogged.not());
 
-        selectedRowIndex.addListener((observable, oldValue, newValue) -> {
-            if (newValue == null || newValue.intValue() < 0) {
-                disableDownloadBtn.unbind();
-                disableUploadBtn.unbind();
-                disableRemoveOnlineBtn.unbind();
-
-                disableDownloadBtn.set(true);
-                disableUploadBtn.set(true);
-                disableRemoveOnlineBtn.set(true);
-
-                return;
-            }
-
-            final MobEntry entry = sortedList.get(newValue.intValue());
-            final BooleanBinding authorBinding = Bindings.createBooleanBinding(() ->
-                (user == null) ? false : entry.getAuthor().equals(user.getName()),
-                entry.authorProperty());
-            disableDownloadBtn.bind(entry.downloadedProperty());
-            disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding.not()));
-            disableRemoveOnlineBtn.bind(authorBinding.not());
-        });
+        selectedRowIndex.addListener(this::selectedRowListener);
         showOnlineDatabase.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 return;
@@ -218,14 +222,8 @@ public class BestiaryController extends BaseController implements Initializable 
         columnRulesType.setCellFactory(
             TextFieldTableCell.forTableColumn(translator.getConvertor(Key.RULES)));
 
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                ObservableMergers.mergeList(MobEntry::new, mobs, service.selectAll());
-                return null;
-            }
-        };
-        ThreadPool.getInstance().submit(task);
+        service.selectAllAsync()
+            .thenAccept(m -> ObservableMergers.mergeList(MobEntry::new, mobs, m));
     }
 
     @Override
@@ -243,19 +241,22 @@ public class BestiaryController extends BaseController implements Initializable 
                     return;
                 }
                 mob = BestiaryHelper.mobFromBundle(bundle);
-                try {
-                    mob.setAuthor((user != null) ? user.getName() : "");
-                    mob.setId(HashGenerator.createHash());
-                    service.insert(mob);
-                    sortedList.stream()
-                        .filter(mobEntry -> mobEntry.getName().equals(mob.getName()))
-                        .findFirst()
-                        .ifPresent(tableBestiary.getSelectionModel()::select);
-
-                } catch (DatabaseException e) {
-                    e.printStackTrace();
-                    LOGGER.warn("Nestvůru {} se nepodařilo vložit do databáze", mob.toString());
-                }
+                mob.setAuthor((user != null) ? user.getName() : "");
+                mob.setId(HashGenerator.createHash());
+                service.insertAsync(mob)
+                    .exceptionally(throwable -> {
+                        throwable.printStackTrace();
+                        throw new RuntimeException(throwable);
+                    })
+                    .thenAccept(m -> {
+                        sortedList.stream()
+                            .filter(mobEntry -> mobEntry.getName().equals(m.getName()))
+                            .findFirst()
+                            .ifPresent(tableBestiary.getSelectionModel()::select);
+                        showNotification(new Notification(String.format(
+                            translator.translate(R.Translate.NOTIFY_RECORD_IS_INSERTED),
+                            m.getName())));
+                    });
                 break;
 
             case BestiaryHelper.MOB_ACTION_UPDATE:
@@ -264,11 +265,14 @@ public class BestiaryController extends BaseController implements Initializable 
                 }
 
                 mob = BestiaryHelper.mobFromBundle(bundle);
-                try {
-                    service.update(mob);
-                } catch (DatabaseException e) {
-                    LOGGER.warn("Nestvůru {} se napodařilo aktualizovat", mob.toString());
-                }
+                service.updateAsync(mob)
+                    .exceptionally(throwable -> {
+                        LOGGER.warn("Nestvůru {} se nepodařilo aktualizovat", mob.getName());
+                        throw new RuntimeException(throwable);
+                    })
+                    .thenAccept(m -> showNotification(new Notification(String
+                        .format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPDATED),
+                            m.getName()))));
                 break;
         }
     }
@@ -287,11 +291,13 @@ public class BestiaryController extends BaseController implements Initializable 
         final int rowIndex = selectedRowIndex.get();
         final MobEntry entry = sortedList.get(rowIndex);
         final String name = entry.getName();
-        try {
-            service.delete(entry.getMobBase().getId());
-        } catch (DatabaseException e) {
-            LOGGER.warn("Příšeru {} se nepodařilo odebrat z databáze", name);
-        }
+        service.deleteAsync(entry.getMobBase())
+            .exceptionally(throwable -> {
+                LOGGER.error("Příšeru {} se nepodařilo odebrat z databáze", name, throwable);
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(m -> showNotification(new Notification(String
+                .format(translator.translate(R.Translate.NOTIFY_RECORD_IS_DELETED), m.getName()))));
     }
 
     @FXML
@@ -304,23 +310,42 @@ public class BestiaryController extends BaseController implements Initializable 
 
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(service::upload);
+        getSelectedEntry().ifPresent(mob ->
+            service.uploadAsync(mob, (error, ref) -> {
+                if (error != null) {
+                    LOGGER.error("Položku {} se nepodařilo nahrát", mob);
+                } else {
+                    showNotification(new Notification(String
+                        .format(translator.translate(Translate.NOTIFY_RECORD_IS_UPLOADED),
+                            mob.getName())));
+                }
+            }));
     }
 
     @FXML
     private void handleDownloadItem(ActionEvent actionEvent) {
         getSelectedEntry().ifPresent(item -> {
-            try {
-                service.insert(item);
-            } catch (DatabaseException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
+            service.insertAsync(item)
+                .exceptionally(throwable -> {
+                    LOGGER.error(throwable.getMessage(), throwable);
+                    throw new RuntimeException(throwable);
+                });
         });
     }
 
     @FXML
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(mob -> service.deleteRemote(mob, true));
+        getSelectedEntry().ifPresent(mob ->
+            service.deleteRemoteAsync(mob, true, (error, ref) -> {
+                if (error != null) {
+                    LOGGER.error("Položku {} se nepodařilo odstranit z online databáze", mob);
+                } else {
+                    showNotification(new Notification(String.format(
+                        translator
+                            .translate(Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+                        mob.getName())));
+                }
+            }));
     }
 
     @FXML

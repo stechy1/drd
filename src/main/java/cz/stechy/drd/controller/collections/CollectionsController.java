@@ -15,6 +15,7 @@ import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.ObservableMergers;
+import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
@@ -43,8 +44,17 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CollectionsController extends BaseController implements Initializable {
+
+    // region Constants
+
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger(CollectionsController.class);
+
+    // endregion
 
     // region Variables
 
@@ -78,26 +88,30 @@ public class CollectionsController extends BaseController implements Initializab
     private final ObservableList<ItemCollection> collections = FXCollections.observableArrayList();
     private final ObservableList<ItemEntry> collectionItems = FXCollections.observableArrayList();
     private final ObservableList<ChoiceEntry> itemRegistry = FXCollections.observableArrayList();
-    private final ObjectProperty<ItemCollection> selectedCollection = new SimpleObjectProperty<>(this, "selectedCollection", null);
-    private final ObjectProperty<ItemEntry> selectedCollectionItem = new SimpleObjectProperty<>(this, "selectedCollectionItem", null);
-    private final ObjectProperty<ItemCollectionContent> collectionContent = new SimpleObjectProperty<>(this, "collectionContent", null);
+    private final ObjectProperty<ItemCollection> selectedCollection = new SimpleObjectProperty<>(
+        this, "selectedCollection", null);
+    private final ObjectProperty<ItemEntry> selectedCollectionItem = new SimpleObjectProperty<>(
+        this, "selectedCollectionItem", null);
+    private final ObjectProperty<ItemCollectionContent> collectionContent = new SimpleObjectProperty<>(
+        this, "collectionContent", null);
 
     private final ItemCollectionService collectionService;
     private final ItemResolver itemResolver;
     private final User user;
+    private final Translator translator;
 
     private String title;
-    private String mergedNotification;
 
     // endregion
 
     // region Constructors
 
     public CollectionsController(ItemCollectionService collectionService, ItemResolver itemResolver,
-        UserService userService) {
+        UserService userService, Translator translator) {
         this.collectionService = collectionService;
         this.itemResolver = itemResolver;
         this.user = userService.getUser();
+        this.translator = translator;
         itemRegistry.setAll(ItemRegistry.getINSTANCE().getChoices());
     }
 
@@ -105,7 +119,8 @@ public class CollectionsController extends BaseController implements Initializab
 
     // region Private methods
 
-    private void collectionContentListener(ObservableValue<? extends ItemCollectionContent> observable,
+    private void collectionContentListener(
+        ObservableValue<? extends ItemCollectionContent> observable,
         ItemCollectionContent oldValue, ItemCollectionContent newValue) {
         collectionItems.clear();
         if (oldValue != null) {
@@ -123,7 +138,7 @@ public class CollectionsController extends BaseController implements Initializab
     // region Method handlers
 
     private void collectionContentChangeListener(ListChangeListener.Change<? extends ItemBase> c) {
-        while(c.next()) {
+        while (c.next()) {
             collectionItems.addAll(c.getAddedSubList().stream().map(ItemEntry::new).collect(
                 Collectors.toList()));
             c.getRemoved().stream()
@@ -141,7 +156,6 @@ public class CollectionsController extends BaseController implements Initializab
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.title = resources.getString(R.Translate.COLLECTIONS_TITLE);
-        this.mergedNotification = resources.getString(R.Translate.NOTIFY_MERGED_ITEMS);
         lvCollections.setItems(collections);
         lvCollections.setCellFactory(param -> new ItemCollectionCell());
         tableCollectionItems.setFixedCellSize(40);
@@ -151,7 +165,8 @@ public class CollectionsController extends BaseController implements Initializab
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
 
         final BooleanBinding loggedBinding = Bindings.createBooleanBinding(() -> user != null);
-        btnCollectionAdd.disableProperty().bind(loggedBinding.not().or(txtCollectionName.textProperty().isEmpty()));
+        btnCollectionAdd.disableProperty()
+            .bind(loggedBinding.not().or(txtCollectionName.textProperty().isEmpty()));
         final BooleanBinding selectedBinding = selectedCollection.isNull();
         final BooleanBinding authorBinding = Bindings.createBooleanBinding(() -> {
             final ItemCollection collection = selectedCollection.get();
@@ -164,9 +179,11 @@ public class CollectionsController extends BaseController implements Initializab
         btnCollectionDownload.disableProperty().bind(loggedBinding.not().or(selectedBinding));
         btnCollectionRemove.disableProperty().bind(authorBinding.not().or(selectedBinding));
 
-        selectedCollectionItem.bind(tableCollectionItems.getSelectionModel().selectedItemProperty());
+        selectedCollectionItem
+            .bind(tableCollectionItems.getSelectionModel().selectedItemProperty());
 
-        btnCollectionItemRemove.disableProperty().bind(selectedCollectionItem.isNull().or(authorBinding.not()));
+        btnCollectionItemRemove.disableProperty()
+            .bind(selectedCollectionItem.isNull().or(authorBinding.not()));
         btnCollectionItemAdd.disableProperty().bind(selectedBinding.or(authorBinding.not()));
 
         collectionContent.addListener(this::collectionContentListener);
@@ -197,42 +214,104 @@ public class CollectionsController extends BaseController implements Initializab
             .name(txtCollectionName.getText())
             .author(user != null ? user.getName() : "")
             .build();
-        collectionService.upload(collection);
-        txtCollectionName.clear();
+        collectionService.uploadAsync(collection, (error, ref) -> {
+            if (error != null) {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), collection.getName())));
+                LOGGER.error("Položku {} se nepodařilo nahrát do online databáze",
+                    collection.getName());
+            } else {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_UPLOADED), collection.getName())));
+            }
+
+            txtCollectionName.clear();
+        });
     }
 
     @FXML
     private void handleCollectionRemove(ActionEvent actionEvent) {
         final ItemCollection collection = selectedCollection.get();
-        collectionService.deleteRemote(collection, true);
+        collectionService.deleteRemoteAsync(collection, true, (error, ref) -> {
+            if (error != null) {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
+                    collection.getName())));
+                LOGGER.error("Položku {} se nepodařilo odstranit z online databáze",
+                    collection.getName());
+            } else {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+                    collection.getName())));
+            }
+        });
         lvCollections.getSelectionModel().clearSelection();
     }
 
     @FXML
     private void handleCollectionDownload(ActionEvent actionEvent) {
-        final int merged = itemResolver.merge(collectionItems);
-        showNotification(new Notification(String.format(mergedNotification, merged)));
+        itemResolver.merge(collectionItems)
+            .exceptionally(throwable -> {
+                showNotification(new Notification(translator.translate(
+                    R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
+                LOGGER.error("Položky se nepodařilo zmergovat");
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(merged ->
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_MERGED_ITEMS), merged))));
     }
 
     @FXML
     private void handleCollectionItemAdd(ActionEvent actionEvent) {
         final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(itemRegistry);
-        entryOptional.ifPresent(choiceEntry -> collectionContent.get().upload(choiceEntry.getItemBase()));
+        entryOptional.ifPresent(choiceEntry ->
+            collectionContent.get().uploadAsync(choiceEntry.getItemBase(), (error, ref) -> {
+                final String itemName = choiceEntry.getName();
+                final String collectionName = selectedCollection.get().getName();
+                if (error != null) {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
+                        collectionName)));
+                    LOGGER.error("Položku se nepodařilo přidat do kolekce");
+                } else {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
+                        collectionName)));
+                }
+            }));
     }
 
     @FXML
     private void handleCollectionItemRemove(ActionEvent actionEvent) {
         final ItemCollectionContent content = this.collectionContent.get();
+
         if (content == null) {
             return;
         }
 
-        content.deleteRemote(selectedCollectionItem.get().getItemBase(), true);
+        final String itemName = selectedCollectionItem.get().getName();
+        final String collectionName = selectedCollection.get().getName();
+
+        content
+            .deleteRemoteAsync(selectedCollectionItem.get().getItemBase(), true, (error, ref) -> {
+                if (error != null) {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_DELETED), itemName,
+                        collectionName)));
+                    LOGGER.error("Položku se nepodařilo odebrat z kolekce");
+                } else {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_DELETED), itemName,
+                        collectionName)));
+                }
+            });
     }
 
     // endregion
 
     public static final class ItemEntry implements WithItemBase {
+
         public final StringProperty name = new SimpleStringProperty(this, "name");
         public final IntegerProperty weight = new SimpleIntegerProperty(this, "weight");
         public final ObjectProperty<Money> price = new SimpleObjectProperty<>(this, "price");

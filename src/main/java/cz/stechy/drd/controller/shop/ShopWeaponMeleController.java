@@ -3,11 +3,10 @@ package cz.stechy.drd.controller.shop;
 import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.ThreadPool;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
@@ -24,6 +23,7 @@ import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.Optional;
@@ -35,7 +35,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -101,6 +100,8 @@ public class ShopWeaponMeleController implements Initializable,
 
     private IntegerProperty selectedRowIndex;
     private ResourceBundle resources;
+    private ShopNotificationProvider notifier;
+    private ShopFirebaseListener firebaseListener;
 
     // endregion
 
@@ -142,24 +143,14 @@ public class ShopWeaponMeleController implements Initializable,
         Function<MeleWeapon, MeleWeaponEntry> mapper = meleWeapon -> {
             final MeleWeaponEntry entry;
             final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(meleWeapon.getId());
-            if (cartEntry.isPresent()) {
-                entry = (MeleWeaponEntry) cartEntry.get();
-            } else {
-                entry = new MeleWeaponEntry(meleWeapon);
-            }
+            entry = cartEntry.map(shopEntry -> (MeleWeaponEntry) shopEntry)
+                .orElseGet(() -> new MeleWeaponEntry(meleWeapon));
 
             return entry;
         };
 
-        final Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                ObservableMergers.mergeList(mapper, meleWeapons, service.selectAll());
-                return null;
-            }
-        };
-
-        ThreadPool.getInstance().submit(task);
+        service.selectAllAsync()
+            .thenAccept(meleWeaponList -> ObservableMergers.mergeList(mapper, meleWeapons, meleWeaponList));
     }
 
     @Override
@@ -184,26 +175,46 @@ public class ShopWeaponMeleController implements Initializable,
     }
 
     @Override
+    public void setNotificationProvider(ShopNotificationProvider notificationProvider) {
+        this.notifier = notificationProvider;
+    }
+
+    @Override
+    public void setFirebaseListener(ShopFirebaseListener firebaseListener) {
+        this.firebaseListener = firebaseListener;
+    }
+
+    @Override
     public String getEditScreenName() {
         return R.FXML.ITEM_MELE_WEAPON;
     }
 
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
-        try {
-            service.insert((MeleWeapon) item);
-        } catch (DatabaseException e) {
-            LOGGER.warn("Item {} se nepodařilo vložit do databáze", item.toString());
-        }
+        service.insertAsync((MeleWeapon) item)
+            .exceptionally(throwable -> {
+                notifier.showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_INSERTED), item.getName())));
+                LOGGER.error("Item {} se nepodařilo vložit do databáze", item.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(meleWeapon -> notifier
+                .showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_INSERTED), item.getName()))));
     }
 
     @Override
     public void onUpdateItem(ItemBase item) {
-        try {
-            service.update((MeleWeapon) item);
-        } catch (DatabaseException e) {
-            LOGGER.warn("Item {} se napodařilo aktualizovat", item.toString());
-        }
+        service.updateAsync((MeleWeapon) item)
+            .exceptionally(throwable -> {
+                notifier.showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), item.getName())));
+                LOGGER.error("Položku {} se nepodařilo aktualizovat", item.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(meleWeapon -> notifier
+                .showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_NOT_UPDATED), item.getName()))));
     }
 
     @Override
@@ -220,22 +231,28 @@ public class ShopWeaponMeleController implements Initializable,
     @Override
     public void requestRemoveItem(int index) {
         final MeleWeaponEntry entry = sortedList.get(index);
-        final String name = entry.getName();
-        try {
-            service.delete(entry.getId());
-        } catch (DatabaseException e) {
-            LOGGER.warn("Item {} se nepodařilo odebrat z databáze", name);
-        }
+        service.deleteAsync((MeleWeapon) entry.getItemBase())
+            .exceptionally(throwable -> {
+                notifier.showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED), entry.getName())));
+                LOGGER.error("Položku {} se nepodařilo aktualizovat", entry.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(meleWeapon -> notifier
+                .showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_DELETED), entry.getName()))));
     }
 
     @Override
-    public void requestRemoveItem(ShopEntry item, boolean remote) {
-        service.deleteRemote((MeleWeapon) item.getItemBase(), remote);
+    public void requestRemoveItem(ShopEntry entry, boolean remote) {
+        service.deleteRemoteAsync((MeleWeapon) entry.getItemBase(), remote, (error, ref) ->
+            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        service.upload((MeleWeapon) item);
+        service.uploadAsync((MeleWeapon) item, (error, ref) ->
+            firebaseListener.handleItemUpload(item.getName(), error == null));
     }
 
     @Override

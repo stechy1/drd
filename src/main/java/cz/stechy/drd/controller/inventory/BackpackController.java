@@ -1,8 +1,6 @@
 package cz.stechy.drd.controller.inventory;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.db.DatabaseException;
-import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
@@ -31,10 +29,10 @@ public class BackpackController extends BaseController implements TooltipTransla
 
     static {
         WIDTH = 16 // Left padding
-                + ItemSlot.SLOT_SIZE * SLOTS_ON_ROW
-                + ItemContainer.SLOT_SPACING * SLOTS_ON_ROW
-                + 16 // Right padding
-                + 16; // Width of scrollbar
+            + ItemSlot.SLOT_SIZE * SLOTS_ON_ROW
+            + ItemContainer.SLOT_SPACING * SLOTS_ON_ROW
+            + 16 // Right padding
+            + 16; // Width of scrollbar
     }
 
     public static final String ITEM_NAME = "item_name";
@@ -124,13 +122,15 @@ public class BackpackController extends BaseController implements TooltipTransla
         itemContainer.setItemClickListener(this::itemClickHandler);
         setScreenSize(WIDTH, BackpackController.computeHeight(backpackSize));
 
-        final InventoryService inventoryManager = heroManager.getInventory();
-        try {
-            final Inventory backpackInventory = inventoryManager.select(InventoryService.ID_FILTER(inventoryId));
-            itemContainer.setInventoryManager(inventoryManager, backpackInventory);
-        } catch (DatabaseException e) {
-            itemContainer.clear();
-        }
+        heroManager.getInventoryAsync()
+            .thenCompose(inventoryService ->
+                inventoryService.selectAsync(InventoryService.ID_FILTER(inventoryId))
+                    .thenCompose(backpackInventory ->
+                        itemContainer.setInventoryManager(inventoryService, backpackInventory)))
+            .exceptionally(throwable -> {
+                itemContainer.clear();
+                throw new RuntimeException(throwable);
+            });
     }
 
     @Override

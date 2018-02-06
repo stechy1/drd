@@ -3,11 +3,10 @@ package cz.stechy.drd.controller.shop;
 import static cz.stechy.drd.controller.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.ThreadPool;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.Armor.ArmorType;
@@ -24,6 +23,7 @@ import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.Optional;
@@ -37,7 +37,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
@@ -99,12 +98,15 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
     private IntegerProperty selectedRowIndex;
     private ResourceBundle resources;
+    private ShopNotificationProvider notifier;
+    private ShopFirebaseListener firebaseListener;
 
     // endregion
 
     // region Constructors
 
-    public ShopArmorController(UserService userService, ArmorService armorService, Translator translator) {
+    public ShopArmorController(UserService userService, ArmorService armorService,
+        Translator translator) {
         this.service = armorService;
         this.translator = translator;
         this.user = userService.getUser();
@@ -151,23 +153,14 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         final Function<Armor, ArmorEntry> mapper = armor -> {
             final ArmorEntry entry;
             final Optional<ShopEntry> cartEntry = shoppingCart.getEntry(armor.getId());
-            if (cartEntry.isPresent()) {
-                entry = (ArmorEntry) cartEntry.get();
-            } else {
-                entry = new ArmorEntry(armor, height);
-            }
+            entry = cartEntry.map(shopEntry -> (ArmorEntry) shopEntry)
+                .orElseGet(() -> new ArmorEntry(armor, height));
 
             return entry;
         };
 
-        final Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                ObservableMergers.mergeList(mapper, armors, service.selectAll());
-                return null;
-            }
-        };
-        ThreadPool.getInstance().submit(task);
+        service.selectAllAsync()
+            .thenAccept(armorList -> ObservableMergers.mergeList(mapper, armors, armorList));
     }
 
     @Override
@@ -192,26 +185,46 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     }
 
     @Override
+    public void setNotificationProvider(ShopNotificationProvider notificationProvider) {
+        this.notifier = notificationProvider;
+    }
+
+    @Override
+    public void setFirebaseListener(ShopFirebaseListener firebaseListener) {
+        this.firebaseListener = firebaseListener;
+    }
+
+    @Override
     public String getEditScreenName() {
         return R.FXML.ITEM_ARMOR;
     }
 
     @Override
     public void onAddItem(ItemBase item, boolean remote) {
-        try {
-            service.insert((Armor) item);
-        } catch (DatabaseException e) {
-            LOGGER.warn("Item {} se nepodařilo vložit do databáze", item.toString());
-        }
+        service.insertAsync((Armor) item)
+            .exceptionally(throwable -> {
+                notifier.showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_INSERTED), item.getName())));
+                LOGGER.error("Item {} se nepodařilo vložit do databáze", item.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(armor -> notifier
+                .showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_INSERTED), item.getName()))));
     }
 
     @Override
     public void onUpdateItem(ItemBase item) {
-        try {
-            service.update((Armor) item);
-        } catch (DatabaseException e) {
-            LOGGER.warn("Item {} se napodařilo aktualizovat", item.toString());
-        }
+        service.updateAsync((Armor) item)
+            .exceptionally(throwable -> {
+                notifier.showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), item.getName())));
+                LOGGER.error("Položku {} se nepodařilo aktualizovat", item.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(armor -> notifier
+                .showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_NOT_UPDATED), item.getName()))));
     }
 
     @Override
@@ -227,22 +240,28 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     @Override
     public void requestRemoveItem(int index) {
         final ArmorEntry entry = sortedList.get(index);
-        final String name = entry.getName();
-        try {
-            service.delete(entry.getId());
-        } catch (DatabaseException e) {
-            LOGGER.warn("Item {} se nepodařilo odebrat z databáze", name);
-        }
+        service.deleteAsync((Armor) entry.getItemBase())
+            .exceptionally(throwable -> {
+                notifier.showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED), entry.getName())));
+                LOGGER.error("Položku {} se nepodařilo aktualizovat", entry.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(armor -> notifier
+                .showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_DELETED), entry.getName()))));
     }
 
     @Override
-    public void requestRemoveItem(ShopEntry item, boolean remote) {
-        service.deleteRemote((Armor) item.getItemBase(), remote);
+    public void requestRemoveItem(ShopEntry entry, boolean remote) {
+        service.deleteRemoteAsync((Armor) entry.getItemBase(), remote, (error, ref) ->
+            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        service.upload((Armor) item);
+        service.uploadAsync((Armor) item, (error, ref) ->
+            firebaseListener.handleItemUpload(item.getName(), error == null));
     }
 
     @Override

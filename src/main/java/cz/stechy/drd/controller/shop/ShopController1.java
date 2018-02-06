@@ -2,6 +2,7 @@ package cz.stechy.drd.controller.shop;
 
 import com.jfoenix.controls.JFXToggleButton;
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.item.ItemBase;
@@ -15,6 +16,7 @@ import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +38,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Kontroler pro obchod s předměty + jejich správu
@@ -43,6 +47,9 @@ import javafx.scene.paint.Color;
 public class ShopController1 extends BaseController implements Initializable {
 
     // region Constants
+
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger(ShopController1.class);
 
     private static final int NO_SELECTED_INDEX = -1;
     private static final int ACTION_ADD_ITEM = 1;
@@ -123,9 +130,11 @@ public class ShopController1 extends BaseController implements Initializable {
         "disableUploadBtn", true);
     private final BooleanProperty disableRemoveOnlineBtn = new SimpleBooleanProperty(this,
         "disableRemoveOnlineBtn", true);
+    private final ShopNotificationProvider notificationProvider = this::showNotification;
 
     private final User user;
     private final Hero hero;
+    private final Translator translator;
 
     private ShopItemController[] controllers;
     private String title;
@@ -135,6 +144,7 @@ public class ShopController1 extends BaseController implements Initializable {
     // region Constructors
 
     public ShopController1(UserService userService, HeroService heroService, Translator translator) {
+        this.translator = translator;
         this.hero = heroService.getHero();
         heroSelected.set(this.hero != null);
         this.shoppingCart = new ShoppingCart(hero);
@@ -266,6 +276,8 @@ public class ShopController1 extends BaseController implements Initializable {
             controller.setRowSelectedIndexProperty(selectedRowIndex);
             controller.setShowOnlineDatabase(showOnlineDatabase);
             controller.setAmmountEditableProperty(ammountEditable);
+            controller.setNotificationProvider(notificationProvider);
+            controller.setFirebaseListener(firebaseListener);
         }
     }
 
@@ -369,4 +381,34 @@ public class ShopController1 extends BaseController implements Initializable {
     }
 
     // endregion
+
+    private final ShopFirebaseListener firebaseListener = new ShopFirebaseListener() {
+        @Override
+        public void handleItemRemove(String name, boolean remote, boolean success) {
+            if (!success) {
+                final String key = remote
+                    ? R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE
+                    : R.Translate.NOTIFY_RECORD_IS_NOT_DELETED;
+                showNotification(new Notification(String.format(translator.translate(key), name)));
+                LOGGER.error("Položku {} se nepodařilo odstranit z online databáze", name);
+            } else {
+                final String key = remote
+                    ? R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE
+                    : R.Translate.NOTIFY_RECORD_IS_DELETED;
+                showNotification(new Notification(String.format(translator.translate(key), name)));
+            }
+        }
+
+        @Override
+        public void handleItemUpload(String name, boolean success) {
+            if (!success) {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), name)));
+                LOGGER.error("Položku {} se nepodařilo nahrát", name);
+            } else {
+                showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_DELETED), name)));
+            }
+        }
+    };
 }

@@ -4,6 +4,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseReference.CompletionListener;
 import cz.stechy.drd.model.db.base.Firebase;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.service.OnlineItemRegistry;
@@ -48,11 +49,7 @@ public class ItemCollectionContent implements Firebase<ItemBase> {
     public ItemBase parseDataSnapshot(DataSnapshot snapshot) {
         final String id = snapshot.getValue(String.class);
         final Optional<ItemBase> optional = OnlineItemRegistry.getINSTANCE().getItemById(id);
-        if (optional.isPresent()) {
-            return optional.get();
-        } else {
-            return null;
-        }
+        return optional.orElse(null);
     }
 
     @Override
@@ -61,7 +58,7 @@ public class ItemCollectionContent implements Firebase<ItemBase> {
     }
 
     @Override
-    public void upload(ItemBase item) {
+    public void uploadAsync(ItemBase item, CompletionListener listener) {
         if (items.contains(item)) {
             return;
         }
@@ -70,8 +67,8 @@ public class ItemCollectionContent implements Firebase<ItemBase> {
     }
 
     @Override
-    public void deleteRemote(ItemBase item, boolean remote) {
-        reference.child(item.getId()).removeValue(null);
+    public void deleteRemoteAsync(ItemBase item, boolean remote, CompletionListener listener) {
+        reference.child(item.getId()).removeValue(listener);
     }
 
     // endregion

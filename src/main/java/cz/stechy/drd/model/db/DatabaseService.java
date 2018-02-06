@@ -1,5 +1,6 @@
 package cz.stechy.drd.model.db;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import javafx.collections.ObservableList;
 
@@ -19,41 +20,40 @@ public interface DatabaseService<T> {
      * Provede výběr konkrétního předmětu podle zadaného filtru
      *
      * @param filter Filtr pro výběr konkrétního předmětu
-     * @return {@link T}
-     * @throws DatabaseException Pokud předmět není nalezen
+     * @return {@link CompletableFuture<T>}
      */
-    T select(Predicate<? super T> filter) throws DatabaseException;
+    CompletableFuture<T> selectAsync(Predicate<? super T> filter);
 
     /**
      * Provede výběr všech předmětů a vrátí ho jako pozorovatelnou kolekci
      *
-     * @return Pozorovatelnou kolekci všech předmětů
+     * @return {@link CompletableFuture<ObservableList>} Pozorovatelnou kolekci všech předmětů
      */
-    ObservableList<T> selectAll();
+    CompletableFuture<ObservableList<T>> selectAllAsync();
 
     /**
      * Vloží předmět do databáze
      *
      * @param item {@link T}
-     * @throws DatabaseException Pokud se vložení nezdaří
+     * @return {@link CompletableFuture<T>} Vložený předmět do databáze
      */
-    void insert(T item) throws DatabaseException;
+    CompletableFuture<T> insertAsync(T item);
 
     /**
      * Aktualizuje předmět v databázi
      *
-     * @param item {@Łink T}
-     * @throws DatabaseException Pokud se aktualizace nezdaří
+     * @param item {@link T}
+     * @return {@link CompletableFuture<T>} Aktualizovaný předmět
      */
-    void update(T item) throws DatabaseException;
+    CompletableFuture<T> updateAsync(T item);
 
     /**
-     * Smaže předmět z databáze podle ID předmětu
+     * Smaže vybraný předmět z databáze
      *
-     * @param id ID předmětu, který má být smazán
-     * @throws DatabaseException Pokud se smazání nezdaří
+     * @param item Předmět, který má být smazán z databáze
+     * @return {@link CompletableFuture<T>} Smazaný předmět
      */
-    void delete(String id) throws DatabaseException;
+    CompletableFuture<T> deleteAsync(T item);
 
     /**
      * Započne novou transakci, během které lze provést více operací

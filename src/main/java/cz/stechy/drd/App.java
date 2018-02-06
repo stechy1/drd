@@ -78,7 +78,7 @@ public class App extends Application {
             LOGGER.info("Ukončuji aplikaci");
             context.saveConfiguration();
             context.closeFirebase();
-            ThreadPool.getInstance().shutDown();
+            ThreadPool.shutDown();
         });
     }
 
@@ -98,7 +98,7 @@ public class App extends Application {
         context = new Context(manager.getResources());
         context.setPreloaderNotifier(notifier);
         notifier.increaseMaxProgress(context.getServiceCount());
-        context.init(notifier);
+        context.init();
         manager.setControllerFactory(new ControllerFactory(context.getContainer()));
 
         notifyPreloader(new MyPreloaderNotification(0.99, "Dokončování..."));
@@ -129,7 +129,7 @@ public class App extends Application {
         context = new Context(manager.getResources());
         context.setPreloaderNotifier(notifier);
         notifier.increaseMaxProgress(context.getServiceCount());
-        context.init(notifier);
+        context.init();
         manager.setControllerFactory(new ControllerFactory(context.getContainer()));
 
         notifyPreloader(new MyPreloaderNotification(0.99, "Dokončování..."));

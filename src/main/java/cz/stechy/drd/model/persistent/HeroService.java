@@ -1,5 +1,6 @@
 package cz.stechy.drd.model.persistent;
 
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.DatabaseException;
@@ -11,7 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -216,75 +217,66 @@ public final class HeroService extends BaseDatabaseService<Hero> {
         tableInitialized = true;
     }
 
-    public void insert(Hero hero, ObservableList<InventoryHelper.ItemRecord> items)
-        throws DatabaseException {
-        insert(hero);
-
-        InventoryService inventoryManager = getInventory(hero);
-        InventoryHelper.insertItemsToInventory(inventoryManager, items);
+    @Override
+    public CompletableFuture<Hero> insertAsync(Hero hero) {
+        return getInventoryAsync(hero)
+            // Před vložením hrdiny se pro něj musí vytvořit inventář
+            .thenCompose(inventoryService -> inventoryService.insertAsync(InventoryService.standartInventory(hero)))
+            // Až poté se vloží záznam o hrdinovi do databáze
+            .thenCompose(inventory -> super.insertAsync(hero));
     }
 
-    @Override
-    public void insert(Hero hero) throws DatabaseException {
-        InventoryService service = getInventory(hero);
-        service.insert(InventoryService.standartInventory(hero));
-
-        super.insert(hero);
-    }
-
-    @Override
-    public void delete(String id) throws DatabaseException {
-        final Hero hero = select(BaseDatabaseService.ID_FILTER(id));
-        final InventoryService inventoryService = getInventory(hero);
-        final List<String> ids = inventoryService.selectAll().stream()
-            .map(inventory -> inventory.getId())
-            .collect(Collectors.toList());
-        ids.forEach(recordId -> {
-            try {
-                inventoryService.delete(recordId);
-            } catch (DatabaseException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
-        });
-
-        super.delete(id);
+    /**
+     * Vloží nového hrdinu do databáze spolu s jeho výchozími předměty
+     *
+     * @param hero {@link Hero} Hrdina, který se má vložit do databáze
+     * @param items {@link ObservableList<InventoryHelper.ItemRecord>} Výchozí seznam předmětů,
+     *              který hrdina u sebe bude mít od začátku
+     * @return {@link CompletableFuture<Void>}
+     */
+    public CompletableFuture<Void> insertAsync(Hero hero, ObservableList<InventoryHelper.ItemRecord> items) {
+        return insertAsync(hero)
+            .thenCompose(hero1 ->
+                getInventoryAsync(hero1)
+                    .thenCompose(inventoryService ->
+                        InventoryHelper.insertItemsToInventoryAsync(inventoryService, items)));
     }
 
     /**
      * Vrátí inventář aktuálně otevřeného hrdiny
      *
-     * @return {@link InventoryService}
+     * @return {@link CompletableFuture<InventoryService>}
      */
-    public InventoryService getInventory() {
-        return getInventory(hero.get());
+    public CompletableFuture<InventoryService> getInventoryAsync() {
+        return getInventoryAsync(hero.get());
     }
 
     /**
      * Vytvoří novou instanci správce itemů pro zadaného hrdinu
      *
      * @param hero {@link Hero}
-     * @return {@link InventoryContent}
+     * @return {@link CompletableFuture<InventoryContent>}
      */
-    public InventoryService getInventory(Hero hero) {
+    private  CompletableFuture<InventoryService> getInventoryAsync(Hero hero) {
         if (inventoryManager == null) {
             inventoryManager = new InventoryService(db, hero);
-            inventoryManager.selectAll();
-        } else if (inventoryManager.getHero() != hero) {
-            inventoryManager = new InventoryService(db, hero);
-            inventoryManager.selectAll();
         }
 
-        return inventoryManager;
+        return inventoryManager.selectAllAsync().thenApply(inventories -> inventoryManager);
     }
 
     /**
      * Načte hrdinu podle ID
      *
      * @param heroId ID hrdiny, který se má načíst
-     * @throws DatabaseException Pokud hrdina nebude nalezen
+     * @return {@link CompletableFuture<Hero>}
      */
-    public void load(String heroId) throws DatabaseException {
-        this.hero.setValue(select(ID_FILTER(heroId)));
+    public CompletableFuture<Hero> loadAsync(String heroId) {
+        return selectAsync(ID_FILTER(heroId))
+            .thenApplyAsync(hero -> {
+                this.hero.setValue(hero);
+                return hero;
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     public void resetHero() {

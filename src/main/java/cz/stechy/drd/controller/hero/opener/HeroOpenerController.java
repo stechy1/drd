@@ -2,7 +2,6 @@ package cz.stechy.drd.controller.hero.opener;
 
 import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.UserService;
@@ -12,6 +11,7 @@ import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.LabeledHeroProperty;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.property.ObjectProperty;
@@ -86,7 +86,8 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
     // region Constructors
 
-    public HeroOpenerController(HeroService heroManager, UserService userService, Translator translator) {
+    public HeroOpenerController(HeroService heroManager, UserService userService,
+        Translator translator) {
         this.heroManager = heroManager;
         this.userService = userService;
         this.translator = translator;
@@ -112,11 +113,14 @@ public class HeroOpenerController extends BaseController implements Initializabl
         selectedHero.addListener((observable, oldValue, newValue) -> {
             lblName.textProperty().setValue(newValue.getName());
             lblConviction.textProperty()
-                .setValue(translator.getTranslationFor(Key.CONVICTIONS).get(newValue.getConviction().ordinal()));
+                .setValue(translator.getTranslationFor(Key.CONVICTIONS)
+                    .get(newValue.getConviction().ordinal()));
             lblRace.textProperty()
-                .setValue(translator.getTranslationFor(Key.RACES).get(newValue.getRace().ordinal()));
+                .setValue(
+                    translator.getTranslationFor(Key.RACES).get(newValue.getRace().ordinal()));
             lblProfession.textProperty()
-                .setValue(translator.getTranslationFor(Key.PROFESSIONS).get(newValue.getProfession().ordinal()));
+                .setValue(translator.getTranslationFor(Key.PROFESSIONS)
+                    .get(newValue.getProfession().ordinal()));
             lblStrength.bind(newValue.getStrength());
             lblDexterity.bind(newValue.getDexterity());
             lblImmunity.bind(newValue.getImmunity());
@@ -129,9 +133,9 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
         filteredHeroes.setPredicate(hero ->
             hero != null // Hrdina není null
-            && !hero.equals(heroManager.getHero()) // Hrdina není otevřený
-            // Přihlášený uživatel vidí pouze své hrdiny, nepřihlášený pouze hrdiny, kteří nemají autora
-            && ((userService.getUser() != null)
+                && !hero.equals(heroManager.getHero()) // Hrdina není otevřený
+                // Přihlášený uživatel vidí pouze své hrdiny, nepřihlášený pouze hrdiny, kteří nemají autora
+                && ((userService.getUser() != null)
                 ? hero.getAuthor().equals(userService.getUser().getName())
                 : hero.getAuthor().isEmpty()));
 
@@ -142,7 +146,8 @@ public class HeroOpenerController extends BaseController implements Initializabl
             }
         });
 
-        ObservableMergers.mergeList(heroes, heroManager.selectAll());
+        heroManager.selectAllAsync()
+            .thenAccept(heroList -> ObservableMergers.mergeList(heroes, heroList));
     }
 
     @Override
@@ -164,11 +169,17 @@ public class HeroOpenerController extends BaseController implements Initializabl
             return;
         }
 
-        try {
-            heroManager.delete(selectedHero.get().getId());
-        } catch (DatabaseException e) {
-            LOGGER.error(e.getMessage(), e);
-        }
+        heroManager.deleteAsync(selectedHero.get())
+            .exceptionally(throwable -> {
+                showNotification(new Notification(String
+                    .format(translator.translate(R.Translate.NOTIFY_HERO_IS_NOT_DELETED),
+                        selectedHero.get().getName())));
+                LOGGER.error("Hrdinu {} se nepodařilo smazat", selectedHero.get().getName(), throwable);
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(hero -> showNotification(new Notification(String
+                .format(translator.translate(R.Translate.NOTIFY_HERO_IS_NOT_DELETED),
+                    hero.getName()))));
     }
 
     // endregion

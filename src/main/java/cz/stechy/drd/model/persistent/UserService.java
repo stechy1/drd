@@ -4,7 +4,9 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.drd.model.db.base.Firebase;
@@ -13,6 +15,7 @@ import cz.stechy.drd.util.HashGenerator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -74,14 +77,14 @@ public final class UserService implements Firebase<User> {
     // region Private methods
 
     @Override
-    public void upload(User user) {
+    public void uploadAsync(User user, CompletionListener listener) {
         final DatabaseReference child = firebaseReference.child(user.getId());
-        //child.setValue(toFirebaseMap(user));
-        child.setValue(toFirebaseMap(user), null);
+        child.setValue(toFirebaseMap(user), listener);
     }
 
     @Override
-    public void deleteRemote(User user, boolean remote) {
+    public void deleteRemoteAsync(User item, boolean remote,
+        CompletionListener listener) {
         throw new NotImplementedException();
     }
 
@@ -113,25 +116,33 @@ public final class UserService implements Firebase<User> {
      * @param password Uživatelské heslo
      * @throws UserException Pokud se přihlášení nepodaří
      */
-    public void login(String username, String password) throws UserException {
-        final Optional<User> result = onlineDatabase.stream()
-            .filter(user -> user.getName().equals(username) && HashGenerator
-                .checkSame(user.getPassword(), password))
-            .findFirst();
-        if (!result.isPresent()) {
-            throw new UserException();
-        }
+    public CompletableFuture<User> loginAsync(String username, String password) {
+        return CompletableFuture.supplyAsync(() -> {
+            final Optional<User> result = onlineDatabase.stream()
+                .filter(user -> user.getName().equals(username) && HashGenerator
+                    .checkSame(user.getPassword(), password))
+                .findFirst();
+            if (!result.isPresent()) {
+                throw new UserException();
+            }
 
-        this.user.set(result.get());
-        getUser().setLogged(true);
+            return result.get();
+        }).thenApplyAsync(user -> {
+            this.user.setValue(user);
+            getUser().setLogged(true);
+            return user;
+        }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     /**
      * Odhlásí uživatele z aplikace
      */
-    public void logout() {
-        getUser().setLogged(false);
-        user.set(null);
+    public CompletableFuture<Void> logoutAsync() {
+        return CompletableFuture.supplyAsync(() -> {
+            getUser().setLogged(false);
+            user.set(null);
+            return null;
+        });
     }
 
     /**
@@ -141,16 +152,16 @@ public final class UserService implements Firebase<User> {
      * @param password Uživatelské heslo
      * @throws UserException Pokud se registrace nezdaří
      */
-    public void register(String username, String password) throws UserException {
+    public void registerAsync(String username, String password, CompletionListener listener) {
         final Optional<User> result = onlineDatabase.stream()
             .filter(user -> user.getName().equals(username))
             .findFirst();
         if (result.isPresent()) {
-            throw new UserException();
+            listener.onComplete(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION), null);
         }
 
-        User user = new User(username, password);
-        upload(user);
+        final User user = new User(username, password);
+        uploadAsync(user, listener);
     }
 
     // endregion
@@ -201,7 +212,7 @@ public final class UserService implements Firebase<User> {
         }
     };
 
-    public static class UserException extends Exception {
+    public static class UserException extends RuntimeException {
 
         public UserException() {
         }

@@ -2,6 +2,7 @@ package cz.stechy.drd.controller.main;
 
 import cz.stechy.drd.AppSettings;
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.controller.InjectableChild;
 import cz.stechy.drd.controller.hero.HeroHelper;
 import cz.stechy.drd.controller.hero.levelup.LevelUpController;
@@ -10,12 +11,12 @@ import cz.stechy.drd.controller.main.defaultstaff.DefaultStaffController;
 import cz.stechy.drd.controller.main.inventory.InventoryController;
 import cz.stechy.drd.controller.main.profession.ProfessionController;
 import cz.stechy.drd.controller.moneyxp.MoneyXpController;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.model.persistent.HeroService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.model.user.User;
+import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -98,27 +99,28 @@ public class MainController extends BaseController implements Initializable {
 
     // endregion
 
-    private final BooleanProperty useFirebase = new SimpleBooleanProperty(this, "useFirebase", false);
+    private final BooleanProperty useFirebase = new SimpleBooleanProperty(this, "useFirebase",
+        false);
     private final ReadOnlyObjectProperty<Hero> hero;
     private final ReadOnlyObjectProperty<User> user;
     private final HeroService heroService;
     private final UserService userService;
+    private final Translator translator;
 
     private MainScreen[] controllers;
     private String title;
     private String loginText;
     private String logoutText;
-    private String loginSuccess;
-    private String actionFailed;
-    private String heroNotFound;
 
     // endregion
 
     // region Constructors
 
-    public MainController(HeroService heroService, UserService userService, AppSettings settings) {
+    public MainController(HeroService heroService, UserService userService, AppSettings settings,
+        Translator translator) {
         this.heroService = heroService;
         this.userService = userService;
+        this.translator = translator;
         this.hero = heroService.heroProperty();
         this.user = userService.userProperty();
         settings.addListener(R.Config.USE_ONLINE_DATABASE, this::useOnlineDatabaseHandler);
@@ -168,7 +170,8 @@ public class MainController extends BaseController implements Initializable {
         showNotification(new Notification("levelUp"));
     }
 
-    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue, Hero newValue) {
+    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue,
+        Hero newValue) {
         if (newValue == null) {
             if (oldValue != null) {
                 oldValue.levelUpProperty().removeListener(this::levelUpHandler);
@@ -183,7 +186,8 @@ public class MainController extends BaseController implements Initializable {
         tabPane.getSelectionModel().selectFirst();
     }
 
-    private void userHandler(ObservableValue<? extends User> observable, User oldValue, User newValue) {
+    private void userHandler(ObservableValue<? extends User> observable, User oldValue,
+        User newValue) {
         if (newValue == null) {
             bindMenuLogin(null);
         } else {
@@ -204,9 +208,6 @@ public class MainController extends BaseController implements Initializable {
         this.title = resources.getString(R.Translate.MAIN_TITLE);
         this.loginText = resources.getString(R.Translate.MAIN_MENU_FILE_LOGIN);
         this.logoutText = resources.getString(R.Translate.MAIN_MENU_FILE_LOGOUT);
-        this.loginSuccess = resources.getString(R.Translate.NOTIFY_LOGIN_SUCCESS);
-        this.actionFailed = resources.getString(R.Translate.ACTION_FAILED);
-        this.heroNotFound = resources.getString(R.Translate.NOTIFY_HERO_NOT_FOUND);
 
         this.controllers = new MainScreen[]{
             defaultStaffController,
@@ -252,12 +253,20 @@ public class MainController extends BaseController implements Initializable {
                 hero.setAuthor((user.get() != null) ? user.get().getName() : "");
                 ObservableList<InventoryHelper.ItemRecord> itemsToInventory = bundle
                     .get(HeroHelper.INVENTORY);
-                try {
-                    heroService.insert(hero, itemsToInventory);
-                    heroService.load(hero.getId());
-                } catch (DatabaseException e) {
-                    LOGGER.warn("Nepodařilo se vytvořit nového hrdinu");
-                }
+                heroService.insertAsync(hero, itemsToInventory)
+                    .exceptionally(throwable -> {
+                        showNotification(new Notification(String.format(translator.translate(
+                            R.Translate.NOTIFY_HERO_IS_NOT_CREATED), hero.getName())));
+                        LOGGER.error("Nepodařilo se vytvořit nového hrdinu", throwable);
+                        throw new RuntimeException(throwable);
+                    })
+                    .thenAccept(aVoid ->
+                    {
+                        showNotification(new Notification(String.format(translator.translate(
+                            Translate.NOTIFY_HERO_IS_CREATED), hero.getName())));
+                        heroService.loadAsync(hero.getId());
+                    });
+
                 break;
             case ACTION_LOAD_HERO:
                 if (statusCode != RESULT_SUCCESS) {
@@ -265,12 +274,16 @@ public class MainController extends BaseController implements Initializable {
                 }
 
                 final String heroId = bundle.getString(HeroOpenerController.HERO);
-                try {
-                    this.heroService.load(heroId);
-                } catch (DatabaseException e) {
-                    LOGGER.warn(e.getMessage());
-                    showNotification(new Notification(heroNotFound));
-                }
+                heroService.loadAsync(heroId)
+                    .exceptionally(throwable -> {
+                        showNotification(new Notification(translator.translate(
+                            R.Translate.NOTIFY_HERO_IS_NOT_LOADED)));
+                        LOGGER.error("Hrdinu se nepodařilo načíst", throwable);
+                        throw new RuntimeException(throwable);
+                    })
+                    .thenAccept(h ->
+                        showNotification(new Notification(String.format(translator.translate(
+                        Translate.NOTIFY_HERO_IS_LOADED), h.getName()))));
                 break;
             case ACTION_LOGIN:
                 if (statusCode != RESULT_SUCCESS) {
@@ -278,7 +291,8 @@ public class MainController extends BaseController implements Initializable {
                 }
 
                 heroService.resetHero();
-                showNotification(new Notification(loginSuccess));
+                showNotification(new Notification(
+                    translator.translate(R.Translate.NOTIFY_LOGOUT_SUCCESS)));
                 break;
             case ACTION_MONEY_EXPERIENCE:
                 if (statusCode != RESULT_SUCCESS) {
@@ -287,12 +301,16 @@ public class MainController extends BaseController implements Initializable {
                 final Hero heroCopy = this.hero.get().duplicate();
                 heroCopy.getMoney().setRaw(bundle.getInt(MoneyXpController.MONEY));
                 heroCopy.getExperiences().setActValue(bundle.getInt(MoneyXpController.EXPERIENCE));
-                try {
-                    heroService.update(heroCopy);
-                } catch (DatabaseException e) {
-                    LOGGER.warn("Hrdinu se nepodařilo aktualizovat", e);
-                    showNotification(new Notification(actionFailed));
-                }
+                heroService.updateAsync(heroCopy)
+                    .exceptionally(throwable -> {
+                        showNotification(new Notification(translator.translate(
+                            R.Translate.NOTIFY_HERO_IS_NOT_UPDATED)));
+                        LOGGER.error("Hrdinu se nepodařilo aktualizovat", throwable);
+                        throw new RuntimeException(throwable);
+                    })
+                    .thenAccept(h ->
+                        showNotification(new Notification(String.format(translator.translate(
+                            R.Translate.NOTIFY_HERO_IS_UPDATED), h.getName()))));
                 break;
             case ACTION_LEVEL_UP:
                 if (statusCode != RESULT_SUCCESS) {
@@ -301,13 +319,16 @@ public class MainController extends BaseController implements Initializable {
 
                 final Hero clone = this.hero.get().duplicate();
                 HeroHelper.levelUp(clone, bundle);
-                try {
-                    heroService.update(clone);
-                    showNotification(new Notification("Hrdina povýšil na novou úroveň"));
-                } catch (DatabaseException e) {
-                    LOGGER.warn("Hrdinovi se nepodařilo přejít na novou úroveň", e);
-                    showNotification(new Notification(actionFailed));
-                }
+                heroService.updateAsync(clone)
+                    .exceptionally(throwable -> {
+                        showNotification(new Notification(translator.translate(
+                            R.Translate.NOTIFY_HERO_IS_NOT_LEVELUP)));
+                        LOGGER.error("Hrdinu se nepodařilo povýšit na novou úroveň", throwable);
+                        throw new RuntimeException(throwable);
+                    })
+                    .thenAccept(h ->
+                        showNotification(new Notification(String.format(translator.translate(
+                            R.Translate.NOTIFY_HERO_IS_LEVELUP), h.getName()))));
                 break;
         }
     }
@@ -352,7 +373,15 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuLogout(ActionEvent actionEvent) {
-        userService.logout();
+        userService.logoutAsync()
+            .thenAccept(aVoid ->
+                showNotification(new Notification(
+                    translator.translate(R.Translate.NOTIFY_LOGOUT_SUCCESS))))
+            .exceptionally(throwable -> {
+                showNotification(new Notification(
+                    translator.translate(R.Translate.NOTIFY_LOGOUT_FAIL)));
+                throw new RuntimeException(throwable);
+            });
     }
 
     @FXML

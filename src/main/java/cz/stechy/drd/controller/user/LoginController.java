@@ -2,7 +2,6 @@ package cz.stechy.drd.controller.user;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.persistent.UserService;
-import cz.stechy.drd.model.persistent.UserService.UserException;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -102,15 +101,26 @@ public class LoginController extends BaseController implements Initializable {
 
     @FXML
     private void handleLogin(ActionEvent actionEvent) {
-        try {
-            userService.login(loginModel.login.getValue(), loginModel.password.getValue());
-            setResult(RESULT_SUCCESS);
-            finish();
-        } catch (UserException e) {
-            LOGGER.info("Přihlášení se nezdařilo");
-            showNotification(new Notification(loginFail));
-            loginModel.valid.set(false);
-        }
+        userService.loginAsync(loginModel.login.getValue(), loginModel.password.getValue())
+            .thenAccept(user -> {
+                setResult(RESULT_SUCCESS);
+                finish();
+            })
+            .exceptionally(throwable -> {
+                LOGGER.info("Přihlášení se nezdařilo", throwable);
+                showNotification(new Notification(loginFail));
+                loginModel.valid.set(false);
+                throw new RuntimeException(throwable);
+            });
+//        try {
+//            userService.login(loginModel.login.getValue(), loginModel.password.getValue());
+//            setResult(RESULT_SUCCESS);
+//            finish();
+//        } catch (UserException e) {
+//            LOGGER.info("Přihlášení se nezdařilo");
+//            showNotification(new Notification(loginFail));
+//            loginModel.valid.set(false);
+//        }
     }
 
     @FXML

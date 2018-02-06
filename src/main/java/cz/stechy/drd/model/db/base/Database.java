@@ -1,31 +1,36 @@
 package cz.stechy.drd.model.db.base;
 
 import java.sql.SQLException;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Rozhraní pro komunikaci s databází
  */
 public interface Database {
 
+    void select(OnRowHandler handler, String query, Object... params) throws SQLException;
+
+    /**
+     * Provede příkaz selectAsync.
+     *
+     * @param handler {@link RowTransformHandler} Transformační handler
+     * @param query Dotaz pro výběr položek
+     * @param params Parametry dotazu
+     * @return {@link CompletableFuture<List>}
+     */
+    <T> CompletableFuture<List<T>> selectAsync(RowTransformHandler<T> handler, String query, Object... params);
+
+    long query(String query, Object... params) throws SQLException;
+
     /**
      * Zpracuje a provede zadaný příkaz.
      *
      * @param query Příkaz, kdyrý se má provést
      * @param params Parametry příkazu
-     * @return Počet ovlivněných řádek
-     * @throws SQLException Pokud nastane chyba při vykonání příkazu
+     * @return {@link CompletableFuture<Long>} Počet ovlivněných řádek
      */
-    long query(String query, Object... params) throws SQLException;
-
-    /**
-     * Provede příkaz select.
-     *
-     * @param handler {@link OnRowHandler}
-     * @param query Dotaz pro výběr položek
-     * @param params Parametry dotazu
-     * @throws SQLException Pokud nastane chyba při vykonání dotazu
-     */
-    void select(OnRowHandler handler, String query, Object... params) throws SQLException;
+    CompletableFuture<Long> queryAsync(String query, Object... params);
 
     /**
      * Započne novou transakci.

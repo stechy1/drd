@@ -1,8 +1,6 @@
 package cz.stechy.drd.controller.spellbook;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.ThreadPool;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.persistent.SpellBookService;
 import cz.stechy.drd.model.persistent.UserService;
@@ -17,6 +15,7 @@ import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.Optional;
@@ -30,7 +29,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -73,9 +71,6 @@ public class SpellBookController extends BaseController implements Initializable
     private TableColumn<SpellEntry, String> columnAuthor;
     @FXML
     private TableColumn<SpellEntry, SpellProfessionType> columnType;
-//    @FXML
-//    private TableColumn<SpellEntry, String> columnPrice;
-
     @FXML
     private Button btnAddItem;
     @FXML
@@ -120,7 +115,8 @@ public class SpellBookController extends BaseController implements Initializable
 
     // region Constructors
 
-    public SpellBookController(SpellBookService spellBook, UserService userService, Translator translator) {
+    public SpellBookController(SpellBookService spellBook, UserService userService,
+        Translator translator) {
         this.spellBook = spellBook;
         this.user = userService.getUser();
         this.translator = translator;
@@ -144,6 +140,24 @@ public class SpellBookController extends BaseController implements Initializable
         }
 
         return Optional.of(sortedList.get(selectedRowIndex.get()).getSpellBase());
+    }
+
+    private void insertSpell(Spell spell) {
+        spellBook.insertAsync(spell)
+            .exceptionally(throwable -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_INSERTED), spell.getName())));
+                LOGGER.warn("Kouzlo {} se nepodařilo vložit do databáze", spell.toString());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(spell1 -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_INSERTED), spell1.getName())));
+                sortedList.stream()
+                    .filter(spellEntry -> spellEntry.getName().equals(spell1.getName()))
+                    .findFirst()
+                    .ifPresent(tableSpellBook.getSelectionModel()::select);
+            });
     }
 
     // endregion
@@ -214,14 +228,9 @@ public class SpellBookController extends BaseController implements Initializable
         columnType.setCellFactory(TextFieldTableCell.forTableColumn(translator.getConvertor(
             Key.SPELL_PROFESSION_TYPES)));
 
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                ObservableMergers.mergeList(SpellEntry::new, spells, spellBook.selectAll());
-                return null;
-            }
-        };
-        ThreadPool.getInstance().submit(task);
+        spellBook.selectAllAsync()
+            .thenAccept(
+                spellList -> ObservableMergers.mergeList(SpellEntry::new, spells, spellList));
     }
 
     @Override
@@ -239,19 +248,9 @@ public class SpellBookController extends BaseController implements Initializable
                     return;
                 }
                 spell = SpellBookHelper.fromBundle(bundle);
-                try {
-                    spell.setAuthor((user != null) ? user.getName() : "");
-                    spell.setId(HashGenerator.createHash());
-                    spellBook.insert(spell);
-                    sortedList.stream()
-                        .filter(spellEntry -> spellEntry.getName().equals(spell.getName()))
-                        .findFirst()
-                        .ifPresent(tableSpellBook.getSelectionModel()::select);
-
-                } catch (DatabaseException e) {
-                    e.printStackTrace();
-                    LOGGER.warn("Kouzlo {} se nepodařilo vložit do databáze", spell.toString());
-                }
+                spell.setAuthor((user != null) ? user.getName() : "");
+                spell.setId(HashGenerator.createHash());
+                insertSpell(spell);
                 break;
 
             case SpellBookHelper.SPELL_ACTION_UPDATE:
@@ -260,11 +259,16 @@ public class SpellBookController extends BaseController implements Initializable
                 }
 
                 spell = SpellBookHelper.fromBundle(bundle);
-                try {
-                    spellBook.update(spell);
-                } catch (DatabaseException e) {
-                    LOGGER.warn("Kouzlo {} se napodařilo aktualizovat", spell.toString());
-                }
+                spellBook.uploadAsync(spell, (error, ref) -> {
+                    if (error != null) {
+                        showNotification(new Notification(String.format(translator.translate(
+                            R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), spell.getName())));
+                        LOGGER.warn("Položku {} se nepodařilo aktualizovat", spell.toString());
+                    } else {
+                        showNotification(new Notification(String.format(translator.translate(
+                                R.Translate.NOTIFY_RECORD_IS_UPDATED), spell.getName())));
+                    }
+                });
                 break;
         }
     }
@@ -287,12 +291,16 @@ public class SpellBookController extends BaseController implements Initializable
     private void handleRemoveItem(ActionEvent actionEvent) {
         final int rowIndex = selectedRowIndex.get();
         final SpellEntry entry = sortedList.get(rowIndex);
-        final String name = entry.getName();
-        try {
-            spellBook.delete(entry.getSpellBase().getId());
-        } catch (DatabaseException e) {
-            LOGGER.warn("Příšeru {} se nepodařilo odebrat z databáze", name);
-        }
+        spellBook.deleteAsync(entry.getSpellBase())
+            .exceptionally(throwable -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED), entry.getName())));
+                LOGGER.warn("Kouzlo {} se nepodařilo odebrat z databáze", entry.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(
+                spell -> showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_DELETED), entry.getName()))));
     }
 
     @FXML
@@ -306,23 +314,38 @@ public class SpellBookController extends BaseController implements Initializable
 
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(spellBook::upload);
+        getSelectedEntry().ifPresent(spell ->
+            spellBook.uploadAsync(spell, (error, ref) -> {
+                if (error != null) {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), spell.getName())));
+                    LOGGER.error("Položku {} se nepodařilo nahrát", spell.getName());
+                } else {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_RECORD_IS_DELETED), spell.getName())));
+                }
+            })
+        );
     }
 
     @FXML
     private void handleDownloadItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(spell -> {
-            try {
-                spellBook.insert(spell);
-            } catch (DatabaseException e) {
-                LOGGER.error(e.getMessage());
-            }
-        });
+        getSelectedEntry().ifPresent(this::insertSpell);
     }
 
     @FXML
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(spell -> spellBook.deleteRemote(spell, true));
+        getSelectedEntry().ifPresent(spell ->
+            spellBook.deleteRemoteAsync(spell, true, (error, ref) -> {
+                if (error != null) {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE), spell.getName())));
+                    LOGGER.error("Položku {} se nepodařilo odebrat z online databáze", spell.getName());
+                } else {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE), spell.getName())));
+                }
+            }));
     }
 
     @FXML

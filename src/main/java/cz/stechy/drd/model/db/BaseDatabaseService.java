@@ -2,6 +2,7 @@ package cz.stechy.drd.model.db;
 
 import cz.stechy.drd.PreloaderNotifier;
 import cz.stechy.drd.R;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.di.Inject;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.db.base.DatabaseItem;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
@@ -228,105 +230,96 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     }
 
     @Override
-    public T select(Predicate<? super T> filter) throws DatabaseException {
-        Optional<T> item = items.stream()
-            .filter(filter)
-            .findFirst();
-        if (item.isPresent()) {
-            return item.get();
-        }
-
-        throw new DatabaseException("Item not found");
-    }
-
-    @Override
-    public ObservableList<T> selectAll() {
-        if (items.isEmpty() && !selectAllCalled) {
-            try {
-                db.select(resultSet -> {
-                        final T item = parseResultSet(resultSet);
-                        if (notifier != null) {
-                            notifier.increaseProgress(
-                                String.format("Načítám záznam: %s", item.toString()));
-                        }
-                        items.add(item);
-                    },
-                    getQuerySelectAll(), getParamsForSelectAll());
-                selectAllCalled = true;
-            } catch (SQLException e) {
-                e.printStackTrace();
+    public CompletableFuture<T> selectAsync(Predicate<? super T> filter) {
+        return CompletableFuture.supplyAsync(() -> {
+            Optional<T> item = items.stream()
+                .filter(filter)
+                .findFirst();
+            if (item.isPresent()) {
+                return item.get();
             }
-        }
 
-        return items;
+            throw new RuntimeException("Item not found");
+        });
     }
 
     @Override
-    public void insert(T item) throws DatabaseException {
+    public CompletableFuture<ObservableList<T>> selectAllAsync() {
+        if (items.isEmpty() && !selectAllCalled) {
+            return db
+                .selectAsync(this::parseResultSet, getQuerySelectAll(), getParamsForSelectAll())
+                .thenApplyAsync(resultItems -> {
+                    items.setAll(resultItems);
+                    selectAllCalled = true;
+                    return items;
+                }, ThreadPool.JAVAFX_EXECUTOR);
+        }
+
+        return CompletableFuture.completedFuture(items);
+    }
+
+    @Override
+    public CompletableFuture<T> insertAsync(T item) {
         final String query = String
             .format("INSERT INTO %s (%s) VALUES (%s)", getTable(), getColumnsKeys(),
                 getColumnValues());
-        try {
-            LOGGER.trace("Vkládám položku {} do databáze.", item.toString());
-            db.query(query, itemToParams(item).toArray());
-            final TransactionOperation<T> operation = new InsertOperation<>(item);
-            if (db.isTransactional()) {
-                operations.add(operation);
-            } else {
-                operation.commit(items);
-            }
-        } catch (Exception e) {
-            throw new DatabaseException(e);
-        }
+        LOGGER.trace("Vkládám položku {} do databáze.", item.toString());
+        return db.queryAsync(query, itemToParams(item).toArray())
+            .thenApplyAsync(value -> {
+                final TransactionOperation<T> operation = new InsertOperation<>(item);
+                if (db.isTransactional()) {
+                    operations.add(operation);
+                } else {
+                    operation.commit(items);
+                }
+
+                return item;
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     @Override
-    public void update(T item) throws DatabaseException {
+    public CompletableFuture<T> updateAsync(T item) {
         final String query = String
             .format("UPDATE %s SET %s WHERE %s = ?", getTable(), getColumnsUpdate(),
                 getColumnWithId());
         final List<Object> params = itemToParams(item);
         params.add(item.getId());
-        try {
-            LOGGER.trace("Aktualizuji položku {} v databázi", item.toString());
-            db.query(query, params.toArray());
-            final Optional<T> result = items.stream()
-                .filter(t -> item.getId().equals(t.getId()))
-                .findFirst();
-            assert result.isPresent();
-            final TransactionOperation<T> operation = new UpdateOperation<>(result.get(), item);
-            if (db.isTransactional()) {
-                operations.add(operation);
-            } else {
-                operation.commit(items);
-            }
+        LOGGER.trace("Aktualizuji položku {} v databázi", item.toString());
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        return db.queryAsync(query, params.toArray())
+            .thenApplyAsync(value -> {
+                final Optional<T> result = items.stream()
+                    .filter(t -> item.getId().equals(t.getId()))
+                    .findFirst();
+                assert result.isPresent();
+                final TransactionOperation<T> operation = new UpdateOperation<>(result.get(), item);
+                if (db.isTransactional()) {
+                    operations.add(operation);
+                } else {
+                    operation.commit(items);
+                }
 
+                return item;
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     @Override
-    public void delete(String id) throws DatabaseException {
+    public CompletableFuture<T> deleteAsync(T item) {
         final String query = String
             .format("DELETE FROM %s WHERE %s = ?", getTable(), getColumnWithId());
-        try {
-            LOGGER.trace("Mažu položku {} z databáze.", id);
-            db.query(query, id);
-            final Optional<T> result = items.stream()
-                .filter(item -> item.getId().equals(id))
-                .findFirst();
-            assert result.isPresent();
-            final TransactionOperation<T> operation = new DeleteOperation<>(result.get());
-            if (db.isTransactional()) {
-                operations.add(operation);
-            } else {
-                operation.commit(items);
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+        LOGGER.trace("Mažu položku {} z databáze.", item.getId());
+
+        return db.queryAsync(query, item.getId())
+            .thenApplyAsync(value -> {
+                final TransactionOperation<T> operation = new DeleteOperation<>(item);
+                if (db.isTransactional()) {
+                    operations.add(operation);
+                } else {
+                    operation.commit(items);
+                }
+
+                return item;
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     @Override

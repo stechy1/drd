@@ -4,6 +4,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseReference.CompletionListener;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.drd.model.db.base.Firebase;
@@ -97,14 +98,14 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
     }
 
     @Override
-    public void upload(ItemCollection item) {
+    public void uploadAsync(ItemCollection item, DatabaseReference.CompletionListener listener) {
         final DatabaseReference child = firebaseReference.child(item.getId());
-        child.setValue(toFirebaseMap(item), null);
+        child.setValue(toFirebaseMap(item), listener);
     }
 
     @Override
-    public void deleteRemote(ItemCollection item, boolean remote) {
-        firebaseReference.child(item.getId()).removeValue(null);
+    public void deleteRemoteAsync(ItemCollection item, boolean remote, CompletionListener listener) {
+        firebaseReference.child(item.getId()).removeValue(listener);
     }
 
     // endregion

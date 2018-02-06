@@ -5,9 +5,7 @@ import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.fight.Battlefield;
 import cz.stechy.drd.model.fight.Battlefield.BattlefieldAction;
-import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.persistent.HeroService;
-import cz.stechy.drd.model.persistent.InventoryContent;
 import cz.stechy.drd.model.persistent.InventoryService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -157,6 +155,18 @@ public class FightController extends BaseController implements Initializable {
         stopFight();
     }
 
+    private void fightFinishHandler() {
+        isFighting.set(false);
+        hero.getMoney().add(fightOpponentController.getTreasure());
+        heroService.updateAsync(hero)
+            .thenAccept(hero ->
+                showNotification(new Notification(resources.getString(R.Translate.NOTIFY_FIGHT_LIVE_UPDATE))));
+    }
+
+    private void fightVisualizeHandler(BattlefieldAction action, Object... params) {
+        comment.setValue(processComment(action, params));
+    }
+
     // region Button handlers
 
     @FXML
@@ -167,23 +177,17 @@ public class FightController extends BaseController implements Initializable {
         bundle.put(FightCommentController.COMMENT, comment);
         startNewDialog(R.FXML.FIGHT_COMMENT, bundle);
 
-        final Inventory inventory = heroService.getInventory()
-            .select(InventoryService.EQUIP_INVENTORY_FILTER);
-        final InventoryContent equipContent = heroService.getInventory()
-            .getInventoryContent(inventory);
-        this.battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent), fightOpponentController.getMob());
-        battlefield.setFightFinishListener(() -> {
-            isFighting.set(false);
-            try {
-                hero.getMoney().add(fightOpponentController.getTreasure());
-                heroService.update(hero);
-                showNotification(new Notification(resources.getString(R.Translate.NOTIFY_FIGHT_LIVE_UPDATE)));
-            } catch (DatabaseException e) {}
-        });
-        battlefield.setOnActionVisualizeListener((action, params) ->
-            comment.setValue(processComment(action, params)));
-        battlefield.fight();
-        isFighting.set(true);
+        heroService.getInventoryAsync()
+            .thenCompose(inventoryService ->
+                inventoryService.selectAsync(InventoryService.EQUIP_INVENTORY_FILTER)
+                    .thenCompose(inventoryService::getInventoryContentAsync))
+            .thenAccept(equipContent -> {
+                battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent), fightOpponentController.getMob());
+                battlefield.setFightFinishListener(this::fightFinishHandler);
+                battlefield.setOnActionVisualizeListener(this::fightVisualizeHandler);
+                battlefield.fight();
+                isFighting.setValue(true);
+            });
     }
 
     @FXML
