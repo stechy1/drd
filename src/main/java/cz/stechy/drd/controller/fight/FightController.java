@@ -6,8 +6,10 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.fight.Battlefield;
 import cz.stechy.drd.model.fight.Battlefield.BattlefieldAction;
 import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.model.persistent.InventoryService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
@@ -153,34 +155,39 @@ public class FightController extends BaseController implements Initializable {
         stopFight();
     }
 
+    private void fightFinishHandler() {
+        isFighting.set(false);
+        hero.getMoney().add(fightOpponentController.getTreasure());
+        heroService.updateAsync(hero)
+            .thenAccept(hero ->
+                showNotification(new Notification(resources.getString(R.Translate.NOTIFY_FIGHT_LIVE_UPDATE))));
+    }
+
+    private void fightVisualizeHandler(BattlefieldAction action, Object... params) {
+        comment.setValue(processComment(action, params));
+    }
+
     // region Button handlers
 
     @FXML
     private void handleBeginFight(ActionEvent actionEvent) throws DatabaseException {
-        //TODO reimplementovat souboj
-//        stopFight();
+        stopFight();
 
-//        Bundle bundle = new Bundle();
-//        bundle.put(FightCommentController.COMMENT, comment);
-//        startNewDialog(R.FXML.FIGHT_COMMENT, bundle);
-//
-//        final Inventory inventory = heroService.getInventory()
-//            .select(InventoryService.EQUIP_INVENTORY_FILTER);
-//        final InventoryContent equipContent = heroService.getInventory()
-//            .getInventoryContent(inventory);
-//        this.battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent), fightOpponentController.getMob());
-//        battlefield.setFightFinishListener(() -> {
-//            isFighting.set(false);
-//            try {
-//                hero.getMoney().add(fightOpponentController.getTreasure());
-//                heroService.update(hero);
-//                showNotification(new Notification(resources.getString(R.Translate.NOTIFY_FIGHT_LIVE_UPDATE)));
-//            } catch (DatabaseException e) {}
-//        });
-//        battlefield.setOnActionVisualizeListener((action, params) ->
-//            comment.setValue(processComment(action, params)));
-//        battlefield.fight();
-//        isFighting.set(true);
+        Bundle bundle = new Bundle();
+        bundle.put(FightCommentController.COMMENT, comment);
+        startNewDialog(R.FXML.FIGHT_COMMENT, bundle);
+
+        heroService.getInventoryAsync()
+            .thenCompose(inventoryService ->
+                inventoryService.selectAsync(InventoryService.EQUIP_INVENTORY_FILTER)
+                    .thenCompose(inventoryService::getInventoryContentAsync))
+            .thenAccept(equipContent -> {
+                battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent), fightOpponentController.getMob());
+                battlefield.setFightFinishListener(this::fightFinishHandler);
+                battlefield.setOnActionVisualizeListener(this::fightVisualizeHandler);
+                battlefield.fight();
+                isFighting.setValue(true);
+            });
     }
 
     @FXML

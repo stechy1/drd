@@ -106,7 +106,6 @@ public final class FirebaseWrapper {
         final String url = resolveFirebaseUrl(new FileInputStream(inputFile));
 
         final FirebaseOptions options = new FirebaseOptions.Builder()
-            //.setCredential(FirebaseCredentials.fromCertificate(new FileInputStream(inputFile)))
             .setCredentials(GoogleCredentials.fromStream(new FileInputStream(inputFile)))
             .setDatabaseUrl(url)
             .setDatabaseAuthVariableOverride(auth)

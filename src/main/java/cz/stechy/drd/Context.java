@@ -182,10 +182,9 @@ public class Context {
     /**
      * Inicializuje tabulky databáze
      *
-     * @param notifier {@link PreloaderNotifier}
      * @throws Exception Pokud se inicializace nezdaří
      */
-    void init(PreloaderNotifier notifier) throws Exception {
+    void init() {
         initServices();
         if (useOnlineDatabase()) {
             try {

@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 
 /**
@@ -20,6 +22,9 @@ import org.sqlite.javax.SQLiteConnectionPoolDataSource;
 public class SQLite implements Database {
 
     // region Constants
+
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger(SQLite.class);
 
     private static final String CONNECTION_PREFIX = "jdbc:sqlite:";
     private static final int MAX_CONNECTIONS = 10;
@@ -112,6 +117,7 @@ public class SQLite implements Database {
                     // Indexy v databázi jsou od 1, proto i+1
                     statement.setObject(i + 1, params[i]);
                 }
+                LOGGER.debug(query);
                 result = statement.executeUpdate();
 
             } catch (Exception ex) {
@@ -173,6 +179,7 @@ public class SQLite implements Database {
                     statement.setObject(i + 1, params[i]);
                 }
 
+                LOGGER.debug(query);
                 ResultSet result = statement.executeQuery();
                 while (result.next()) {
                     resultList.add(handler.transofrm(result));
@@ -192,6 +199,7 @@ public class SQLite implements Database {
             return;
         }
 
+        LOGGER.debug("Begin transaction");
         transactionalConnection = pool.getConnection();
         transactionalConnection.setAutoCommit(false);
     }
@@ -202,6 +210,7 @@ public class SQLite implements Database {
             return;
         }
 
+        LOGGER.debug("Commit transaction");
         transactionalConnection.commit();
         transactionalConnection = null;
         transactionHandlers.forEach(TransactionHandler::onCommit);
@@ -213,6 +222,7 @@ public class SQLite implements Database {
             return;
         }
 
+        LOGGER.debug("Rollback transaction");
         transactionalConnection.rollback();
         transactionalConnection = null;
         transactionHandlers.forEach(TransactionHandler::onRollback);
