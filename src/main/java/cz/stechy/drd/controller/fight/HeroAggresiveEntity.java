@@ -1,14 +1,13 @@
 package cz.stechy.drd.controller.fight;
 
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.container.EquipItemContainer;
 import cz.stechy.drd.model.item.Armor;
-import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.WeaponBase;
 import cz.stechy.drd.model.persistent.InventoryContent;
+import cz.stechy.drd.model.service.ItemRegistry;
 
 public class HeroAggresiveEntity extends AggresiveEntityDecorator {
 
@@ -30,38 +29,40 @@ public class HeroAggresiveEntity extends AggresiveEntityDecorator {
     protected HeroAggresiveEntity(Hero aggresiveEntity, InventoryContent inventory) {
         super(aggresiveEntity);
 
-        try {
             initWeaponAddition(inventory);
-        } catch (DatabaseException e) {}
-        try {
             initArmorAddition(inventory);
-        } catch (DatabaseException e) {}
     }
 
     // endregion
 
     // region Private methods
 
-    private void initWeaponAddition(InventoryContent inventory) throws DatabaseException {
-        final String itemId = inventory.select(EquipItemContainer.SLOT_SWORD).getItemId();
-        ItemRegistry.getINSTANCE().getItemById(itemId).ifPresent(itemBase -> {
-            assert itemBase instanceof WeaponBase;
-            WeaponBase weapon = (WeaponBase) itemBase;
-            weaponStrength = weapon.getStrength();
-            if (weapon instanceof MeleWeapon) {
-                MeleWeapon meleWeapon = (MeleWeapon) weapon;
-                weaponDefence = meleWeapon.getDefence();
-            }
-        });
+    private void initWeaponAddition(InventoryContent inventory) {
+        inventory.selectAsync(EquipItemContainer.SLOT_SWORD)
+            .thenAccept(inventoryRecord -> {
+                final String itemId = inventoryRecord.getItemId();
+                ItemRegistry.getINSTANCE().getItemById(itemId).ifPresent(itemBase -> {
+                    assert itemBase instanceof WeaponBase;
+                    WeaponBase weapon = (WeaponBase) itemBase;
+                    weaponStrength = weapon.getStrength();
+                    if (weapon instanceof MeleWeapon) {
+                        MeleWeapon meleWeapon = (MeleWeapon) weapon;
+                        weaponDefence = meleWeapon.getDefence();
+                    }
+                });
+            });
     }
 
-    private void initArmorAddition(InventoryContent inventory) throws DatabaseException {
-        final String itemId = inventory.select(EquipItemContainer.SLOT_BODY).getItemId();
-        ItemRegistry.getINSTANCE().getItemById(itemId).ifPresent(itemBase -> {
-            assert itemBase instanceof Armor;
-            Armor armor = (Armor) itemBase;
-            armorDefence = armor.getDefenceNumber();
-        });
+    private void initArmorAddition(InventoryContent inventory) {
+        inventory.selectAsync(EquipItemContainer.SLOT_BODY)
+            .thenAccept(inventoryRecord -> {
+                final String itemId = inventoryRecord.getItemId();
+                ItemRegistry.getINSTANCE().getItemById(itemId).ifPresent(itemBase -> {
+                    assert itemBase instanceof Armor;
+                    Armor armor = (Armor) itemBase;
+                    armorDefence = armor.getDefenceNumber();
+                });
+            });
     }
 
     // endregion

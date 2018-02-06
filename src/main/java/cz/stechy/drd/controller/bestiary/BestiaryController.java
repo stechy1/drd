@@ -267,7 +267,7 @@ public class BestiaryController extends BaseController implements Initializable 
                 mob = BestiaryHelper.mobFromBundle(bundle);
                 service.updateAsync(mob)
                     .exceptionally(throwable -> {
-                        LOGGER.warn("Nestvůru {} se napodařilo aktualizovat", mob.getName());
+                        LOGGER.warn("Nestvůru {} se nepodařilo aktualizovat", mob.getName());
                         throw new RuntimeException(throwable);
                     })
                     .thenAccept(m -> showNotification(new Notification(String
@@ -310,16 +310,16 @@ public class BestiaryController extends BaseController implements Initializable 
 
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(mob -> {
-            service.uploadAsync(mob)
-                .exceptionally(throwable -> {
-                    LOGGER.error("Položku {} se nepodařilo nahrát", mob, throwable);
-                    throw new RuntimeException(throwable);
-                })
-                .thenAccept(m -> showNotification(new Notification(String
-                    .format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPLOADED),
-                        m.getName()))));
-        });
+        getSelectedEntry().ifPresent(mob ->
+            service.uploadAsync(mob, (error, ref) -> {
+                if (error != null) {
+                    LOGGER.error("Položku {} se nepodařilo nahrát", mob);
+                } else {
+                    showNotification(new Notification(String
+                        .format(translator.translate(Translate.NOTIFY_RECORD_IS_UPLOADED),
+                            mob.getName())));
+                }
+            }));
     }
 
     @FXML
@@ -336,15 +336,16 @@ public class BestiaryController extends BaseController implements Initializable 
     @FXML
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
         getSelectedEntry().ifPresent(mob ->
-            service.deleteRemoteAsync(mob, true)
-                .exceptionally(throwable -> {
-                    LOGGER.error("Položku {} se nepodařilo odstranit z online databáze", mob,
-                        throwable);
-                    throw new RuntimeException(throwable);
-                })
-                .thenAccept(m -> showNotification(new Notification(String.format(
-                    translator.translate(Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
-                    m.getName())))));
+            service.deleteRemoteAsync(mob, true, (error, ref) -> {
+                if (error != null) {
+                    LOGGER.error("Položku {} se nepodařilo odstranit z online databáze", mob);
+                } else {
+                    showNotification(new Notification(String.format(
+                        translator
+                            .translate(Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+                        mob.getName())));
+                }
+            }));
     }
 
     @FXML

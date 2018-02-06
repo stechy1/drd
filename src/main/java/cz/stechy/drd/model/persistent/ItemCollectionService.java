@@ -4,6 +4,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseReference.CompletionListener;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.drd.model.db.base.Firebase;
@@ -11,7 +12,6 @@ import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.model.item.ItemCollection.Builder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
@@ -98,25 +98,14 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
     }
 
     @Override
-    public void upload(ItemCollection item) {
+    public void uploadAsync(ItemCollection item, DatabaseReference.CompletionListener listener) {
         final DatabaseReference child = firebaseReference.child(item.getId());
-        child.setValue(toFirebaseMap(item), null);
+        child.setValue(toFirebaseMap(item), listener);
     }
 
     @Override
-    public CompletableFuture<ItemCollection> uploadAsync(ItemCollection item) {
-        return null;
-    }
-
-    @Override
-    public void deleteRemote(ItemCollection item, boolean remote) {
-        firebaseReference.child(item.getId()).removeValue(null);
-    }
-
-    @Override
-    public CompletableFuture<ItemCollection> deleteRemoteAsync(ItemCollection item,
-        boolean remote) {
-        return null;
+    public void deleteRemoteAsync(ItemCollection item, boolean remote, CompletionListener listener) {
+        firebaseReference.child(item.getId()).removeValue(listener);
     }
 
     // endregion

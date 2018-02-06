@@ -4,6 +4,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.di.Singleton;
@@ -15,7 +16,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -77,30 +77,14 @@ public final class UserService implements Firebase<User> {
     // region Private methods
 
     @Override
-    public void upload(User user) {
+    public void uploadAsync(User user, CompletionListener listener) {
         final DatabaseReference child = firebaseReference.child(user.getId());
-        child.setValue(toFirebaseMap(user), null);
+        child.setValue(toFirebaseMap(user), listener);
     }
 
     @Override
-    public CompletableFuture<User> uploadAsync(User user) {
-        final DatabaseReference child = firebaseReference.child(user.getId());
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                return child.setValueAsync(toFirebaseMap(user)).get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        }).thenApply(aVoid -> user);
-    }
-
-    @Override
-    public void deleteRemote(User user, boolean remote) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public CompletableFuture<User> deleteRemoteAsync(User item, boolean remote) {
+    public void deleteRemoteAsync(User item, boolean remote,
+        CompletionListener listener) {
         throw new NotImplementedException();
     }
 
@@ -168,21 +152,16 @@ public final class UserService implements Firebase<User> {
      * @param password Uživatelské heslo
      * @throws UserException Pokud se registrace nezdaří
      */
-    public CompletableFuture<User> registerAsync(String username, String password) {
+    public void registerAsync(String username, String password, CompletionListener listener) {
         final Optional<User> result = onlineDatabase.stream()
             .filter(user -> user.getName().equals(username))
             .findFirst();
         if (result.isPresent()) {
-            return CompletableFuture.completedFuture(null)
-                .thenApply(o -> {
-                    throw new UserException();
-                });
+            listener.onComplete(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION), null);
         }
 
         final User user = new User(username, password);
-        return CompletableFuture
-            .supplyAsync(() -> uploadAsync(user))
-            .thenApplyAsync(userFuture -> user, ThreadPool.JAVAFX_EXECUTOR);
+        uploadAsync(user, listener);
     }
 
     // endregion

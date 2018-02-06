@@ -75,26 +75,16 @@ public class RegisterController extends BaseController implements Initializable 
     // region Button handlers
     @FXML
     private void handleRegister(ActionEvent actionEvent) {
-        userService.registerAsync(loginModel.login.getValue(), loginModel.password.getValue())
-            .thenAccept(user -> {
-                setResult(RESULT_SUCCESS);
-                finish();
-            })
-            .exceptionally(throwable -> {
-                LOGGER.info("Registrace se nezdařila", throwable);
+        userService.registerAsync(loginModel.login.getValue(), loginModel.password.getValue(), (error, ref) -> {
+            if (error != null) {
+                LOGGER.info("Registrace se nezdařila");
                 showNotification(new Notification(registerFail));
                 loginModel.valid.set(false);
-                throw new RuntimeException(throwable);
-            });
-//        try {
-//            userService.register(loginModel.login.getValue(), loginModel.password.getValue());
-//            setResult(RESULT_SUCCESS);
-//            finish();
-//        } catch (UserException e) {
-//            LOGGER.info("Registrace se nezdařila");
-//            showNotification(new Notification(registerFail));
-//            loginModel.valid.set(false);
-//        }
+            } else {
+                setResult(RESULT_SUCCESS);
+                finish();
+            }
+        });
     }
 
     // endregion

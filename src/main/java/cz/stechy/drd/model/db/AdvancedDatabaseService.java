@@ -4,6 +4,7 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
 import cz.stechy.drd.di.Inject;
 import cz.stechy.drd.model.db.base.Database;
@@ -15,7 +16,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -118,22 +118,8 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     // region Public methods
 
     @Override
-    public ObservableList<T> selectAll() {
-        return usedItems;
-    }
-
-    @Override
     public CompletableFuture<ObservableList<T>> selectAllAsync() {
         return super.selectAllAsync().thenApply(resultItems -> usedItems);
-    }
-
-    @Override
-    public void insert(T item) throws DatabaseException {
-        if (showOnline) {
-            item.setUploaded(true);
-        }
-        item.setDownloaded(true);
-        super.insert(item);
     }
 
     @Override
@@ -143,28 +129,6 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
         }
         item.setDownloaded(true);
         return super.insertAsync(item);
-    }
-
-    @Override
-    public void update(T item) throws DatabaseException {
-        super.update(item);
-
-        if (!showOnline) {
-            usedItems.stream()
-                .filter(t -> Objects.equals(t.getId(), item.getId()))
-                .findFirst()
-                .ifPresent(t -> t.update(item));
-        }
-    }
-
-    @Override
-    public void delete(String id) throws DatabaseException {
-        super.delete(id);
-
-        onlineDatabase.stream()
-            .filter(item -> item.getId().equals(id))
-            .findFirst()
-            .ifPresent(t -> t.setDownloaded(false));
     }
 
     public Map<String, Object> toFirebaseMap(T item) {
@@ -181,89 +145,48 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     }
 
     @Override
-    public void deleteRemote(T item, boolean remote) {
+    public void deleteRemoteAsync(T item, boolean remote, CompletionListener listener) {
         if (remote) {
             LOGGER.trace("Odebírám online item {} z online databáze", item.toString());
-            firebaseReference.child(item.getId()).removeValue((error, ref) -> {
+            final DatabaseReference child = firebaseReference.child(item.getId());
+            child.removeValue((error, ref) -> {
                 T itemCopy = item.duplicate();
                 itemCopy.setUploaded(false);
-                try {
-                    update(itemCopy);
-                } catch (DatabaseException e) {
-                    e.printStackTrace();
-                }
+                updateAsync(itemCopy)
+                    .exceptionally(throwable -> {
+                        listener.onComplete(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION), ref);
+                        throw new RuntimeException(throwable);
+                    })
+                    .thenAccept(t -> listener.onComplete(null, ref));
             });
         } else {
-            try {
-                delete(item.getId());
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    @Override
-    public CompletableFuture<T> deleteRemoteAsync(T item, boolean remote) {
-        if (remote) {
-            LOGGER.trace("Odebírám online item {} z online databáze", item.toString());
-            final DatabaseReference databaseReference = firebaseReference.child(item.getId());
-            return CompletableFuture.supplyAsync(() -> {
-                try {
-                    return databaseReference.removeValueAsync().get();
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            }).thenCompose(aVoid -> {
-                T itemCopy = item.duplicate();
-                itemCopy.setUploaded(false);
-                return updateAsync(itemCopy);
-            });
-        } else {
-            return deleteAsync(item);
+            deleteAsync(item)
+                .exceptionally(throwable -> {
+                    listener.onComplete(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION), null);
+                    throw new RuntimeException(throwable);
+                })
+                .thenAccept(t -> listener.onComplete(null, null));
         }
     }
 
     @Override
-    public void upload(T item) {
+    public void uploadAsync(T item, CompletionListener listener) {
         if (firebaseReference == null) {
+            listener.onComplete(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION), null);
             return;
         }
 
         LOGGER.trace("Nahrávám item {} do online databáze", item.toString());
-        DatabaseReference newReference = firebaseReference.child(item.getId());
-        newReference.setValue(toFirebaseMap(item), (error, ref) -> {
+        final DatabaseReference child = firebaseReference.child(item.getId());
+        child.setValue(toFirebaseMap(item), (error, ref) -> {
             T itemCopy = item.duplicate();
             itemCopy.setUploaded(true);
-            try {
-                update(itemCopy);
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    @Override
-    public CompletableFuture<T> uploadAsync(T item) {
-        if (firebaseReference == null) {
-            return CompletableFuture.completedFuture(item)
-                .thenApply(t -> {
-                    throw new RuntimeException();
-                });
-        }
-
-        LOGGER.trace("Nahrávám item {} do online databáze", item.toString());
-        final DatabaseReference newReference = firebaseReference.child(item.getId());
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                return newReference.setValueAsync(toFirebaseMap(item)).get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException();
-            }
-        }).thenCompose(aVoid -> {
-            T itemCopy = item.duplicate();
-            itemCopy.setUploaded(true);
-            return updateAsync(itemCopy);
+            updateAsync(itemCopy)
+                .exceptionally(throwable -> {
+                    listener.onComplete(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION), ref);
+                    throw new RuntimeException(throwable);
+                })
+                .thenAccept(t -> listener.onComplete(null, ref));
         });
     }
 
@@ -408,15 +331,15 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                         if (!offlineItem.isUploaded()) {
                             final T offlineDuplicate = offlineItem.duplicate();
                             offlineDuplicate.setUploaded(true);
-                            try {
-                                update(offlineDuplicate);
-                                // Protože aktualizuji sdílenou proměnnou, pridám zámek
-                                synchronized (lock) {
-                                    updated[0]++;
-                                }
-                            } catch (DatabaseException e) {
-                                e.printStackTrace();
-                            }
+//                            try {
+//                                //update(offlineDuplicate);
+//                                // Protože aktualizuji sdílenou proměnnou, pridám zámek
+//                                synchronized (lock) {
+//                                    updated[0]++;
+//                                }
+//                            } catch (DatabaseException e) {
+//                                e.printStackTrace();
+//                            }
                         }
                         // Nemám-li offline záznam o souboru, tak ho vytvořím
                     } else {
@@ -424,15 +347,15 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                         final T offlineDuplicate = offlineItem.duplicate();
                         offlineDuplicate.setDownloaded(true);
                         offlineDuplicate.setUploaded(true);
-                        try {
-                            insert(offlineDuplicate);
-                            // Protože aktualizuji sdílenou proměnnou, pridám zámek
-                            synchronized (lock) {
-                                updated[0]++;
-                            }
-                        } catch (DatabaseException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            //insert(offlineDuplicate);
+//                            // Protože aktualizuji sdílenou proměnnou, pridám zámek
+//                            synchronized (lock) {
+//                                updated[0]++;
+//                            }
+//                        } catch (DatabaseException e) {
+//                            e.printStackTrace();
+//                        }
                     }
                 });
             return updated[0];

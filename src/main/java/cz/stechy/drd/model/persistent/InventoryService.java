@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -189,23 +188,6 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
     }
 
     @Override
-    public void delete(String id) throws DatabaseException {
-        final InventoryContent inventoryContent = getInventoryContentById(id);
-        final List<String> ids = inventoryContent.selectAll().stream()
-            .map(inventoryRecord -> inventoryRecord.getId())
-            .collect(Collectors.toList());
-        ids.forEach(recordId -> {
-            try {
-                inventoryContent.delete(recordId);
-            } catch (DatabaseException e) {
-                LOGGER.error(e.getMessage(), e);
-            }
-        });
-
-        super.delete(id);
-    }
-
-    @Override
     public CompletableFuture<Inventory> deleteAsync(Inventory item) {
         return getInventoryContentByIdAsync(item.getId())
             .thenCompose(inventoryContent ->
@@ -220,17 +202,6 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
                 }));
     }
 
-    public InventoryContent getInventoryContentById(final String inventoryId)
-        throws DatabaseException {
-        final Inventory inventory = new Inventory.Builder().id(inventoryId).build();
-        return getInventoryContent(inventory, ID_FILTER(inventory));
-    }
-
-    public InventoryContent getInventoryContent(final Inventory inventory)
-        throws DatabaseException {
-        return getInventoryContent(inventory, SIMPLE_FILTER(inventory));
-    }
-
     public CompletableFuture<InventoryContent> getInventoryContentByIdAsync(
         final String inventoryId) {
         final Inventory inventory = new Inventory.Builder().id(inventoryId).build();
@@ -242,32 +213,12 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
     }
 
     /**
-     * Vytvoří přistup k obsahu inventáře podle zadaného Id
+     * Vytvoří přistup k obsahu inventáře podle zadaného filtru
      *
      * @param inventory {@link Inventory} Inventář pro který se hledá obsah
      * @param filter Filter, podle kterého probíhá hledání
-     * @return {@link InventoryContent}
-     * @throws DatabaseException Pokud obsah inventáře není nalezen
+     * @return {@link CompletableFuture<InventoryContent>}
      */
-    public InventoryContent getInventoryContent(final Inventory inventory,
-        final Predicate<? super Inventory> filter) throws DatabaseException {
-        final Optional<Inventory> result = inventoryContentMap.keySet()
-            .stream()
-            .filter(Predicate.isEqual(inventory))
-            .findFirst();
-        InventoryContent inventoryContent;
-        if (result.isPresent()) {
-            inventoryContent = inventoryContentMap.get(result.get());
-        } else {
-            Inventory invnetoryResult = select(filter);
-            inventoryContent = new InventoryContent(db, invnetoryResult);
-            inventoryContent.selectAll();
-            inventoryContentMap.put(invnetoryResult, inventoryContent);
-        }
-
-        return inventoryContent;
-    }
-
     private CompletableFuture<InventoryContent> getInventoryContentAsync(final Inventory inventory,
         final Predicate<? super Inventory> filter) {
         final Optional<Inventory> result = inventoryContentMap.keySet()
@@ -287,24 +238,6 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
                 return inventoryContent.selectAllAsync()
                     .thenApply(inventoryRecords -> inventoryContent);
             });
-    }
-
-    /**
-     * Inicializuje nový inventář
-     *
-     * @param capacity Kapacita inventáře
-     * @return Id inventáře
-     * @throws DatabaseException Pokud se inicializace inventáře nezdaří
-     */
-    public String initSubInventory(final int capacity)
-        throws DatabaseException {
-        Inventory subInventory = new Inventory.Builder()
-            .heroId(hero.getId())
-            .inventoryType(InventoryType.BACKPACK)
-            .capacity(capacity)
-            .build();
-        insert(subInventory);
-        return subInventory.getId();
     }
 
     /**

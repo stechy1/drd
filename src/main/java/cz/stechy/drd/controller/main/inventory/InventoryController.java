@@ -25,6 +25,7 @@ import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -106,59 +107,21 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
                                             return inventoryService.insertAsync(equipInventory);
                                         }
 
-                                        return equipInventory;
+                                        return CompletableFuture.completedFuture(equipInventory);
                                     })
-                                    .thenApplyAsync(o -> {
-                                        assert o instanceof Inventory;
-                                        final Inventory inv = (Inventory) o;
-                                        return equipItemContainer.setInventoryManager(inventoryService, inv);
-                                    }, ThreadPool.JAVAFX_EXECUTOR);
+                                    .thenComposeAsync(futureEquipInventory ->
+                                            futureEquipInventory.thenCompose(inventory ->
+                                                equipItemContainer
+                                                    .setInventoryManager(inventoryService, inventory)),
+                                        ThreadPool.JAVAFX_EXECUTOR);
                             });
                     });
             })
-        .exceptionally(throwable -> {
-            throwable.printStackTrace();
-            throw new RuntimeException(throwable);
-        })
-        .thenAccept(ignore -> {
-            System.out.println("Načteno");
-        });
+            .exceptionally(throwable -> {
+                throwable.printStackTrace();
+                throw new RuntimeException(throwable);
+            });
     }
-//    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue, Hero newValue) {
-//        InventoryContent.clearWeight();
-//        if (newValue == null) {
-//            mainItemContainer.clear();
-//            equipItemContainer.clear();
-//            return;
-//        }
-//        // Získám správce inventáře podle hrdiny
-//        final InventoryService inventoryManager = heroManager.getInventory();
-//        try {
-//            // Získám záznam hlavního inventáře
-//            final Inventory mainInventory = inventoryManager.select(InventoryService.MAIN_INVENTORY_FILTER);
-//            mainItemContainer.setInventoryManager(inventoryManager, mainInventory);
-//            // Inicializace inventáře výbavy hrdiny
-//            Inventory equipInventory = null;
-//            try {
-//                equipInventory = inventoryManager.select(InventoryService.EQUIP_INVENTORY_FILTER);
-//            } catch (DatabaseException e) {
-//                // Ještě nebyl vytvořen záznam o equip inventáři pro danou postavu
-//                equipInventory = new Inventory.Builder()
-//                    .heroId(mainInventory.getHeroId())
-//                    .inventoryType(InventoryType.EQUIP)
-//                    .capacity(EquipItemContainer.CAPACITY)
-//                    .build();
-//                inventoryManager.insert(equipInventory);
-//            } finally {
-//                assert equipInventory != null;
-//                equipItemContainer.setInventoryManager(inventoryManager, equipInventory);
-//            }
-//        } catch (DatabaseException e) {
-//            e.printStackTrace();
-//            mainItemContainer.clear();
-//            equipItemContainer.clear();
-//        }
-//    }
 
     private void itemClickHandler(ItemSlot itemSlot) {
         final ItemBase item = itemSlot.getItemStack().getItem();

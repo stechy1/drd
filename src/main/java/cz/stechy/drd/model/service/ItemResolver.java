@@ -2,7 +2,6 @@ package cz.stechy.drd.model.service;
 
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.model.persistent.ArmorService;
@@ -12,6 +11,7 @@ import cz.stechy.drd.model.persistent.MeleWeaponService;
 import cz.stechy.drd.model.persistent.RangedWeaponService;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Třída pro stahování předmětů po kolekcích
@@ -77,27 +77,22 @@ public class ItemResolver {
      *
      * @param items Kolekce ID online předmětů
      */
-    public int merge(List<? extends WithItemBase> items) {
+    @SuppressWarnings("unchecked")
+    public CompletableFuture<Integer> merge(List<? extends WithItemBase> items) {
         final ItemRegistry itemRegistry = ItemRegistry.getINSTANCE();
         final int[] merged = {0};
 
-        items.forEach(item -> {
-            final Optional<ItemBase> optional = itemRegistry.getItemById(item.getItemBase().getId());
-            if (optional.isPresent()) {
-                return;
-            }
-
-            final ItemBase itemBase = item.getItemBase();
-            final AdvancedDatabaseService<ItemBase> service = getService(itemBase.getItemType());
-            try {
-                service.insert(itemBase);
-                merged[0]++;
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-            }
-        });
-
-        return merged[0];
+        return CompletableFuture.allOf(items
+            .stream()
+            .map(item -> itemRegistry.getItemById(item.getItemBase().getId()))
+            .filter(optional -> !optional.isPresent())
+            .map(Optional::get)
+            .map(item -> {
+                final AdvancedDatabaseService service = getService(item.getItemType());
+                return service.insertAsync(item)
+                    .thenAccept(o -> merged[0]++);
+            }).toArray(CompletableFuture[]::new))
+            .thenApply(aVoid -> merged[0]);
     }
 
     // endregion

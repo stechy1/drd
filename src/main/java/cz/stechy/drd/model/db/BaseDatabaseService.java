@@ -230,18 +230,6 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     }
 
     @Override
-    public T select(Predicate<? super T> filter) throws DatabaseException {
-        Optional<T> item = items.stream()
-            .filter(filter)
-            .findFirst();
-        if (item.isPresent()) {
-            return item.get();
-        }
-
-        throw new DatabaseException("Item not found");
-    }
-
-    @Override
     public CompletableFuture<T> selectAsync(Predicate<? super T> filter) {
         return CompletableFuture.supplyAsync(() -> {
             Optional<T> item = items.stream()
@@ -253,28 +241,6 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
             throw new RuntimeException("Item not found");
         });
-    }
-
-    @Override
-    public ObservableList<T> selectAll() {
-        if (items.isEmpty() && !selectAllCalled) {
-            try {
-                db.select(resultSet -> {
-                        final T item = parseResultSet(resultSet);
-                        if (notifier != null) {
-                            notifier.increaseProgress(
-                                String.format("Načítám záznam: %s", item.toString()));
-                        }
-                        items.add(item);
-                    },
-                    getQuerySelectAll(), getParamsForSelectAll());
-                selectAllCalled = true;
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return items;
     }
 
     @Override
@@ -290,25 +256,6 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
         }
 
         return CompletableFuture.completedFuture(items);
-    }
-
-    @Override
-    public void insert(T item) throws DatabaseException {
-        final String query = String
-            .format("INSERT INTO %s (%s) VALUES (%s)", getTable(), getColumnsKeys(),
-                getColumnValues());
-        try {
-            LOGGER.trace("Vkládám položku {} do databáze.", item.toString());
-            db.query(query, itemToParams(item).toArray());
-            final TransactionOperation<T> operation = new InsertOperation<>(item);
-            if (db.isTransactional()) {
-                operations.add(operation);
-            } else {
-                operation.commit(items);
-            }
-        } catch (Exception e) {
-            throw new DatabaseException(e);
-        }
     }
 
     @Override
@@ -328,33 +275,6 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
                 return item;
             }, ThreadPool.JAVAFX_EXECUTOR);
-    }
-
-    @Override
-    public void update(T item) throws DatabaseException {
-        final String query = String
-            .format("UPDATE %s SET %s WHERE %s = ?", getTable(), getColumnsUpdate(),
-                getColumnWithId());
-        final List<Object> params = itemToParams(item);
-        params.add(item.getId());
-        try {
-            LOGGER.trace("Aktualizuji položku {} v databázi", item.toString());
-            db.query(query, params.toArray());
-            final Optional<T> result = items.stream()
-                .filter(t -> item.getId().equals(t.getId()))
-                .findFirst();
-            assert result.isPresent();
-            final TransactionOperation<T> operation = new UpdateOperation<>(result.get(), item);
-            if (db.isTransactional()) {
-                operations.add(operation);
-            } else {
-                operation.commit(items);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
     }
 
     @Override
@@ -381,28 +301,6 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
                 return item;
             }, ThreadPool.JAVAFX_EXECUTOR);
-    }
-
-    @Override
-    public void delete(String id) throws DatabaseException {
-        final String query = String
-            .format("DELETE FROM %s WHERE %s = ?", getTable(), getColumnWithId());
-        try {
-            LOGGER.trace("Mažu položku {} z databáze.", id);
-            db.query(query, id);
-            final Optional<T> result = items.stream()
-                .filter(item -> item.getId().equals(id))
-                .findFirst();
-            assert result.isPresent();
-            final TransactionOperation<T> operation = new DeleteOperation<>(result.get());
-            if (db.isTransactional()) {
-                operations.add(operation);
-            } else {
-                operation.commit(items);
-            }
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
     }
 
     @Override

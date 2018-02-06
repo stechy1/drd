@@ -99,6 +99,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     private IntegerProperty selectedRowIndex;
     private ResourceBundle resources;
     private ShopNotificationProvider notifier;
+    private ShopFirebaseListener firebaseListener;
 
     // endregion
 
@@ -189,6 +190,11 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     }
 
     @Override
+    public void setFirebaseListener(ShopFirebaseListener firebaseListener) {
+        this.firebaseListener = firebaseListener;
+    }
+
+    @Override
     public String getEditScreenName() {
         return R.FXML.ITEM_ARMOR;
     }
@@ -213,7 +219,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
             .exceptionally(throwable -> {
                 notifier.showNotification(new Notification(String.format(translator.translate(
                     R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), item.getName())));
-                LOGGER.error("Položku {} se napodařilo aktualizovat", item.getName());
+                LOGGER.error("Položku {} se nepodařilo aktualizovat", item.getName());
                 throw new RuntimeException(throwable);
             })
             .thenAccept(armor -> notifier
@@ -238,7 +244,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
             .exceptionally(throwable -> {
                 notifier.showNotification(new Notification(String.format(translator.translate(
                     R.Translate.NOTIFY_RECORD_IS_NOT_DELETED), entry.getName())));
-                LOGGER.error("Položku {} se napodařilo aktualizovat", entry.getName());
+                LOGGER.error("Položku {} se nepodařilo aktualizovat", entry.getName());
                 throw new RuntimeException(throwable);
             })
             .thenAccept(armor -> notifier
@@ -248,37 +254,14 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
     @Override
     public void requestRemoveItem(ShopEntry entry, boolean remote) {
-        service.deleteRemoteAsync((Armor) entry.getItemBase(), remote)
-            .exceptionally(throwable -> {
-                final String key = remote
-                    ? R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE
-                    : R.Translate.NOTIFY_RECORD_IS_NOT_DELETED;
-                notifier.showNotification(new Notification(String.format(translator.translate(
-                    key), entry.getName())));
-                LOGGER.error("Položku {} se napodařilo aktualizovat", entry.getName());
-                throw new RuntimeException(throwable);
-            })
-            .thenAccept(armor -> {
-                final String key = remote
-                    ? R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE
-                    : R.Translate.NOTIFY_RECORD_IS_DELETED;
-                notifier.showNotification(new Notification(String.format(translator.translate(
-                    key), entry.getName())));
-            });
+        service.deleteRemoteAsync((Armor) entry.getItemBase(), remote, (error, ref) ->
+            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        service.uploadAsync((Armor) item)
-            .exceptionally(throwable -> {
-                notifier.showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), item.getName())));
-                LOGGER.error("Položku {} se napodařilo aktualizovat", item.getName());
-                throw new RuntimeException(throwable);
-            })
-            .thenAccept(armor -> notifier
-                .showNotification(new Notification(String.format(translator.translate(
-                    Translate.NOTIFY_RECORD_IS_DELETED), item.getName()))));
+        service.uploadAsync((Armor) item, (error, ref) ->
+            firebaseListener.handleItemUpload(item.getName(), error == null));
     }
 
     @Override

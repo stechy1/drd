@@ -230,28 +230,6 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
     }
 
     @Override
-    public void update(InventoryRecord inventoryRecord) throws DatabaseException {
-        final Optional<InventoryRecord> inventoryRecordOptional = items.stream()
-            .filter(record -> Objects.equals(record, inventoryRecord))
-            .findFirst();
-
-        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
-            .getItemById(inventoryRecord.getItemId());
-        if (!itemOptional.isPresent()) {
-            return;
-        }
-        final ItemBase item = itemOptional.get();
-        int oldAmmount = 0;
-        if (inventoryRecordOptional.isPresent()) {
-            oldAmmount = inventoryRecordOptional.get().getAmmount() * item.getWeight();
-        }
-
-        super.update(inventoryRecord);
-        final int w = weight.get();
-        weight.set(w - oldAmmount + inventoryRecord.getAmmount() * item.getWeight());
-    }
-
-    @Override
     public CompletableFuture<InventoryRecord> updateAsync(InventoryRecord inventoryRecord) {
         final Optional<InventoryRecord> inventoryRecordOptional = items.stream()
             .filter(record -> Objects.equals(record, inventoryRecord))

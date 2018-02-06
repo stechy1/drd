@@ -107,19 +107,15 @@ public class ShopController2 extends BaseController implements Initializable {
             .thenAcceptAsync(aVoid -> {
                 try {
                     heroService.commit();
-                    System.out.println("hotovo");
                     finish();
                 } catch (DatabaseException e) {
-                    System.out.println("Commit se nezdařil");
                     e.printStackTrace();
                 }
             }, ThreadPool.JAVAFX_EXECUTOR)
             .exceptionally(throwable -> {
                 try {
-                    System.out.println("rollback");
                     heroService.rollback();
                 } catch (DatabaseException e) {
-                    System.out.println("Rollback se nezdařil");
                     e.printStackTrace();
                 }
                 throwable.printStackTrace();

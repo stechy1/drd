@@ -51,6 +51,13 @@ interface ShopItemController<T> {
     void setNotificationProvider(ShopNotificationProvider notificationProvider);
 
     /**
+     * Nastaví reference na handlery z firebase
+     *
+     * @param firebaseListener {@link ShopFirebaseListener}
+     */
+    void setFirebaseListener(ShopFirebaseListener firebaseListener);
+
+    /**
      * @return Vrátí název screenu pro editaci itemu / přidání nového itemu
      */
     String getEditScreenName();
