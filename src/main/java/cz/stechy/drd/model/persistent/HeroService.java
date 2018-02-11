@@ -3,7 +3,6 @@ package cz.stechy.drd.model.persistent;
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.BaseDatabaseService;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
@@ -208,15 +207,14 @@ public final class HeroService extends BaseDatabaseService<Hero> {
     // region Public methods
 
     @Override
-    public void createTable() throws DatabaseException {
+    public CompletableFuture<Void> createTableAsync() {
         if (tableInitialized) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
-        super.createTable();
-        tableInitialized = true;
+        return super.createTableAsync()
+            .thenAccept(ignore -> tableInitialized = true);
     }
-
     @Override
     public CompletableFuture<Hero> insertAsync(Hero hero) {
         return getInventoryAsync(hero)

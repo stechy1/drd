@@ -9,8 +9,6 @@ import java.util.concurrent.CompletableFuture;
  */
 public interface Database {
 
-    void select(OnRowHandler handler, String query, Object... params) throws SQLException;
-
     /**
      * Provede příkaz selectAsync.
      *
@@ -20,8 +18,6 @@ public interface Database {
      * @return {@link CompletableFuture<List>}
      */
     <T> CompletableFuture<List<T>> selectAsync(RowTransformHandler<T> handler, String query, Object... params);
-
-    long query(String query, Object... params) throws SQLException;
 
     /**
      * Zpracuje a provede zadaný příkaz.

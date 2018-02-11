@@ -201,32 +201,26 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     // region Public methods
 
     @Override
-    public void createTable() throws DatabaseException {
-        LOGGER.trace("Inicializuji tabulku {}", getTable());
-        if (notifier != null) {
-            notifier.increaseProgress(
-                String.format("Inicializuji tabulku: %s", getTable()));
-        }
+    public CompletableFuture<Void> createTableAsync() {
         final String query = getInitializationQuery();
-        try {
-            db.query(query);
-
-            final int dbVersion = db.getVersion();
-            final int requiredVersion = R.DATABASE_VERSION;
-
-            if (requiredVersion > dbVersion) {
-                onUpgrade(requiredVersion);
-            }
-
-            db.select(resultSet -> {
-                final int count = resultSet.getInt(1);
-                if (notifier != null) {
-                    notifier.increaseMaxProgress(count);
+        return db.queryAsync(query)
+            .thenCompose(ignore -> {
+                final int dbVersion = db.getVersion();
+                final int requiredVersion = R.DATABASE_VERSION;
+                if (requiredVersion > dbVersion) {
+                    return onUpgradeAsync(requiredVersion);
+                } else {
+                    return CompletableFuture.completedFuture(null);
                 }
-            }, String.format("SELECT COUNT(%s) FROM %s", getColumnWithId(), getTable()));
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
+            })
+            .thenAccept(ignore ->
+                db.selectAsync((resultSet -> {
+                    final int count = resultSet.getInt(1);
+                    if (notifier != null) {
+                        notifier.increaseMaxProgress(count);
+                    }
+                    return null;
+                }), String.format("SELECT COUNT(%s) FROM %s", getColumnWithId(), getTable())));
     }
 
     @Override
@@ -352,6 +346,14 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     @Override
     public void onUpgrade(int newVersion) throws DatabaseException {
         LOGGER.info("Aktualizuji tabulku: {} na verzi: {}", getTable(), newVersion);
+    }
+
+    @Override
+    public CompletableFuture<Void> onUpgradeAsync(int newVersion) {
+        return CompletableFuture.supplyAsync(() -> {
+            LOGGER.info("Aktualizuji tabulku: {} na verzi: {}", getTable(), newVersion);
+            return null;
+        });
     }
 
     // endregion

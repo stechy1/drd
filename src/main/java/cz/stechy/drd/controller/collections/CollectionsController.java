@@ -67,7 +67,7 @@ public class CollectionsController extends BaseController implements Initializab
     @FXML
     private TableColumn<ItemEntry, Image> columnImage;
     @FXML
-    private TableColumn columnWeight;
+    private TableColumn<ItemEntry, Integer> columnWeight;
     @FXML
     private TableColumn<ItemEntry, Money> columnPrice;
     @FXML
@@ -101,7 +101,6 @@ public class CollectionsController extends BaseController implements Initializab
     private final Translator translator;
 
     private String title;
-
     // endregion
 
     // region Constructors
@@ -124,7 +123,7 @@ public class CollectionsController extends BaseController implements Initializab
         ItemCollectionContent oldValue, ItemCollectionContent newValue) {
         collectionItems.clear();
         if (oldValue != null) {
-            oldValue.getItems().removeListener(this::collectionContentChangeListener);
+            oldValue.getItems().removeListener(this.itemCollectionContentListener);
         }
         if (newValue == null) {
             return;
@@ -132,22 +131,22 @@ public class CollectionsController extends BaseController implements Initializab
 
         collectionItems.setAll(collectionContent.get().getItems().stream()
             .map(ItemEntry::new).collect(Collectors.toList()));
-        newValue.getItems().addListener(this::collectionContentChangeListener);
+        newValue.getItems().addListener(this.itemCollectionContentListener);
     }
 
     // region Method handlers
 
-    private void collectionContentChangeListener(ListChangeListener.Change<? extends ItemBase> c) {
+    private ListChangeListener<? super ItemBase> itemCollectionContentListener = (ListChangeListener<ItemBase>) c -> {
         while (c.next()) {
             collectionItems.addAll(c.getAddedSubList().stream().map(ItemEntry::new).collect(
                 Collectors.toList()));
-            c.getRemoved().stream()
+            c.getRemoved()
                 .forEach(o -> collectionItems.stream()
                     .filter(itemEntry -> o.getId().equals(itemEntry.getId()))
                     .findFirst()
-                    .ifPresent(itemEntry -> collectionItems.remove(itemEntry)));
+                    .ifPresent(collectionItems::remove));
         }
-    }
+    };
 
     // endregion
 

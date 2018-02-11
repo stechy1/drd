@@ -3,10 +3,9 @@ package cz.stechy.drd.model.persistent;
 import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
-import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.model.item.RangedWeapon;
+import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.model.service.OnlineItemRegistry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Služba spravující CRUD operace nad třídou {@link RangedWeapon}
@@ -212,13 +212,13 @@ public final class RangedWeaponService extends AdvancedDatabaseService<RangedWea
     // region Public methods
 
     @Override
-    public void createTable() throws DatabaseException {
+    public CompletableFuture<Void> createTableAsync() {
         if (tableInitialized) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
-        super.createTable();
-        tableInitialized = true;
+        return super.createTableAsync()
+            .thenAccept(ignore -> tableInitialized = true);
     }
 
     // endregion

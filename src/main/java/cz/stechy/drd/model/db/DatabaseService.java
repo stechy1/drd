@@ -11,10 +11,8 @@ public interface DatabaseService<T> {
 
     /**
      * Metoda pro vytvoření nové tabulky v databázi
-     *
-     * @throws DatabaseException Pokud se vytvoření tabulky nezdaří
      */
-    void createTable() throws DatabaseException;
+    CompletableFuture<Void> createTableAsync();
 
     /**
      * Provede výběr konkrétního předmětu podle zadaného filtru
@@ -83,4 +81,6 @@ public interface DatabaseService<T> {
      * @throws DatabaseException Pokud se upgrade nezdaří
      */
     void onUpgrade(int newVersion) throws DatabaseException;
+
+    CompletableFuture<Void> onUpgradeAsync(int newVersion);
 }
