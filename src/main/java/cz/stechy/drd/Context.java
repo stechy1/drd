@@ -3,7 +3,6 @@ package cz.stechy.drd;
 import cz.stechy.drd.R.Config;
 import cz.stechy.drd.di.DiContainer;
 import cz.stechy.drd.di.IDependencyManager;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.DatabaseService;
 import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.drd.model.db.SQLite;
@@ -20,9 +19,7 @@ import cz.stechy.drd.model.persistent.SpellBookService;
 import cz.stechy.drd.model.persistent.UserService;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import javafx.application.Platform;
@@ -138,22 +135,20 @@ public class Context {
     /**
      * Inicializace všech správců předmětů
      */
-    private void initServices() {
+    private CompletableFuture<Void> initServices() {
         // Inicializace jednotlivých služeb
-        final List<CompletableFuture> futureList = new ArrayList<>(SERVICES.length);
-        Arrays.stream(SERVICES).forEach(service -> {
-                final DatabaseService instance = container.getInstance(service);
-                try {
-                    instance.createTable();
-                    futureList.add(instance.selectAllAsync());
-                } catch (DatabaseException e) {
-                    e.printStackTrace();
-                }
+        return CompletableFuture.allOf(Arrays.stream(SERVICES)
+            .map(container::getInstance)
+            .map(instance -> (DatabaseService) instance)
+            .map(instance -> instance.createTableAsync()
+                .thenCompose(ignore -> instance.selectAllAsync()))
+            .toArray(CompletableFuture[]::new))
+            .thenAccept(ignore -> {
+                // Inicializace UserService
+                container.getInstance(UserService.class);
+                // Inicializace ItemCollectionService
+                container.getInstance(ItemCollectionService.class);
             });
-        CompletableFuture.allOf(futureList.toArray(new CompletableFuture[futureList.size()]));
-        container.getInstance(UserService.class);
-        // Inicializace ItemCollectionService
-        container.getInstance(ItemCollectionService.class);
     }
 
     /**
@@ -184,19 +179,21 @@ public class Context {
      *
      * @throws Exception Pokud se inicializace nezdaří
      */
-    void init() {
-        initServices();
-        if (useOnlineDatabase()) {
-            try {
-                initFirebase(settings.getProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH,
-                    FIREBASE_CREDENTIALS));
-            } catch (Exception ex) {
-                // Pokud se nepodaří inicializovat firebase při startu, tak se prakticky nic neděje
-                // aplikace může bez firebase běžet
-                // Pro jistotu nastavíme, že se přiště inicializace konat nebude
-                settings.setProperty(R.Config.USE_ONLINE_DATABASE, "false");
+    CompletableFuture<Void> init() {
+        return initServices().thenAccept(ignore -> {
+            if (useOnlineDatabase()) {
+                try {
+                    initFirebase(settings.getProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH,
+                        FIREBASE_CREDENTIALS));
+                } catch (Exception ex) {
+                    // Pokud se nepodaří inicializovat firebase při startu, tak se prakticky nic neděje
+                    // aplikace může bez firebase běžet
+                    // Pro jistotu nastavíme, že se přiště inicializace konat nebude
+                    settings.setProperty(R.Config.USE_ONLINE_DATABASE, "false");
+                }
             }
-        }
+        });
+
     }
 
     /**

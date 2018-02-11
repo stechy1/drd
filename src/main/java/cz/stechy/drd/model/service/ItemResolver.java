@@ -10,7 +10,6 @@ import cz.stechy.drd.model.persistent.GeneralItemService;
 import cz.stechy.drd.model.persistent.MeleWeaponService;
 import cz.stechy.drd.model.persistent.RangedWeaponService;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -84,9 +83,8 @@ public class ItemResolver {
 
         return CompletableFuture.allOf(items
             .stream()
-            .map(item -> itemRegistry.getItemById(item.getItemBase().getId()))
-            .filter(optional -> !optional.isPresent())
-            .map(Optional::get)
+            .filter(item -> !itemRegistry.getItemById(item.getItemBase().getId()).isPresent())
+            .map(WithItemBase::getItemBase)
             .map(item -> {
                 final AdvancedDatabaseService service = getService(item.getItemType());
                 return service.insertAsync(item)

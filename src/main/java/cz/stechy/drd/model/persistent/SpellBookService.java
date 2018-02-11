@@ -3,7 +3,6 @@ package cz.stechy.drd.model.persistent;
 import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
-import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.db.base.Database;
 import cz.stechy.drd.model.spell.Spell;
 import cz.stechy.drd.model.spell.parser.SpellParser;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Služba spravující CRUD operace nad třídou {@link Spell}
@@ -198,13 +198,13 @@ public class SpellBookService extends AdvancedDatabaseService<Spell> {
     // region Public methods
 
     @Override
-    public void createTable() throws DatabaseException {
+    public CompletableFuture<Void> createTableAsync() {
         if (tableInitialized) {
-            return;
+            return CompletableFuture.completedFuture(null);
         }
 
-        super.createTable();
-        tableInitialized = true;
+        return super.createTableAsync()
+            .thenAccept(ignore -> tableInitialized = true);
     }
 
     // endregion

@@ -2,7 +2,6 @@ package cz.stechy.drd.model.db;
 
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.db.base.Database;
-import cz.stechy.drd.model.db.base.OnRowHandler;
 import cz.stechy.drd.model.db.base.RowTransformHandler;
 import cz.stechy.drd.model.db.base.TransactionHandler;
 import java.sql.Connection;
@@ -131,38 +130,11 @@ public class SQLite implements Database {
     // endregion
 
     @Override
-    public synchronized long query(String query, Object... params) throws SQLException {
-        if (isTransactional()) {
-            return query(transactionalConnection, query, params);
-        } else {
-            return queryTransactional(query, params);
-        }
-    }
-
-    @Override
     public CompletableFuture<Long> queryAsync(String query, Object... params) {
         if (isTransactional()) {
             return queryAsync(transactionalConnection, query, params);
         } else {
             return queryTransactionalAsync(query, params);
-        }
-    }
-
-    @Override
-    public synchronized void select(OnRowHandler handler, String query, Object... params)
-        throws SQLException {
-        try (
-            final Connection connection = pool.getConnection();
-            final PreparedStatement statement = connection.prepareStatement(query)) {
-            for (int i = 0; i < params.length; i++) {
-                // Indexy v databázi jsou od 1, proto i+1
-                statement.setObject(i + 1, params[i]);
-            }
-
-            ResultSet result = statement.executeQuery();
-            while (result.next()) {
-                handler.onRow(result);
-            }
         }
     }
 
