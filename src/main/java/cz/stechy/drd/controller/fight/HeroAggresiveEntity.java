@@ -6,7 +6,7 @@ import cz.stechy.drd.model.inventory.container.EquipItemContainer;
 import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.WeaponBase;
-import cz.stechy.drd.model.persistent.InventoryContent;
+import cz.stechy.drd.model.dao.InventoryContentDao;
 import cz.stechy.drd.model.service.ItemRegistry;
 
 public class HeroAggresiveEntity extends AggresiveEntityDecorator {
@@ -26,7 +26,7 @@ public class HeroAggresiveEntity extends AggresiveEntityDecorator {
      *  @param aggresiveEntity {@link Hero} Hrdina, který jde do boje
      * @param inventory {@link Inventory} Inventář hrdiny s jeho vybavením
      */
-    protected HeroAggresiveEntity(Hero aggresiveEntity, InventoryContent inventory) {
+    protected HeroAggresiveEntity(Hero aggresiveEntity, InventoryContentDao inventory) {
         super(aggresiveEntity);
 
             initWeaponAddition(inventory);
@@ -37,7 +37,7 @@ public class HeroAggresiveEntity extends AggresiveEntityDecorator {
 
     // region Private methods
 
-    private void initWeaponAddition(InventoryContent inventory) {
+    private void initWeaponAddition(InventoryContentDao inventory) {
         inventory.selectAsync(EquipItemContainer.SLOT_SWORD)
             .thenAccept(inventoryRecord -> {
                 final String itemId = inventoryRecord.getItemId();
@@ -53,7 +53,7 @@ public class HeroAggresiveEntity extends AggresiveEntityDecorator {
             });
     }
 
-    private void initArmorAddition(InventoryContent inventory) {
+    private void initArmorAddition(InventoryContentDao inventory) {
         inventory.selectAsync(EquipItemContainer.SLOT_BODY)
             .thenAccept(inventoryRecord -> {
                 final String itemId = inventoryRecord.getItemId();

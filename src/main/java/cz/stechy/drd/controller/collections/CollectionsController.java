@@ -2,11 +2,11 @@ package cz.stechy.drd.controller.collections;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.dao.ItemCollectionDao;
+import cz.stechy.drd.model.dao.UserDao;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemCollection;
-import cz.stechy.drd.model.persistent.ItemCollectionContent;
-import cz.stechy.drd.model.persistent.ItemCollectionService;
-import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.dao.ItemCollectionContentDao;
 import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.model.service.ItemResolver;
 import cz.stechy.drd.model.service.ItemResolver.WithItemBase;
@@ -92,10 +92,10 @@ public class CollectionsController extends BaseController implements Initializab
         this, "selectedCollection", null);
     private final ObjectProperty<ItemEntry> selectedCollectionItem = new SimpleObjectProperty<>(
         this, "selectedCollectionItem", null);
-    private final ObjectProperty<ItemCollectionContent> collectionContent = new SimpleObjectProperty<>(
+    private final ObjectProperty<ItemCollectionContentDao> collectionContent = new SimpleObjectProperty<>(
         this, "collectionContent", null);
 
-    private final ItemCollectionService collectionService;
+    private final ItemCollectionDao collectionService;
     private final ItemResolver itemResolver;
     private final User user;
     private final Translator translator;
@@ -105,11 +105,11 @@ public class CollectionsController extends BaseController implements Initializab
 
     // region Constructors
 
-    public CollectionsController(ItemCollectionService collectionService, ItemResolver itemResolver,
-        UserService userService, Translator translator) {
+    public CollectionsController(ItemCollectionDao collectionService, ItemResolver itemResolver,
+        UserDao userDao, Translator translator) {
         this.collectionService = collectionService;
         this.itemResolver = itemResolver;
-        this.user = userService.getUser();
+        this.user = userDao.getUser();
         this.translator = translator;
         itemRegistry.setAll(ItemRegistry.getINSTANCE().getChoices());
     }
@@ -119,8 +119,8 @@ public class CollectionsController extends BaseController implements Initializab
     // region Private methods
 
     private void collectionContentListener(
-        ObservableValue<? extends ItemCollectionContent> observable,
-        ItemCollectionContent oldValue, ItemCollectionContent newValue) {
+        ObservableValue<? extends ItemCollectionContentDao> observable,
+        ItemCollectionContentDao oldValue, ItemCollectionContentDao newValue) {
         collectionItems.clear();
         if (oldValue != null) {
             oldValue.getItems().removeListener(this.itemCollectionContentListener);
@@ -283,7 +283,7 @@ public class CollectionsController extends BaseController implements Initializab
 
     @FXML
     private void handleCollectionItemRemove(ActionEvent actionEvent) {
-        final ItemCollectionContent content = this.collectionContent.get();
+        final ItemCollectionContentDao content = this.collectionContent.get();
 
         if (content == null) {
             return;

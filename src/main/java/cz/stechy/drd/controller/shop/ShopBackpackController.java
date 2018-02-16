@@ -9,8 +9,8 @@ import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.persistent.BackpackService;
-import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.dao.BackpackDao;
+import cz.stechy.drd.model.dao.UserDao;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.BackpackEntry;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
@@ -93,11 +93,11 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     // region Constrollers
 
-    public ShopBackpackController(UserService userService, BackpackService backpackService,
+    public ShopBackpackController(UserDao userDao, BackpackDao backpackDao,
         Translator translator) {
-        this.service = backpackService;
+        this.service = backpackDao;
         this.translator = translator;
-        this.user = userService.getUser();
+        this.user = userDao.getUser();
     }
     // endregion
 

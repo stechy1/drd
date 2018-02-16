@@ -10,8 +10,8 @@ import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
-import cz.stechy.drd.model.persistent.RangedWeaponService;
-import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.dao.RangedWeaponDao;
+import cz.stechy.drd.model.dao.UserDao;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.RangedWeaponEntry;
@@ -110,10 +110,10 @@ public class ShopWeaponRangedController implements Initializable,
     // region Constructors
 
     @SuppressWarnings("unchecked")
-    public ShopWeaponRangedController(UserService userService, RangedWeaponService rangedWeaponService, Translator translator) {
-        this.service = rangedWeaponService;
+    public ShopWeaponRangedController(UserDao userDao, RangedWeaponDao rangedWeaponDao, Translator translator) {
+        this.service = rangedWeaponDao;
         this.translator = translator;
-        this.user = userService.getUser();
+        this.user = userDao.getUser();
     }
 
     // endregion

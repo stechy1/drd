@@ -1,4 +1,4 @@
-package cz.stechy.drd.model.persistent;
+package cz.stechy.drd.model.dao;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -29,12 +29,12 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * Služba spravující CRUD operace nad třídou {@link User}
  */
 @Singleton
-public final class UserService implements Firebase<User> {
+public final class UserDao implements Firebase<User> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserDao.class);
 
     private static final String FIREBASE_CHILD_NAME = "users";
 
@@ -62,7 +62,7 @@ public final class UserService implements Firebase<User> {
      *
      * @param wrapper {@link FirebaseDatabase}
      */
-    public UserService(FirebaseWrapper wrapper) {
+    public UserDao(FirebaseWrapper wrapper) {
         wrapper.firebaseProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 onlineDatabase.clear();

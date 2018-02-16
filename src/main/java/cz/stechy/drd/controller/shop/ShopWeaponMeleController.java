@@ -11,8 +11,8 @@ import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponType;
-import cz.stechy.drd.model.persistent.MeleWeaponService;
-import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.dao.MeleWeaponDao;
+import cz.stechy.drd.model.dao.UserDao;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.MeleWeaponEntry;
@@ -107,10 +107,10 @@ public class ShopWeaponMeleController implements Initializable,
 
     // region Constructors
 
-    public ShopWeaponMeleController(UserService userService, MeleWeaponService meleWeaponService, Translator translator) {
-        this.service = meleWeaponService;
+    public ShopWeaponMeleController(UserDao userDao, MeleWeaponDao meleWeaponDao, Translator translator) {
+        this.service = meleWeaponDao;
         this.translator = translator;
-        this.user = userService.getUser();
+        this.user = userDao.getUser();
     }
 
     // endregion

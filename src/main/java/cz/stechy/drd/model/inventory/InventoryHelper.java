@@ -4,7 +4,7 @@ import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemType;
-import cz.stechy.drd.model.persistent.InventoryService;
+import cz.stechy.drd.model.dao.InventoryDao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +16,13 @@ import java.util.concurrent.CompletableFuture;
 public class InventoryHelper {
 
     private static CompletableFuture<InventoryRecord> buildInventoryRecord(Map.Entry<Integer, Integer> entry,
-        ItemRecord itemEntry, Inventory inventory, InventoryService inventoryService) {
+        ItemRecord itemEntry, Inventory inventory, InventoryDao inventoryDao) {
         CompletableFuture<Metadata> futureMetadata;
         if (itemEntry.getItemBase().getItemType() == ItemType.BACKPACK) {
             final Metadata metadata = new Metadata();
             assert entry.getValue() == 1;
             final Backpack backpack = (Backpack) itemEntry.getItemBase();
-            futureMetadata = inventoryService.initSubInventoryAsync(backpack.getSize().size)
+            futureMetadata = inventoryDao.initSubInventoryAsync(backpack.getSize().size)
                 .thenApply(backpackInventory -> {
                     metadata.put(Backpack.CHILD_INVENTORY_ID, backpackInventory.getId());
 
@@ -41,10 +41,10 @@ public class InventoryHelper {
             .build());
     }
 
-    public static CompletableFuture<Void> insertItemsToInventoryAsync(InventoryService inventoryService,
+    public static CompletableFuture<Void> insertItemsToInventoryAsync(InventoryDao inventoryDao,
         List<? extends ItemRecord> itemsToInventory) {
-        return inventoryService.selectAsync(InventoryService.MAIN_INVENTORY_FILTER)
-            .thenCompose(inventory -> inventoryService.getInventoryContentAsync(inventory)
+        return inventoryDao.selectAsync(InventoryDao.MAIN_INVENTORY_FILTER)
+            .thenCompose(inventory -> inventoryDao.getInventoryContentAsync(inventory)
                 .thenCompose(inventoryContent -> {
                     final List<CompletableFuture> futureItemList = new ArrayList<>(
                         itemsToInventory.size());
@@ -59,7 +59,8 @@ public class InventoryHelper {
                                             .entrySet()
                                             .stream()
                                             .map(entry ->
-                                                buildInventoryRecord(entry, itemRecord, inventory, inventoryService)
+                                                buildInventoryRecord(entry, itemRecord, inventory,
+                                                    inventoryDao)
                                                     .thenCompose(inventoryContent::insertAsync))
                                             .toArray(CompletableFuture[]::new)))));
                     return CompletableFuture.allOf(

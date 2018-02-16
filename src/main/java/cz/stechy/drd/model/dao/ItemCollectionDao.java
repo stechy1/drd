@@ -1,4 +1,4 @@
-package cz.stechy.drd.model.persistent;
+package cz.stechy.drd.model.dao;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -18,12 +18,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class ItemCollectionService implements Firebase<ItemCollection> {
+public class ItemCollectionDao implements Firebase<ItemCollection> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(ItemCollectionService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemCollectionDao.class);
 
     private static final String FIREBASE_CHILD_NAME = "collections/items";
 
@@ -41,14 +41,14 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
     // region Variables
 
     private final ObservableList<ItemCollection> collections = FXCollections.observableArrayList();
-    private final Map<String, ItemCollectionContent> contentMap = new HashMap<>();
+    private final Map<String, ItemCollectionContentDao> contentMap = new HashMap<>();
     private DatabaseReference firebaseReference;
 
     // endregion
 
     // region Constructors
 
-    public ItemCollectionService(FirebaseWrapper wrapper) {
+    public ItemCollectionDao(FirebaseWrapper wrapper) {
         wrapper.firebaseProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 collections.clear();
@@ -62,11 +62,11 @@ public class ItemCollectionService implements Firebase<ItemCollection> {
 
     // region Public methods
 
-    public ItemCollectionContent getContent(ItemCollection collection) {
+    public ItemCollectionContentDao getContent(ItemCollection collection) {
         final String id = collection.getId();
-        ItemCollectionContent collectionContent;
+        ItemCollectionContentDao collectionContent;
         if (!contentMap.containsKey(id)) {
-            collectionContent = new ItemCollectionContent(firebaseReference.child(collection.getId()).child(COLUMN_RECORDS));
+            collectionContent = new ItemCollectionContentDao(firebaseReference.child(collection.getId()).child(COLUMN_RECORDS));
             contentMap.put(id, collectionContent);
         } else {
             collectionContent = contentMap.get(id);

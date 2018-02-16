@@ -1,4 +1,4 @@
-package cz.stechy.drd.model.persistent;
+package cz.stechy.drd.model.dao;
 
 import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.di.Singleton;
@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
  * Služba spravující CRUD operace nad třídou {@link Spell}
  */
 @Singleton
-public class SpellBookService extends AdvancedDatabaseService<Spell> {
+public class SpellBookDao extends AdvancedDatabaseService<Spell> {
 
     // region Constants
 
@@ -83,7 +83,7 @@ public class SpellBookService extends AdvancedDatabaseService<Spell> {
      *
      * @param db {@link Database}
      */
-    public SpellBookService(Database db) {
+    public SpellBookDao(Database db) {
         super(db);
     }
 

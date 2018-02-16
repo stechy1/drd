@@ -1,4 +1,4 @@
-package cz.stechy.drd.model.persistent;
+package cz.stechy.drd.model.dao;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -16,14 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-public class ItemCollectionContent implements Firebase<ItemBase> {
+public class ItemCollectionContentDao implements Firebase<ItemBase> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(ItemCollectionContent.class);
-
-    private static final String COLUMN_ENTRY_ID = "id";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemCollectionContentDao.class);
 
     // endregion
 
@@ -36,7 +34,7 @@ public class ItemCollectionContent implements Firebase<ItemBase> {
 
     // region Constructors
 
-    public ItemCollectionContent(DatabaseReference reference) {
+    public ItemCollectionContentDao(DatabaseReference reference) {
         this.reference = reference;
         reference.addChildEventListener(childEventListener);
     }

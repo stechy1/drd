@@ -3,20 +3,20 @@ package cz.stechy.drd;
 import cz.stechy.drd.R.Config;
 import cz.stechy.drd.di.DiContainer;
 import cz.stechy.drd.di.IDependencyManager;
+import cz.stechy.drd.model.dao.UserDao;
 import cz.stechy.drd.model.db.DatabaseService;
 import cz.stechy.drd.model.db.FirebaseWrapper;
 import cz.stechy.drd.model.db.SQLite;
 import cz.stechy.drd.model.db.base.Database;
-import cz.stechy.drd.model.persistent.ArmorService;
-import cz.stechy.drd.model.persistent.BackpackService;
-import cz.stechy.drd.model.persistent.BestiaryService;
-import cz.stechy.drd.model.persistent.GeneralItemService;
-import cz.stechy.drd.model.persistent.HeroService;
-import cz.stechy.drd.model.persistent.ItemCollectionService;
-import cz.stechy.drd.model.persistent.MeleWeaponService;
-import cz.stechy.drd.model.persistent.RangedWeaponService;
-import cz.stechy.drd.model.persistent.SpellBookService;
-import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.dao.ArmorDao;
+import cz.stechy.drd.model.dao.BackpackDao;
+import cz.stechy.drd.model.dao.BestiaryDao;
+import cz.stechy.drd.model.dao.GeneralItemDao;
+import cz.stechy.drd.model.dao.HeroDao;
+import cz.stechy.drd.model.dao.ItemCollectionDao;
+import cz.stechy.drd.model.dao.MeleWeaponDao;
+import cz.stechy.drd.model.dao.RangedWeaponDao;
+import cz.stechy.drd.model.dao.SpellBookDao;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
 import java.util.Arrays;
@@ -51,14 +51,14 @@ public class Context {
     private static final AppDirs APP_DIRS = AppDirsFactory.getInstance();
 
     private static final Class[] SERVICES = new Class[]{
-        HeroService.class,
-        MeleWeaponService.class,
-        RangedWeaponService.class,
-        ArmorService.class,
-        GeneralItemService.class,
-        BackpackService.class,
-        BestiaryService.class,
-        SpellBookService.class
+        HeroDao.class,
+        MeleWeaponDao.class,
+        RangedWeaponDao.class,
+        ArmorDao.class,
+        GeneralItemDao.class,
+        BackpackDao.class,
+        BestiaryDao.class,
+        SpellBookDao.class
     };
 
     // endregion
@@ -144,10 +144,10 @@ public class Context {
                 .thenCompose(ignore -> instance.selectAllAsync()))
             .toArray(CompletableFuture[]::new))
             .thenAccept(ignore -> {
-                // Inicializace UserService
-                container.getInstance(UserService.class);
-                // Inicializace ItemCollectionService
-                container.getInstance(ItemCollectionService.class);
+                // Inicializace UserDao
+                container.getInstance(UserDao.class);
+                // Inicializace ItemCollectionDao
+                container.getInstance(ItemCollectionDao.class);
             });
     }
 

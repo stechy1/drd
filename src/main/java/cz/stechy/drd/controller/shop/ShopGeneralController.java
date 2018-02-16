@@ -9,8 +9,8 @@ import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.persistent.GeneralItemService;
-import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.dao.GeneralItemDao;
+import cz.stechy.drd.model.dao.UserDao;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
@@ -91,11 +91,11 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
     // region Constrollers
 
-    public ShopGeneralController(UserService userService, GeneralItemService generalItemService,
+    public ShopGeneralController(UserDao userDao, GeneralItemDao generalItemDao,
         Translator translator) {
-        this.service = generalItemService;
+        this.service = generalItemDao;
         this.translator = translator;
-        this.user = userService.getUser();
+        this.user = userDao.getUser();
     }
 
     // endregion

@@ -1,4 +1,4 @@
-package cz.stechy.drd.model.persistent;
+package cz.stechy.drd.model.dao;
 
 import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;

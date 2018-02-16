@@ -10,7 +10,7 @@ import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.mob.Mob;
-import cz.stechy.drd.model.persistent.BestiaryService;
+import cz.stechy.drd.model.dao.BestiaryDao;
 import cz.stechy.drd.widget.LabeledHeroProperty;
 import cz.stechy.drd.widget.LabeledMaxActValue;
 import cz.stechy.screens.BaseController;
@@ -66,7 +66,7 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
 
     // endregion
 
-    private final BestiaryService bestiary;
+    private final BestiaryDao bestiary;
     private final ObjectProperty<Mob> selectedMob = new SimpleObjectProperty<>();
     private final Money treasure = new Money();
     private BaseController parent;
@@ -75,8 +75,8 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
 
     // region Constructors
 
-    public FightOpponentController(BestiaryService bestiaryService) {
-        this.bestiary = bestiaryService;
+    public FightOpponentController(BestiaryDao bestiaryDao) {
+        this.bestiary = bestiaryDao;
     }
 
     // endregion

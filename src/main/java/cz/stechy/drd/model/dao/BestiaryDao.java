@@ -1,4 +1,4 @@
-package cz.stechy.drd.model.persistent;
+package cz.stechy.drd.model.dao;
 
 import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.di.Singleton;
@@ -18,7 +18,7 @@ import java.util.Map;
  * Služba spravující CRUD operace nad třídou {@link Backpack}
  */
 @Singleton
-public class BestiaryService extends AdvancedDatabaseService<Mob> {
+public class BestiaryDao extends AdvancedDatabaseService<Mob> {
 
     // region Constants
 
@@ -96,7 +96,7 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
 
     // region Constructors
 
-    public BestiaryService(Database db) {
+    public BestiaryDao(Database db) {
         super(db);
     }
 
@@ -234,11 +234,6 @@ public class BestiaryService extends AdvancedDatabaseService<Mob> {
         final Map<String, Object> map = super.toFirebaseMap(mob);
         map.put(COLUMN_IMAGE, blobToBase64(mob.getImage()));
         return map;
-    }
-
-    @Override
-    public void toggleDatabase(boolean showOnline) {
-        super.toggleDatabase(showOnline);
     }
 
     // endregion

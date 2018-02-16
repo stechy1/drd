@@ -2,9 +2,9 @@ package cz.stechy.drd.controller.hero.opener;
 
 import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.R;
+import cz.stechy.drd.model.dao.UserDao;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.model.persistent.HeroService;
-import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.dao.HeroDao;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
@@ -76,8 +76,8 @@ public class HeroOpenerController extends BaseController implements Initializabl
     private final ObservableList<Hero> heroes = FXCollections.observableArrayList();
     private final FilteredList<Hero> filteredHeroes = new FilteredList<>(heroes);
     private final ObjectProperty<Hero> selectedHero = new SimpleObjectProperty<>();
-    private final HeroService heroManager;
-    private final UserService userService;
+    private final HeroDao heroManager;
+    private final UserDao userDao;
     private final Translator translator;
 
     private String title;
@@ -86,10 +86,10 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
     // region Constructors
 
-    public HeroOpenerController(HeroService heroManager, UserService userService,
+    public HeroOpenerController(HeroDao heroManager, UserDao userDao,
         Translator translator) {
         this.heroManager = heroManager;
-        this.userService = userService;
+        this.userDao = userDao;
         this.translator = translator;
     }
 
@@ -135,8 +135,8 @@ public class HeroOpenerController extends BaseController implements Initializabl
             hero != null // Hrdina není null
                 && !hero.equals(heroManager.getHero()) // Hrdina není otevřený
                 // Přihlášený uživatel vidí pouze své hrdiny, nepřihlášený pouze hrdiny, kteří nemají autora
-                && ((userService.getUser() != null)
-                ? hero.getAuthor().equals(userService.getUser().getName())
+                && ((userDao.getUser() != null)
+                ? hero.getAuthor().equals(userDao.getUser().getName())
                 : hero.getAuthor().isEmpty()));
 
         lvHeroes.setItems(filteredHeroes);

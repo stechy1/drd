@@ -1,4 +1,4 @@
-package cz.stechy.drd.model.persistent;
+package cz.stechy.drd.model.dao;
 
 import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.base.Database;
@@ -30,12 +30,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Služba spravující CRUD operace nad třídou {@link InventoryRecord}
  */
-public final class InventoryContent extends BaseDatabaseService<InventoryRecord> {
+public final class InventoryContentDao extends BaseDatabaseService<InventoryRecord> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryContent.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryContentDao.class);
 
     private static final int SLOT_OCCUPIED = 1;
     private static final int SLOT_NOT_OCCUPIED = 0;
@@ -91,17 +91,12 @@ public final class InventoryContent extends BaseDatabaseService<InventoryRecord>
      * @param db Databáze, do které se ukládají informace
      * @param inventory Inventář, ke kterému je přidružen obsah
      */
-    InventoryContent(Database db, Inventory inventory) {
+    InventoryContentDao(Database db, Inventory inventory) {
         super(db);
 
         this.inventory = inventory;
         this.occupiedSlots = new int[inventory.getCapacity()];
         createTableAsync().join();
-//        try {
-//            createTable();
-//        } catch (DatabaseException e) {
-//            e.printStackTrace();
-//        }
 
         items.addListener(this::itemsHandler);
     }

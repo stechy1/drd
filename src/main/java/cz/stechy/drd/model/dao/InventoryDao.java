@@ -1,4 +1,4 @@
-package cz.stechy.drd.model.persistent;
+package cz.stechy.drd.model.dao;
 
 import cz.stechy.drd.model.db.BaseDatabaseService;
 import cz.stechy.drd.model.db.base.Database;
@@ -22,12 +22,12 @@ import org.slf4j.LoggerFactory;
 /**
  * Služba spravující CRUD operace nad třídou {@link Inventory}
  */
-public final class InventoryService extends BaseDatabaseService<Inventory> {
+public final class InventoryDao extends BaseDatabaseService<Inventory> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InventoryDao.class);
 
     // Název tabulky
     private static final String TABLE = "inventory";
@@ -61,7 +61,7 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
     // Hrdina
     private final Hero hero;
     // Mapa referencí na správce obsahů jednotlivých inventářů
-    private final Map<Inventory, InventoryContent> inventoryContentMap = new HashMap<>();
+    private final Map<Inventory, InventoryContentDao> inventoryContentMap = new HashMap<>();
 
     // endregion
 
@@ -73,7 +73,7 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
      * @param db {@link Database}
      * @param hero {@link Hero} Hrdina, pro kterého se má vybrat inventář
      */
-    public InventoryService(Database db, Hero hero) {
+    public InventoryDao(Database db, Hero hero) {
         super(db);
 
         this.hero = hero;
@@ -201,13 +201,13 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
                 }));
     }
 
-    public CompletableFuture<InventoryContent> getInventoryContentByIdAsync(
+    public CompletableFuture<InventoryContentDao> getInventoryContentByIdAsync(
         final String inventoryId) {
         final Inventory inventory = new Inventory.Builder().id(inventoryId).build();
         return getInventoryContentAsync(inventory, ID_FILTER(inventory));
     }
 
-    public CompletableFuture<InventoryContent> getInventoryContentAsync(final Inventory inventory) {
+    public CompletableFuture<InventoryContentDao> getInventoryContentAsync(final Inventory inventory) {
         return getInventoryContentAsync(inventory, SIMPLE_FILTER(inventory));
     }
 
@@ -216,9 +216,9 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
      *
      * @param inventory {@link Inventory} Inventář pro který se hledá obsah
      * @param filter Filter, podle kterého probíhá hledání
-     * @return {@link CompletableFuture<InventoryContent>}
+     * @return {@link CompletableFuture< InventoryContentDao >}
      */
-    private CompletableFuture<InventoryContent> getInventoryContentAsync(final Inventory inventory,
+    private CompletableFuture<InventoryContentDao> getInventoryContentAsync(final Inventory inventory,
         final Predicate<? super Inventory> filter) {
         final Optional<Inventory> result = inventoryContentMap.keySet()
             .stream()
@@ -226,16 +226,16 @@ public final class InventoryService extends BaseDatabaseService<Inventory> {
             .findFirst();
 
         if (result.isPresent()) {
-            final InventoryContent inventoryContent = inventoryContentMap.get(result.get());
-            return CompletableFuture.completedFuture(inventoryContent);
+            final InventoryContentDao inventoryContentDao = inventoryContentMap.get(result.get());
+            return CompletableFuture.completedFuture(inventoryContentDao);
         }
 
         return selectAsync(filter)
             .thenCompose(inventoryResult -> {
-                final InventoryContent inventoryContent = new InventoryContent(db, inventoryResult);
-                inventoryContentMap.put(inventoryResult, inventoryContent);
-                return inventoryContent.selectAllAsync()
-                    .thenApply(inventoryRecords -> inventoryContent);
+                final InventoryContentDao inventoryContentDao = new InventoryContentDao(db, inventoryResult);
+                inventoryContentMap.put(inventoryResult, inventoryContentDao);
+                return inventoryContentDao.selectAllAsync()
+                    .thenApply(inventoryRecords -> inventoryContentDao);
             });
     }
 

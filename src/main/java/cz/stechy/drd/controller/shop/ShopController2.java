@@ -6,7 +6,7 @@ import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.persistent.HeroService;
+import cz.stechy.drd.model.dao.HeroDao;
 import cz.stechy.drd.model.shop.ShoppingCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.screens.BaseController;
@@ -55,7 +55,7 @@ public class ShopController2 extends BaseController implements Initializable {
     // endregion
 
     private final ObservableList<ItemResultEntry> items = FXCollections.observableArrayList();
-    private final HeroService heroService;
+    private final HeroDao heroDao;
 
     private ShoppingCart shoppingCart;
 
@@ -63,8 +63,8 @@ public class ShopController2 extends BaseController implements Initializable {
 
     // region Constructors
 
-    public ShopController2(HeroService heroService) {
-        this.heroService = heroService;
+    public ShopController2(HeroDao heroDao) {
+        this.heroDao = heroDao;
     }
 
     // endregion
@@ -96,17 +96,17 @@ public class ShopController2 extends BaseController implements Initializable {
     @FXML
     private void handleFinishShopping(ActionEvent actionEvent) {
         try {
-            heroService.beginTransaction();
-            final Hero heroCopy = heroService.getHero().duplicate();
+            heroDao.beginTransaction();
+            final Hero heroCopy = heroDao.getHero().duplicate();
             heroCopy.getMoney().subtract(shoppingCart.totalPrice);
-            heroService.updateAsync(heroCopy)
+            heroDao.updateAsync(heroCopy)
                 .thenCompose(hero ->
-                    heroService.getInventoryAsync()
+                    heroDao.getInventoryAsync()
                         .thenCompose(inventoryService ->
                             InventoryHelper.insertItemsToInventoryAsync(inventoryService, items)))
             .thenAcceptAsync(aVoid -> {
                 try {
-                    heroService.commit();
+                    heroDao.commit();
                     finish();
                 } catch (DatabaseException e) {
                     e.printStackTrace();
@@ -114,7 +114,7 @@ public class ShopController2 extends BaseController implements Initializable {
             }, ThreadPool.JAVAFX_EXECUTOR)
             .exceptionally(throwable -> {
                 try {
-                    heroService.rollback();
+                    heroDao.rollback();
                 } catch (DatabaseException e) {
                     e.printStackTrace();
                 }

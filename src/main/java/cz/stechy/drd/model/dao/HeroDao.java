@@ -1,4 +1,4 @@
-package cz.stechy.drd.model.persistent;
+package cz.stechy.drd.model.dao;
 
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.di.Singleton;
@@ -23,12 +23,12 @@ import org.slf4j.LoggerFactory;
  * Služba spravující CRUD operace nad třídou {@link Hero}
  */
 @Singleton
-public final class HeroService extends BaseDatabaseService<Hero> {
+public final class HeroDao extends BaseDatabaseService<Hero> {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(HeroService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HeroDao.class);
 
     // Název tabulky
     private static final String TABLE = "hero";
@@ -99,7 +99,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
 
     private final ObjectProperty<Hero> hero = new SimpleObjectProperty<>(this,"hero", null);
     // Správce inventáře pro hrdinu
-    private InventoryService inventoryManager;
+    private InventoryDao inventoryManager;
 
     // endregion
 
@@ -110,7 +110,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
      *
      * @param db {@link Database} Databáze, která obsahuje data o hrdinech
      */
-    public HeroService(Database db) {
+    public HeroDao(Database db) {
         super(db);
     }
 
@@ -219,7 +219,7 @@ public final class HeroService extends BaseDatabaseService<Hero> {
     public CompletableFuture<Hero> insertAsync(Hero hero) {
         return getInventoryAsync(hero)
             // Před vložením hrdiny se pro něj musí vytvořit inventář
-            .thenCompose(inventoryService -> inventoryService.insertAsync(InventoryService.standartInventory(hero)))
+            .thenCompose(inventoryService -> inventoryService.insertAsync(InventoryDao.standartInventory(hero)))
             // Až poté se vloží záznam o hrdinovi do databáze
             .thenCompose(inventory -> super.insertAsync(hero));
     }
@@ -243,9 +243,9 @@ public final class HeroService extends BaseDatabaseService<Hero> {
     /**
      * Vrátí inventář aktuálně otevřeného hrdiny
      *
-     * @return {@link CompletableFuture<InventoryService>}
+     * @return {@link CompletableFuture< InventoryDao >}
      */
-    public CompletableFuture<InventoryService> getInventoryAsync() {
+    public CompletableFuture<InventoryDao> getInventoryAsync() {
         return getInventoryAsync(hero.get());
     }
 
@@ -253,11 +253,11 @@ public final class HeroService extends BaseDatabaseService<Hero> {
      * Vytvoří novou instanci správce itemů pro zadaného hrdinu
      *
      * @param hero {@link Hero}
-     * @return {@link CompletableFuture<InventoryContent>}
+     * @return {@link CompletableFuture< InventoryContentDao >}
      */
-    private  CompletableFuture<InventoryService> getInventoryAsync(Hero hero) {
+    private  CompletableFuture<InventoryDao> getInventoryAsync(Hero hero) {
         if (inventoryManager == null) {
-            inventoryManager = new InventoryService(db, hero);
+            inventoryManager = new InventoryDao(db, hero);
         }
 
         return inventoryManager.selectAllAsync().thenApply(inventories -> inventoryManager);

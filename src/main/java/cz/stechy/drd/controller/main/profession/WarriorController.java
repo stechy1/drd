@@ -8,7 +8,7 @@ import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.model.item.WeaponBase;
-import cz.stechy.drd.model.persistent.BestiaryService;
+import cz.stechy.drd.model.dao.BestiaryDao;
 import cz.stechy.drd.model.service.ItemRegistry;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.FormUtils;
@@ -53,7 +53,7 @@ public class WarriorController implements IProfessionController, Initializable {
 
     private final ObservableList<Mob> mobs = FXCollections.observableArrayList();
     private final ObservableList<WeaponBase> items = FXCollections.observableArrayList();
-    private final BestiaryService bestiary;
+    private final BestiaryDao bestiary;
 
     private String successText;
     private String failText;
@@ -64,8 +64,8 @@ public class WarriorController implements IProfessionController, Initializable {
 
     // region Constructors
 
-    public WarriorController(BestiaryService bestiaryService) {
-        this.bestiary = bestiaryService;
+    public WarriorController(BestiaryDao bestiaryDao) {
+        this.bestiary = bestiaryDao;
     }
 
     // endregion

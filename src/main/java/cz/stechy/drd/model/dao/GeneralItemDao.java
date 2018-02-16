@@ -1,4 +1,4 @@
-package cz.stechy.drd.model.persistent;
+package cz.stechy.drd.model.dao;
 
 import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.di.Singleton;
@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
  * Služba spravující CRUD operace nad třídou {@link GeneralItem}
  */
 @Singleton
-public final class GeneralItemService extends AdvancedDatabaseService<GeneralItem> {
+public final class GeneralItemDao extends AdvancedDatabaseService<GeneralItem> {
 
     // region Constants
 
@@ -69,7 +69,7 @@ public final class GeneralItemService extends AdvancedDatabaseService<GeneralIte
      *
      * @param db {@link Database}
      */
-    public GeneralItemService(Database db) {
+    public GeneralItemDao(Database db) {
         super(db);
 
         ItemRegistry.getINSTANCE().addColection(items);

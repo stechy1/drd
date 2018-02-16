@@ -16,9 +16,9 @@ import cz.stechy.drd.model.inventory.container.EquipItemContainer;
 import cz.stechy.drd.model.inventory.container.GridItemContainer;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.persistent.HeroService;
-import cz.stechy.drd.model.persistent.InventoryContent;
-import cz.stechy.drd.model.persistent.InventoryService;
+import cz.stechy.drd.model.dao.HeroDao;
+import cz.stechy.drd.model.dao.InventoryContentDao;
+import cz.stechy.drd.model.dao.InventoryDao;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -55,7 +55,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
     private final ItemContainer equipItemContainer = new EquipItemContainer(this);
     private final Translator translator;
 
-    private HeroService heroManager;
+    private HeroDao heroManager;
     private ReadOnlyObjectProperty<Hero> hero;
     private BaseController parent;
 
@@ -63,7 +63,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
 
     // region Constructors
 
-    public InventoryController(Translator translator, HeroService heroManager) {
+    public InventoryController(Translator translator, HeroDao heroManager) {
         this.translator = translator;
         this.heroManager = heroManager;
 
@@ -78,7 +78,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
     // region Method handlers
     private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue,
         Hero newValue) {
-        InventoryContent.clearWeight();
+        InventoryContentDao.clearWeight();
         if (newValue == null) {
             mainItemContainer.clear();
             equipItemContainer.clear();
@@ -88,7 +88,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
         heroManager.getInventoryAsync()
             .thenCompose(inventoryService ->
             {
-                return inventoryService.selectAsync(InventoryService.MAIN_INVENTORY_FILTER)
+                return inventoryService.selectAsync(InventoryDao.MAIN_INVENTORY_FILTER)
                     .thenCompose(mainInventory ->
                     {
                         return mainItemContainer
@@ -96,7 +96,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
                             .thenCompose(ignore ->
                             {
                                 return inventoryService
-                                    .selectAsync(InventoryService.EQUIP_INVENTORY_FILTER)
+                                    .selectAsync(InventoryDao.EQUIP_INVENTORY_FILTER)
                                     .handle((equipInventory, throwable) -> {
                                         if (throwable != null) {
                                             equipInventory = new Inventory.Builder()
@@ -159,7 +159,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
         container.setLeft(equipItemContainer.getGraphics());
         container.setCenter(mainItemContainer.getGraphics());
 
-        lblWeight.textProperty().bind(InventoryContent.getWeight().asString());
+        lblWeight.textProperty().bind(InventoryContentDao.getWeight().asString());
     }
 
     @Override

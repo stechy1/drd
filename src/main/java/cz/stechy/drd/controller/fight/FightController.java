@@ -5,8 +5,8 @@ import cz.stechy.drd.model.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.fight.Battlefield;
 import cz.stechy.drd.model.fight.Battlefield.BattlefieldAction;
-import cz.stechy.drd.model.persistent.HeroService;
-import cz.stechy.drd.model.persistent.InventoryService;
+import cz.stechy.drd.model.dao.HeroDao;
+import cz.stechy.drd.model.dao.InventoryDao;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -70,7 +70,7 @@ public class FightController extends BaseController implements Initializable {
 
     // endregion
 
-    private final HeroService heroService;
+    private final HeroDao heroDao;
     private final Hero hero;
 
     private final BooleanProperty isFighting = new SimpleBooleanProperty();
@@ -84,12 +84,12 @@ public class FightController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public FightController(HeroService heroService) {
-        this.heroService = heroService;
-        if (heroService.getHero() == null) {
+    public FightController(HeroDao heroDao) {
+        this.heroDao = heroDao;
+        if (heroDao.getHero() == null) {
             this.hero = null;
         } else {
-            this.hero = this.heroService.getHero().duplicate();
+            this.hero = this.heroDao.getHero().duplicate();
         }
     }
 
@@ -129,8 +129,8 @@ public class FightController extends BaseController implements Initializable {
         btnStartFight.disableProperty().bind(Bindings.createBooleanBinding(() ->
             isFighting.get()
                 || fightOpponentController.selectedMobProperty().get() == null
-                || heroService.heroProperty().get() == null,
-            isFighting, fightOpponentController.selectedMobProperty(), heroService.heroProperty()));
+                || heroDao.heroProperty().get() == null,
+            isFighting, fightOpponentController.selectedMobProperty(), heroDao.heroProperty()));
         btnStopFight.disableProperty().bind(isFighting.not());
     }
 
@@ -158,7 +158,7 @@ public class FightController extends BaseController implements Initializable {
     private void fightFinishHandler() {
         isFighting.set(false);
         hero.getMoney().add(fightOpponentController.getTreasure());
-        heroService.updateAsync(hero)
+        heroDao.updateAsync(hero)
             .thenAccept(hero ->
                 showNotification(new Notification(resources.getString(R.Translate.NOTIFY_FIGHT_LIVE_UPDATE))));
     }
@@ -177,9 +177,9 @@ public class FightController extends BaseController implements Initializable {
         bundle.put(FightCommentController.COMMENT, comment);
         startNewDialog(R.FXML.FIGHT_COMMENT, bundle);
 
-        heroService.getInventoryAsync()
+        heroDao.getInventoryAsync()
             .thenCompose(inventoryService ->
-                inventoryService.selectAsync(InventoryService.EQUIP_INVENTORY_FILTER)
+                inventoryService.selectAsync(InventoryDao.EQUIP_INVENTORY_FILTER)
                     .thenCompose(inventoryService::getInventoryContentAsync))
             .thenAccept(equipContent -> {
                 battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent), fightOpponentController.getMob());

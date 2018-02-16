@@ -1,9 +1,9 @@
 package cz.stechy.drd.controller.spellbook;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.model.dao.UserDao;
 import cz.stechy.drd.model.entity.mob.Mob;
-import cz.stechy.drd.model.persistent.SpellBookService;
-import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.dao.SpellBookDao;
 import cz.stechy.drd.model.spell.Spell;
 import cz.stechy.drd.model.spell.SpellEntry;
 import cz.stechy.drd.model.spell.SpellProfessionType;
@@ -108,17 +108,17 @@ public class SpellBookController extends BaseController implements Initializable
     private final User user;
     private final Translator translator;
 
-    private final SpellBookService spellBook;
+    private final SpellBookDao spellBook;
     private String title;
 
     // endregion
 
     // region Constructors
 
-    public SpellBookController(SpellBookService spellBook, UserService userService,
+    public SpellBookController(SpellBookDao spellBook, UserDao userDao,
         Translator translator) {
         this.spellBook = spellBook;
-        this.user = userService.getUser();
+        this.user = userDao.getUser();
         this.translator = translator;
         if (this.user != null) {
             userLogged.bind(this.user.loggedProperty());

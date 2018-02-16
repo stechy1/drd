@@ -1,4 +1,4 @@
-package cz.stechy.drd.model.persistent;
+package cz.stechy.drd.model.dao;
 
 import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.di.Singleton;
@@ -19,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
  * Služba spravující CRUD operace nad třídou {@link RangedWeapon}
  */
 @Singleton
-public final class RangedWeaponService extends AdvancedDatabaseService<RangedWeapon> {
+public final class RangedWeaponDao extends AdvancedDatabaseService<RangedWeapon> {
 
     // region Constants
 
@@ -88,7 +88,7 @@ public final class RangedWeaponService extends AdvancedDatabaseService<RangedWea
      *
      * @param db {@link Database} Databáze, která obsahuje data o hrdinech
      */
-    public RangedWeaponService(Database db) {
+    public RangedWeaponDao(Database db) {
         super(db);
 
         ItemRegistry.getINSTANCE().addColection(items);

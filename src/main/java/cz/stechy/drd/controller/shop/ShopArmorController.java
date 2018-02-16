@@ -11,8 +11,8 @@ import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.persistent.ArmorService;
-import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.dao.ArmorDao;
+import cz.stechy.drd.model.dao.UserDao;
 import cz.stechy.drd.model.shop.IShoppingCart;
 import cz.stechy.drd.model.shop.entry.ArmorEntry;
 import cz.stechy.drd.model.shop.entry.GeneralEntry;
@@ -105,11 +105,11 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
     // region Constructors
 
-    public ShopArmorController(UserService userService, ArmorService armorService,
+    public ShopArmorController(UserDao userDao, ArmorDao armorDao,
         Translator translator) {
-        this.service = armorService;
+        this.service = armorDao;
         this.translator = translator;
-        this.user = userService.getUser();
+        this.user = userDao.getUser();
     }
 
     // endregion

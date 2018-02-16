@@ -4,11 +4,11 @@ import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemType;
-import cz.stechy.drd.model.persistent.ArmorService;
-import cz.stechy.drd.model.persistent.BackpackService;
-import cz.stechy.drd.model.persistent.GeneralItemService;
-import cz.stechy.drd.model.persistent.MeleWeaponService;
-import cz.stechy.drd.model.persistent.RangedWeaponService;
+import cz.stechy.drd.model.dao.ArmorDao;
+import cz.stechy.drd.model.dao.BackpackDao;
+import cz.stechy.drd.model.dao.GeneralItemDao;
+import cz.stechy.drd.model.dao.MeleWeaponDao;
+import cz.stechy.drd.model.dao.RangedWeaponDao;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -20,24 +20,24 @@ public class ItemResolver {
 
     // region Variables
 
-    private final ArmorService armorService;
-    private final BackpackService backpackService;
-    private final GeneralItemService generalItemService;
-    private final MeleWeaponService meleWeaponService;
-    private final RangedWeaponService rangedWeaponService;
+    private final ArmorDao armorDao;
+    private final BackpackDao backpackDao;
+    private final GeneralItemDao generalItemDao;
+    private final MeleWeaponDao meleWeaponDao;
+    private final RangedWeaponDao rangedWeaponDao;
 
     // endregion
 
     // region Constructors
 
-    public ItemResolver(ArmorService armorService, BackpackService backpackService,
-        GeneralItemService generalItemService, MeleWeaponService meleWeaponService,
-        RangedWeaponService rangedWeaponService) {
-        this.armorService = armorService;
-        this.backpackService = backpackService;
-        this.generalItemService = generalItemService;
-        this.meleWeaponService = meleWeaponService;
-        this.rangedWeaponService = rangedWeaponService;
+    public ItemResolver(ArmorDao armorDao, BackpackDao backpackDao,
+        GeneralItemDao generalItemDao, MeleWeaponDao meleWeaponDao,
+        RangedWeaponDao rangedWeaponDao) {
+        this.armorDao = armorDao;
+        this.backpackDao = backpackDao;
+        this.generalItemDao = generalItemDao;
+        this.meleWeaponDao = meleWeaponDao;
+        this.rangedWeaponDao = rangedWeaponDao;
     }
 
     // endregion
@@ -53,15 +53,15 @@ public class ItemResolver {
     private AdvancedDatabaseService getService(ItemType itemType) {
         switch (itemType) {
             case ARMOR:
-                return armorService;
+                return armorDao;
             case BACKPACK:
-                return backpackService;
+                return backpackDao;
             case GENERAL:
-                return generalItemService;
+                return generalItemDao;
             case WEAPON_MELE:
-                return meleWeaponService;
+                return meleWeaponDao;
             case WEAPON_RANGED:
-                return rangedWeaponService;
+                return rangedWeaponDao;
             default:
                 throw new IllegalStateException();
         }

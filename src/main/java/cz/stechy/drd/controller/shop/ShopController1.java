@@ -6,8 +6,8 @@ import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.persistent.HeroService;
-import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.dao.HeroDao;
+import cz.stechy.drd.model.dao.UserDao;
 import cz.stechy.drd.model.shop.ShoppingCart;
 import cz.stechy.drd.model.shop.entry.ShopEntry;
 import cz.stechy.drd.model.user.User;
@@ -143,12 +143,12 @@ public class ShopController1 extends BaseController implements Initializable {
 
     // region Constructors
 
-    public ShopController1(UserService userService, HeroService heroService, Translator translator) {
+    public ShopController1(UserDao userDao, HeroDao heroDao, Translator translator) {
         this.translator = translator;
-        this.hero = heroService.getHero();
+        this.hero = heroDao.getHero();
         heroSelected.set(this.hero != null);
         this.shoppingCart = new ShoppingCart(hero);
-        this.user = userService.getUser();
+        this.user = userDao.getUser();
         if (this.user != null) {
             userLogged.bind(this.user.loggedProperty());
         }

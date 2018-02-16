@@ -8,8 +8,8 @@ import cz.stechy.drd.model.inventory.TooltipTranslator;
 import cz.stechy.drd.model.inventory.container.FlowItemContainer;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.persistent.HeroService;
-import cz.stechy.drd.model.persistent.InventoryService;
+import cz.stechy.drd.model.dao.HeroDao;
+import cz.stechy.drd.model.dao.InventoryDao;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -50,7 +50,7 @@ public class BackpackController extends BaseController implements TooltipTransla
 
     // endregion
 
-    private final HeroService heroManager;
+    private final HeroDao heroManager;
     private final Translator translator;
     private ItemContainer itemContainer;
     // Velikost inventáře = počet slotů v inventáři
@@ -61,7 +61,7 @@ public class BackpackController extends BaseController implements TooltipTransla
 
     // region Constructors
 
-    public BackpackController(HeroService heroManager, Translator translator) {
+    public BackpackController(HeroDao heroManager, Translator translator) {
         this.heroManager = heroManager;
         this.translator = translator;
     }
@@ -124,7 +124,7 @@ public class BackpackController extends BaseController implements TooltipTransla
 
         heroManager.getInventoryAsync()
             .thenCompose(inventoryService ->
-                inventoryService.selectAsync(InventoryService.ID_FILTER(inventoryId))
+                inventoryService.selectAsync(InventoryDao.ID_FILTER(inventoryId))
                     .thenCompose(backpackInventory ->
                         itemContainer.setInventoryManager(inventoryService, backpackInventory)))
             .exceptionally(throwable -> {

@@ -1,7 +1,7 @@
 package cz.stechy.drd.controller.user;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.persistent.UserService;
+import cz.stechy.drd.model.dao.UserDao;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -45,7 +45,7 @@ public class LoginController extends BaseController implements Initializable {
     // endregion
 
     private final LoginModel loginModel = new LoginModel();
-    private final UserService userService;
+    private final UserDao userDao;
 
     private String title;
     private String loginFail;
@@ -56,8 +56,8 @@ public class LoginController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public LoginController(UserService userService) {
-        this.userService = userService;
+    public LoginController(UserDao userDao) {
+        this.userDao = userDao;
     }
 
     // endregion
@@ -101,7 +101,7 @@ public class LoginController extends BaseController implements Initializable {
 
     @FXML
     private void handleLogin(ActionEvent actionEvent) {
-        userService.loginAsync(loginModel.login.getValue(), loginModel.password.getValue())
+        userDao.loginAsync(loginModel.login.getValue(), loginModel.password.getValue())
             .thenAccept(user -> {
                 setResult(RESULT_SUCCESS);
                 finish();
@@ -113,7 +113,7 @@ public class LoginController extends BaseController implements Initializable {
                 throw new RuntimeException(throwable);
             });
 //        try {
-//            userService.login(loginModel.login.getValue(), loginModel.password.getValue());
+//            userDao.login(loginModel.login.getValue(), loginModel.password.getValue());
 //            setResult(RESULT_SUCCESS);
 //            finish();
 //        } catch (UserException e) {
