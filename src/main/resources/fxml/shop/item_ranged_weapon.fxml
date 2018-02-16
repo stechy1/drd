@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="cz.stechy.drd.controller.shop.ItemWeaponRangedController">
+  fx:controller="cz.stechy.drd.app.shop.ItemWeaponRangedController">
   <top>
     <HBox styleClass="title-container">
       <Label fx:id="lblTitle" styleClass="title-label" HBox.hgrow="ALWAYS"/>

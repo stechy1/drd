@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="400.0" prefWidth="600.0"
   spacing="16" xmlns="http://javafx.com/javafx/8.0.112"
-  fx:controller="cz.stechy.drd.controller.bestiary.edit.BestiaryEditOtherController">
+  fx:controller="cz.stechy.drd.app.bestiary.edit.BestiaryBestiaryEditOtherController">
   <Hyperlink onAction="#handleShowVulnerabilityPopup" text="%drd_bestiary_vulnerability"
     fx:id="linkVulnerability"/>
   <JFXTextField labelFloat="true" maxWidth="150.0" promptText="%drd_bestiary_mobility"

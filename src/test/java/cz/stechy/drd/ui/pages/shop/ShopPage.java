@@ -8,7 +8,7 @@ import java.util.Map;
 import org.testfx.api.FxRobot;
 
 /**
- * Třída sloužící k interakci s kontrolerem {@link cz.stechy.drd.controller.shop.ShopController1}
+ * Třída sloužící k interakci s kontrolerem {@link cz.stechy.drd.app.shop.ShopController1}
  */
 public final class ShopPage extends APage {
 

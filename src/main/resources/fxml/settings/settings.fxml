@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.Region?>
 <ScrollPane xmlns:fx="http://javafx.com/fxml/1" fitToWidth="true"
   xmlns="http://javafx.com/javafx/8.0.121"
-  fx:controller="cz.stechy.drd.controller.settings.SettingsController">
+  fx:controller="cz.stechy.drd.app.settings.SettingsController">
   <VBox alignment="TOP_CENTER" spacing="16">
     <fx:define>
       <Double fx:id="width" fx:value="500.0"/>

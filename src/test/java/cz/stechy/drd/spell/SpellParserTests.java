@@ -2,7 +2,7 @@ package cz.stechy.drd.spell;
 
 import static org.junit.Assert.assertEquals;
 
-import cz.stechy.drd.model.spell.parser.SpellParser;
+import cz.stechy.drd.app.spellbook.SpellParser;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import org.junit.Test;
 

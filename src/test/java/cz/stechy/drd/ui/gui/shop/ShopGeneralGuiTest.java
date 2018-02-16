@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Třída obsahující Gui testy pro screen {@link cz.stechy.drd.controller.shop.ItemGeneralController}
+ * Třída obsahující Gui testy pro screen {@link cz.stechy.drd.app.shop.ItemGeneralController}
  */
 public final class ShopGeneralGuiTest extends GUITestBase {
 

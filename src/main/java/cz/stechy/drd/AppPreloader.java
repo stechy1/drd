@@ -1,6 +1,6 @@
 package cz.stechy.drd;
 
-import cz.stechy.drd.controller.PreloaderController;
+import cz.stechy.drd.app.PreloaderController;
 import cz.stechy.drd.model.MyPreloaderNotification;
 import javafx.application.Preloader;
 import javafx.fxml.FXMLLoader;

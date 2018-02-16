@@ -20,12 +20,12 @@ public interface IAggressive {
      *
      * @param live Ubíraný počet životů
      */
-    void  subtractLive(int live);
+    void subtractLive(int live);
 
     /**
-     * Metoda pro zjištění, zda-lie je bojovník ještě na živu
+     * Metoda pro zjištění, zda-li je entita ještě na živu
      *
-     * @return
+     * @return True, pokud je entita ještě na živu, jinak False
      */
     boolean isAlive();
 }

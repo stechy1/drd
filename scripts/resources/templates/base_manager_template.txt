@@ -1,9 +1,9 @@
-package cz.stechy.drd.model.dao;
+package cz.stechy.drd.dao;
 
-import cz.stechy.drd.model.db.BaseDatabaseService;
-import cz.stechy.drd.model.db.DatabaseException;
-import cz.stechy.drd.model.db.base.Database;
-import cz.stechy.drd.model.service.ItemRegistry;
+import cz.stechy.drd.db.BaseDatabaseService;
+import cz.stechy.drd.db.DatabaseException;
+import cz.stechy.drd.db.base.Database;
+import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.drd.model.item.{generic_class};
 import java.sql.ResultSet;
 import java.sql.SQLException;

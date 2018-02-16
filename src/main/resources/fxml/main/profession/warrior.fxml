@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <ScrollPane xmlns:fx="http://javafx.com/fxml/1"
   xmlns="http://javafx.com/javafx/8.0.121" fitToWidth="true"
-  fx:controller="cz.stechy.drd.controller.main.profession.WarriorController">
+  fx:controller="cz.stechy.drd.app.main.profession.WarriorController">
   <fx:define>
     <Double fx:id="CARD_WIDTH" fx:value="250.0"/>
     <Double fx:id="CARD_HEIGHT" fx:value="130.0"/>

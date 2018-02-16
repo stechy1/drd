@@ -3,7 +3,7 @@ package cz.stechy.drd;
 import com.sun.javafx.application.LauncherImpl;
 import cz.stechy.drd.R.FXML;
 import cz.stechy.drd.model.MyPreloaderNotification;
-import cz.stechy.drd.model.service.KeyboardService;
+import cz.stechy.drd.service.KeyboardService;
 import cz.stechy.drd.util.UTF8ResourceBundleControl;
 import cz.stechy.screens.ScreenManager;
 import cz.stechy.screens.ScreenManagerConfiguration;

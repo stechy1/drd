@@ -4,7 +4,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.ITranslatedEnum;
 import cz.stechy.drd.model.Money;
-import cz.stechy.drd.model.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Height;
 import java.util.Map;
 import javafx.beans.property.IntegerProperty;

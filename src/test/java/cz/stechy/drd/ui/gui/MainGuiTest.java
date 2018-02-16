@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Třída obsahující Gui testy pro screen {@link cz.stechy.drd.controller.main.MainController}
+ * Třída obsahující Gui testy pro screen {@link cz.stechy.drd.app.main.MainController}
  */
 @RunWith(JUnitParamsRunner.class)
 public final class MainGuiTest extends GUITestBase {

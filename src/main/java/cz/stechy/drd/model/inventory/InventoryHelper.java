@@ -4,7 +4,7 @@ import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemType;
-import cz.stechy.drd.model.dao.InventoryDao;
+import cz.stechy.drd.dao.InventoryDao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

@@ -9,7 +9,7 @@ import java.util.Map;
 import org.testfx.api.FxRobot;
 
 /**
- * Třída sloužící k interakci s kontrolerem {@link cz.stechy.drd.controller.main.MainController}
+ * Třída sloužící k interakci s kontrolerem {@link cz.stechy.drd.app.main.MainController}
  */
 public final class MainPage extends APage {
 

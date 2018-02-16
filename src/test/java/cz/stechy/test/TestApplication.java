@@ -1,6 +1,6 @@
 package cz.stechy.test;
 
-import cz.stechy.drd.model.db.MiniConnectionPoolManager;
+import cz.stechy.drd.db.MiniConnectionPoolManager;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

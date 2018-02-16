@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="300" prefWidth="400"
   spacing="16" xmlns="http://javafx.com/javafx/8.0.112"
-  fx:controller="cz.stechy.drd.controller.bestiary.edit.BestiaryEditPropertiesController">
+  fx:controller="cz.stechy.drd.app.bestiary.edit.BestiaryBestiaryEditPropertiesController">
   <JFXTextField labelFloat="true" maxWidth="150.0" promptText="%drd_bestiary_attack_number"
     fx:id="txtAttackNumber"/>
   <JFXTextField labelFloat="true" layoutX="235.0" layoutY="46.0" maxWidth="150.0"

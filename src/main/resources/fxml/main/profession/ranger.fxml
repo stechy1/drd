@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.Region?>
 <ScrollPane xmlns:fx="http://javafx.com/fxml/1"
   fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.121"
-  fx:controller="cz.stechy.drd.controller.main.profession.RangerController">
+  fx:controller="cz.stechy.drd.app.main.profession.RangerController">
   <fx:define>
     <Double fx:id="CARD_WIDTH" fx:value="250.0"/>
     <Double fx:id="CARD_HEIGHT" fx:value="250.0"/>
