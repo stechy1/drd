@@ -11,11 +11,11 @@ import cz.stechy.drd.app.main.defaultstaff.DefaultStaffController;
 import cz.stechy.drd.app.main.inventory.InventoryController;
 import cz.stechy.drd.app.main.profession.ProfessionController;
 import cz.stechy.drd.app.moneyxp.MoneyXpController;
-import cz.stechy.drd.dao.UserDao;
+import cz.stechy.drd.app.user.User;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
-import cz.stechy.drd.dao.HeroDao;
-import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.service.HeroService;
+import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -103,8 +103,8 @@ public class MainController extends BaseController implements Initializable {
         false);
     private final ReadOnlyObjectProperty<Hero> hero;
     private final ReadOnlyObjectProperty<User> user;
-    private final HeroDao heroDao;
-    private final UserDao userDao;
+    private final HeroService heroService;
+    private final UserService userService;
     private final Translator translator;
 
     private MainScreen[] controllers;
@@ -116,13 +116,13 @@ public class MainController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public MainController(HeroDao heroDao, UserDao userDao, AppSettings settings,
+    public MainController(HeroService heroService, UserService userService, AppSettings settings,
         Translator translator) {
-        this.heroDao = heroDao;
-        this.userDao = userDao;
+        this.heroService = heroService;
+        this.userService = userService;
         this.translator = translator;
-        this.hero = heroDao.heroProperty();
-        this.user = userDao.userProperty();
+        this.hero = heroService.heroProperty();
+        this.user = userService.userProperty();
         settings.addListener(R.Config.USE_ONLINE_DATABASE, this::useOnlineDatabaseHandler);
         useFirebase.set(Boolean.parseBoolean(settings.getProperty(R.Config.USE_ONLINE_DATABASE)));
     }
@@ -156,7 +156,7 @@ public class MainController extends BaseController implements Initializable {
 
     private void resetChildScreensAndHero() {
         closeChildScreens();
-        heroDao.resetHero();
+        heroService.resetHero();
     }
 
     // region Method handlers
@@ -231,7 +231,7 @@ public class MainController extends BaseController implements Initializable {
 
     @Override
     protected void onCreate(Bundle bundle) {
-        heroDao.resetHero();
+        heroService.resetHero();
     }
 
     @Override
@@ -253,7 +253,7 @@ public class MainController extends BaseController implements Initializable {
                 hero.setAuthor((user.get() != null) ? user.get().getName() : "");
                 ObservableList<InventoryHelper.ItemRecord> itemsToInventory = bundle
                     .get(HeroHelper.INVENTORY);
-                heroDao.insertAsync(hero, itemsToInventory)
+                heroService.insertWithItems(hero, itemsToInventory)
                     .exceptionally(throwable -> {
                         showNotification(new Notification(String.format(translator.translate(
                             R.Translate.NOTIFY_HERO_IS_NOT_CREATED), hero.getName())));
@@ -264,7 +264,7 @@ public class MainController extends BaseController implements Initializable {
                     {
                         showNotification(new Notification(String.format(translator.translate(
                             Translate.NOTIFY_HERO_IS_CREATED), hero.getName())));
-                        heroDao.loadAsync(hero.getId());
+                        heroService.loadAsync(hero.getId());
                     });
 
                 break;
@@ -274,7 +274,7 @@ public class MainController extends BaseController implements Initializable {
                 }
 
                 final String heroId = bundle.getString(HeroOpenerController.HERO);
-                heroDao.loadAsync(heroId)
+                heroService.loadAsync(heroId)
                     .exceptionally(throwable -> {
                         showNotification(new Notification(translator.translate(
                             R.Translate.NOTIFY_HERO_IS_NOT_LOADED)));
@@ -290,7 +290,7 @@ public class MainController extends BaseController implements Initializable {
                     return;
                 }
 
-                heroDao.resetHero();
+                heroService.resetHero();
                 showNotification(new Notification(
                     translator.translate(R.Translate.NOTIFY_LOGOUT_SUCCESS)));
                 break;
@@ -301,7 +301,7 @@ public class MainController extends BaseController implements Initializable {
                 final Hero heroCopy = this.hero.get().duplicate();
                 heroCopy.getMoney().setRaw(bundle.getInt(MoneyXpController.MONEY));
                 heroCopy.getExperiences().setActValue(bundle.getInt(MoneyXpController.EXPERIENCE));
-                heroDao.updateAsync(heroCopy)
+                heroService.updateAsync(heroCopy)
                     .exceptionally(throwable -> {
                         showNotification(new Notification(translator.translate(
                             R.Translate.NOTIFY_HERO_IS_NOT_UPDATED)));
@@ -319,7 +319,7 @@ public class MainController extends BaseController implements Initializable {
 
                 final Hero clone = this.hero.get().duplicate();
                 HeroHelper.levelUp(clone, bundle);
-                heroDao.updateAsync(clone)
+                heroService.updateAsync(clone)
                     .exceptionally(throwable -> {
                         showNotification(new Notification(translator.translate(
                             R.Translate.NOTIFY_HERO_IS_NOT_LEVELUP)));
@@ -363,7 +363,7 @@ public class MainController extends BaseController implements Initializable {
     @FXML
     private void handleMenuCloseHero(ActionEvent actionEvent) {
         closeChildScreens();
-        heroDao.resetHero();
+        heroService.resetHero();
     }
 
     @FXML
@@ -373,7 +373,7 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuLogout(ActionEvent actionEvent) {
-        userDao.logoutAsync()
+        userService.logoutAsync()
             .thenAccept(aVoid ->
                 showNotification(new Notification(
                     translator.translate(R.Translate.NOTIFY_LOGOUT_SUCCESS))))

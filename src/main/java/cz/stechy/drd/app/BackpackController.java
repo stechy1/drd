@@ -1,6 +1,7 @@
 package cz.stechy.drd.app;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.dao.InventoryDao;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
@@ -8,8 +9,7 @@ import cz.stechy.drd.model.inventory.TooltipTranslator;
 import cz.stechy.drd.model.inventory.container.FlowItemContainer;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.dao.HeroDao;
-import cz.stechy.drd.dao.InventoryDao;
+import cz.stechy.drd.service.HeroService;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -50,7 +50,7 @@ public class BackpackController extends BaseController implements TooltipTransla
 
     // endregion
 
-    private final HeroDao heroManager;
+    private final HeroService heroService;
     private final Translator translator;
     private ItemContainer itemContainer;
     // Velikost inventáře = počet slotů v inventáři
@@ -61,8 +61,8 @@ public class BackpackController extends BaseController implements TooltipTransla
 
     // region Constructors
 
-    public BackpackController(HeroDao heroManager, Translator translator) {
-        this.heroManager = heroManager;
+    public BackpackController(HeroService heroService, Translator translator) {
+        this.heroService = heroService;
         this.translator = translator;
     }
 
@@ -122,7 +122,7 @@ public class BackpackController extends BaseController implements TooltipTransla
         itemContainer.setItemClickListener(this::itemClickHandler);
         setScreenSize(WIDTH, BackpackController.computeHeight(backpackSize));
 
-        heroManager.getInventoryAsync()
+        heroService.getInventoryAsync()
             .thenCompose(inventoryService ->
                 inventoryService.selectAsync(InventoryDao.ID_FILTER(inventoryId))
                     .thenCompose(backpackInventory ->

@@ -17,12 +17,20 @@ import javafx.collections.ObservableList;
 @Singleton
 public class UserService {
 
+    // region Variables
+
     private final ObjectProperty<User> user = new SimpleObjectProperty<>(this, "user", null);
     private final UserDao userDao;
+
+    // endregion
+
+    // region Constructors
 
     public UserService(UserDao userDao) {
         this.userDao = userDao;
     }
+
+    // endregion
 
     // region Public methods
 

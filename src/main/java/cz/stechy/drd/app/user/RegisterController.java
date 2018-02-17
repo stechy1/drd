@@ -1,7 +1,7 @@
 package cz.stechy.drd.app.user;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.dao.UserDao;
+import cz.stechy.drd.service.UserService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Notification;
 import java.net.URL;
@@ -40,7 +40,7 @@ public class RegisterController extends BaseController implements Initializable 
 
     // endregion
 
-    private final UserDao userDao;
+    private final UserService userService;
     private final LoginModel loginModel = new LoginModel();
 
     private String title;
@@ -50,8 +50,8 @@ public class RegisterController extends BaseController implements Initializable 
 
     // region Constructors
 
-    public RegisterController(UserDao userDao) {
-        this.userDao = userDao;
+    public RegisterController(UserService userService) {
+        this.userService = userService;
     }
 
     // endregion
@@ -75,16 +75,17 @@ public class RegisterController extends BaseController implements Initializable 
     // region Button handlers
     @FXML
     private void handleRegister(ActionEvent actionEvent) {
-        userDao.registerAsync(loginModel.login.getValue(), loginModel.password.getValue(), (error, ref) -> {
-            if (error != null) {
-                LOGGER.info("Registrace se nezdařila");
-                showNotification(new Notification(registerFail));
-                loginModel.valid.set(false);
-            } else {
-                setResult(RESULT_SUCCESS);
-                finish();
-            }
-        });
+        userService.registerAsync(loginModel.login.getValue(), loginModel.password.getValue(),
+            (error, ref) -> {
+                if (error != null) {
+                    LOGGER.info("Registrace se nezdařila");
+                    showNotification(new Notification(registerFail));
+                    loginModel.valid.set(false);
+                } else {
+                    setResult(RESULT_SUCCESS);
+                    finish();
+                }
+            });
     }
 
     // endregion

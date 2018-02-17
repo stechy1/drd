@@ -2,9 +2,11 @@ package cz.stechy.drd.app.main.inventory;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.ThreadPool;
-import cz.stechy.drd.app.InjectableChild;
 import cz.stechy.drd.app.BackpackController;
+import cz.stechy.drd.app.InjectableChild;
 import cz.stechy.drd.app.main.MainScreen;
+import cz.stechy.drd.dao.InventoryContentDao;
+import cz.stechy.drd.dao.InventoryDao;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
@@ -16,9 +18,7 @@ import cz.stechy.drd.model.inventory.container.EquipItemContainer;
 import cz.stechy.drd.model.inventory.container.GridItemContainer;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.dao.HeroDao;
-import cz.stechy.drd.dao.InventoryContentDao;
-import cz.stechy.drd.dao.InventoryDao;
+import cz.stechy.drd.service.HeroService;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -55,7 +55,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
     private final ItemContainer equipItemContainer = new EquipItemContainer(this);
     private final Translator translator;
 
-    private HeroDao heroManager;
+    private HeroService heroService;
     private ReadOnlyObjectProperty<Hero> hero;
     private BaseController parent;
 
@@ -63,9 +63,9 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
 
     // region Constructors
 
-    public InventoryController(Translator translator, HeroDao heroManager) {
+    public InventoryController(Translator translator, HeroService heroService) {
         this.translator = translator;
-        this.heroManager = heroManager;
+        this.heroService = heroService;
 
         mainItemContainer.setItemClickListener(this::itemClickHandler);
         equipItemContainer.setItemClickListener(this::itemClickHandler);
@@ -85,7 +85,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
             return;
         }
 
-        heroManager.getInventoryAsync()
+        heroService.getInventoryAsync()
             .thenCompose(inventoryService ->
             {
                 return inventoryService.selectAsync(InventoryDao.MAIN_INVENTORY_FILTER)

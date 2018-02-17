@@ -1,13 +1,12 @@
 package cz.stechy.drd.app.shop;
 
 import cz.stechy.drd.ThreadPool;
+import cz.stechy.drd.app.shop.entry.ShopEntry;
 import cz.stechy.drd.model.Money;
-import cz.stechy.drd.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.dao.HeroDao;
-import cz.stechy.drd.app.shop.entry.ShopEntry;
+import cz.stechy.drd.service.HeroService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -54,7 +53,7 @@ public class ShopController2 extends BaseController implements Initializable {
     // endregion
 
     private final ObservableList<ItemResultEntry> items = FXCollections.observableArrayList();
-    private final HeroDao heroDao;
+    private final HeroService heroService;
 
     private ShoppingCart shoppingCart;
 
@@ -62,8 +61,8 @@ public class ShopController2 extends BaseController implements Initializable {
 
     // region Constructors
 
-    public ShopController2(HeroDao heroDao) {
-        this.heroDao = heroDao;
+    public ShopController2(HeroService heroService) {
+        this.heroService = heroService;
     }
 
     // endregion
@@ -94,35 +93,36 @@ public class ShopController2 extends BaseController implements Initializable {
 
     @FXML
     private void handleFinishShopping(ActionEvent actionEvent) {
-        try {
-            heroDao.beginTransaction();
-            final Hero heroCopy = heroDao.getHero().duplicate();
+        // TODO reimplementovat transakce
+//        try {
+            //heroService.beginTransaction();
+            final Hero heroCopy = heroService.getHero().duplicate();
             heroCopy.getMoney().subtract(shoppingCart.totalPrice);
-            heroDao.updateAsync(heroCopy)
+            heroService.updateAsync(heroCopy)
                 .thenCompose(hero ->
-                    heroDao.getInventoryAsync()
+                    heroService.getInventoryAsync()
                         .thenCompose(inventoryService ->
                             InventoryHelper.insertItemsToInventoryAsync(inventoryService, items)))
             .thenAcceptAsync(aVoid -> {
-                try {
-                    heroDao.commit();
-                    finish();
-                } catch (DatabaseException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    heroService.commit();
+//                    finish();
+//                } catch (DatabaseException e) {
+//                    e.printStackTrace();
+//                }
             }, ThreadPool.JAVAFX_EXECUTOR)
             .exceptionally(throwable -> {
-                try {
-                    heroDao.rollback();
-                } catch (DatabaseException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    heroService.rollback();
+//                } catch (DatabaseException e) {
+//                    e.printStackTrace();
+//                }
                 throwable.printStackTrace();
                 throw new RuntimeException(throwable);
             });
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
+//        } catch (DatabaseException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @FXML

@@ -2,9 +2,9 @@ package cz.stechy.drd.app.hero.opener;
 
 import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.R;
-import cz.stechy.drd.dao.UserDao;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.dao.HeroDao;
+import cz.stechy.drd.service.HeroService;
+import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
@@ -76,8 +76,8 @@ public class HeroOpenerController extends BaseController implements Initializabl
     private final ObservableList<Hero> heroes = FXCollections.observableArrayList();
     private final FilteredList<Hero> filteredHeroes = new FilteredList<>(heroes);
     private final ObjectProperty<Hero> selectedHero = new SimpleObjectProperty<>();
-    private final HeroDao heroManager;
-    private final UserDao userDao;
+    private final HeroService heroService;
+    private final UserService userService;
     private final Translator translator;
 
     private String title;
@@ -86,10 +86,10 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
     // region Constructors
 
-    public HeroOpenerController(HeroDao heroManager, UserDao userDao,
+    public HeroOpenerController(HeroService heroService, UserService userService,
         Translator translator) {
-        this.heroManager = heroManager;
-        this.userDao = userDao;
+        this.heroService = heroService;
+        this.userService = userService;
         this.translator = translator;
     }
 
@@ -133,10 +133,10 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
         filteredHeroes.setPredicate(hero ->
             hero != null // Hrdina není null
-                && !hero.equals(heroManager.getHero()) // Hrdina není otevřený
+                && !hero.equals(heroService.getHero()) // Hrdina není otevřený
                 // Přihlášený uživatel vidí pouze své hrdiny, nepřihlášený pouze hrdiny, kteří nemají autora
-                && ((userDao.getUser() != null)
-                ? hero.getAuthor().equals(userDao.getUser().getName())
+                && ((userService.getUser() != null)
+                ? hero.getAuthor().equals(userService.getUser().getName())
                 : hero.getAuthor().isEmpty()));
 
         lvHeroes.setItems(filteredHeroes);
@@ -146,7 +146,7 @@ public class HeroOpenerController extends BaseController implements Initializabl
             }
         });
 
-        heroManager.selectAllAsync()
+        heroService.getAll()
             .thenAccept(heroList -> ObservableMergers.mergeList(heroes, heroList));
     }
 
@@ -169,7 +169,7 @@ public class HeroOpenerController extends BaseController implements Initializabl
             return;
         }
 
-        heroManager.deleteAsync(selectedHero.get())
+        heroService.deleteAsync(selectedHero.get())
             .exceptionally(throwable -> {
                 showNotification(new Notification(String
                     .format(translator.translate(R.Translate.NOTIFY_HERO_IS_NOT_DELETED),

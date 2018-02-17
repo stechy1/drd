@@ -3,13 +3,13 @@ package cz.stechy.drd.app.shop;
 import com.jfoenix.controls.JFXToggleButton;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.app.shop.entry.ShopEntry;
+import cz.stechy.drd.app.user.User;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.dao.HeroDao;
-import cz.stechy.drd.dao.UserDao;
-import cz.stechy.drd.app.shop.entry.ShopEntry;
-import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.service.HeroService;
+import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.HashGenerator;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.drd.util.Translator.Key;
@@ -142,12 +142,12 @@ public class ShopController1 extends BaseController implements Initializable {
 
     // region Constructors
 
-    public ShopController1(UserDao userDao, HeroDao heroDao, Translator translator) {
+    public ShopController1(UserService userService, HeroService heroService, Translator translator) {
         this.translator = translator;
-        this.hero = heroDao.getHero();
+        this.hero = heroService.getHero();
         heroSelected.set(this.hero != null);
         this.shoppingCart = new ShoppingCart(hero);
-        this.user = userDao.getUser();
+        this.user = userService.getUser();
         if (this.user != null) {
             userLogged.bind(this.user.loggedProperty());
         }

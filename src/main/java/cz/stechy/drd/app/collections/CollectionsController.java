@@ -1,16 +1,16 @@
 package cz.stechy.drd.app.collections;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.Money;
+import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.dao.ItemCollectionContentDao;
 import cz.stechy.drd.dao.ItemCollectionDao;
-import cz.stechy.drd.dao.UserDao;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemCollection;
-import cz.stechy.drd.dao.ItemCollectionContentDao;
 import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.drd.service.ItemResolver;
 import cz.stechy.drd.service.ItemResolver.WithItemBase;
-import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
@@ -106,10 +106,10 @@ public class CollectionsController extends BaseController implements Initializab
     // region Constructors
 
     public CollectionsController(ItemCollectionDao collectionService, ItemResolver itemResolver,
-        UserDao userDao, Translator translator) {
+        UserService userService, Translator translator) {
         this.collectionService = collectionService;
         this.itemResolver = itemResolver;
-        this.user = userDao.getUser();
+        this.user = userService.getUser();
         this.translator = translator;
         itemRegistry.setAll(ItemRegistry.getINSTANCE().getChoices());
     }

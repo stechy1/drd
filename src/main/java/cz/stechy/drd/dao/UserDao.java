@@ -75,8 +75,7 @@ public final class UserDao implements Firebase<User> {
     }
 
     @Override
-    public void deleteRemoteAsync(User item, boolean remote,
-        CompletionListener listener) {
+    public void deleteRemoteAsync(User item, boolean remote, CompletionListener listener) {
         throw new NotImplementedException();
     }
 

@@ -1,21 +1,15 @@
 package cz.stechy.drd.dao;
 
-import cz.stechy.drd.ThreadPool;
-import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.db.BaseDatabaseService;
 import cz.stechy.drd.db.base.Database;
+import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.model.inventory.InventoryHelper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -97,9 +91,8 @@ public final class HeroDao extends BaseDatabaseService<Hero> {
 
     private static boolean tableInitialized = false;
 
-    private final ObjectProperty<Hero> hero = new SimpleObjectProperty<>(this,"hero", null);
     // Správce inventáře pro hrdinu
-    private InventoryDao inventoryManager;
+    private InventoryDao inventoryDao;
 
     // endregion
 
@@ -215,6 +208,7 @@ public final class HeroDao extends BaseDatabaseService<Hero> {
         return super.createTableAsync()
             .thenAccept(ignore -> tableInitialized = true);
     }
+
     @Override
     public CompletableFuture<Hero> insertAsync(Hero hero) {
         return getInventoryAsync(hero)
@@ -225,72 +219,23 @@ public final class HeroDao extends BaseDatabaseService<Hero> {
     }
 
     /**
-     * Vloží nového hrdinu do databáze spolu s jeho výchozími předměty
-     *
-     * @param hero {@link Hero} Hrdina, který se má vložit do databáze
-     * @param items {@link ObservableList<InventoryHelper.ItemRecord>} Výchozí seznam předmětů,
-     *              který hrdina u sebe bude mít od začátku
-     * @return {@link CompletableFuture<Void>}
-     */
-    public CompletableFuture<Void> insertAsync(Hero hero, ObservableList<InventoryHelper.ItemRecord> items) {
-        return insertAsync(hero)
-            .thenCompose(hero1 ->
-                getInventoryAsync(hero1)
-                    .thenCompose(inventoryService ->
-                        InventoryHelper.insertItemsToInventoryAsync(inventoryService, items)));
-    }
-
-    /**
-     * Vrátí inventář aktuálně otevřeného hrdiny
-     *
-     * @return {@link CompletableFuture< InventoryDao >}
-     */
-    public CompletableFuture<InventoryDao> getInventoryAsync() {
-        return getInventoryAsync(hero.get());
-    }
-
-    /**
      * Vytvoří novou instanci správce itemů pro zadaného hrdinu
      *
      * @param hero {@link Hero}
-     * @return {@link CompletableFuture< InventoryContentDao >}
+     * @return {@link CompletableFuture<  InventoryContentDao  >}
      */
-    private  CompletableFuture<InventoryDao> getInventoryAsync(Hero hero) {
-        if (inventoryManager == null) {
-            inventoryManager = new InventoryDao(db, hero);
+    public CompletableFuture<InventoryDao> getInventoryAsync(Hero hero) {
+        if (inventoryDao == null) {
+            inventoryDao = new InventoryDao(db, hero);
         }
 
-        return inventoryManager.selectAllAsync().thenApply(inventories -> inventoryManager);
+        return inventoryDao.selectAllAsync().thenApply(inventories -> inventoryDao);
     }
 
-    /**
-     * Načte hrdinu podle ID
-     *
-     * @param heroId ID hrdiny, který se má načíst
-     * @return {@link CompletableFuture<Hero>}
-     */
-    public CompletableFuture<Hero> loadAsync(String heroId) {
-        return selectAsync(ID_FILTER(heroId))
-            .thenApplyAsync(hero -> {
-                this.hero.setValue(hero);
-                return hero;
-            }, ThreadPool.JAVAFX_EXECUTOR);
-    }
-
-    public void resetHero() {
-        this.hero.setValue(null);
-    }
-    // endregion
-
-    // region Getters & Setters
-
-    public final ReadOnlyObjectProperty<Hero> heroProperty() {
-        return hero;
-    }
-
-    public final Hero getHero() {
-        return hero.get();
+    public void resetInventory() {
+        inventoryDao = null;
     }
 
     // endregion
+
 }

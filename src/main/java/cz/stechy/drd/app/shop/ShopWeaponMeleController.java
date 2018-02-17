@@ -4,19 +4,19 @@ import static cz.stechy.drd.app.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
-import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.Money;
-import cz.stechy.drd.db.AdvancedDatabaseService;
-import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.MeleWeapon;
-import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
-import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponType;
-import cz.stechy.drd.dao.MeleWeaponDao;
-import cz.stechy.drd.dao.UserDao;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.MeleWeaponEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
 import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.dao.MeleWeaponDao;
+import cz.stechy.drd.db.AdvancedDatabaseService;
+import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.model.item.MeleWeapon;
+import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
+import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponType;
+import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
@@ -106,10 +106,10 @@ public class ShopWeaponMeleController implements Initializable,
 
     // region Constructors
 
-    public ShopWeaponMeleController(UserDao userDao, MeleWeaponDao meleWeaponDao, Translator translator) {
+    public ShopWeaponMeleController(UserService userService, MeleWeaponDao meleWeaponDao, Translator translator) {
         this.service = meleWeaponDao;
         this.translator = translator;
-        this.user = userDao.getUser();
+        this.user = userService.getUser();
     }
 
     // endregion

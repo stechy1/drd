@@ -4,16 +4,16 @@ import static cz.stechy.drd.app.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
-import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.Money;
-import cz.stechy.drd.db.AdvancedDatabaseService;
-import cz.stechy.drd.model.item.Backpack;
-import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.dao.BackpackDao;
-import cz.stechy.drd.dao.UserDao;
 import cz.stechy.drd.app.shop.entry.BackpackEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
 import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.dao.BackpackDao;
+import cz.stechy.drd.db.AdvancedDatabaseService;
+import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.item.Backpack;
+import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
@@ -92,11 +92,11 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     // region Constrollers
 
-    public ShopBackpackController(UserDao userDao, BackpackDao backpackDao,
+    public ShopBackpackController(UserService userService, BackpackDao backpackDao,
         Translator translator) {
         this.service = backpackDao;
         this.translator = translator;
-        this.user = userDao.getUser();
+        this.user = userService.getUser();
     }
     // endregion
 

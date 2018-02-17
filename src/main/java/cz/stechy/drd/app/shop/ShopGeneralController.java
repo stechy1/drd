@@ -4,16 +4,16 @@ import static cz.stechy.drd.app.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
-import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.Money;
-import cz.stechy.drd.db.AdvancedDatabaseService;
-import cz.stechy.drd.model.item.GeneralItem;
-import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.dao.GeneralItemDao;
-import cz.stechy.drd.dao.UserDao;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
 import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.dao.GeneralItemDao;
+import cz.stechy.drd.db.AdvancedDatabaseService;
+import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.item.GeneralItem;
+import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
@@ -90,11 +90,11 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
     // region Constrollers
 
-    public ShopGeneralController(UserDao userDao, GeneralItemDao generalItemDao,
+    public ShopGeneralController(UserService userService, GeneralItemDao generalItemDao,
         Translator translator) {
         this.service = generalItemDao;
         this.translator = translator;
-        this.user = userDao.getUser();
+        this.user = userService.getUser();
     }
 
     // endregion

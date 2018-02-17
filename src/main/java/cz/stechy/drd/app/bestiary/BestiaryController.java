@@ -2,13 +2,13 @@ package cz.stechy.drd.app.bestiary;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
-import cz.stechy.drd.model.Rule;
+import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.dao.BestiaryDao;
 import cz.stechy.drd.db.AdvancedDatabaseService;
+import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
-import cz.stechy.drd.dao.BestiaryDao;
-import cz.stechy.drd.dao.UserDao;
-import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.HashGenerator;
 import cz.stechy.drd.util.ObservableMergers;
@@ -121,11 +121,11 @@ public class BestiaryController extends BaseController implements Initializable 
 
     // region Constructors
 
-    public BestiaryController(UserDao userDao, BestiaryDao bestiaryDao,
+    public BestiaryController(UserService userService, BestiaryDao bestiaryDao,
         Translator translator) {
         this.service = bestiaryDao;
         this.translator = translator;
-        this.user = userDao.getUser();
+        this.user = userService.getUser();
         if (this.user != null) {
             userLogged.bind(this.user.loggedProperty());
         }

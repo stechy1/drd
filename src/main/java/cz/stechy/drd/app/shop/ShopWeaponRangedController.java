@@ -4,18 +4,18 @@ import static cz.stechy.drd.app.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
-import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.Money;
-import cz.stechy.drd.db.AdvancedDatabaseService;
-import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.RangedWeapon;
-import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
-import cz.stechy.drd.dao.RangedWeaponDao;
-import cz.stechy.drd.dao.UserDao;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.RangedWeaponEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
 import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.dao.RangedWeaponDao;
+import cz.stechy.drd.db.AdvancedDatabaseService;
+import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.model.item.RangedWeapon;
+import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
+import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
@@ -109,10 +109,10 @@ public class ShopWeaponRangedController implements Initializable,
     // region Constructors
 
     @SuppressWarnings("unchecked")
-    public ShopWeaponRangedController(UserDao userDao, RangedWeaponDao rangedWeaponDao, Translator translator) {
+    public ShopWeaponRangedController(UserService userService, RangedWeaponDao rangedWeaponDao, Translator translator) {
         this.service = rangedWeaponDao;
         this.translator = translator;
-        this.user = userDao.getUser();
+        this.user = userService.getUser();
     }
 
     // endregion

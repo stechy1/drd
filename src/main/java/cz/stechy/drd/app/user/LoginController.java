@@ -1,7 +1,7 @@
 package cz.stechy.drd.app.user;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.dao.UserDao;
+import cz.stechy.drd.service.UserService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -45,7 +45,7 @@ public class LoginController extends BaseController implements Initializable {
     // endregion
 
     private final LoginModel loginModel = new LoginModel();
-    private final UserDao userDao;
+    private final UserService userDao;
 
     private String title;
     private String loginFail;
@@ -56,8 +56,8 @@ public class LoginController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public LoginController(UserDao userDao) {
-        this.userDao = userDao;
+    public LoginController(UserService userService) {
+        this.userDao = userService;
     }
 
     // endregion
@@ -102,25 +102,16 @@ public class LoginController extends BaseController implements Initializable {
     @FXML
     private void handleLogin(ActionEvent actionEvent) {
         userDao.loginAsync(loginModel.login.getValue(), loginModel.password.getValue())
-            .thenAccept(user -> {
-                setResult(RESULT_SUCCESS);
-                finish();
-            })
             .exceptionally(throwable -> {
                 LOGGER.info("Přihlášení se nezdařilo", throwable);
                 showNotification(new Notification(loginFail));
                 loginModel.valid.set(false);
                 throw new RuntimeException(throwable);
+            })
+            .thenAccept(user -> {
+                setResult(RESULT_SUCCESS);
+                finish();
             });
-//        try {
-//            userDao.login(loginModel.login.getValue(), loginModel.password.getValue());
-//            setResult(RESULT_SUCCESS);
-//            finish();
-//        } catch (UserException e) {
-//            LOGGER.info("Přihlášení se nezdařilo");
-//            showNotification(new Notification(loginFail));
-//            loginModel.valid.set(false);
-//        }
     }
 
     @FXML
