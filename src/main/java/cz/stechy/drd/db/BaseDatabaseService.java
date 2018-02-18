@@ -317,33 +317,6 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     }
 
     @Override
-    public void beginTransaction() throws DatabaseException {
-        try {
-            db.beginTransaction();
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-    }
-
-    @Override
-    public void commit() throws DatabaseException {
-        try {
-            db.commit();
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-    }
-
-    @Override
-    public void rollback() throws DatabaseException {
-        try {
-            db.rollback();
-        } catch (SQLException e) {
-            throw new DatabaseException(e);
-        }
-    }
-
-    @Override
     public void onUpgrade(int newVersion) throws DatabaseException {
         LOGGER.info("Aktualizuji tabulku: {} na verzi: {}", getTable(), newVersion);
     }

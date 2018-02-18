@@ -54,27 +54,6 @@ public interface DatabaseService<T> {
     CompletableFuture<T> deleteAsync(T item);
 
     /**
-     * Započne novou transakci, během které lze provést více operací
-     *
-     * @throws DatabaseException Pokud se nepodaří začít novou transakci
-     */
-    void beginTransaction() throws DatabaseException;
-
-    /**
-     * Potvrdí změny v transakci
-     *
-     * @throws DatabaseException Pokud se nezdaří potvrdit transakci
-     */
-    void commit() throws DatabaseException;
-
-    /**
-     * Zruší změny, které byly provedeny během transakce
-     *
-     * @throws DatabaseException Pokud se nezdaří zrušit změny
-     */
-    void rollback() throws DatabaseException;
-
-    /**
      * Metoda se zavolá, pokud je potřeba upgradovat databázi
      *
      * @param newVersion Nová verze databáze

@@ -2,6 +2,7 @@ package cz.stechy.drd.app.shop;
 
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
+import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
@@ -10,6 +11,7 @@ import cz.stechy.drd.service.HeroService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.beans.property.IntegerProperty;
@@ -54,6 +56,7 @@ public class ShopController2 extends BaseController implements Initializable {
 
     private final ObservableList<ItemResultEntry> items = FXCollections.observableArrayList();
     private final HeroService heroService;
+    private final Database database;
 
     private ShoppingCart shoppingCart;
 
@@ -61,8 +64,9 @@ public class ShopController2 extends BaseController implements Initializable {
 
     // region Constructors
 
-    public ShopController2(HeroService heroService) {
+    public ShopController2(HeroService heroService, Database database) {
         this.heroService = heroService;
+        this.database = database;
     }
 
     // endregion
@@ -93,9 +97,8 @@ public class ShopController2 extends BaseController implements Initializable {
 
     @FXML
     private void handleFinishShopping(ActionEvent actionEvent) {
-        // TODO reimplementovat transakce
-//        try {
-            //heroService.beginTransaction();
+        try {
+            database.beginTransaction();
             final Hero heroCopy = heroService.getHero().duplicate();
             heroCopy.getMoney().subtract(shoppingCart.totalPrice);
             heroService.updateAsync(heroCopy)
@@ -104,25 +107,25 @@ public class ShopController2 extends BaseController implements Initializable {
                         .thenCompose(inventoryService ->
                             InventoryHelper.insertItemsToInventoryAsync(inventoryService, items)))
             .thenAcceptAsync(aVoid -> {
-//                try {
-//                    heroService.commit();
-//                    finish();
-//                } catch (DatabaseException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    database.commit();
+                    finish();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }, ThreadPool.JAVAFX_EXECUTOR)
             .exceptionally(throwable -> {
-//                try {
-//                    heroService.rollback();
-//                } catch (DatabaseException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    database.rollback();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
                 throwable.printStackTrace();
                 throw new RuntimeException(throwable);
             });
-//        } catch (DatabaseException e) {
-//            e.printStackTrace();
-//        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -151,7 +154,7 @@ public class ShopController2 extends BaseController implements Initializable {
          *
          * @param entry {@link ShopEntry}
          */
-        public ItemResultEntry(ShopEntry entry) {
+        ItemResultEntry(ShopEntry entry) {
             this.itemBase = entry.getItemBase();
             this.id.set(entry.getId());
             this.name.set(entry.getName());

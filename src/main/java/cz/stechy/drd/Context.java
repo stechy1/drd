@@ -50,7 +50,7 @@ public class Context {
     // Pomocná reference pro získání uživatelských složek v různých systémech
     private static final AppDirs APP_DIRS = AppDirsFactory.getInstance();
 
-    private static final Class[] SERVICES = new Class[]{
+    private static final Class[] DAO = new Class[]{
         HeroDao.class,
         MeleWeaponDao.class,
         RangedWeaponDao.class,
@@ -82,9 +82,8 @@ public class Context {
      * Vytvoří nový kontext apliakce
      *
      * @param resources {@link ResourceBundle}
-     * @throws Exception Pokud se inicializace kontextu nezdaří
      */
-    Context(ResourceBundle resources) throws Exception {
+    Context(ResourceBundle resources) {
         this.appDirectory = new File(APP_DIRS
             .getUserDataDir(CREDENTAILS_APP_NAME, CREDENTAILS_APP_VERSION, CREDENTILS_APP_AUTHOR));
         if (!appDirectory.exists()) {
@@ -135,9 +134,9 @@ public class Context {
     /**
      * Inicializace všech správců předmětů
      */
-    private CompletableFuture<Void> initServices() {
+    private CompletableFuture<Void> initDao() {
         // Inicializace jednotlivých služeb
-        return CompletableFuture.allOf(Arrays.stream(SERVICES)
+        return CompletableFuture.allOf(Arrays.stream(DAO)
             .map(container::getInstance)
             .map(instance -> (DatabaseService) instance)
             .map(instance -> instance.createTableAsync()
@@ -176,11 +175,9 @@ public class Context {
 
     /**
      * Inicializuje tabulky databáze
-     *
-     * @throws Exception Pokud se inicializace nezdaří
      */
     CompletableFuture<Void> init() {
-        return initServices().thenAccept(ignore -> {
+        return initDao().thenAccept(ignore -> {
             if (useOnlineDatabase()) {
                 try {
                     initFirebase(settings.getProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH,
@@ -202,7 +199,7 @@ public class Context {
      * @return Celkový počet služeb (tabulek) v aplikaci
      */
     int getServiceCount() {
-        return SERVICES.length + 1;
+        return DAO.length + 1;
     }
 
     // endregion

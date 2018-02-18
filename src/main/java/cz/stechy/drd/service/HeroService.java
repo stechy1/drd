@@ -14,6 +14,9 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 
+/**
+ * Služba pro přístup ke správě hrdinů
+ */
 @Singleton
 public class HeroService {
 

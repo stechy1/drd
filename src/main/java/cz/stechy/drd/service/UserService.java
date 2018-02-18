@@ -12,8 +12,10 @@ import java.util.concurrent.CompletableFuture;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
 
+/**
+ * Služba pro přístup ke správě uživatelů
+ */
 @Singleton
 public class UserService {
 
@@ -42,7 +44,7 @@ public class UserService {
      */
     public CompletableFuture<User> loginAsync(String username, String password) {
         return CompletableFuture.supplyAsync(() -> {
-            final Optional<User> result = getUsers().stream()
+            final Optional<User> result = userDao.getUsers().stream()
                 .filter(user -> user.getName().equals(username) && HashGenerator
                     .checkSame(user.getPassword(), password))
                 .findFirst();
@@ -66,7 +68,7 @@ public class UserService {
             getUser().setLogged(false);
             user.set(null);
             return null;
-        });
+        }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     /**
@@ -76,7 +78,7 @@ public class UserService {
      * @param password Uživatelské heslo
      */
     public void registerAsync(String username, String password, CompletionListener listener) {
-        final Optional<User> result = getUsers().stream()
+        final Optional<User> result = userDao.getUsers().stream()
             .filter(user -> user.getName().equals(username))
             .findFirst();
         if (result.isPresent()) {
@@ -97,10 +99,6 @@ public class UserService {
 
     public final User getUser() {
         return user.get();
-    }
-
-    public final ObservableList<User> getUsers() {
-        return userDao.getUsers();
     }
 
     // endregion
