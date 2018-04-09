@@ -349,9 +349,8 @@ public class BestiaryController extends BaseController implements Initializable 
 
     @FXML
     private void handleSynchronize(ActionEvent actionEvent) {
-        service.synchronize(user.getName(), total -> {
-            LOGGER.info("Bylo synchronizováno celkem: " + total + " nestvůr.");
-        });
+        service.synchronize(user.getName())
+            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " nestvůr."));
     }
 
     // endregion

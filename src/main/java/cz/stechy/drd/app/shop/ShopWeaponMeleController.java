@@ -261,8 +261,8 @@ public class ShopWeaponMeleController implements Initializable,
 
     @Override
     public void synchronizeItems() {
-        service.synchronize(this.user.getName(), total ->
-            LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon mele."));
+        service.synchronize(this.user.getName())
+            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon mele."));
     }
 
     @Override

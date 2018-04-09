@@ -349,8 +349,8 @@ public class SpellBookController extends BaseController implements Initializable
 
     @FXML
     private void handleSynchronize(ActionEvent actionEvent) {
-        spellBook.synchronize(user.getName(), total ->
-            LOGGER.info("Bylo synchronizováno clekem: {} kouzel.", total));
+        spellBook.synchronize(user.getName())
+            .thenAccept(total -> LOGGER.info("Bylo synchronizováno clekem: {} kouzel.", total));
     }
 
     // endregion

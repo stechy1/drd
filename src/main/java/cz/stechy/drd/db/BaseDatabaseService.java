@@ -257,7 +257,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
         final String query = String
             .format("INSERT INTO %s (%s) VALUES (%s)", getTable(), getColumnsKeys(),
                 getColumnValues());
-        LOGGER.trace("Vkládám položku {} do databáze.", item.toString());
+        LOGGER.trace("Vkládám položku {} do databáze ve vlákně: {}.", item.toString(), Thread.currentThread());
         return db.queryAsync(query, itemToParams(item).toArray())
             .thenApplyAsync(value -> {
                 final TransactionOperation<T> operation = new InsertOperation<>(item);
@@ -278,7 +278,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
                 getColumnWithId());
         final List<Object> params = itemToParams(item);
         params.add(item.getId());
-        LOGGER.trace("Aktualizuji položku {} v databázi", item.toString());
+        LOGGER.trace("Aktualizuji položku {} v databázi ve vlákně: {}.", item.toString(), Thread.currentThread());
 
         return db.queryAsync(query, params.toArray())
             .thenApplyAsync(value -> {
@@ -301,7 +301,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     public CompletableFuture<T> deleteAsync(T item) {
         final String query = String
             .format("DELETE FROM %s WHERE %s = ?", getTable(), getColumnWithId());
-        LOGGER.trace("Mažu položku {} z databáze.", item.getId());
+        LOGGER.trace("Mažu položku {} z databáze ve vlákně: {}.", item.getId(), Thread.currentThread());
 
         return db.queryAsync(query, item.getId())
             .thenApplyAsync(value -> {

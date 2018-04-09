@@ -243,8 +243,8 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     @Override
     public void synchronizeItems() {
-        service.synchronize(this.user.getName(), total ->
-            LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu backpack."));
+        service.synchronize(this.user.getName())
+            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu backpack."));
     }
 
     @Override

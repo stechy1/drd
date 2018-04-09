@@ -270,8 +270,8 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
     @Override
     public void synchronizeItems() {
-        service.synchronize(this.user.getName(), total ->
-            LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu brnění."));
+        service.synchronize(this.user.getName())
+            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu brnění."));
     }
 
     @Override
