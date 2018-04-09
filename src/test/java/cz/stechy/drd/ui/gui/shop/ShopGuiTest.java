@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import org.loadui.testfx.controls.TableViews;
 
 /**
- * Třída obsahující Gui testy pro screen {@link cz.stechy.drd.controller.shop.ShopController1}
+ * Třída obsahující Gui testy pro screen {@link cz.stechy.drd.app.shop.ShopController1}
  */
 @RunWith(JUnitParamsRunner.class)
 public final class ShopGuiTest extends GUITestBase {

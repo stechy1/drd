@@ -2,4 +2,4 @@
 <?import javafx.scene.web.WebView?>
 <WebView fx:id="webView" xmlns:fx="http://javafx.com/fxml/1"
   xmlns="http://javafx.com/javafx/8.0.121"
-  fx:controller="cz.stechy.drd.controller.help.HelpController" />
+  fx:controller="cz.stechy.drd.app.help.HelpController" />

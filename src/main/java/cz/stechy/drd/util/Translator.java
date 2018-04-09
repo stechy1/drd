@@ -1,7 +1,7 @@
 package cz.stechy.drd.util;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.controller.dice.DiceHelper.AdditionType;
+import cz.stechy.drd.app.dice.DiceHelper.AdditionType;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.entity.Conviction;
@@ -15,8 +15,8 @@ import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.RangedWeapon;
-import cz.stechy.drd.model.spell.SpellProfessionType;
-import cz.stechy.drd.model.spell.SpellTarget;
+import cz.stechy.drd.model.spell.Spell.SpellProfessionType;
+import cz.stechy.drd.model.spell.Spell.SpellTarget;
 import cz.stechy.drd.model.spell.price.VariableSpellPrice.VariableType;
 import java.util.Arrays;
 import java.util.HashMap;

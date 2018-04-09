@@ -1,7 +1,7 @@
 package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.model.IClonable;
-import cz.stechy.drd.model.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.util.HashGenerator;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;

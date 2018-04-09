@@ -12,7 +12,7 @@ import javafx.scene.image.ImageView;
 import org.testfx.api.FxRobot;
 
 /**
- * Třída sloužící k interakci s kontrolerem {@link cz.stechy.drd.controller.shop.ItemGeneralController}
+ * Třída sloužící k interakci s kontrolerem {@link cz.stechy.drd.app.shop.ItemGeneralController}
  */
 public class GeneralShopPage extends APage {
 

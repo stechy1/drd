@@ -7,7 +7,7 @@
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="300"
   prefWidth="400" spacing="16"
   xmlns="http://javafx.com/javafx/8.0.112"
-  fx:controller="cz.stechy.drd.controller.bestiary.edit.BestiaryEditGeneralController">
+  fx:controller="cz.stechy.drd.app.bestiary.edit.BestiaryBestiaryEditGeneralController">
   <JFXTextField labelFloat="true" prefWidth="250.0" promptText="%drd_bestiary_name"
     fx:id="txtName"/>
   <EnumComboBox enumType="cz.stechy.drd.model.Rule" labelFloat="true" prefWidth="250.0"

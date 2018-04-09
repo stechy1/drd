@@ -3,6 +3,6 @@
 <?import com.jfoenix.controls.JFXTextArea?>
 <JFXTextArea xmlns:fx="http://javafx.com/fxml/1" prefHeight="200.0" prefWidth="200.0"
   xmlns="http://javafx.com/javafx/8.0.112"
-  fx:controller="cz.stechy.drd.controller.bestiary.edit.BestiaryEditDescriptionController"
+  fx:controller="cz.stechy.drd.app.bestiary.edit.BestiaryBestiaryEditDescriptionController"
   fx:id="txtDescription">
 </JFXTextArea>

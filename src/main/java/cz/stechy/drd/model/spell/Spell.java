@@ -1,9 +1,9 @@
 package cz.stechy.drd.model.spell;
 
 import cz.stechy.drd.model.IClonable;
-import cz.stechy.drd.model.db.base.DatabaseItem;
-import cz.stechy.drd.model.db.base.OnlineItem;
-import cz.stechy.drd.model.spell.parser.SpellParser;
+import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.OnlineItem;
+import cz.stechy.drd.app.spellbook.SpellParser;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -386,6 +386,20 @@ public final class Spell extends OnlineItem {
             return new Spell(id, author, name, magicName, description, type, price, radius, range,
                 target, castTime, duration, image, downloaded, uploaded);
         }
+    }
+
+    /**
+     * Výčet typů kouzel podle povolání
+     */
+    public enum SpellProfessionType {
+        RANGER, WIZARD
+    }
+
+    /**
+     * Výčet možných cílů kouzla
+     */
+    public enum SpellTarget {
+        HERO, MONSTER, CREATURE, THING
     }
 
     @Override

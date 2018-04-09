@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121"
   xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="cz.stechy.drd.controller.hero.creator.HeroCreatorController1">
+  fx:controller="cz.stechy.drd.app.hero.creator.HeroCreatorController1">
   <top>
     <HBox styleClass="title-container">
       <Label styleClass="title-label" text="%drd_guide_new_hero_1_title" HBox.hgrow="ALWAYS"/>

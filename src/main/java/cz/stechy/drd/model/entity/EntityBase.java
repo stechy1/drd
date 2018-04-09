@@ -1,8 +1,8 @@
 package cz.stechy.drd.model.entity;
 
 import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.model.db.base.DatabaseItem;
-import cz.stechy.drd.model.db.base.OnlineItem;
+import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.OnlineItem;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;

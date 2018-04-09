@@ -3,7 +3,7 @@ package cz.stechy.drd.model.entity.mob;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.WithImage;
-import cz.stechy.drd.model.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.EntityBase;
 import cz.stechy.drd.model.entity.EntityProperty;

@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" prefHeight="250.0" prefWidth="400"
   spacing="16.0" xmlns="http://javafx.com/javafx/8.0.121"
-  fx:controller="cz.stechy.drd.controller.user.RegisterController">
+  fx:controller="cz.stechy.drd.app.user.RegisterController">
   <ImageView fitHeight="32.0" fitWidth="32.0">
     <image>
       <Image url="@../../images/icon/login.png"/>

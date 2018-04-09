@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="300.0" prefWidth="470.0"
   xmlns="http://javafx.com/javafx/8.0.121"
-  fx:controller="cz.stechy.drd.controller.dice.DiceController">
+  fx:controller="cz.stechy.drd.app.dice.DiceController">
   <left>
     <VBox fx:id="diceContainer" spacing="8.0">
       <padding>

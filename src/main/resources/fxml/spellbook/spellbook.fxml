@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <BorderPane prefWidth="900" prefHeight="500" xmlns="http://javafx.com/javafx/8.0.112"
   xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="cz.stechy.drd.controller.spellbook.SpellBookController">
+  fx:controller="cz.stechy.drd.app.spellbook.SpellBookController">
   <center>
     <TableView fx:id="tableSpellBook" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
       <columnResizePolicy>

@@ -2,7 +2,7 @@ package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.IClonable;
-import cz.stechy.drd.model.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.DatabaseItem;
 import java.util.Map;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;

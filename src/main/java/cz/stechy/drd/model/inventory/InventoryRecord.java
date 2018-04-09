@@ -1,7 +1,7 @@
 package cz.stechy.drd.model.inventory;
 
 import cz.stechy.drd.model.IClonable;
-import cz.stechy.drd.model.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.util.HashGenerator;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

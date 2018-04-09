@@ -1,6 +1,6 @@
 package cz.stechy.drd.model.spell.price;
 
-import cz.stechy.drd.model.spell.parser.SpellParser.SpellPriceType;
+import cz.stechy.drd.app.spellbook.SpellParser.SpellPriceType;
 import java.util.Map;
 
 /**

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane dividerPositions="0.4" prefHeight="300.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.controller.collections.CollectionsController">
+<SplitPane dividerPositions="0.4" prefHeight="300.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.app.collections.CollectionsController">
   <BorderPane HBox.hgrow="ALWAYS">
     <center>
       <ListView fx:id="lvCollections">

@@ -1,7 +1,7 @@
 package cz.stechy.drd.model.inventory;
 
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.service.KeyboardService;
+import cz.stechy.drd.service.KeyboardService;
 import java.io.ByteArrayInputStream;
 import java.util.Map;
 import java.util.function.Predicate;
