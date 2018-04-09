@@ -114,7 +114,7 @@ public class BestiaryEditController extends BaseController implements Initializa
     @Override
     protected void onResume() {
         setTitle(action == BestiaryHelper.MOB_ACTION_ADD ? titleNew : titleUpdate);
-        setScreenSize(400, 450);
+        setScreenSize(400, 470);
     }
 
     @Override
