@@ -16,7 +16,7 @@ import javafx.scene.image.Image;
 /**
  * Třída reprezentující jeden záznam v tabulce
  */
-final class SpellEntry {
+public final class SpellEntry {
 
     // region Variables
 
