@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.main;
 
+import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.AppSettings;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
@@ -88,9 +89,13 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private MenuItem menuLogin;
+    @FXML
+    private MenuItem menuCloseHero;
 
     @FXML
     private Button btnLevelUp;
+    @FXML
+    private JFXButton btnCloseHero;
 
     @FXML
     private TabPane tabPane;
@@ -224,6 +229,8 @@ public class MainController extends BaseController implements Initializable {
 
         tabProfession.disableProperty().bind(this.hero.isNull());
         menuLogin.disableProperty().bind(useFirebase.not());
+        menuCloseHero.disableProperty().bind(this.hero.isNull());
+        btnCloseHero.disableProperty().bind(this.hero.isNull());
 
         this.hero.addListener(this::heroHandler);
         this.user.addListener(this::userHandler);
