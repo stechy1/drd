@@ -188,6 +188,11 @@
         <Tooltip text="%drd_hero_level_up" />
       </tooltip>
     </JFXButton>
+    <JFXButton fx:id="btnLogin" onAction="#handleMenuLogin" styleClass="toolbar-button, icon-login">
+      <tooltip>
+        <Tooltip text="%drd_main_menu_file_login" />
+      </tooltip>
+    </JFXButton>
   </ToolBar>
   <JFXTabPane fx:id="tabPane" side="BOTTOM" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
     <Tab fx:id="tabDefaults" text="%drd_main_tab_dashboard">

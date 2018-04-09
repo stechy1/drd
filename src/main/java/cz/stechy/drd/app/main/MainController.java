@@ -39,6 +39,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -94,6 +95,8 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private Button btnLevelUp;
+    @FXML
+    private JFXButton btnLogin;
     @FXML
     private JFXButton btnCloseHero;
 
@@ -231,6 +234,10 @@ public class MainController extends BaseController implements Initializable {
         menuLogin.disableProperty().bind(useFirebase.not());
         menuCloseHero.disableProperty().bind(this.hero.isNull());
         btnCloseHero.disableProperty().bind(this.hero.isNull());
+        final Tooltip loginTooltip = new Tooltip();
+        loginTooltip.textProperty().bind(menuLogin.textProperty());
+        btnLogin.setTooltip(loginTooltip);
+        btnLogin.onActionProperty().bind(menuLogin.onActionProperty());
 
         this.hero.addListener(this::heroHandler);
         this.user.addListener(this::userHandler);
@@ -299,7 +306,7 @@ public class MainController extends BaseController implements Initializable {
 
                 heroService.resetHero();
                 showNotification(new Notification(
-                    translator.translate(R.Translate.NOTIFY_LOGOUT_SUCCESS)));
+                    translator.translate(R.Translate.NOTIFY_LOGIN_SUCCESS)));
                 break;
             case ACTION_MONEY_EXPERIENCE:
                 if (statusCode != RESULT_SUCCESS) {
