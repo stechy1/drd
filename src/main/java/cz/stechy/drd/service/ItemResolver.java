@@ -80,17 +80,22 @@ public class ItemResolver {
     public CompletableFuture<Integer> merge(List<? extends WithItemBase> items) {
         final ItemRegistry itemRegistry = ItemRegistry.getINSTANCE();
         final int[] merged = {0};
+        final Object lock = new Object();
 
-        return CompletableFuture.allOf(items
-            .stream()
-            .filter(item -> !itemRegistry.getItemById(item.getItemBase().getId()).isPresent())
-            .map(WithItemBase::getItemBase)
-            .map(item -> {
-                final AdvancedDatabaseService service = getService(item.getItemType());
-                return service.insertAsync(item)
-                    .thenAccept(o -> merged[0]++);
-            }).toArray(CompletableFuture[]::new))
-            .thenApply(aVoid -> merged[0]);
+        return CompletableFuture.supplyAsync(() -> {
+            items.stream()
+                .filter(item -> !itemRegistry.getItemById(item.getItemBase().getId()).isPresent())
+                .map(WithItemBase::getItemBase)
+                .forEach(item -> {
+                    final AdvancedDatabaseService service = getService(item.getItemType());
+                    service.insertAsync(item).thenAccept(o -> {
+                        synchronized (lock) {
+                            merged[0]++;
+                        }
+                    }).join();
+                });
+            return null;
+        }).thenApply(aVoid -> merged[0]);
     }
 
     // endregion
