@@ -446,9 +446,11 @@ public final class R {
             public static final String ADD = "/images/icon/add.png";
             public static final String BANK = "/images/icon/bank.png";
             public static final String BESTIARY = "/images/icon/bestiary.png";
+            public static final String BOOK = "/images/icon/book.png";
             public static final String CHANGELOG = "/images/icon/changelog.png";
             public static final String CLOSE = "/images/icon/close.png";
             public static final String CLOSE_HERO = "/images/icon/close_hero.png";
+            public static final String COLLECTIONS = "/images/icon/collections.png";
             public static final String CONFIRM = "/images/icon/confirm.png";
             public static final String DICE = "/images/icon/dice.png";
             public static final String DOWNLOAD = "/images/icon/download.png";

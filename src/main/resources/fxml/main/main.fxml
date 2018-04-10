@@ -79,7 +79,13 @@
           </ImageView>
         </graphic>
       </MenuItem>
-      <MenuItem fx:id="mnuMoney" onAction="#handleMenuMoney" text="%drd_main_menu_tools_money" />
+      <MenuItem fx:id="menuMoney" onAction="#handleMenuMoney" text="%drd_main_menu_tools_money">
+        <graphic>
+          <ImageView>
+            <Image requestedHeight="16" requestedWidth="16" url="@../../images/coins/gold_coin.png" />
+          </ImageView>
+        </graphic>
+      </MenuItem>
       <MenuItem fx:id="menuBestiary" onAction="#handleMenuBestiary" text="%drd_main_menu_tools_bestiary">
         <graphic>
           <ImageView>
@@ -97,14 +103,14 @@
       <MenuItem fx:id="menuCollections" onAction="#handleMenuCollections" text="%drd_main_menu_tools_collections">
         <graphic>
           <ImageView>
-            <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/shop.png" />
+            <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/collections.png" />
           </ImageView>
         </graphic>
       </MenuItem>
       <MenuItem fx:id="menuSpellBook" onAction="#handleMenuSpellBook" text="%drd_main_menu_tools_spell_book">
         <graphic>
           <ImageView>
-            <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/shop.png" />
+            <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/book.png" />
           </ImageView>
         </graphic>
       </MenuItem>

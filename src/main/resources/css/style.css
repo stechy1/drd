@@ -92,6 +92,12 @@
 .icon-synchronize {
     -fx-background-image: url("../images/icon/synchronize.png");
 }
+.icon-collection {
+    -fx-background-image: url("../images/icon/collections.png");
+}
+.icon-book {
+    -fx-background-color: url("../images/icon/book.png");
+}
 
 
 .table-column {
