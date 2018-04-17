@@ -3,6 +3,7 @@ package cz.stechy.drd.model.inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.item.ItemBase;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 /**
@@ -57,8 +58,6 @@ public class ItemStack {
      * @param ammount Přidávaný počet položek
      */
     public void addAmmount(int ammount) {
-        //if (this.ammount.get() + ammount > )
-        // TODO implementovat stack size
         setAmmount(getAmmount() + ammount);
     }
 
@@ -120,7 +119,7 @@ public class ItemStack {
         return ammount.get();
     }
 
-    public IntegerProperty ammountProperty() {
+    public ReadOnlyIntegerProperty ammountProperty() {
         return ammount;
     }
 
