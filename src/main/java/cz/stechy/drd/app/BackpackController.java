@@ -5,10 +5,12 @@ import cz.stechy.drd.dao.InventoryDao;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
+import cz.stechy.drd.model.inventory.ItemStack;
 import cz.stechy.drd.model.inventory.TooltipTranslator;
 import cz.stechy.drd.model.inventory.container.FlowItemContainer;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.service.HeroService;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
@@ -16,6 +18,8 @@ import cz.stechy.screens.Bundle;
 import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Obecný kontroler pro inventář v batohu či jiném předmětu
@@ -23,6 +27,9 @@ import javafx.scene.control.ScrollPane;
 public class BackpackController extends BaseController implements TooltipTranslator {
 
     // region Constants
+
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackpackController.class);
 
     private static final int SLOTS_ON_ROW = 5;
     private static final int WIDTH;
@@ -108,6 +115,16 @@ public class BackpackController extends BaseController implements TooltipTransla
         }
     }
 
+    private boolean backpackFilter(ItemStack itemStack) {
+        if (itemStack.getItem().getItemType() == ItemType.BACKPACK) {
+            final Metadata metadata = itemStack.getMetadata();
+            final String id = (String) metadata.get(Backpack.CHILD_INVENTORY_ID);
+            return !this.inventoryId.equals(id);
+        }
+
+        return true;
+    }
+
     // endregion
 
     // endregion
@@ -120,6 +137,7 @@ public class BackpackController extends BaseController implements TooltipTransla
         itemContainer = new FlowItemContainer(this, backpackSize);
         container.setContent(itemContainer.getGraphics());
         itemContainer.setItemClickListener(this::itemClickHandler);
+        itemContainer.setInventoryFilter(this::backpackFilter);
         setScreenSize(WIDTH, BackpackController.computeHeight(backpackSize));
 
         heroService.getInventoryAsync()
@@ -129,6 +147,7 @@ public class BackpackController extends BaseController implements TooltipTransla
                         itemContainer.setInventoryManager(inventoryService, backpackInventory)))
             .exceptionally(throwable -> {
                 itemContainer.clear();
+                LOGGER.error("Nepodařilo se načíst data inventáře.", throwable);
                 throw new RuntimeException(throwable);
             });
     }

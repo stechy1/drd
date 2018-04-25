@@ -1,16 +1,17 @@
 package cz.stechy.drd.model.inventory;
 
 import cz.stechy.drd.ThreadPool;
+import cz.stechy.drd.dao.InventoryContentDao;
+import cz.stechy.drd.dao.InventoryDao;
 import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
 import cz.stechy.drd.model.inventory.ItemSlot.ClickListener;
 import cz.stechy.drd.model.inventory.ItemSlot.DragDropHandlers;
 import cz.stechy.drd.model.inventory.ItemSlot.HighlightState;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.dao.InventoryContentDao;
-import cz.stechy.drd.dao.InventoryDao;
 import cz.stechy.drd.service.ItemRegistry;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -30,6 +31,8 @@ public abstract class ItemContainer {
 
     // Globální informace obsahující přesouvaný item
     private static final ObjectProperty<DragInformations> dragInformations = new SimpleObjectProperty<>();
+
+    private static final Predicate<ItemStack> DEFAULT_INVENTORY_FILTER = itemStack -> true;
     // endregion
 
     // region Variables
@@ -41,6 +44,7 @@ public abstract class ItemContainer {
     private InventoryContentDao inventoryContentDao;
     private ObservableList<InventoryRecord> oldRecords;
     private ItemClickListener itemClickListener;
+    private Predicate<ItemStack> inventoryFilter = DEFAULT_INVENTORY_FILTER;
     // Kolekce slotů pro itemy v inventáři
     protected final ObservableList<ItemSlot> itemSlots = FXCollections.observableArrayList();
 
@@ -117,8 +121,10 @@ public abstract class ItemContainer {
         final int sourceAmmount = sourceSlot.getItemStack().getAmmount();
         final int sourceAmmountResult = sourceAmmount - transferAmmount;
 
-        inventoryManager.getInventoryContentByIdAsync(sourceInventoryId)
-            .thenAccept(sourceInventoryContent -> {
+        final CompletableFuture<InventoryContentDao> content = inventoryManager
+            .getInventoryContentByIdAsync(sourceInventoryId);
+        assert content != null;
+            content.thenAccept(sourceInventoryContent -> {
                 sourceInventoryContent
                     .selectAsync(record -> record.getSlotId() == sourceSlot.getId())
                     .thenAccept(sourceInventoryRecord -> {
@@ -140,6 +146,7 @@ public abstract class ItemContainer {
                                     .ammount(transferAmmount)
                                     .itemId(sourceInventoryRecord.getItemId())
                                     .slotId(destinationSlot.getId())
+                                    .metadata(sourceInventoryRecord.getMetadata())
                                     .build();
                                     return inventoryContentDao.insertAsync(destinationInventoryRecord1);
                                 }
@@ -181,14 +188,39 @@ public abstract class ItemContainer {
     }
 
     /**
+     * Zjistí, zda-li tento inventář může přijmout item, či nikoliv
+     *
+     * @param itemStack {@link ItemStack} Poptávaný předmět
+     * @return True, pokud inventář může přijmout item, jinak false
+     */
+    protected boolean canAccept(ItemStack itemStack) {
+        return inventoryFilter.test(itemStack);
+    }
+
+    /**
      * Zjistí, zda-li vybraný slot může přijmout item, či nikoliv
      *
      * @param slot Testovaný slot
-     * @param what Testovaný item
+     * @param itemStack Testovaný item
      * @return True, pokud slot přijme item, jinak false
      */
-    private boolean canAccept(ItemSlot slot, ItemStack what) {
-        return slot.acceptItem(what);
+    private boolean canSlotAcceptItem(ItemSlot slot, ItemStack itemStack) {
+//        if (itemStack.getItem().getItemType() == ItemType.BACKPACK) {
+//            boolean canSlotAcceptItem = false;
+//            System.out.println("What: " + itemStack.toString());
+//            for (ItemSlot itemSlot : itemSlots) {
+//                System.out.println("compared to: " + itemSlot.toString());
+//                if (itemSlot.getItemStack() == itemStack) {
+//                    canSlotAcceptItem = true;
+//                    break;
+//                }
+//            }
+//            if (!canSlotAcceptItem) {
+//                return false;
+//            }
+//        }
+
+        return slot.acceptItem(itemStack);
     }
 
     /**
@@ -197,8 +229,10 @@ public abstract class ItemContainer {
      * @param item {@link ItemStack}
      */
     private void highlightInventory(final ItemStack item) {
+        final boolean inventoryAccept = canAccept(item);
+
         itemSlots.forEach(slot ->
-            slot.highlight(slot.acceptItem(item)
+            slot.highlight(inventoryAccept && slot.acceptItem(item)
                 ? HighlightState.ACCEPT
                 : HighlightState.DECLINE));
     }
@@ -264,6 +298,20 @@ public abstract class ItemContainer {
         this.itemClickListener = listener;
     }
 
+    /**
+     * Nastavý filtr pro celý inventář.
+     * Nesmí být null
+     *
+     * @param inventoryFilter {@link Predicate<ItemStack>} Filter celého inventáře
+     */
+    public void setInventoryFilter(Predicate<ItemStack> inventoryFilter) {
+        if (inventoryFilter == null) {
+            return;
+        }
+
+        this.inventoryFilter = inventoryFilter;
+    }
+
     // endregion
 
     // Handler pro drag&drop operace
@@ -276,7 +324,8 @@ public abstract class ItemContainer {
 
         @Override
         public boolean acceptDrop(ItemSlot destinationSlot) {
-            return canAccept(destinationSlot, dragInformations.get().draggedStack);
+            final ItemStack draggedStack = dragInformations.get().draggedStack;
+            return canAccept(draggedStack) && canSlotAcceptItem(destinationSlot, draggedStack);
         }
 
         @Override

@@ -132,4 +132,9 @@ public class ItemStack {
     }
 
     // endregion
+
+    @Override
+    public String toString() {
+        return "ItemStack - item: " + item.getName() + " ammount: " + ammount.get();
+    }
 }

@@ -400,6 +400,13 @@ public class ItemSlot {
 
     // endregion
 
+
+    @Override
+    public String toString() {
+        String descr = "Item slot - id: " + id + " contains: ";
+        return descr + (itemStack == null ? "empty" : itemStack.toString());
+    }
+
     private final ChangeListener<byte[]> imageChangeListener = (observable, oldValue, newValue) -> setImage(
         newValue);
 
