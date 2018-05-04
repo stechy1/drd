@@ -54,7 +54,6 @@ public class ItemGeneralController extends BaseController implements Initializab
     private static final String UPLOADED = "uploaded";
     private static final String DOWNLOADED = "downloaded";
 
-
     // endregion
 
     // region Variables
@@ -240,7 +239,8 @@ public class ItemGeneralController extends BaseController implements Initializab
 
             name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
             weight.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT));
-            stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
+            stackSize.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_IMAGE);
         }

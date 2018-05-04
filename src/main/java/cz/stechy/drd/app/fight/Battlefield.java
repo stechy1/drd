@@ -33,6 +33,7 @@ final class Battlefield {
 
     /**
      * Vytvoří nové bojiště pro dvě entity
+     *
      * @param aggressiveEntity1 První bojovník
      * @param aggressiveEntity2 Druhý bojovník
      */
@@ -41,7 +42,8 @@ final class Battlefield {
             new KeyFrame(DELAY, event -> { // Kontrola že jsou všichni živí a zdraví
                 if (!aggressiveEntity1.isAlive() || !aggressiveEntity2.isAlive()) {
                     timeline.stop();
-                    IAggressive entity = aggressiveEntity1.isAlive() ? aggressiveEntity2 : aggressiveEntity1;
+                    IAggressive entity =
+                        aggressiveEntity1.isAlive() ? aggressiveEntity2 : aggressiveEntity1;
                     visualizeAction(BattlefieldAction.DEATH, entity.toString());
                     callEndHandler();
                 } else {
@@ -157,8 +159,7 @@ final class Battlefield {
 
         /**
          * Metoda je zavolána po každe, když se provede nějaká akce
-         *  @param action
-         * @param params*/
+         */
         void onActionVisualize(BattlefieldAction action, Object... params);
 
     }

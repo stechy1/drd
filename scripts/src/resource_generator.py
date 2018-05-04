@@ -5,7 +5,7 @@ import os
 folder = './src/main/resources/'
 string = 'public static final String {} = "{}";\n'
 constant_builder = 'public static final {} {} = {};\n'
-output_path = './src/main/java/cz/stechy/drd/R.java'
+output_path = '.drd_share/src/main/java/cz/stechy/drd/R.java'
 
 constants = [
 	{'name': 'DATABASE_VERSION', 'type': 'int', 'value': '1'}

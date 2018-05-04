@@ -1,7 +1,7 @@
 package cz.stechy.drd.app.shop;
 
-import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
+import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.screens.Bundle;
 import java.util.Optional;
 import javafx.beans.property.BooleanProperty;
@@ -14,8 +14,8 @@ interface ShopItemController<T> {
 
     /**
      * Nastaví referenci na nákupní košík
-     *  @param shoppingCart {@link IShoppingCart}
      *
+     * @param shoppingCart {@link IShoppingCart}
      */
     void setShoppingCart(IShoppingCart shoppingCart);
 

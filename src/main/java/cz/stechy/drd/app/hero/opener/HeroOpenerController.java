@@ -174,7 +174,8 @@ public class HeroOpenerController extends BaseController implements Initializabl
                 showNotification(new Notification(String
                     .format(translator.translate(R.Translate.NOTIFY_HERO_IS_NOT_DELETED),
                         selectedHero.get().getName())));
-                LOGGER.error("Hrdinu {} se nepodařilo smazat", selectedHero.get().getName(), throwable);
+                LOGGER.error("Hrdinu {} se nepodařilo smazat", selectedHero.get().getName(),
+                    throwable);
                 throw new RuntimeException(throwable);
             })
             .thenAccept(hero -> showNotification(new Notification(String

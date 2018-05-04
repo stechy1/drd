@@ -15,7 +15,8 @@
   xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="cz.stechy.drd.app.spellbook.SpellBookController">
   <center>
-    <TableView fx:id="tableSpellBook" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+    <TableView fx:id="tableSpellBook" prefHeight="200.0" prefWidth="200.0"
+      BorderPane.alignment="CENTER">
       <columnResizePolicy>
         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
       </columnResizePolicy>
@@ -48,11 +49,11 @@
             <PropertyValueFactory property="type"/>
           </cellValueFactory>
         </TableColumn>
-<!--        <TableColumn fx:id="columnPrice" prefWidth="75.0" text="%drd_spell_price" sortable="false">
-          <cellValueFactory>
-            <PropertyValueFactory property="price"/>
-          </cellValueFactory>
-        </TableColumn>-->
+        <!--        <TableColumn fx:id="columnPrice" prefWidth="75.0" text="%drd_spell_price" sortable="false">
+                  <cellValueFactory>
+                    <PropertyValueFactory property="price"/>
+                  </cellValueFactory>
+                </TableColumn>-->
 
       </columns>
     </TableView>
@@ -64,17 +65,19 @@
       </padding>
       <JFXButton fx:id="btnAddItem" styleClass="sidebar-button, icon-add" onAction="#handleAddItem">
       </JFXButton>
-      <JFXButton fx:id="btnRemoveItem" styleClass="sidebar-button, icon-subtract" onAction="#handleRemoveItem">
+      <JFXButton fx:id="btnRemoveItem" styleClass="sidebar-button, icon-subtract"
+        onAction="#handleRemoveItem">
         <tooltip>
           <Tooltip text="%drd_repository_item_remove"/>
         </tooltip>
       </JFXButton>
-      <JFXButton fx:id="btnEditItem" styleClass="sidebar-button, icon-edit" onAction="#handleEditItem">
+      <JFXButton fx:id="btnEditItem" styleClass="sidebar-button, icon-edit"
+        onAction="#handleEditItem">
         <tooltip>
           <Tooltip text="%drd_repository_item_edit"/>
         </tooltip>
       </JFXButton>
-      <Separator />
+      <Separator/>
       <JFXButton onAction="#handleUploadItem" styleClass="sidebar-button, icon-upload"
         fx:id="btnUploadItem">
         <tooltip>
@@ -94,7 +97,8 @@
         </tooltip>
       </JFXButton>
       <Separator/>
-      <JFXButton fx:id="btnSynchronize" onAction="#handleSynchronize" styleClass="sidebar-button, icon-synchronize">
+      <JFXButton fx:id="btnSynchronize" onAction="#handleSynchronize"
+        styleClass="sidebar-button, icon-synchronize">
         <tooltip>
           <Tooltip text="%drd_repository_item_synchronize"/>
         </tooltip>

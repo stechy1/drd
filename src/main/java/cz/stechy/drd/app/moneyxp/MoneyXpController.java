@@ -61,10 +61,13 @@ public class MoneyXpController extends BaseController implements Initializable {
 
     private final Money moneyModel = new Money();
     private final MaxActValue goldValue = new MaxActValue(0, Money.MAX_GOLD, moneyModel.getGold());
-    private final MaxActValue silverValue = new MaxActValue(0, Money.MAX_SILVER, moneyModel.getSilver());
-    private final MaxActValue copperValue = new MaxActValue(0, Money.MAX_COPPER, moneyModel.getCopper());
+    private final MaxActValue silverValue = new MaxActValue(0, Money.MAX_SILVER,
+        moneyModel.getSilver());
+    private final MaxActValue copperValue = new MaxActValue(0, Money.MAX_COPPER,
+        moneyModel.getCopper());
     private final MaxActValue experienceModel = new MaxActValue(Integer.MAX_VALUE);
-    private final BooleanProperty disableButtons = new SimpleBooleanProperty(this, "disableButtons", true);
+    private final BooleanProperty disableButtons = new SimpleBooleanProperty(this, "disableButtons",
+        true);
 
     private final Money heroMoney = new Money();
     private final MaxActValue heroExperience = new MaxActValue();

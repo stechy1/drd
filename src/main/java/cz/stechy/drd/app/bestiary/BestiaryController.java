@@ -2,7 +2,7 @@ package cz.stechy.drd.app.bestiary;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
-import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.dao.BestiaryDao;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.Rule;
@@ -350,7 +350,8 @@ public class BestiaryController extends BaseController implements Initializable 
     @FXML
     private void handleSynchronize(ActionEvent actionEvent) {
         service.synchronize(user.getName())
-            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " nestvůr."));
+            .thenAccept(
+                total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " nestvůr."));
     }
 
     // endregion

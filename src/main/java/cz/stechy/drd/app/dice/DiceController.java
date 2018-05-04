@@ -113,7 +113,8 @@ public class DiceController extends BaseController implements Initializable {
 
         final String customDiceTranslate = resources.getString(R.Translate.DICE_CUSTOM);
         final List<RadioButton> radioButtons = Arrays.stream(DiceType.values()).map(diceType -> {
-            final RadioButton radio = new RadioButton(diceType == DiceType.CUSTOM ? customDiceTranslate : diceType.toString());
+            final RadioButton radio = new RadioButton(
+                diceType == DiceType.CUSTOM ? customDiceTranslate : diceType.toString());
             radio.setToggleGroup(diceGroup);
             radio.setUserData(diceType == DiceType.CUSTOM ? 0 : diceType.getSideCount());
             if (diceType == DiceType.CUSTOM) {
@@ -174,7 +175,8 @@ public class DiceController extends BaseController implements Initializable {
 
     @FXML
     private void handleRoll(ActionEvent actionEvent) {
-        diceHelper.roll(diceSideCount.getActValue().intValue(), diceRollCount.getActValue().intValue());
+        diceHelper
+            .roll(diceSideCount.getActValue().intValue(), diceRollCount.getActValue().intValue());
     }
 
     // endregion

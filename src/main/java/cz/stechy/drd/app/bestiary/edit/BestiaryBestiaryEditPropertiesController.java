@@ -15,7 +15,8 @@ import javafx.scene.control.TextField;
 /**
  * Kontroler pro editaci důležitých vlastností nestvůry
  */
-public class BestiaryBestiaryEditPropertiesController implements IBestiaryEditController, Initializable {
+public class BestiaryBestiaryEditPropertiesController implements IBestiaryEditController,
+    Initializable {
 
     // region Variables
 
@@ -81,6 +82,7 @@ public class BestiaryBestiaryEditPropertiesController implements IBestiaryEditCo
     }
 
     private static class Model extends ValidatedModel {
+
         private static final int FLAG_ATTACK_NUMBER = 1 << 0;
         private static final int FLAG_DEFENCE_NUMBER = 1 << 1;
         private static final int FLAG_VIABILITY = 1 << 2;
@@ -98,13 +100,19 @@ public class BestiaryBestiaryEditPropertiesController implements IBestiaryEditCo
         private final MaxActValue charisma = new MaxActValue(Integer.MAX_VALUE);
 
         {
-            attackNumber.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_ATTACK_NUMBER));
-            defenceNumber.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_DEFENCE_NUMBER));
-            viability.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_VIABILITY));
-            immunity.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_IMMUNITY));
+            attackNumber.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_ATTACK_NUMBER));
+            defenceNumber.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_DEFENCE_NUMBER));
+            viability.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_VIABILITY));
+            immunity.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_IMMUNITY));
             mettle.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_METTLE));
-            intelligence.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_INTELLIGENCE));
-            charisma.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_CHARISMA));
+            intelligence.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_INTELLIGENCE));
+            charisma.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_CHARISMA));
 
             // Automatické nastavení validity na true
             validityFlag.set(ValidatedModel.VALID_FLAG_VALUE);

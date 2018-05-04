@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -69,7 +68,8 @@
       <padding>
         <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
       </padding>
-      <Button fx:id="btnAddAddition" onAction="#handleAddAddition" styleClass="sidebar-button, icon-add"/>
+      <Button fx:id="btnAddAddition" onAction="#handleAddAddition"
+        styleClass="sidebar-button, icon-add"/>
       <Button onAction="#handleRemoveAddition" styleClass="sidebar-button, icon-subtract"/>
     </VBox>
   </right>

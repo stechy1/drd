@@ -99,43 +99,44 @@ public final class ImageUtils {
      */
     private static BufferedImage createResizedCopy(BufferedImage src,
         int width, int height) {
-            final int original_width = src.getWidth();
-            final int original_height = src.getHeight();
-            final int bound_width = width;
-            final int bound_height = height;
-            int new_width = original_width;
-            int new_height = original_height;
-            boolean needResizeWidth = true;
-            boolean needResizeHeight = true;
+        final int original_width = src.getWidth();
+        final int original_height = src.getHeight();
+        final int bound_width = width;
+        final int bound_height = height;
+        int new_width = original_width;
+        int new_height = original_height;
+        boolean needResizeWidth = true;
+        boolean needResizeHeight = true;
 
         // zkontrola, zda-lie je opravdu potřeba změnit velikost šířky obrázku
-            if (original_width > bound_width) {
-                new_width = bound_width;
-                new_height = (new_width * original_height) / original_width;
-            } else {
-                needResizeWidth = false;
-            }
-
-            // zkontrola, zda-lie je opravdu potřeba změnit velikost výšky obrázku
-            if (new_height > bound_height) {
-                new_height = bound_height;
-                new_width = (new_height * original_width) / original_height;
-            } else {
-                needResizeHeight = false;
-            }
-
-            // Pokud nepotřebuji nic měnit, tak vrázím původní obrázek
-            if (!needResizeWidth && !needResizeHeight) {
-                return src;
-            }
-
-            BufferedImage resizedImg = new BufferedImage(new_width, new_height, BufferedImage.TYPE_INT_RGB);
-            Graphics2D g2 = resizedImg.createGraphics();
-            g2.clearRect(0,0,new_width, new_height);
-            g2.drawImage(src, 0, 0, new_width, new_height, null);
-            g2.dispose();
-            return resizedImg;
+        if (original_width > bound_width) {
+            new_width = bound_width;
+            new_height = (new_width * original_height) / original_width;
+        } else {
+            needResizeWidth = false;
         }
+
+        // zkontrola, zda-lie je opravdu potřeba změnit velikost výšky obrázku
+        if (new_height > bound_height) {
+            new_height = bound_height;
+            new_width = (new_height * original_width) / original_height;
+        } else {
+            needResizeHeight = false;
+        }
+
+        // Pokud nepotřebuji nic měnit, tak vrázím původní obrázek
+        if (!needResizeWidth && !needResizeHeight) {
+            return src;
+        }
+
+        BufferedImage resizedImg = new BufferedImage(new_width, new_height,
+            BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2 = resizedImg.createGraphics();
+        g2.clearRect(0, 0, new_width, new_height);
+        g2.drawImage(src, 0, 0, new_width, new_height, null);
+        g2.dispose();
+        return resizedImg;
+    }
 
     /**
      * Pomocná metoda pro převod {@link Image} na surová data

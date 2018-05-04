@@ -19,40 +19,40 @@
     <Double fx:id="CARD_HEIGHT" fx:value="130.0"/>
   </fx:define>
   <FlowPane prefHeight="300.0" prefWidth="600.0">
-  <Card caption="Zastrašení">
-    <content>
-      <VBox alignment="CENTER_RIGHT" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH"
-        spacing="16.0">
-        <JFXComboBox labelFloat="true" prefWidth="300.0" promptText="Nestvůra"
-          fx:id="cmbBestiaryIntimidation"/>
-        <JFXTextField labelFloat="true" promptText="Počet nestvůr"
-          fx:id="txtEnemyCountIntimidation"/>
-        <JFXButton onAction="#btnHandleIntimidation" styleClass="btn, btn-primary, btn-raised"
-          text="%drd_dice_roll" fx:id="btnIntimidation"/>
-      </VBox>
-    </content>
-  </Card>
-  <Card caption="Rozpoznání artefaktu">
-    <content>
-      <VBox alignment="CENTER_RIGHT" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH"
-        spacing="16.0">
-        <JFXComboBox labelFloat="true" prefWidth="300.0" promptText="Předmět"
-          fx:id="cmbItemsDetectArtefact"/>
-        <JFXButton onAction="#handleDetectArtefact" styleClass="btn, btn-primary, btn-raised"
-          text="Rozpoznat" fx:id="btnDetectArtefact"/>
-      </VBox>
-    </content>
-  </Card>
-  <Card caption="Odhad nepřítele">
-    <content>
-      <HBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH">
-        <Label text="Již brzy...">
-          <font>
-            <Font name="Roboto" size="24"/>
-          </font>
-        </Label>
-      </HBox>
-    </content>
-  </Card>
-</FlowPane>
+    <Card caption="Zastrašení">
+      <content>
+        <VBox alignment="CENTER_RIGHT" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH"
+          spacing="16.0">
+          <JFXComboBox labelFloat="true" prefWidth="300.0" promptText="Nestvůra"
+            fx:id="cmbBestiaryIntimidation"/>
+          <JFXTextField labelFloat="true" promptText="Počet nestvůr"
+            fx:id="txtEnemyCountIntimidation"/>
+          <JFXButton onAction="#btnHandleIntimidation" styleClass="btn, btn-primary, btn-raised"
+            text="%drd_dice_roll" fx:id="btnIntimidation"/>
+        </VBox>
+      </content>
+    </Card>
+    <Card caption="Rozpoznání artefaktu">
+      <content>
+        <VBox alignment="CENTER_RIGHT" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH"
+          spacing="16.0">
+          <JFXComboBox labelFloat="true" prefWidth="300.0" promptText="Předmět"
+            fx:id="cmbItemsDetectArtefact"/>
+          <JFXButton onAction="#handleDetectArtefact" styleClass="btn, btn-primary, btn-raised"
+            text="Rozpoznat" fx:id="btnDetectArtefact"/>
+        </VBox>
+      </content>
+    </Card>
+    <Card caption="Odhad nepřítele">
+      <content>
+        <HBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH">
+          <Label text="Již brzy...">
+            <font>
+              <Font name="Roboto" size="24"/>
+            </font>
+          </Label>
+        </HBox>
+      </content>
+    </Card>
+  </FlowPane>
 </ScrollPane>

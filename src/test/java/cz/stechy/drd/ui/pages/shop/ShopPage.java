@@ -1,7 +1,7 @@
 package cz.stechy.drd.ui.pages.shop;
 
-import cz.stechy.drd.ui.APage;
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.ui.APage;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

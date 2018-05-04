@@ -48,7 +48,9 @@ public class LabeledMaxActValue extends Group {
 
     // region Constructors
 
-    public LabeledMaxActValue(@NamedArg("caption") String caption, @NamedArg("description") String description, @NamedArg("maxActValue") MaxActValue maxActValue) {
+    public LabeledMaxActValue(@NamedArg("caption") String caption,
+        @NamedArg("description") String description,
+        @NamedArg("maxActValue") MaxActValue maxActValue) {
         try {
             final FXMLLoader loader = new FXMLLoader(getClass().getResource(
                 "/fxml/labeled_max_act_value.fxml"));
@@ -96,11 +98,13 @@ public class LabeledMaxActValue extends Group {
 
     // region Method handlers
 
-    private void actValueHandler(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    private void actValueHandler(ObservableValue<? extends Number> observable, Number oldValue,
+        Number newValue) {
         sync(newValue.intValue(), maxValue);
     }
 
-    private void maxValueHandler(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    private void maxValueHandler(ObservableValue<? extends Number> observable, Number oldValue,
+        Number newValue) {
         sync(this.actValue, newValue.intValue());
     }
 

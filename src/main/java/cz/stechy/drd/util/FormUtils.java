@@ -47,7 +47,8 @@ public final class FormUtils {
      * @param <T> Datový typ proměnné, se kterou se pracuje
      * @return {@link ChangeListener}
      */
-    public static <T> ChangeListener<? super T> notEmptyCondition(final ValidatedModel model, final int flag) {
+    public static <T> ChangeListener<? super T> notEmptyCondition(final ValidatedModel model,
+        final int flag) {
         return (observable, oldValue, newValue) -> {
             if (newValue == null) {
                 //model.setValid(false);
@@ -58,7 +59,8 @@ public final class FormUtils {
         };
     }
 
-    public static ChangeListener<byte[]> notEmptyImageRawCondition(final ValidatedModel model, final int flag, final ObjectProperty<Image> image, final AtomicBoolean block) {
+    public static ChangeListener<byte[]> notEmptyImageRawCondition(final ValidatedModel model,
+        final int flag, final ObjectProperty<Image> image, final AtomicBoolean block) {
         return (observable, oldValue, newValue) -> {
             if (block.get()) {
                 return;
@@ -81,7 +83,8 @@ public final class FormUtils {
         };
     }
 
-    public static ChangeListener<Image> notEmptyImageSetter(final ObjectProperty<byte[]> imageRaw, final AtomicBoolean block) {
+    public static ChangeListener<Image> notEmptyImageSetter(final ObjectProperty<byte[]> imageRaw,
+        final AtomicBoolean block) {
         return (observable, oldValue, newValue) -> {
             if (block.get()) {
                 return;
@@ -129,7 +132,7 @@ public final class FormUtils {
                 }
 
                 return change;
-            } else if ("-".equals(change.getText()) ) {
+            } else if ("-".equals(change.getText())) {
                 // Odebere mínus
                 if (change.getControlText().startsWith("-")) {
                     if (max.get().doubleValue() < 0) {
@@ -144,8 +147,8 @@ public final class FormUtils {
 
                     change.setText("");
                     change.setRange(0, 1);
-                    change.setCaretPosition(change.getCaretPosition()-2);
-                    change.setAnchor(change.getAnchor()-2);
+                    change.setCaretPosition(change.getCaretPosition() - 2);
+                    change.setAnchor(change.getAnchor() - 2);
                     return change;
                 } else {
                     if (min.get().doubleValue() >= 0) {

@@ -144,11 +144,16 @@ public class BestiaryBestiaryEditOtherController implements InjectableChild,
 
         {
             vulnerability.addListener(FormUtils.notEmptyCondition(this, FLAG_VULNERABILITY));
-            mobility.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_MOBILITY));
-            perservance.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_PERSERVANCE));
-            controlAbility.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_CONTROL_ABILITY));
-            basicPowerOfMind.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_BASIC_POWER_OF_MIND));
-            domestication.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_DOMESTICATION));
+            mobility.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_MOBILITY));
+            perservance.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_PERSERVANCE));
+            controlAbility.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_CONTROL_ABILITY));
+            basicPowerOfMind.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_BASIC_POWER_OF_MIND));
+            domestication.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_DOMESTICATION));
 
             // Automatické nastavení validity na true
             validityFlag.set(ValidatedModel.VALID_FLAG_VALUE);

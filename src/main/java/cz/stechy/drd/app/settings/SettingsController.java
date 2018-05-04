@@ -94,8 +94,11 @@ public class SettingsController extends BaseController implements Initializable 
     @Override
     protected void onClose() {
         settings.setProperty(R.Config.OFFLINE_DATABASE_NAME, config.offlineDatabasePath.getValue());
-        settings.setProperty(R.Config.USE_ONLINE_DATABASE, Boolean.toString(config.useOnlineDatabase.getValue() && !config.onlineDatabaseCredentials.get().isEmpty()));
-        settings.setProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH, config.onlineDatabaseCredentials.getValue());
+        settings.setProperty(R.Config.USE_ONLINE_DATABASE, Boolean.toString(
+            config.useOnlineDatabase.getValue() && !config.onlineDatabaseCredentials.get()
+                .isEmpty()));
+        settings.setProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH,
+            config.onlineDatabaseCredentials.getValue());
     }
 
     // region Button handlers
@@ -106,7 +109,8 @@ public class SettingsController extends BaseController implements Initializable 
         chooser.getExtensionFilters().setAll(new ExtensionFilter("Credentials file", "*.json"));
         chooser.setInitialDirectory(new File(System.getProperty("user.home")));
         chooser.setTitle("Vyberte soubor s přístupovými údaji");
-        final File file = chooser.showOpenDialog(((Node) actionEvent.getSource()).getScene().getWindow());
+        final File file = chooser
+            .showOpenDialog(((Node) actionEvent.getSource()).getScene().getWindow());
         if (file == null) {
             return;
         }
@@ -124,6 +128,7 @@ public class SettingsController extends BaseController implements Initializable 
     // endregion
 
     private static final class Config {
+
         private final StringProperty offlineDatabasePath = new SimpleStringProperty();
         private final BooleanProperty useOnlineDatabase = new SimpleBooleanProperty();
         private final StringProperty onlineDatabaseCredentials = new SimpleStringProperty();

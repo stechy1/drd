@@ -3,14 +3,12 @@ package cz.stechy.drd.app.hero.creator;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.hero.HeroHelper;
 import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.property.IntegerProperty;
@@ -70,8 +68,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnItemCount.setCellFactory(param -> CellUtils.forMaxActValue());
 
-        final List<ChoiceEntry> items = ItemRegistry.getINSTANCE().getChoices();
-        itemRegistry.setAll(items);
+        //itemRegistry.setAll(ItemRegistry.getINSTANCE().getChoices());
 
         btnRemoveItem.disableProperty().bind(selectedItem.lessThan(0));
     }

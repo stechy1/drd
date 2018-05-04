@@ -3,12 +3,12 @@ package cz.stechy.drd.app.spellbook.edit;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import cz.stechy.drd.R;
+import cz.stechy.drd.app.DrDTimeController;
 import cz.stechy.drd.app.bestiary.BestiaryHelper;
 import cz.stechy.drd.app.spellbook.SpellBookHelper;
-import cz.stechy.drd.app.spellbook.SpellParser;
-import cz.stechy.drd.app.DrDTimeController;
 import cz.stechy.drd.model.DrDTime;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.SpellParser;
 import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.spell.Spell.SpellProfessionType;
 import cz.stechy.drd.model.spell.Spell.SpellTarget;
@@ -154,7 +154,8 @@ public class SpellBookEditController extends BaseController implements Initializ
             model.name.setValue(bundle.getString(SpellBookHelper.NAME));
             model.magicName.setValue(bundle.getString(SpellBookHelper.MAGIC_NAME));
             model.description.setValue(bundle.getString(SpellBookHelper.DESCRIPTION));
-            model.type.setValue(SpellProfessionType.values()[bundle.getInt(SpellBookHelper.PROFESSION_TYPE)]);
+            model.type.setValue(
+                SpellProfessionType.values()[bundle.getInt(SpellBookHelper.PROFESSION_TYPE)]);
             model.price.setValue(new SpellParser(bundle.getString(SpellBookHelper.PRICE)).parse());
             model.radius.setActValue(bundle.getInt(SpellBookHelper.RADIUS));
             model.range.setActValue(bundle.getInt(SpellBookHelper.RANGE));
@@ -252,21 +253,24 @@ public class SpellBookEditController extends BaseController implements Initializ
             price = model.price.get().pack();
         }
         bundle.putString(SpellBookHelper.PRICE, price);
-        startNewDialogForResult(R.FXML.SPELL_PRICE_EDITOR, SpellBookHelper.SPELL_PRICE_ACTION_UPDATE, bundle);
+        startNewDialogForResult(R.FXML.SPELL_PRICE_EDITOR,
+            SpellBookHelper.SPELL_PRICE_ACTION_UPDATE, bundle);
     }
 
     @FXML
     private void handleCastTime(MouseEvent mouseEvent) {
         Bundle bundle = new Bundle();
         bundle.putInt(DrDTimeController.TIME, model.castTime.get().getRaw());
-        startNewPopupWindowForResult(R.FXML.TIME, ACTION_CAST_TIME, bundle, (Node) mouseEvent.getSource());
+        startNewPopupWindowForResult(R.FXML.TIME, ACTION_CAST_TIME, bundle,
+            (Node) mouseEvent.getSource());
     }
 
     @FXML
     private void handleDuration(MouseEvent mouseEvent) {
         Bundle bundle = new Bundle();
         bundle.putInt(DrDTimeController.TIME, model.duration.get().getRaw());
-        startNewPopupWindowForResult(R.FXML.TIME, ACTION_DURATION, bundle, (Node) mouseEvent.getSource());
+        startNewPopupWindowForResult(R.FXML.TIME, ACTION_DURATION, bundle,
+            (Node) mouseEvent.getSource());
     }
 
     // endregion
@@ -280,13 +284,17 @@ public class SpellBookEditController extends BaseController implements Initializ
         final StringProperty name = new SimpleStringProperty(this, "name", null);
         final StringProperty magicName = new SimpleStringProperty(this, "magicName", null);
         final StringProperty description = new SimpleStringProperty(this, "description", null);
-        final ObjectProperty<SpellProfessionType> type = new SimpleObjectProperty<>(this, "type", null);
-        final ObjectProperty<ISpellPrice> price = new SimpleObjectProperty<>(this, "price", new BasicSpellPrice(1));
+        final ObjectProperty<SpellProfessionType> type = new SimpleObjectProperty<>(this, "type",
+            null);
+        final ObjectProperty<ISpellPrice> price = new SimpleObjectProperty<>(this, "price",
+            new BasicSpellPrice(1));
         final MaxActValue radius = new MaxActValue(-1, Integer.MAX_VALUE, 0);
         final MaxActValue range = new MaxActValue(Integer.MAX_VALUE);
         final ObjectProperty<SpellTarget> target = new SimpleObjectProperty<>(this, "target", null);
-        final ObjectProperty<DrDTime> castTime = new SimpleObjectProperty<>(this, "castTime", new DrDTime());
-        final ObjectProperty<DrDTime> duration = new SimpleObjectProperty<>(this, "duration", new DrDTime());
+        final ObjectProperty<DrDTime> castTime = new SimpleObjectProperty<>(this, "castTime",
+            new DrDTime());
+        final ObjectProperty<DrDTime> duration = new SimpleObjectProperty<>(this, "duration",
+            new DrDTime());
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "imageRaw");
         final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
         final BooleanProperty uploaded = new SimpleBooleanProperty(this, "uploaded");

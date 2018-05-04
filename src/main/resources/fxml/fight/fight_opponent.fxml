@@ -27,39 +27,39 @@
     <center>
       <HBox spacing="8.0">
         <Card caption="%drd_adversary_about">
-            <content>
-              <GridPane prefHeight="200.0" prefWidth="150.0" vgap="8.0">
-                <rowConstraints>
-                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
-                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
-                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
-                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
-                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
-                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
-                  <RowConstraints percentHeight="14.28" valignment="CENTER"/>
-                </rowConstraints>
-                <columnConstraints>
-                  <ColumnConstraints halignment="LEFT" percentWidth="70.0"/>
-                  <ColumnConstraints halignment="CENTER" percentWidth="30.0"/>
-                </columnConstraints>
-                <Label GridPane.rowIndex="1" text="%drd_bestiary_viability"/>
-                <Label GridPane.rowIndex="2" text="%drd_bestiary_immunity"/>
-                <Label GridPane.rowIndex="3" text="%drd_bestiary_intelligence"/>
-                <Label GridPane.rowIndex="4" text="%drd_bestiary_charisma"/>
-                <Label GridPane.rowIndex="5" text="%drd_bestiary_attack_number"/>
-                <Label GridPane.rowIndex="6" text="%drd_bestiary_defence_number"/>
-                <Label GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="lblViability"/>
-                <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="2"
-                  fx:id="lblImmunity"/>
-                <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="3"
-                  fx:id="lblIntelligence"/>
-                <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="4"
-                  fx:id="lblCharisma"/>
-                <Label GridPane.columnIndex="1" GridPane.rowIndex="5" fx:id="lblAttackNumber"/>
-                <Label GridPane.columnIndex="1" GridPane.rowIndex="6" fx:id="lblDefenceNumber"/>
-              </GridPane>
-            </content>
-          </Card>
+          <content>
+            <GridPane prefHeight="200.0" prefWidth="150.0" vgap="8.0">
+              <rowConstraints>
+                <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+                <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+                <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+                <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+                <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+                <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+                <RowConstraints percentHeight="14.28" valignment="CENTER"/>
+              </rowConstraints>
+              <columnConstraints>
+                <ColumnConstraints halignment="LEFT" percentWidth="70.0"/>
+                <ColumnConstraints halignment="CENTER" percentWidth="30.0"/>
+              </columnConstraints>
+              <Label GridPane.rowIndex="1" text="%drd_bestiary_viability"/>
+              <Label GridPane.rowIndex="2" text="%drd_bestiary_immunity"/>
+              <Label GridPane.rowIndex="3" text="%drd_bestiary_intelligence"/>
+              <Label GridPane.rowIndex="4" text="%drd_bestiary_charisma"/>
+              <Label GridPane.rowIndex="5" text="%drd_bestiary_attack_number"/>
+              <Label GridPane.rowIndex="6" text="%drd_bestiary_defence_number"/>
+              <Label GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="lblViability"/>
+              <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="2"
+                fx:id="lblImmunity"/>
+              <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="3"
+                fx:id="lblIntelligence"/>
+              <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="4"
+                fx:id="lblCharisma"/>
+              <Label GridPane.columnIndex="1" GridPane.rowIndex="5" fx:id="lblAttackNumber"/>
+              <Label GridPane.columnIndex="1" GridPane.rowIndex="6" fx:id="lblDefenceNumber"/>
+            </GridPane>
+          </content>
+        </Card>
         <VBox spacing="8.0">
           <JFXComboBox prefHeight="24.0" prefWidth="270.0" fx:id="cmbBestiary"/>
           <LabeledMaxActValue caption="%drd_hero_lives" description="%drd_hero_live"

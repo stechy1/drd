@@ -118,7 +118,7 @@ public class FightController extends BaseController implements Initializable {
         this.title = resources.getString(R.Translate.FIGHT_TITLE);
         this.resources = resources;
 
-        controllers = new IFightChild[] {
+        controllers = new IFightChild[]{
             fightHeroController,
             fightOpponentController
         };
@@ -126,9 +126,9 @@ public class FightController extends BaseController implements Initializable {
         fightOpponentController.injectParent(this);
 
         btnStartFight.disableProperty().bind(Bindings.createBooleanBinding(() ->
-            isFighting.get()
-                || fightOpponentController.selectedMobProperty().get() == null
-                || heroService.heroProperty().get() == null,
+                isFighting.get()
+                    || fightOpponentController.selectedMobProperty().get() == null
+                    || heroService.heroProperty().get() == null,
             isFighting, fightOpponentController.selectedMobProperty(), heroService.heroProperty()));
         btnStopFight.disableProperty().bind(isFighting.not());
     }
@@ -159,7 +159,8 @@ public class FightController extends BaseController implements Initializable {
         hero.getMoney().add(fightOpponentController.getTreasure());
         heroService.updateAsync(hero)
             .thenAccept(hero ->
-                showNotification(new Notification(resources.getString(R.Translate.NOTIFY_FIGHT_LIVE_UPDATE))));
+                showNotification(
+                    new Notification(resources.getString(R.Translate.NOTIFY_FIGHT_LIVE_UPDATE))));
     }
 
     private void fightVisualizeHandler(BattlefieldAction action, Object... params) {
@@ -181,7 +182,8 @@ public class FightController extends BaseController implements Initializable {
                 inventoryService.selectAsync(InventoryDao.EQUIP_INVENTORY_FILTER)
                     .thenCompose(inventoryService::getInventoryContentAsync))
             .thenAccept(equipContent -> {
-                battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent), fightOpponentController.getMob());
+                battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent),
+                    fightOpponentController.getMob());
                 battlefield.setFightFinishListener(this::fightFinishHandler);
                 battlefield.setOnActionVisualizeListener(this::fightVisualizeHandler);
                 battlefield.fight();

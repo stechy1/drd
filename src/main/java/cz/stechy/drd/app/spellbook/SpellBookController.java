@@ -1,7 +1,7 @@
 package cz.stechy.drd.app.spellbook;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.dao.SpellBookDao;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.spell.Spell;
@@ -265,7 +265,7 @@ public class SpellBookController extends BaseController implements Initializable
                         LOGGER.warn("Položku {} se nepodařilo aktualizovat", spell.toString());
                     } else {
                         showNotification(new Notification(String.format(translator.translate(
-                                R.Translate.NOTIFY_RECORD_IS_UPDATED), spell.getName())));
+                            R.Translate.NOTIFY_RECORD_IS_UPDATED), spell.getName())));
                     }
                 });
                 break;
@@ -338,11 +338,14 @@ public class SpellBookController extends BaseController implements Initializable
             spellBook.deleteRemoteAsync(spell, true, (error, ref) -> {
                 if (error != null) {
                     showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE), spell.getName())));
-                    LOGGER.error("Položku {} se nepodařilo odebrat z online databáze", spell.getName());
+                        R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
+                        spell.getName())));
+                    LOGGER.error("Položku {} se nepodařilo odebrat z online databáze",
+                        spell.getName());
                 } else {
                     showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE), spell.getName())));
+                        R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+                        spell.getName())));
                 }
             }));
     }

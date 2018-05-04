@@ -1,14 +1,14 @@
 package cz.stechy.drd.service;
 
-import cz.stechy.drd.di.Singleton;
-import cz.stechy.drd.db.AdvancedDatabaseService;
-import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.dao.ArmorDao;
 import cz.stechy.drd.dao.BackpackDao;
 import cz.stechy.drd.dao.GeneralItemDao;
 import cz.stechy.drd.dao.MeleWeaponDao;
 import cz.stechy.drd.dao.RangedWeaponDao;
+import cz.stechy.drd.db.AdvancedDatabaseService;
+import cz.stechy.drd.di.Singleton;
+import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.model.item.ItemType;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 

@@ -9,7 +9,6 @@ interface ShopFirebaseListener {
      * Reakce na odstranění položky z online databáze
      *
      * @param name Název položky
-     * @param remote
      * @param success True, pokud bylo odstranění úspěšné, jinak false
      */
     void handleItemRemove(String name, boolean remote, boolean success);

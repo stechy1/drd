@@ -43,7 +43,8 @@ public class LabeledProgressBar extends VBox {
     public LabeledProgressBar() {
         setDisplayMode(DisplayMode.LIVE);
 
-        progressLabel.setStyle("-fx-text-fill: black; -fx-background-color: rgba(0, 0, 0, 0.1); -fx-font-size: 12;");
+        progressLabel.setStyle(
+            "-fx-text-fill: black; -fx-background-color: rgba(0, 0, 0, 0.1); -fx-font-size: 12;");
         label.setFont(Font.font(10));
 
         progressBar.setPrefWidth(Double.MAX_VALUE);
@@ -78,11 +79,13 @@ public class LabeledProgressBar extends VBox {
 
     // region Method handlers
 
-    private void actValueHandler(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    private void actValueHandler(ObservableValue<? extends Number> observable, Number oldValue,
+        Number newValue) {
         sync(newValue.intValue(), maxValue);
     }
 
-    private void maxValueHandler(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    private void maxValueHandler(ObservableValue<? extends Number> observable, Number oldValue,
+        Number newValue) {
         sync(this.actValue, newValue.intValue());
     }
 
@@ -106,8 +109,6 @@ public class LabeledProgressBar extends VBox {
 
     /**
      * Přestane pozorovat vybraný model.
-     *
-     * @param maxActValue
      */
     public void unbind(MaxActValue maxActValue) {
         assert maxActValue != null;

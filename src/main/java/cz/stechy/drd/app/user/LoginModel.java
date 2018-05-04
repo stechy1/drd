@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.user;
 
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.util.BitUtils;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;

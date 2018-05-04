@@ -23,7 +23,8 @@ public final class KeyboardService {
     /**
      * Privátní konstruktor k zabránění vytvoření dalších instancí
      */
-    private KeyboardService() {}
+    private KeyboardService() {
+    }
 
     // endregion
 

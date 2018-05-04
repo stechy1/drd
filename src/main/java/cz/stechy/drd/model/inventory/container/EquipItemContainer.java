@@ -22,13 +22,20 @@ public class EquipItemContainer extends ItemContainer {
 
     // region Constants
 
-    private static final Image SLOT_BACKGROUND_SWORD = new Image(R.class.getResourceAsStream(Icon.CLOSE));
-    private static final Image SLOT_BACKGROUND_SHIELD = new Image(R.class.getResourceAsStream(Icon.CLOSE));
-    private static final Image SLOT_BACKGROUND_HELM = new Image(R.class.getResourceAsStream(Icon.CLOSE));
-    private static final Image SLOT_BACKGROUND_BODY = new Image(R.class.getResourceAsStream(Icon.CLOSE));
-    private static final Image SLOT_BACKGROUND_LEGS = new Image(R.class.getResourceAsStream(Icon.CLOSE));
-    private static final Image SLOT_BACKGROUND_BOTS = new Image(R.class.getResourceAsStream(Icon.CLOSE));
-    private static final Image SLOT_BACKGROUND_GLOVES = new Image(R.class.getResourceAsStream(Icon.CLOSE));
+    private static final Image SLOT_BACKGROUND_SWORD = new Image(
+        R.class.getResourceAsStream(Icon.CLOSE));
+    private static final Image SLOT_BACKGROUND_SHIELD = new Image(
+        R.class.getResourceAsStream(Icon.CLOSE));
+    private static final Image SLOT_BACKGROUND_HELM = new Image(
+        R.class.getResourceAsStream(Icon.CLOSE));
+    private static final Image SLOT_BACKGROUND_BODY = new Image(
+        R.class.getResourceAsStream(Icon.CLOSE));
+    private static final Image SLOT_BACKGROUND_LEGS = new Image(
+        R.class.getResourceAsStream(Icon.CLOSE));
+    private static final Image SLOT_BACKGROUND_BOTS = new Image(
+        R.class.getResourceAsStream(Icon.CLOSE));
+    private static final Image SLOT_BACKGROUND_GLOVES = new Image(
+        R.class.getResourceAsStream(Icon.CLOSE));
 
     // Počet slotů v inventáři
     public static final int CAPACITY = 7;
@@ -91,7 +98,7 @@ public class EquipItemContainer extends ItemContainer {
         slotBots.setBackgroundImage(SLOT_BACKGROUND_BOTS);
         slotGloves.setBackgroundImage(SLOT_BACKGROUND_GLOVES);
 
-        itemSlots.setAll(slotSword, slotShield,  slotHelm, slotBody, slotLegs, slotBots, slotGloves);
+        itemSlots.setAll(slotSword, slotShield, slotHelm, slotBody, slotLegs, slotBots, slotGloves);
 
         container.add(slotHelm.getContainer(), 1, 0);
         container.add(slotBody.getContainer(), 1, 1);

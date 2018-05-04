@@ -6,11 +6,11 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.app.InjectableChild;
 import cz.stechy.drd.app.MoneyController;
 import cz.stechy.drd.app.bestiary.BestiaryHelper;
+import cz.stechy.drd.dao.BestiaryDao;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.mob.Mob;
-import cz.stechy.drd.dao.BestiaryDao;
 import cz.stechy.drd.widget.LabeledHeroProperty;
 import cz.stechy.drd.widget.LabeledMaxActValue;
 import cz.stechy.screens.BaseController;
@@ -104,14 +104,15 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
         bestiary.selectAllAsync().thenAccept(this.cmbBestiary::setItems);
 
         this.selectedMob.bind(Bindings.createObjectBinding(() -> {
-                final Mob selectedItem = cmbBestiary.getSelectionModel().getSelectedItem();
-                if (selectedItem == null) {
-                    return null;
-                }
-                return selectedItem.duplicate();
-            }, cmbBestiary.getSelectionModel().selectedItemProperty()));
+            final Mob selectedItem = cmbBestiary.getSelectionModel().getSelectedItem();
+            if (selectedItem == null) {
+                return null;
+            }
+            return selectedItem.duplicate();
+        }, cmbBestiary.getSelectionModel().selectedItemProperty()));
         this.selectedMob.addListener(this::mobHandler);
-        btnRevive.disableProperty().bind(cmbBestiary.getSelectionModel().selectedItemProperty().isNull());
+        btnRevive.disableProperty()
+            .bind(cmbBestiary.getSelectionModel().selectedItemProperty().isNull());
         lblPrice.textProperty().bind(treasure.text);
     }
 
@@ -153,7 +154,8 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
     @FXML
     private void handleShowMoneyPopup(ActionEvent actionEvent) {
         Bundle bundle = new Bundle().put(MoneyController.MONEY, treasure.getRaw());
-        parent.startNewPopupWindowForResult(R.FXML.MONEY, ACTION_MONEY, bundle, (Node) actionEvent.getSource());
+        parent.startNewPopupWindowForResult(R.FXML.MONEY, ACTION_MONEY, bundle,
+            (Node) actionEvent.getSource());
     }
 
     // endregion

@@ -7,7 +7,7 @@ import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.MeleWeaponEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
-import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.dao.MeleWeaponDao;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.MaxActValue;
@@ -106,7 +106,8 @@ public class ShopWeaponMeleController implements Initializable,
 
     // region Constructors
 
-    public ShopWeaponMeleController(UserService userService, MeleWeaponDao meleWeaponDao, Translator translator) {
+    public ShopWeaponMeleController(UserService userService, MeleWeaponDao meleWeaponDao,
+        Translator translator) {
         this.service = meleWeaponDao;
         this.translator = translator;
         this.user = userService.getUser();
@@ -149,7 +150,8 @@ public class ShopWeaponMeleController implements Initializable,
         };
 
         service.selectAllAsync()
-            .thenAccept(meleWeaponList -> ObservableMergers.mergeList(mapper, meleWeapons, meleWeaponList));
+            .thenAccept(
+                meleWeaponList -> ObservableMergers.mergeList(mapper, meleWeapons, meleWeaponList));
     }
 
     @Override
@@ -262,7 +264,8 @@ public class ShopWeaponMeleController implements Initializable,
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName())
-            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon mele."));
+            .thenAccept(total -> LOGGER
+                .info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon mele."));
     }
 
     @Override

@@ -22,7 +22,7 @@ public class HeroService {
 
     // region Variables
 
-    private final ObjectProperty<Hero> hero = new SimpleObjectProperty<>(this,"hero", null);
+    private final ObjectProperty<Hero> hero = new SimpleObjectProperty<>(this, "hero", null);
     private final HeroDao heroDao;
 
     // endregion
@@ -53,10 +53,11 @@ public class HeroService {
      *
      * @param hero {@link Hero} Hrdina, který se má vložit do databáze
      * @param items {@link ObservableList < InventoryHelper.ItemRecord>} Výchozí seznam předmětů,
-     *              který hrdina u sebe bude mít od začátku
+     * který hrdina u sebe bude mít od začátku
      * @return {@link CompletableFuture <Void>}
      */
-    public CompletableFuture<Void> insertWithItems(Hero hero, ObservableList<InventoryHelper.ItemRecord> items) {
+    public CompletableFuture<Void> insertWithItems(Hero hero,
+        ObservableList<InventoryHelper.ItemRecord> items) {
         return heroDao.insertAsync(hero)
             .thenCompose(hero1 ->
                 heroDao.getInventoryAsync(hero1)

@@ -51,7 +51,8 @@ public final class ItemSlotHelper {
 
     // region Constructors
 
-    private ItemSlotHelper() {}
+    private ItemSlotHelper() {
+    }
 
     // endregion
 
@@ -63,9 +64,9 @@ public final class ItemSlotHelper {
      * @param id Id slotu
      * @param dragDropHandlers {@link DragDropHandlers}
      * @param filter Filter, který určí, jaký typ předmětu lze do slotu umístit
-     * @return
      */
-    private static ItemSlot createSlot(int id, DragDropHandlers dragDropHandlers, Predicate<ItemBase> filter) {
+    private static ItemSlot createSlot(int id, DragDropHandlers dragDropHandlers,
+        Predicate<ItemBase> filter) {
         final ItemSlot itemSlot = new ItemSlot(id, dragDropHandlers);
         itemSlot.setFilter(filter);
         return itemSlot;
@@ -76,7 +77,6 @@ public final class ItemSlotHelper {
      *
      * @param id Id slotu
      * @param dragDropHandlers {@link DragDropHandlers}
-     * @return
      */
     public static ItemSlot forArmorHelm(int id, DragDropHandlers dragDropHandlers) {
         return createSlot(id, dragDropHandlers, HELM_FILTER);
@@ -87,7 +87,6 @@ public final class ItemSlotHelper {
      *
      * @param id Id slotu
      * @param dragDropHandlers {@link DragDropHandlers}
-     * @return
      */
     public static ItemSlot forArmorBody(int id, DragDropHandlers dragDropHandlers) {
         return createSlot(id, dragDropHandlers, BODY_FILTER);
@@ -98,7 +97,6 @@ public final class ItemSlotHelper {
      *
      * @param id Id slotu
      * @param dragDropHandlers {@link DragDropHandlers}
-     * @return
      */
     public static ItemSlot forArmorLegs(int id, DragDropHandlers dragDropHandlers) {
         return createSlot(id, dragDropHandlers, LEGS_FILTER);
@@ -109,7 +107,6 @@ public final class ItemSlotHelper {
      *
      * @param id Id slotu
      * @param dragDropHandlers {@link DragDropHandlers}
-     * @return
      */
     public static ItemSlot forArmorBots(int id, DragDropHandlers dragDropHandlers) {
         return createSlot(id, dragDropHandlers, BOTS_FILTER);
@@ -120,7 +117,6 @@ public final class ItemSlotHelper {
      *
      * @param id Id slotu
      * @param dragDropHandlers {@link DragDropHandlers}
-     * @return
      */
     public static ItemSlot forArmorGloves(int id, DragDropHandlers dragDropHandlers) {
         return createSlot(id, dragDropHandlers, GLOVES_FILTER);
@@ -131,7 +127,6 @@ public final class ItemSlotHelper {
      *
      * @param id Id slotu
      * @param dragDropHandlers {@link DragDropHandlers}
-     * @return
      */
     public static ItemSlot forWeapon(int id, DragDropHandlers dragDropHandlers) {
         return createSlot(id, dragDropHandlers, WEAPON_FILTER);
@@ -142,7 +137,6 @@ public final class ItemSlotHelper {
      *
      * @param id Id slotu
      * @param dragDropHandlers {@link DragDropHandlers}
-     * @return
      */
     public static ItemSlot forShield(int id, DragDropHandlers dragDropHandlers) {
         return createSlot(id, dragDropHandlers, SHIELD_FILTER);

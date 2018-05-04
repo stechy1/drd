@@ -30,7 +30,8 @@ public class GridItemContainer extends ItemContainer {
      * @param cols Počet sloupečků
      * @param rows Počet řádků
      */
-    public GridItemContainer(TooltipTranslator tooltipTranslator, int capacity, int cols, int rows) {
+    public GridItemContainer(TooltipTranslator tooltipTranslator, int capacity, int cols,
+        int rows) {
         super(tooltipTranslator, capacity);
 
         this.cols = cols;

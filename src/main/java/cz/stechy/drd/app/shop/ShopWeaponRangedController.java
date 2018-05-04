@@ -7,11 +7,11 @@ import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.RangedWeaponEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
-import cz.stechy.drd.app.user.User;
 import cz.stechy.drd.dao.RangedWeaponDao;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
@@ -109,7 +109,8 @@ public class ShopWeaponRangedController implements Initializable,
     // region Constructors
 
     @SuppressWarnings("unchecked")
-    public ShopWeaponRangedController(UserService userService, RangedWeaponDao rangedWeaponDao, Translator translator) {
+    public ShopWeaponRangedController(UserService userService, RangedWeaponDao rangedWeaponDao,
+        Translator translator) {
         this.service = rangedWeaponDao;
         this.translator = translator;
         this.user = userService.getUser();
@@ -153,7 +154,8 @@ public class ShopWeaponRangedController implements Initializable,
         };
 
         service.selectAllAsync()
-            .thenAccept(rangedWeaponList -> ObservableMergers.mergeList(mapper, rangedWeapons, rangedWeaponList));
+            .thenAccept(rangedWeaponList -> ObservableMergers
+                .mergeList(mapper, rangedWeapons, rangedWeaponList));
     }
 
     @Override
@@ -266,7 +268,8 @@ public class ShopWeaponRangedController implements Initializable,
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName())
-            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon ranged."));
+            .thenAccept(total -> LOGGER
+                .info("Bylo synchronizováno celkem: " + total + " předmětů typu weapon ranged."));
     }
 
     @Override

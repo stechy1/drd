@@ -50,7 +50,6 @@ public final class MobEntry {
         this.downloaded.bind(mobBase.downloadedProperty());
         this.uploaded.bind(mobBase.uploadedProperty());
 
-
         image.bind(Bindings.createObjectBinding(() -> {
             final ByteArrayInputStream inputStream = new ByteArrayInputStream(mobBase.getImage());
             return new Image(inputStream);

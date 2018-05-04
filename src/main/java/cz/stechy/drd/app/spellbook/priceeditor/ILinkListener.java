@@ -11,8 +11,8 @@ public interface ILinkListener {
 
     /**
      * Uloží referenci zdrojového nodu pro pozdější využití
-     *  @param node {@link DraggableSpellNode}
      *
+     * @param node {@link DraggableSpellNode}
      */
     void saveSourceNode(DraggableSpellNode node);
 

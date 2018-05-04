@@ -4,7 +4,7 @@ import com.jfoenix.controls.JFXToggleButton;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
-import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.item.ItemBase;
@@ -142,7 +142,8 @@ public class ShopController1 extends BaseController implements Initializable {
 
     // region Constructors
 
-    public ShopController1(UserService userService, HeroService heroService, Translator translator) {
+    public ShopController1(UserService userService, HeroService heroService,
+        Translator translator) {
         this.translator = translator;
         this.hero = heroService.getHero();
         heroSelected.set(this.hero != null);
@@ -351,13 +352,15 @@ public class ShopController1 extends BaseController implements Initializable {
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
         ShopItemController<ShopEntry> controller = controllers[selectedAccordionPaneIndex.get()];
-        controller.getSelectedItem().ifPresent(entry -> controller.uploadRequest(entry.getItemBase()));
+        controller.getSelectedItem()
+            .ifPresent(entry -> controller.uploadRequest(entry.getItemBase()));
     }
 
     @FXML
     private void handleDownloadItem(ActionEvent actionEvent) {
         ShopItemController<ShopEntry> controller = controllers[selectedAccordionPaneIndex.get()];
-        controller.getSelectedItem().ifPresent(entry -> controller.onAddItem(entry.getItemBase(), true));
+        controller.getSelectedItem()
+            .ifPresent(entry -> controller.onAddItem(entry.getItemBase(), true));
     }
 
     @FXML

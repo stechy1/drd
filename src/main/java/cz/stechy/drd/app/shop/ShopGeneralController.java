@@ -6,11 +6,11 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
-import cz.stechy.drd.app.user.User;
 import cz.stechy.drd.dao.GeneralItemDao;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.service.UserService;
@@ -130,7 +130,8 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         };
 
         service.selectAllAsync()
-            .thenAccept(generalItemsList -> ObservableMergers.mergeList(mapper, generalItems, generalItemsList));
+            .thenAccept(generalItemsList -> ObservableMergers
+                .mergeList(mapper, generalItems, generalItemsList));
     }
 
     @Override
@@ -242,7 +243,8 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName())
-            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu general item."));
+            .thenAccept(total -> LOGGER
+                .info("Bylo synchronizováno celkem: " + total + " předmětů typu general item."));
     }
 
     @Override

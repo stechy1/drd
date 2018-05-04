@@ -124,58 +124,62 @@ public abstract class ItemContainer {
         final CompletableFuture<InventoryContentDao> content = inventoryManager
             .getInventoryContentByIdAsync(sourceInventoryId);
         assert content != null;
-            content.thenAccept(sourceInventoryContent -> {
-                sourceInventoryContent
-                    .selectAsync(record -> record.getSlotId() == sourceSlot.getId())
-                    .thenAccept(sourceInventoryRecord -> {
-                        inventoryContentDao
-                            .selectAsync(record -> record.getSlotId() == destinationSlot.getId())
-                            .handle((destinationInventoryRecord, throwable) -> {
-                                if (throwable == null) { // Cílový slot již obsahuje stejný předmět
-                                    final InventoryRecord destinationInventoryRecordCopy = destinationInventoryRecord
+        content.thenAccept(sourceInventoryContent -> {
+            sourceInventoryContent
+                .selectAsync(record -> record.getSlotId() == sourceSlot.getId())
+                .thenAccept(sourceInventoryRecord -> {
+                    inventoryContentDao
+                        .selectAsync(record -> record.getSlotId() == destinationSlot.getId())
+                        .handle((destinationInventoryRecord, throwable) -> {
+                            if (throwable == null) { // Cílový slot již obsahuje stejný předmět
+                                final InventoryRecord destinationInventoryRecordCopy = destinationInventoryRecord
                                     .duplicate();
                                 destinationInventoryRecordCopy.addAmmount(transferAmmount);
-                                return inventoryContentDao.updateAsync(destinationInventoryRecordCopy)
+                                return inventoryContentDao
+                                    .updateAsync(destinationInventoryRecordCopy)
                                     .thenApply(inventoryRecord -> {
                                         destinationSlot.getItemStack().addAmmount(transferAmmount);
                                         return inventoryRecord;
                                     });
-                                } else { // Musím vytvořit nový cílový slot
-                                    final InventoryRecord destinationInventoryRecord1 = new InventoryRecord.Builder()
+                            } else { // Musím vytvořit nový cílový slot
+                                final InventoryRecord destinationInventoryRecord1 = new InventoryRecord.Builder()
                                     .inventoryId(inventoryContentDao.getInventory().getId())
                                     .ammount(transferAmmount)
                                     .itemId(sourceInventoryRecord.getItemId())
                                     .slotId(destinationSlot.getId())
                                     .metadata(sourceInventoryRecord.getMetadata())
                                     .build();
-                                    return inventoryContentDao.insertAsync(destinationInventoryRecord1);
+                                return inventoryContentDao.insertAsync(destinationInventoryRecord1);
+                            }
+                        })
+                        .thenCompose(future -> {
+                            return future.thenCompose(sourceInventoryRecord1 -> {
+                                if (sourceAmmountResult > 0) {
+                                    final InventoryRecord recordCopy = sourceInventoryRecord
+                                        .duplicate();
+                                    recordCopy.subtractAmmount(transferAmmount);
+                                    return sourceInventoryContent.updateAsync(recordCopy)
+                                        .thenApply(inventoryRecord -> {
+                                            sourceSlot.getItemStack()
+                                                .subtractAmmount(transferAmmount);
+                                            return inventoryRecord;
+                                        });
+                                } else {
+                                    return sourceInventoryContent
+                                        .deleteAsync(sourceInventoryRecord);
                                 }
-                            })
-                            .thenCompose(future -> {
-                                return future.thenCompose(sourceInventoryRecord1 -> {
-                                    if (sourceAmmountResult > 0) {
-                                        final InventoryRecord recordCopy = sourceInventoryRecord.duplicate();
-                                        recordCopy.subtractAmmount(transferAmmount);
-                                        return sourceInventoryContent.updateAsync(recordCopy)
-                                            .thenApply(inventoryRecord -> {
-                                                sourceSlot.getItemStack().subtractAmmount(transferAmmount);
-                                                return inventoryRecord;
-                                            });
-                                    } else {
-                                        return sourceInventoryContent.deleteAsync(sourceInventoryRecord);
-                                    }
-                                });
                             });
-                    })
-                    .exceptionally(throwable -> {
-                        throwable.printStackTrace();
-                        throw new RuntimeException(throwable);
-                    });
-            })
-        .exceptionally(throwable -> {
-            throwable.printStackTrace();
-            throw new RuntimeException(throwable);
-        });
+                        });
+                })
+                .exceptionally(throwable -> {
+                    throwable.printStackTrace();
+                    throw new RuntimeException(throwable);
+                });
+        })
+            .exceptionally(throwable -> {
+                throwable.printStackTrace();
+                throw new RuntimeException(throwable);
+            });
     }
 
     /**
@@ -281,7 +285,8 @@ public abstract class ItemContainer {
 
     // region Getters & Setters
 
-    public CompletableFuture<Void> setInventoryManager(InventoryDao inventoryManager, Inventory inventory) {
+    public CompletableFuture<Void> setInventoryManager(InventoryDao inventoryManager,
+        Inventory inventory) {
         this.inventoryManager = inventoryManager;
         return inventoryManager.getInventoryContentAsync(inventory)
             .thenAcceptAsync(this::initInventoryContent, ThreadPool.JAVAFX_EXECUTOR);
@@ -318,8 +323,9 @@ public abstract class ItemContainer {
     protected final DragDropHandlers dragDropHandlers = new DragDropHandlers() {
         @Override
         public void onDragStart(ItemSlot sourceSlot, ItemStack itemStack) {
-            dragInformations.setValue(new DragInformations(inventoryContentDao.getInventory().getId(),
-                sourceSlot, itemStack));
+            dragInformations
+                .setValue(new DragInformations(inventoryContentDao.getInventory().getId(),
+                    sourceSlot, itemStack));
         }
 
         @Override

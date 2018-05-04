@@ -16,6 +16,7 @@ public interface InjectableChild {
      */
     void injectParent(BaseController parent);
 
-    default void onScreenResult(int statusCode, int actionId, Bundle bundle) {}
+    default void onScreenResult(int statusCode, int actionId, Bundle bundle) {
+    }
 
 }

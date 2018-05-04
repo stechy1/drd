@@ -16,8 +16,10 @@ public final class ArmorEntry extends ShopEntry {
     // region Variables
 
     private final IntegerProperty defenceNumber = new SimpleIntegerProperty(this, "defenceNumber");
-    private final IntegerProperty minimumStrength = new SimpleIntegerProperty(this, "minimumStrength");
-    private final ObjectProperty<ArmorType> armorType = new SimpleObjectProperty<>(this, "armorType");
+    private final IntegerProperty minimumStrength = new SimpleIntegerProperty(this,
+        "minimumStrength");
+    private final ObjectProperty<ArmorType> armorType = new SimpleObjectProperty<>(this,
+        "armorType");
 
     // endregion
 

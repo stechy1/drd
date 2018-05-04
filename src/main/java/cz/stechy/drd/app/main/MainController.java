@@ -12,7 +12,7 @@ import cz.stechy.drd.app.main.defaultstaff.DefaultStaffController;
 import cz.stechy.drd.app.main.inventory.InventoryController;
 import cz.stechy.drd.app.main.profession.ProfessionController;
 import cz.stechy.drd.app.moneyxp.MoneyXpController;
-import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.service.HeroService;
@@ -297,7 +297,7 @@ public class MainController extends BaseController implements Initializable {
                     })
                     .thenAccept(h ->
                         showNotification(new Notification(String.format(translator.translate(
-                        Translate.NOTIFY_HERO_IS_LOADED), h.getName()))));
+                            Translate.NOTIFY_HERO_IS_LOADED), h.getName()))));
                 break;
             case ACTION_LOGIN:
                 if (statusCode != RESULT_SUCCESS) {

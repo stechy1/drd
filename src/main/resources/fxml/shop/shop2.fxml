@@ -31,7 +31,8 @@
       <JFXButton onAction="#handleBack" prefHeight="34.0" styleClass="btn, btn-danger"
         text="%drd_back"/>
       <Region HBox.hgrow="ALWAYS"/>
-      <JFXButton onAction="#handleFinishShopping" prefHeight="34.0" styleClass="btn, btn-primary, btn-raised"
+      <JFXButton onAction="#handleFinishShopping" prefHeight="34.0"
+        styleClass="btn, btn-primary, btn-raised"
         text="%drd_finish"/>
       <padding>
         <Insets topRightBottomLeft="8.0"/>

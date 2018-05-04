@@ -1,8 +1,8 @@
 package cz.stechy.drd.app.shop.entry;
 
-import cz.stechy.drd.model.Money;
-import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.ItemBase;
 import java.io.ByteArrayInputStream;
 import javafx.beans.binding.Bindings;

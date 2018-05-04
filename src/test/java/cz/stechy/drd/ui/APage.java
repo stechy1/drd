@@ -37,9 +37,11 @@ public abstract class APage {
 
     protected abstract String getTag();
 
-    protected void navigateTo(String identifier) {}
+    protected void navigateTo(String identifier) {
+    }
 
-    protected void clickOn(String identifier) {}
+    protected void clickOn(String identifier) {
+    }
 
     protected Map<String, Class<? extends APage>> getPageMap() {
         return Collections.emptyMap();

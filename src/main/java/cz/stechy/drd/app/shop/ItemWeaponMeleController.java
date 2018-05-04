@@ -177,7 +177,8 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         cmbWeaponType.valueProperty().bindBidirectional(model.weaponType);
         cmbWeaponType.converterProperty().setValue(translator.getConvertor(Key.WEAPON_MELE_TYPES));
         cmbWeaponClass.valueProperty().bindBidirectional(model.weaponClass);
-        cmbWeaponClass.converterProperty().setValue(translator.getConvertor(Key.WEAPON_MELE_CLASSES));
+        cmbWeaponClass.converterProperty()
+            .setValue(translator.getConvertor(Key.WEAPON_MELE_CLASSES));
 
         FormUtils.initTextFormater(txtStrength, model.strength);
         FormUtils.initTextFormater(txtRampancy, model.rampancy);
@@ -294,10 +295,12 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
         final Money price = new Money();
         final MaxActValue weight = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue strength = new MaxActValue(Integer.MAX_VALUE);
-        final MaxActValue rampancy = new MaxActValue(Integer.MIN_VALUE ,Integer.MAX_VALUE, 0);
-        final MaxActValue defence = new MaxActValue(Integer.MIN_VALUE ,Integer.MAX_VALUE, 0);
-        final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(this, "weaponClass", null);
-        final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(this, "weaponType", null);
+        final MaxActValue rampancy = new MaxActValue(Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
+        final MaxActValue defence = new MaxActValue(Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
+        final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(this,
+            "weaponClass", null);
+        final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(this,
+            "weaponType", null);
         final StringProperty author = new SimpleStringProperty(this, "author", null);
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "imageRaw");
         final MaxActValue renown = new MaxActValue(Integer.MAX_VALUE);
@@ -314,13 +317,16 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
 
             name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
             weight.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT));
-            strength.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STRENGTH));
-            rampancy.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RAMPANCY));
+            strength.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_STRENGTH));
+            rampancy.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_RAMPANCY));
             defence.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_DEFENCE));
             weaponClass.addListener(FormUtils.notEmptyCondition(this, FLAG_WEAPON_CLASS));
             weaponType.addListener(FormUtils.notEmptyCondition(this, FLAG_WEAPON_TYPE));
             renown.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RENOWN));
-            stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
+            stackSize.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_WEAPON_CLASS + FLAG_WEAPON_TYPE + FLAG_IMAGE);
         }

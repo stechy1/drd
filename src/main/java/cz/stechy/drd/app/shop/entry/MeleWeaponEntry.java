@@ -18,9 +18,11 @@ public final class MeleWeaponEntry extends ShopEntry {
     private final IntegerProperty strength = new SimpleIntegerProperty(this, "strength");
     private final IntegerProperty rampancy = new SimpleIntegerProperty(this, "rampancy");
     private final IntegerProperty defence = new SimpleIntegerProperty(this, "defence");
-    private final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(this, "weaponClass",
+    private final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(this,
+        "weaponClass",
         MeleWeaponClass.LIGHT);
-    private final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(this, "weaponType",
+    private final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(this,
+        "weaponType",
         MeleWeaponType.ONE_HAND);
 
     // endregion

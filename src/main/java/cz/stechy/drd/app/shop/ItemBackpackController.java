@@ -274,8 +274,10 @@ public class ItemBackpackController extends BaseController implements Initializa
 
             name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
             weight.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT));
-            maxLoad.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_MAX_LOAD));
-            stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
+            maxLoad.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_MAX_LOAD));
+            stackSize.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
             size.addListener(FormUtils.notEmptyCondition(this, FLAG_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_IMAGE + FLAG_SIZE);

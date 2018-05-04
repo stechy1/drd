@@ -6,11 +6,11 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.app.shop.entry.BackpackEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
-import cz.stechy.drd.app.user.User;
 import cz.stechy.drd.dao.BackpackDao;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.service.UserService;
@@ -132,7 +132,8 @@ public class ShopBackpackController implements Initializable, ShopItemController
         };
 
         service.selectAllAsync()
-            .thenAccept(backpackList -> ObservableMergers.mergeList(mapper, backpacks, backpackList));
+            .thenAccept(
+                backpackList -> ObservableMergers.mergeList(mapper, backpacks, backpackList));
     }
 
     @Override
@@ -244,7 +245,8 @@ public class ShopBackpackController implements Initializable, ShopItemController
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName())
-            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu backpack."));
+            .thenAccept(total -> LOGGER
+                .info("Bylo synchronizováno celkem: " + total + " předmětů typu backpack."));
     }
 
     @Override

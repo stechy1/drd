@@ -34,12 +34,11 @@ public class AlchemistController implements IProfessionController, Initializable
         this.hero = hero;
         this.alchemist = new Alchemist(hero);
 
-        lblProbabilityOfSuccess.textProperty().bind(alchemist.probabilityOfSuccessProperty().asString().concat(" %"));
+        lblProbabilityOfSuccess.textProperty()
+            .bind(alchemist.probabilityOfSuccessProperty().asString().concat(" %"));
     }
 
     // region Button handlers
-
-
 
     // endregion
 }

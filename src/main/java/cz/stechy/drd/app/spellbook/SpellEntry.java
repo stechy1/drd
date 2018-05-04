@@ -48,7 +48,6 @@ public final class SpellEntry {
         this.downloaded.bind(spell.downloadedProperty());
         this.uploaded.bind(spell.uploadedProperty());
 
-
         image.bind(Bindings.createObjectBinding(() -> {
             final ByteArrayInputStream inputStream = new ByteArrayInputStream(spell.getImage());
             return new Image(inputStream);

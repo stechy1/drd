@@ -20,7 +20,7 @@ apply plugin: 'javafx-gradle-plugin'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-task buildResources(type:Exec) {
+task buildResources(type: Exec) {
     println 'Generuji soubor R.java'
     commandLine 'python3', './scripts/src/resource_generator.py'
 }
@@ -44,6 +44,8 @@ javadoc {
 }
 
 dependencies {
+
+    compile project(':drd_share')
 
     compile group: 'com.github.stechy1', name: 'screens', version: 'v2.3'
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'

@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXToggleButton?>
 <?import cz.stechy.drd.widget.Card?>
+<?import cz.stechy.drd.widget.EnumComboBox?>
 <?import java.lang.Double?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.text.Font?>
 <?import javafx.scene.layout.VBox?>
-<?import cz.stechy.drd.widget.EnumComboBox?>
-<?import com.jfoenix.controls.JFXTextField?>
-<?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXToggleButton?>
-<?import javafx.scene.layout.Region?>
+<?import javafx.scene.text.Font?>
 <ScrollPane xmlns:fx="http://javafx.com/fxml/1"
   fitToWidth="true" xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.app.main.profession.RangerController">
@@ -24,19 +23,23 @@
   <FlowPane prefHeight="450.0" prefWidth="600.0">
     <Card caption="Stopování">
       <content>
-        <VBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH" spacing="$SPACING">
+        <VBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH"
+          spacing="$SPACING">
           <EnumComboBox enumType="cz.stechy.drd.model.entity.hero.profession.Ranger$Terrain"
-            labelFloat="true" promptText="Náročnost terénu" fx:id="cmbTerrain" prefWidth="$CARD_WIDTH"/>
+            labelFloat="true" promptText="Náročnost terénu" fx:id="cmbTerrain"
+            prefWidth="$CARD_WIDTH"/>
           <JFXTextField fx:id="txtAgeOfTrail" labelFloat="true" promptText="Stáří stopy (dny)"/>
           <JFXTextField fx:id="txtEnemyCount" labelFloat="true" promptText="Počet nestvůr"/>
           <JFXToggleButton fx:id="toggleContinueTracking" text="Pokračuji ve stopování"/>
-          <JFXButton fx:id="btnTracking" styleClass="btn, btn-raised, btn-primary" onAction="#handleTracking" text="Stopuj!"/>
+          <JFXButton fx:id="btnTracking" styleClass="btn, btn-raised, btn-primary"
+            onAction="#handleTracking" text="Stopuj!"/>
         </VBox>
       </content>
     </Card>
     <Card caption="Telekineze">
       <content>
-        <VBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH" spacing="$SPACING">
+        <VBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH"
+          spacing="$SPACING">
           <JFXTextField fx:id="txtDistance" labelFloat="true" promptText="Vzdálenost"/>
           <JFXTextField fx:id="txtWeight" labelFloat="true" promptText="Váha"/>
           <Label fx:id="lblSuccessTelekinesisResult" text="%drd_no_result"/>
@@ -45,11 +48,15 @@
     </Card>
     <Card caption="Pyrokineze">
       <content>
-        <VBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH" spacing="$SPACING">
+        <VBox alignment="CENTER" prefHeight="$CARD_HEIGHT" prefWidth="$CARD_WIDTH"
+          spacing="$SPACING">
           <JFXTextField fx:id="txtPyroDistance" labelFloat="true" promptText="Vzdálenost"/>
-          <JFXButton fx:id="btnPyroCancel" text="%drd_cancel" styleClass="btn, btn-raised, btn-danger" onAction="#handlePyroCancel"/>
-          <JFXButton fx:id="btnPyroCalculate" text="Inicializuj..." styleClass="btn, btn-raised, btn-primery" onAction="#handlePyroCalculate"/>
-          <JFXButton fx:id="btnPyroFire" text="Zapal oheň" styleClass="btn, btn-raised, btn-success" onAction="#handlePyroFire"/>
+          <JFXButton fx:id="btnPyroCancel" text="%drd_cancel"
+            styleClass="btn, btn-raised, btn-danger" onAction="#handlePyroCancel"/>
+          <JFXButton fx:id="btnPyroCalculate" text="Inicializuj..."
+            styleClass="btn, btn-raised, btn-primery" onAction="#handlePyroCalculate"/>
+          <JFXButton fx:id="btnPyroFire" text="Zapal oheň" styleClass="btn, btn-raised, btn-success"
+            onAction="#handlePyroFire"/>
         </VBox>
       </content>
     </Card>

@@ -31,10 +31,10 @@ public final class ObservableMergers {
         for (ObservableList<T> l : lists) {
             list.addAll(l);
             l.addListener((ListChangeListener<T>) c -> Platform.runLater(() -> {
-            while (c.next()) {
-                list.addAll(c.getAddedSubList());
-                list.removeAll(c.getRemoved());
-            }
+                while (c.next()) {
+                    list.addAll(c.getAddedSubList());
+                    list.removeAll(c.getRemoved());
+                }
             }));
         }
     }
@@ -59,8 +59,10 @@ public final class ObservableMergers {
             }
             l.addListener((ListChangeListener<E>) c -> {
                 while (c.next()) {
-                    list.addAll(c.getAddedSubList().stream().map(mapper).collect(Collectors.toList()));
-                    list.removeAll(c.getRemoved().stream().map(mapper).collect(Collectors.toList()));
+                    list.addAll(
+                        c.getAddedSubList().stream().map(mapper).collect(Collectors.toList()));
+                    list.removeAll(
+                        c.getRemoved().stream().map(mapper).collect(Collectors.toList()));
                 }
             });
         }

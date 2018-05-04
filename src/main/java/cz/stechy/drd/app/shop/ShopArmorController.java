@@ -7,7 +7,7 @@ import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.app.shop.entry.ArmorEntry;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
-import cz.stechy.drd.app.user.User;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.dao.ArmorDao;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.MaxActValue;
@@ -271,7 +271,8 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName())
-            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu brnění."));
+            .thenAccept(total -> LOGGER
+                .info("Bylo synchronizováno celkem: " + total + " předmětů typu brnění."));
     }
 
     @Override

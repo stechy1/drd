@@ -74,8 +74,10 @@ public abstract class DraggableSpellNode extends Group implements Initializable,
 
     // endregion
 
-    private final ObjectProperty<Cursor> moveCursor = new SimpleObjectProperty<>(this, "moveCursor", Cursor.OPEN_HAND);
-    private final BooleanProperty circlesVisible = new SimpleBooleanProperty(this, "circlesVisible", false);
+    private final ObjectProperty<Cursor> moveCursor = new SimpleObjectProperty<>(this, "moveCursor",
+        Cursor.OPEN_HAND);
+    private final BooleanProperty circlesVisible = new SimpleBooleanProperty(this, "circlesVisible",
+        false);
     private final INodeManipulator nodeManipulator;
     private final ILinkListener linkListener;
     protected final Translator translator;
@@ -89,7 +91,6 @@ public abstract class DraggableSpellNode extends Group implements Initializable,
 
     private Point2D mouse;
     private NodeLink dragLink;
-
 
     // endregion
 
@@ -305,7 +306,7 @@ public abstract class DraggableSpellNode extends Group implements Initializable,
         }
 
         nodeManipulator.setOnDragOverHandler(this::onParentDragOver);
-/**/
+        /**/
         // Instanci ukládám pouze, abych mohl lehce měnit koncové souřadnice čáry podle myši
         linkListener.saveSourceNode(this);
         if (connected) {
@@ -332,7 +333,8 @@ public abstract class DraggableSpellNode extends Group implements Initializable,
     }
 
     private void onLinkDragOver(DragEvent event) {
-        final DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.PRICE_NODE_LINK_ADD);
+        final DragContainer container = (DragContainer) event.getDragboard()
+            .getContent(DragContainer.PRICE_NODE_LINK_ADD);
         if (container == null) {
             return;
         }
@@ -348,12 +350,14 @@ public abstract class DraggableSpellNode extends Group implements Initializable,
 
     private void onLinkDragDropped(DragEvent event) {
         final Circle source = (Circle) event.getSource();
-        final DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.PRICE_NODE_LINK_ADD);
+        final DragContainer container = (DragContainer) event.getDragboard()
+            .getContent(DragContainer.PRICE_NODE_LINK_ADD);
         if (container == null) {
             return;
         }
 
-        linkListener.connectLineEndWithNode(getId(), source == circleLeftLink ? LinkPosition.LEFT : LinkPosition.RIGHT);
+        linkListener.connectLineEndWithNode(getId(),
+            source == circleLeftLink ? LinkPosition.LEFT : LinkPosition.RIGHT);
         container.addData(LINK_ADD_STATUS, true);
 
         final ClipboardContent content = new ClipboardContent();
@@ -365,7 +369,8 @@ public abstract class DraggableSpellNode extends Group implements Initializable,
     }
 
     private void onLinkDragDone(DragEvent event) {
-        final DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.PRICE_NODE_LINK_ADD);
+        final DragContainer container = (DragContainer) event.getDragboard()
+            .getContent(DragContainer.PRICE_NODE_LINK_ADD);
         if (container == null) {
             return;
         }
@@ -387,7 +392,8 @@ public abstract class DraggableSpellNode extends Group implements Initializable,
             return;
         }
 
-        dragLink.setEnd(getParent().sceneToLocal(new Point2D(event.getSceneX(), event.getSceneY())));
+        dragLink
+            .setEnd(getParent().sceneToLocal(new Point2D(event.getSceneX(), event.getSceneY())));
     }
 
     // endregion

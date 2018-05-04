@@ -1,13 +1,6 @@
 package cz.stechy.drd;
 
 import cz.stechy.drd.R.Config;
-import cz.stechy.drd.di.DiContainer;
-import cz.stechy.drd.di.IDependencyManager;
-import cz.stechy.drd.dao.UserDao;
-import cz.stechy.drd.db.DatabaseService;
-import cz.stechy.drd.db.FirebaseWrapper;
-import cz.stechy.drd.db.SQLite;
-import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.dao.ArmorDao;
 import cz.stechy.drd.dao.BackpackDao;
 import cz.stechy.drd.dao.BestiaryDao;
@@ -17,6 +10,13 @@ import cz.stechy.drd.dao.ItemCollectionDao;
 import cz.stechy.drd.dao.MeleWeaponDao;
 import cz.stechy.drd.dao.RangedWeaponDao;
 import cz.stechy.drd.dao.SpellBookDao;
+import cz.stechy.drd.dao.UserDao;
+import cz.stechy.drd.db.DatabaseService;
+import cz.stechy.drd.db.FirebaseWrapper;
+import cz.stechy.drd.db.SQLite;
+import cz.stechy.drd.db.base.Database;
+import cz.stechy.drd.di.DiContainer;
+import cz.stechy.drd.di.IDependencyManager;
 import cz.stechy.drd.util.Translator;
 import java.io.File;
 import java.util.Arrays;

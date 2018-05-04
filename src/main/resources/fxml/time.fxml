@@ -30,11 +30,11 @@
   <Label text="%drd_time_day_3" GridPane.rowIndex="2"/>
   <Label text="%drd_time_inning_3" GridPane.rowIndex="3"/>
   <Label text="%drd_time_cycle_3" GridPane.rowIndex="4"/>
-  <TextField fx:id="txtYear" GridPane.columnIndex="1" />
-  <TextField fx:id="txtMonth" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-  <TextField fx:id="txtDay" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-  <TextField fx:id="txtInning" GridPane.rowIndex="3" GridPane.columnIndex="1" />
-  <TextField fx:id="txtCycle" GridPane.rowIndex="4" GridPane.columnIndex="1" />
+  <TextField fx:id="txtYear" GridPane.columnIndex="1"/>
+  <TextField fx:id="txtMonth" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+  <TextField fx:id="txtDay" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+  <TextField fx:id="txtInning" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+  <TextField fx:id="txtCycle" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
   <JFXButton fx:id="btnFinish" onAction="#handleFinish" text="%drd_finish" GridPane.columnIndex="1"
     GridPane.rowIndex="5" styleClass="btn, btn-raised, btn-small, btn-primary"/>
 

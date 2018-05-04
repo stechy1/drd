@@ -16,7 +16,8 @@ public final class RangedWeaponEntry extends ShopEntry {
 
     private final IntegerProperty strength = new SimpleIntegerProperty(this, "strength");
     private final IntegerProperty rampancy = new SimpleIntegerProperty(this, "rampancy");
-    private final ObjectProperty<RangedWeaponType> weaponType = new SimpleObjectProperty<>(this, "weaponType",
+    private final ObjectProperty<RangedWeaponType> weaponType = new SimpleObjectProperty<>(this,
+        "weaponType",
         RangedWeaponType.FIRE);
     private final IntegerProperty rangeLow = new SimpleIntegerProperty(this, "rangeLow");
     private final IntegerProperty rangeMedium = new SimpleIntegerProperty(this, "rangeMedium");

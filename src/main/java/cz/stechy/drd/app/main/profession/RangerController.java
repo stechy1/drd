@@ -68,8 +68,10 @@ public class RangerController implements IProfessionController, Initializable {
     private final MaxActValue teleDistance = new MaxActValue(1, Integer.MAX_VALUE, null);
     private final MaxActValue teleWeight = new MaxActValue(1, Integer.MAX_VALUE, null);
     private final MaxActValue pyroDistance = new MaxActValue(1, Integer.MAX_VALUE, null);
-    private final IntegerProperty pyroRemainingAttempts = new SimpleIntegerProperty(this, "pyroRemainingAttempts", 0);
-    private final BooleanProperty pyroInicialized = new SimpleBooleanProperty(this, "pyroInicialized", false);
+    private final IntegerProperty pyroRemainingAttempts = new SimpleIntegerProperty(this,
+        "pyroRemainingAttempts", 0);
+    private final BooleanProperty pyroInicialized = new SimpleBooleanProperty(this,
+        "pyroInicialized", false);
     private final Translator translator;
 
     private Hero hero;
@@ -99,7 +101,8 @@ public class RangerController implements IProfessionController, Initializable {
 
         btnTracking.disableProperty().bind(trackingModel.validProperty().not());
         lblSuccessTelekinesisResult.textProperty().bind(Bindings.createStringBinding(() -> {
-            if (teleDistance.getActValue() == null || teleWeight.getActValue() == null || ranger == null) {
+            if (teleDistance.getActValue() == null || teleWeight.getActValue() == null
+                || ranger == null) {
                 return resources.getString(R.Translate.NO_ACTION);
             }
 
@@ -159,10 +162,12 @@ public class RangerController implements IProfessionController, Initializable {
         private static final int FLAG_AGE = 1 << 1;
         private static final int FLAG_COUNT = 1 << 2;
 
-        private final ObjectProperty<Terrain> terrain = new SimpleObjectProperty<>(this, "terrain", null);
+        private final ObjectProperty<Terrain> terrain = new SimpleObjectProperty<>(this, "terrain",
+            null);
         private final MaxActValue age = new MaxActValue(Integer.MAX_VALUE);
         private final MaxActValue count = new MaxActValue(1, Integer.MAX_VALUE, 1);
-        private final BooleanProperty repeating = new SimpleBooleanProperty(this, "repeating", false);
+        private final BooleanProperty repeating = new SimpleBooleanProperty(this, "repeating",
+            false);
 
         {
             terrain.addListener(FormUtils.notEmptyCondition(this, FLAG_TERRAIN));

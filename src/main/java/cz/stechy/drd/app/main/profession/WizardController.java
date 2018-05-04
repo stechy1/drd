@@ -34,7 +34,8 @@ public class WizardController implements IProfessionController, Initializable {
         this.hero = hero;
         this.wizard = new Wizard(hero);
 
-        lblProbabilityOfSuccess.textProperty().bind(wizard.probabilityOfSuccessProperty().asString().concat(" %"));
+        lblProbabilityOfSuccess.textProperty()
+            .bind(wizard.probabilityOfSuccessProperty().asString().concat(" %"));
 
     }
 }

@@ -18,16 +18,16 @@ import org.slf4j.LoggerFactory;
  * Třída reprezentuje nastavení aplikace
  */
 public final class AppSettings {
-    
+
     // region Constants
-    
+
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(AppSettings.class);
-    
+
     // endregion
-    
+
     // region Variables
-    
+
     private final Properties properties = new Properties();
     private final File propertiesFile;
     private final Map<String, List<PropertyChangeListener>> propertyListeners = new HashMap<>();
@@ -35,10 +35,10 @@ public final class AppSettings {
     // endregion
 
     // region Constructors
-    
+
     /**
      * Vytvoří novou instanci nastavení aplikace
-     * 
+     *
      * @param propertiesFile {@link File} Soubor s konfigurací aplikace
      */
     public AppSettings(File propertiesFile) {
@@ -49,9 +49,9 @@ public final class AppSettings {
             LOGGER.warn("Nepodařilo se načíst nastavení aplikace. Používám výchozí hodnoty");
         }
     }
-    
+
     // endregion
-    
+
     // region Public methods
 
     /**
@@ -86,9 +86,9 @@ public final class AppSettings {
 
         changeListeners.remove(listener);
     }
-    
+
     // endregion
-    
+
     // region Getters & Setters
 
     /**
@@ -134,6 +134,6 @@ public final class AppSettings {
             listener.propertyChange(new PropertyChangeEvent(this, key, oldValue, value));
         }
     }
-    
+
     // endregion
 }

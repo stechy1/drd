@@ -287,7 +287,8 @@ public final class Translator {
         final Map<String, String> dummy = new LinkedHashMap<>(tooltipMap.size());
         tooltipMap.entrySet().forEach(entry -> {
             String value = entry.getValue();
-            dummy.put(resources.getString(entry.getKey()), resources.containsKey(value) ? resources.getString(value) : value);
+            dummy.put(resources.getString(entry.getKey()),
+                resources.containsKey(value) ? resources.getString(value) : value);
         });
         tooltipMap.clear();
         tooltipMap.putAll(dummy);

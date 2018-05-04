@@ -14,7 +14,8 @@ import javafx.scene.control.TextArea;
 /**
  * Kontroler pro editaci popisu nestvůry
  */
-public class BestiaryBestiaryEditDescriptionController implements IBestiaryEditController, Initializable {
+public class BestiaryBestiaryEditDescriptionController implements IBestiaryEditController,
+    Initializable {
 
     // region Variables
 
@@ -22,7 +23,6 @@ public class BestiaryBestiaryEditDescriptionController implements IBestiaryEditC
 
     @FXML
     private TextArea txtDescription;
-
 
     // endregion
 

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import com.jfoenix.controls.JFXButton?>
 <GridPane hgap="8.0" vgap="8.0" xmlns:fx="http://javafx.com/fxml/1"
   xmlns="http://javafx.com/javafx/8.0.112" fx:controller="cz.stechy.drd.app.MoneyController">
   <columnConstraints>
@@ -24,9 +25,9 @@
   <Label text="%drd_money_gold"/>
   <Label text="%drd_money_silver" GridPane.rowIndex="1"/>
   <Label text="%drd_money_copper" GridPane.rowIndex="2"/>
-  <TextField fx:id="txtGold" GridPane.columnIndex="1" />
-  <TextField fx:id="txtSilver" GridPane.rowIndex="1" GridPane.columnIndex="1" />
-  <TextField fx:id="txtCopper" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+  <TextField fx:id="txtGold" GridPane.columnIndex="1"/>
+  <TextField fx:id="txtSilver" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+  <TextField fx:id="txtCopper" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
   <JFXButton fx:id="btnFinish" onAction="#handleFinish" text="%drd_finish" GridPane.columnIndex="1"
     GridPane.rowIndex="3" styleClass="btn, btn-raised, btn-small, btn-primary"/>
 </GridPane>

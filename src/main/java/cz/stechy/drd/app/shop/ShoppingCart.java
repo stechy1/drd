@@ -1,9 +1,9 @@
 package cz.stechy.drd.app.shop;
 
+import cz.stechy.drd.app.shop.entry.ShopEntry;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.app.shop.entry.ShopEntry;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,7 +24,8 @@ public final class ShoppingCart implements IShoppingCart {
     // region Variables
 
     private final Map<ShopEntry, AmmountListener> ammountListeners = new HashMap<>();
-    private final BooleanProperty enoughtMoney = new SimpleBooleanProperty(this, "enoughtMoney", true);
+    private final BooleanProperty enoughtMoney = new SimpleBooleanProperty(this, "enoughtMoney",
+        true);
 
     public final ObservableSet<ShopEntry> orderList = FXCollections.observableSet();
     public final Money totalPrice = new Money();

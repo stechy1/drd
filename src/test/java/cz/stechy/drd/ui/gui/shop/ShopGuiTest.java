@@ -56,22 +56,22 @@ public final class ShopGuiTest extends GUITestBase {
 
 
     private Object[] parametersForButtonTooltip() {
-        return new Object[] {
-            new Object[] {BTN_ADD_ITEM, Translate.REPOSITORY_ITEM_ADD},
-            new Object[] {BTN_REMOVE_ITEM, Translate.REPOSITORY_ITEM_REMOVE},
-            new Object[] {BTN_EDIT_ITEM, Translate.REPOSITORY_ITEM_EDIT},
-            new Object[] {BTN_SYNCHRONIZE, Translate.REPOSITORY_ITEM_SYNCHRONIZE},
-            new Object[] {BTN_TOGGLE_ONLINE, Translate.REPOSITORY_TOGGLE_ONLINE_DATABASE},
+        return new Object[]{
+            new Object[]{BTN_ADD_ITEM, Translate.REPOSITORY_ITEM_ADD},
+            new Object[]{BTN_REMOVE_ITEM, Translate.REPOSITORY_ITEM_REMOVE},
+            new Object[]{BTN_EDIT_ITEM, Translate.REPOSITORY_ITEM_EDIT},
+            new Object[]{BTN_SYNCHRONIZE, Translate.REPOSITORY_ITEM_SYNCHRONIZE},
+            new Object[]{BTN_TOGGLE_ONLINE, Translate.REPOSITORY_TOGGLE_ONLINE_DATABASE},
         };
     }
 
     private Object[] parametersForPaneTranslation() {
-        return new Object[] {
-            new Object[] {PANE_WEAPON_MELE, Translate.ITEM_TYPE_WEAPON_MELE},
-            new Object[] {PANE_WEAPON_RANGED, Translate.ITEM_TYPE_WEAPON_RANGED},
-            new Object[] {PANE_ARMOR, Translate.ITEM_TYPE_ARMOR},
-            new Object[] {PANE_GENERAL, Translate.ITEM_TYPE_GENERAL},
-            new Object[] {PANE_BACKPACK, Translate.ITEM_TYPE_BACKPACK}
+        return new Object[]{
+            new Object[]{PANE_WEAPON_MELE, Translate.ITEM_TYPE_WEAPON_MELE},
+            new Object[]{PANE_WEAPON_RANGED, Translate.ITEM_TYPE_WEAPON_RANGED},
+            new Object[]{PANE_ARMOR, Translate.ITEM_TYPE_ARMOR},
+            new Object[]{PANE_GENERAL, Translate.ITEM_TYPE_GENERAL},
+            new Object[]{PANE_BACKPACK, Translate.ITEM_TYPE_BACKPACK}
         };
     }
 

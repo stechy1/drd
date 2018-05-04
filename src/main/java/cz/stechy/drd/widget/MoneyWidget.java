@@ -36,9 +36,12 @@ public class MoneyWidget extends VBox {
     // endregion
 
     static {
-        GOLD_IMAGE = new Image(MoneyWidget.class.getResourceAsStream(COIN_GOLD), COIN_SIZE, COIN_SIZE, PRESERVE_RATIO, SMOOTH);
-        SILVER_IMAGE = new Image(MoneyWidget.class.getResourceAsStream(COIN_SILVER), COIN_SIZE, COIN_SIZE, PRESERVE_RATIO, SMOOTH);
-        COPPER_IMAGE = new Image(MoneyWidget.class.getResourceAsStream(COIN_COPPER), COIN_SIZE, COIN_SIZE, PRESERVE_RATIO, SMOOTH);
+        GOLD_IMAGE = new Image(MoneyWidget.class.getResourceAsStream(COIN_GOLD), COIN_SIZE,
+            COIN_SIZE, PRESERVE_RATIO, SMOOTH);
+        SILVER_IMAGE = new Image(MoneyWidget.class.getResourceAsStream(COIN_SILVER), COIN_SIZE,
+            COIN_SIZE, PRESERVE_RATIO, SMOOTH);
+        COPPER_IMAGE = new Image(MoneyWidget.class.getResourceAsStream(COIN_COPPER), COIN_SIZE,
+            COIN_SIZE, PRESERVE_RATIO, SMOOTH);
     }
 
     // region Variables
@@ -49,7 +52,8 @@ public class MoneyWidget extends VBox {
     private final ImageView silverView = new ImageView(SILVER_IMAGE);
     private final Text copperText = new Text();
     private final ImageView copperView = new ImageView(COPPER_IMAGE);
-    private final TextFlow container = new TextFlow(goldText, goldView, silverText, silverView, copperText, copperView);
+    private final TextFlow container = new TextFlow(goldText, goldView, silverText, silverView,
+        copperText, copperView);
 
     // endregion
 
@@ -65,7 +69,7 @@ public class MoneyWidget extends VBox {
     /**
      * Vytvoří nový widget reprezentující peníze s definovanou hodnotou
      *
-      * @param money {@link Money} Hodnota, který se má zobrazit
+     * @param money {@link Money} Hodnota, který se má zobrazit
      */
     public MoneyWidget(final Money money) {
         bind(money);

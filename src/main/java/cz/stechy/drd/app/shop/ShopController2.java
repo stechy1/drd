@@ -106,23 +106,23 @@ public class ShopController2 extends BaseController implements Initializable {
                     heroService.getInventoryAsync()
                         .thenCompose(inventoryService ->
                             InventoryHelper.insertItemsToInventoryAsync(inventoryService, items)))
-            .thenAcceptAsync(aVoid -> {
-                try {
-                    database.commit();
-                    finish();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }, ThreadPool.JAVAFX_EXECUTOR)
-            .exceptionally(throwable -> {
-                try {
-                    database.rollback();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                throwable.printStackTrace();
-                throw new RuntimeException(throwable);
-            });
+                .thenAcceptAsync(aVoid -> {
+                    try {
+                        database.commit();
+                        finish();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }, ThreadPool.JAVAFX_EXECUTOR)
+                .exceptionally(throwable -> {
+                    try {
+                        database.rollback();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    throwable.printStackTrace();
+                    throw new RuntimeException(throwable);
+                });
         } catch (SQLException e) {
             e.printStackTrace();
         }

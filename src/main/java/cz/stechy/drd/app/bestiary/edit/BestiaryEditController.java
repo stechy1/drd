@@ -74,7 +74,7 @@ public class BestiaryEditController extends BaseController implements Initializa
         titleNew = resources.getString(R.Translate.BESTIARY_EDIT_NEW_TITLE);
         titleUpdate = resources.getString(R.Translate.BESTIARY_EDIT_UPDATE_TITLE);
 
-        controllers = new IBestiaryEditController[] {
+        controllers = new IBestiaryEditController[]{
             tabBestiaryImageController,
             tabBestiaryGeneralController,
             tabBestiaryPropertiesController,
@@ -102,7 +102,7 @@ public class BestiaryEditController extends BaseController implements Initializa
     protected void onCreate(Bundle bundle) {
         action = bundle.getInt(BestiaryHelper.MOB_ACTION);
         id = bundle.getString(BestiaryHelper.ID);
-        downloaded =bundle.getBoolean(BestiaryHelper.DOWNLOADED);
+        downloaded = bundle.getBoolean(BestiaryHelper.DOWNLOADED);
         uploaded = bundle.getBoolean(BestiaryHelper.UPLOADED);
         lblTitle.setText(action == BestiaryHelper.MOB_ACTION_ADD ? titleNew : titleUpdate);
         if (action == BestiaryHelper.MOB_ACTION_UPDATE) {
@@ -139,7 +139,8 @@ public class BestiaryEditController extends BaseController implements Initializa
         bundle.putString(BestiaryHelper.ID, id);
         bundle.putBoolean(BestiaryHelper.DOWNLOADED, downloaded);
         bundle.putBoolean(BestiaryHelper.UPLOADED, uploaded);
-        Arrays.stream(controllers).forEach(controllers -> controllers.saveMobPropertiesToBundle(bundle));
+        Arrays.stream(controllers)
+            .forEach(controllers -> controllers.saveMobPropertiesToBundle(bundle));
         finish(bundle);
     }
 

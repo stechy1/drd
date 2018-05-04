@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.Region?>
 <ScrollPane xmlns:fx="http://javafx.com/fxml/1" fitToWidth="true"
   xmlns="http://javafx.com/javafx/8.0.121"
   fx:controller="cz.stechy.drd.app.settings.SettingsController">

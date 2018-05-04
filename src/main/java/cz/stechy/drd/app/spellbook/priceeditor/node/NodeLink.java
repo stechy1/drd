@@ -62,7 +62,7 @@ public class NodeLink extends CubicCurve {
     }
 
     // endregion
-    
+
     // region Public methods
 
     /**
@@ -93,7 +93,8 @@ public class NodeLink extends CubicCurve {
      * @param source Zdrojový node
      * @param target Cílový node
      */
-    public void bindEnds(DraggableSpellNode source, DraggableSpellNode target, LinkPosition position) {
+    public void bindEnds(DraggableSpellNode source, DraggableSpellNode target,
+        LinkPosition position) {
         startXProperty().bind(source.layoutXProperty().add(source.circleBottomLink.getLayoutX()));
         startYProperty().bind(source.layoutYProperty().add(source.circleBottomLink.getLayoutY()));
         source.bottomLink = this;

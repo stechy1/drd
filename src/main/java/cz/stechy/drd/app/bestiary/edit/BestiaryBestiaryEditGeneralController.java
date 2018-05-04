@@ -95,6 +95,7 @@ public class BestiaryBestiaryEditGeneralController implements Initializable,
     }
 
     private static final class Model extends ValidatedModel {
+
         private static final int FLAG_NAME = 1 << 0;
         private static final int FLAG_RULE = 1 << 1;
         private static final int FLAG_MOB_CLASS = 1 << 2;
@@ -103,9 +104,12 @@ public class BestiaryBestiaryEditGeneralController implements Initializable,
 
         private final StringProperty name = new SimpleStringProperty(this, "name", null);
         private final ObjectProperty<Rule> rule = new SimpleObjectProperty<>(this, "rule", null);
-        private final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>(this, "mobClass", null);
-        private final ObjectProperty<Conviction> conviction = new SimpleObjectProperty<>(this, "conviction", null);
-        private final ObjectProperty<Height> height = new SimpleObjectProperty<>(this, "height", null);
+        private final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>(this,
+            "mobClass", null);
+        private final ObjectProperty<Conviction> conviction = new SimpleObjectProperty<>(this,
+            "conviction", null);
+        private final ObjectProperty<Height> height = new SimpleObjectProperty<>(this, "height",
+            null);
 
         {
             name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
@@ -115,7 +119,8 @@ public class BestiaryBestiaryEditGeneralController implements Initializable,
             height.addListener(FormUtils.notEmptyCondition(this, FLAG_HEIGHT));
 
             // Nastavení validačních příznaků - žádné pole není vyplněno
-            validityFlag.set(FLAG_NAME + FLAG_RULE + FLAG_MOB_CLASS + FLAG_CONVICTION + FLAG_HEIGHT);
+            validityFlag
+                .set(FLAG_NAME + FLAG_RULE + FLAG_MOB_CLASS + FLAG_CONVICTION + FLAG_HEIGHT);
         }
     }
 }

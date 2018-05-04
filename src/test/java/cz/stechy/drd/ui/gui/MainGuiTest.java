@@ -30,13 +30,13 @@ public final class MainGuiTest extends GUITestBase {
     // region Private methods
 
     private Object[] parametersForToolbarsButtonTooltip() {
-        return new Object[] {
-            new Object[] {TOOLBAR_BTN_NEW_HERO, Translate.MAIN_MENU_FILE_NEW_HERO},
-            new Object[] {TOOLBAR_BTN_LOAD_HERO, Translate.MAIN_MENU_FILE_LOAD_HERO},
-            new Object[] {TOOLBAR_BTN_CLOSE_HERO, Translate.MAIN_MENU_FILE_CLOSE_HERO},
-            new Object[] {TOOLBAR_BTN_DICE, Translate.MAIN_MENU_TOOLS_DICE},
-            new Object[] {TOOLBAR_BTN_BESTIARY, Translate.MAIN_MENU_TOOLS_BESTIARY},
-            new Object[] {TOOLBAR_BTN_SHOP, Translate.MAIN_MENU_TOOLS_SHOP},
+        return new Object[]{
+            new Object[]{TOOLBAR_BTN_NEW_HERO, Translate.MAIN_MENU_FILE_NEW_HERO},
+            new Object[]{TOOLBAR_BTN_LOAD_HERO, Translate.MAIN_MENU_FILE_LOAD_HERO},
+            new Object[]{TOOLBAR_BTN_CLOSE_HERO, Translate.MAIN_MENU_FILE_CLOSE_HERO},
+            new Object[]{TOOLBAR_BTN_DICE, Translate.MAIN_MENU_TOOLS_DICE},
+            new Object[]{TOOLBAR_BTN_BESTIARY, Translate.MAIN_MENU_TOOLS_BESTIARY},
+            new Object[]{TOOLBAR_BTN_SHOP, Translate.MAIN_MENU_TOOLS_SHOP},
         };
     }
 

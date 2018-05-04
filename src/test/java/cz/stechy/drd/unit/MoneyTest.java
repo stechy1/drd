@@ -31,9 +31,9 @@ public class MoneyTest {
         final Money subtractedMoney = new Money(1, 25, 52);
         money.setGold(2).setSilver(50).setCopper(95);
         money.subtract(subtractedMoney);
-        assertSame("Chyba, zlaťáky se neodečetly správně.", 2-1, money.getGold());
-        assertSame("Chyba, stříbrňáky se neodečetly správně.", 50-25, money.getSilver());
-        assertSame("Chyba, měďáky se neodečetly správně.", 95-52, money.getCopper());
+        assertSame("Chyba, zlaťáky se neodečetly správně.", 2 - 1, money.getGold());
+        assertSame("Chyba, stříbrňáky se neodečetly správně.", 50 - 25, money.getSilver());
+        assertSame("Chyba, měďáky se neodečetly správně.", 95 - 52, money.getCopper());
     }
 
     @Test
@@ -76,7 +76,8 @@ public class MoneyTest {
         final int expectedSilver = 5;
         final int expectedGold = 1;
         money.setSilver(silver);
-        assertEquals("Chyba, počet nastavených stříbrňáků nesedí", expectedSilver, money.getSilver());
+        assertEquals("Chyba, počet nastavených stříbrňáků nesedí", expectedSilver,
+            money.getSilver());
         assertEquals("Chyba, počet nastavených zlaťáků nesedí", expectedGold, money.getGold());
     }
 
@@ -87,7 +88,8 @@ public class MoneyTest {
         final int expectedSilver = silver + addition;
         money.setSilver(silver);
         money.addSilver(addition);
-        assertEquals("Chyba, počet střábrňáků po sečtení nesedí.", expectedSilver, money.getSilver());
+        assertEquals("Chyba, počet střábrňáků po sečtení nesedí.", expectedSilver,
+            money.getSilver());
     }
 
     @Test
@@ -97,7 +99,8 @@ public class MoneyTest {
         final int expectedSilver = 10;
         money.setSilver(silver);
         money.addSilver(addition);
-        assertEquals("Chyba, počet střábrňáků po sečtení nesedí.", expectedSilver, money.getSilver());
+        assertEquals("Chyba, počet střábrňáků po sečtení nesedí.", expectedSilver,
+            money.getSilver());
     }
 
     @Test
@@ -121,7 +124,8 @@ public class MoneyTest {
         money.subtractSilver(subtraction);
         assertEquals("Chyba, počet stříbrňáků po odečtení nesedí.", expectedSilver,
             money.getSilver());
-        assertEquals("Chyba, počet nastavených zlaťáků nesedí", expectedSilver / 100, money.getGold());
+        assertEquals("Chyba, počet nastavených zlaťáků nesedí", expectedSilver / 100,
+            money.getGold());
     }
 
     @Test
@@ -172,7 +176,8 @@ public class MoneyTest {
         money.subtractCopper(subtraction);
         assertEquals("Chyba, počet měďáků po odečtení nesedí.", expectedCopper,
             money.getCopper());
-        assertEquals("Chyba, počet nastavených stříbrňáků nesedí", expectedCopper / 100, money.getSilver());
+        assertEquals("Chyba, počet nastavených stříbrňáků nesedí", expectedCopper / 100,
+            money.getSilver());
     }
 
 }

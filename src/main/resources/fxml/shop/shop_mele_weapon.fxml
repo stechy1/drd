@@ -14,7 +14,8 @@
     <Label text="%drd_notify_table_is_empty"/>
   </placeholder>
   <columns>
-    <TableColumn fx:id="columnImage" minWidth="60.0" prefWidth="60.0" maxWidth="60.0" text="%drd_item_image" sortable="false">
+    <TableColumn fx:id="columnImage" minWidth="60.0" prefWidth="60.0" maxWidth="60.0"
+      text="%drd_item_image" sortable="false">
       <cellValueFactory>
         <PropertyValueFactory property="image"/>
       </cellValueFactory>
@@ -29,46 +30,55 @@
         <PropertyValueFactory property="author"/>
       </cellValueFactory>
     </TableColumn>
-    <TableColumn fx:id="columnStrength" minWidth="50.0" prefWidth="75.0" maxWidth="100.0" text="%drd_item_weapon_strength">
+    <TableColumn fx:id="columnStrength" minWidth="50.0" prefWidth="75.0" maxWidth="100.0"
+      text="%drd_item_weapon_strength">
       <cellValueFactory>
         <PropertyValueFactory property="strength"/>
       </cellValueFactory>
     </TableColumn>
-    <TableColumn fx:id="columnRampancy" minWidth="50.0" prefWidth="75.0" maxWidth="100.0" text="%drd_item_weapon_rampancy">
+    <TableColumn fx:id="columnRampancy" minWidth="50.0" prefWidth="75.0" maxWidth="100.0"
+      text="%drd_item_weapon_rampancy">
       <cellValueFactory>
         <PropertyValueFactory property="rampancy"/>
       </cellValueFactory>
     </TableColumn>
-    <TableColumn fx:id="columnDefence" minWidth="50.0" prefWidth="75.0" maxWidth="100.0" text="%drd_item_weapon_mele_armor_defence_number">
+    <TableColumn fx:id="columnDefence" minWidth="50.0" prefWidth="75.0" maxWidth="100.0"
+      text="%drd_item_weapon_mele_armor_defence_number">
       <cellValueFactory>
         <PropertyValueFactory property="defence"/>
       </cellValueFactory>
     </TableColumn>
-    <TableColumn fx:id="columnClass" minWidth="50.0" prefWidth="75.0" maxWidth="100.0" text="%drd_item_weapon_mele_class">
+    <TableColumn fx:id="columnClass" minWidth="50.0" prefWidth="75.0" maxWidth="100.0"
+      text="%drd_item_weapon_mele_class">
       <cellValueFactory>
         <PropertyValueFactory property="weaponClass"/>
       </cellValueFactory>
     </TableColumn>
-    <TableColumn fx:id="columnType" minWidth="50.0" prefWidth="75.0" maxWidth="100.0" text="%drd_item_weapon_mele_ranged_type">
+    <TableColumn fx:id="columnType" minWidth="50.0" prefWidth="75.0" maxWidth="100.0"
+      text="%drd_item_weapon_mele_ranged_type">
       <cellValueFactory>
         <PropertyValueFactory property="weaponType"/>
       </cellValueFactory>
     </TableColumn>
-    <TableColumn fx:id="columnWeight" minWidth="50.0" prefWidth="50.0" maxWidth="50.0" text="%drd_item_weight">
+    <TableColumn fx:id="columnWeight" minWidth="50.0" prefWidth="50.0" maxWidth="50.0"
+      text="%drd_item_weight">
       <cellValueFactory>
         <PropertyValueFactory property="weight"/>
       </cellValueFactory>
     </TableColumn>
-    <TableColumn fx:id="columnPrice" minWidth="140.0" prefWidth="140.0" maxWidth="140.0" text="%drd_item_price">
+    <TableColumn fx:id="columnPrice" minWidth="140.0" prefWidth="140.0" maxWidth="140.0"
+      text="%drd_item_price">
       <cellValueFactory>
         <PropertyValueFactory property="price"/>
       </cellValueFactory>
     </TableColumn>
-    <TableColumn fx:id="columnAmmount" minWidth="80.0" prefWidth="80.0" maxWidth="80.0" text="%drd_item_ammount" sortable="false">
+    <TableColumn fx:id="columnAmmount" minWidth="80.0" prefWidth="80.0" maxWidth="80.0"
+      text="%drd_item_ammount" sortable="false">
       <cellValueFactory>
         <PropertyValueFactory property="ammount"/>
       </cellValueFactory>
     </TableColumn>
-    <TableColumn fx:id="columnAction" minWidth="200.0" prefWidth="200.0" maxWidth="200.0" text="%drd_shop_shoppint_cart" sortable="false"/>
+    <TableColumn fx:id="columnAction" minWidth="200.0" prefWidth="200.0" maxWidth="200.0"
+      text="%drd_shop_shoppint_cart" sortable="false"/>
   </columns>
 </TableView>

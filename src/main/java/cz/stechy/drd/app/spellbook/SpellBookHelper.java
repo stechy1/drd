@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.spellbook;
 
+import cz.stechy.drd.model.SpellParser;
 import cz.stechy.drd.model.spell.Spell;
 import cz.stechy.screens.Bundle;
 import java.util.Optional;
@@ -118,7 +119,7 @@ public final class SpellBookHelper {
         }
 
         ISpellGraphNode bottom = node;
-        while(bottom.getChildNode() != null) {
+        while (bottom.getChildNode() != null) {
             bottom = bottom.getChildNode();
         }
 

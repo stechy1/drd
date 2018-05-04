@@ -1,7 +1,7 @@
 package cz.stechy.drd.util;
 
-import cz.stechy.drd.model.WithImage;
 import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.model.WithImage;
 import cz.stechy.drd.model.item.ItemBase;
 import java.io.File;
 import java.io.IOException;

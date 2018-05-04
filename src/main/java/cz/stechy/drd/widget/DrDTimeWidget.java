@@ -92,23 +92,28 @@ public class DrDTimeWidget extends VBox {
 
         yearText.textProperty().bind(Bindings.createStringBinding(() -> {
             final int value = time.getYear();
-            return String.format(DEFAULT_TEXT_FORMAT, value, translator.translate(TRANSLATING_KEYS[YEAR][getIndex(value)]));
+            return String.format(DEFAULT_TEXT_FORMAT, value,
+                translator.translate(TRANSLATING_KEYS[YEAR][getIndex(value)]));
         }, time.year));
         monthText.textProperty().bind(Bindings.createStringBinding(() -> {
             final int value = time.getMonth();
-            return String.format(DEFAULT_TEXT_FORMAT, value, translator.translate(TRANSLATING_KEYS[MONTH][getIndex(value)]));
+            return String.format(DEFAULT_TEXT_FORMAT, value,
+                translator.translate(TRANSLATING_KEYS[MONTH][getIndex(value)]));
         }, time.month));
         dayText.textProperty().bind(Bindings.createStringBinding(() -> {
             final int value = time.getDay();
-            return String.format(DEFAULT_TEXT_FORMAT, value, translator.translate(TRANSLATING_KEYS[DAY][getIndex(value)]));
+            return String.format(DEFAULT_TEXT_FORMAT, value,
+                translator.translate(TRANSLATING_KEYS[DAY][getIndex(value)]));
         }, time.day));
         inningText.textProperty().bind(Bindings.createStringBinding(() -> {
             final int value = time.getInning();
-            return String.format(DEFAULT_TEXT_FORMAT, value, translator.translate(TRANSLATING_KEYS[INNING][getIndex(value)]));
+            return String.format(DEFAULT_TEXT_FORMAT, value,
+                translator.translate(TRANSLATING_KEYS[INNING][getIndex(value)]));
         }, time.inning));
         cycleText.textProperty().bind(Bindings.createStringBinding(() -> {
             final int value = time.getCycle();
-            return String.format(DEFAULT_TEXT_FORMAT, value, translator.translate(TRANSLATING_KEYS[CYCLE][getIndex(value)]));
+            return String.format(DEFAULT_TEXT_FORMAT, value,
+                translator.translate(TRANSLATING_KEYS[CYCLE][getIndex(value)]));
         }, time.cycle));
     }
 

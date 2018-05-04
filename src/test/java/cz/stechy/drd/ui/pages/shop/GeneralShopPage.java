@@ -1,7 +1,7 @@
 package cz.stechy.drd.ui.pages.shop;
 
-import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.ui.APage;
 import cz.stechy.drd.ui.pages.MoneyPage;
@@ -43,7 +43,8 @@ public class GeneralShopPage extends APage {
     static {
         byte[] image;
         try {
-            image = ImageUtils.readImage(GeneralShopPage.class.getResourceAsStream("/images/icon/add.png"));
+            image = ImageUtils
+                .readImage(GeneralShopPage.class.getResourceAsStream("/images/icon/add.png"));
         } catch (Exception e) {
             image = new byte[0];
         }
@@ -89,7 +90,8 @@ public class GeneralShopPage extends APage {
         showMoneyPage().setMoney(item.getPrice()).confirm();
         robot.doubleClickOn(TXT_STACKSIZE).write(String.valueOf(item.getStackSize()));
         robot.clickOn(TXT_DESCRIPTION).write(item.getDescription());
-        ((ImageView) find(IMAGE_VIEW)).setImage(new Image(new ByteArrayInputStream(item.getImage())));
+        ((ImageView) find(IMAGE_VIEW))
+            .setImage(new Image(new ByteArrayInputStream(item.getImage())));
         return this;
     }
 

@@ -8,7 +8,7 @@ import cz.stechy.drd.app.spellbook.priceeditor.node.ModifierDraggableSpellNode;
 import cz.stechy.drd.app.spellbook.priceeditor.node.NodeLink;
 import cz.stechy.drd.app.spellbook.priceeditor.node.VariableDraggableSpellNode;
 import cz.stechy.drd.model.DragContainer;
-import cz.stechy.drd.app.spellbook.SpellParser;
+import cz.stechy.drd.model.SpellParser;
 import cz.stechy.drd.model.spell.price.BasicSpellPrice;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import cz.stechy.drd.model.spell.price.VariableSpellPrice;
@@ -97,7 +97,8 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     /**
      * Přidá node určitého typu na scénu
-     *  @param type Typ nodu
+     *
+     * @param type Typ nodu
      * @param screenX X-ová souřadnice středu nodu v X-ové ose
      * @param screenY Y-ová souřadnice reprezentující horní část nodu
      */
@@ -125,7 +126,8 @@ public class SpellPriceEditorController extends BaseController implements Initia
         Point2D point = node.getParent().sceneToLocal(new Point2D(screenX, screenY));
         // 100 = polovina šířky draggable nodu
         // 15 = polovina výšky záhlaví draggable nodu
-        node.relocate(point.getX() - MOUSE_TO_NODE_X_CENTER_OFFSET, point.getY() - MOUSE_TO_NODE_Y_CENTER_OFFSET);
+        node.relocate(point.getX() - MOUSE_TO_NODE_X_CENTER_OFFSET,
+            point.getY() - MOUSE_TO_NODE_Y_CENTER_OFFSET);
         return node;
     }
 
@@ -145,7 +147,8 @@ public class SpellPriceEditorController extends BaseController implements Initia
     }
 
     private void onDragDropped(DragEvent event) {
-        final DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.PRICE_NODE_ADD);
+        final DragContainer container = (DragContainer) event.getDragboard()
+            .getContent(DragContainer.PRICE_NODE_ADD);
         container.getValue(PROPERTY_PRICE_TYPE).ifPresent(o -> {
             event.setDropCompleted(true);
             final int type = (int) o;
@@ -156,7 +159,8 @@ public class SpellPriceEditorController extends BaseController implements Initia
     }
 
     private void onDragOver(DragEvent event) {
-        final DragContainer container = (DragContainer) event.getDragboard().getContent(DragContainer.PRICE_NODE_ADD);
+        final DragContainer container = (DragContainer) event.getDragboard()
+            .getContent(DragContainer.PRICE_NODE_ADD);
         if (container == null) {
             return;
         }
@@ -179,9 +183,11 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     private DraggableSpellNode putSpellNode(ISpellPrice price, int layer, int index) {
         final double x = index * componentPlayground.getPrefWidth() / (layer + 1);
-        final double y = componentPlayground.getPrefHeight() - ((layer) * DraggableSpellNode.HEIGHT) + DEFAULT_NODE_Y_SPACING;
+        final double y = componentPlayground.getPrefHeight() - ((layer) * DraggableSpellNode.HEIGHT)
+            + DEFAULT_NODE_Y_SPACING;
         final int priceType = getSpellPriceType(price);
-        return addNode(priceType, x + MOUSE_TO_NODE_X_CENTER_OFFSET, y + MOUSE_TO_NODE_Y_CENTER_OFFSET);
+        return addNode(priceType, x + MOUSE_TO_NODE_X_CENTER_OFFSET,
+            y + MOUSE_TO_NODE_Y_CENTER_OFFSET);
     }
 
     private void buildViewGraph(ISpellPrice price) {
@@ -290,6 +296,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
     // endregion
 
     private final class NodeManipulator implements INodeManipulator {
+
         @Override
         public void setOnDragOverHandler(EventHandler<? super DragEvent> event) {
             if (event == null) {
@@ -314,6 +321,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
     }
 
     private final class LinkListener implements ILinkListener {
+
         @Override
         public void saveSourceNode(DraggableSpellNode node) {
             SpellPriceEditorController.this.dragSourceNode = node;

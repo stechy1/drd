@@ -124,7 +124,7 @@ public class ItemSlot {
     private final EventHandler<? super DragEvent> onDragOver = event -> {
         if (event.getGestureSource() != imgItem &&
             event.getDragboard().hasContent(MOVE_ITEM)) {
-              /* allow for moving */
+            /* allow for moving */
             event.acceptTransferModes(TransferMode.MOVE);
         }
 
@@ -304,8 +304,8 @@ public class ItemSlot {
     /**
      * Zjistí, zda-li tento slot přijme požadovaný itemStack
      * Záleží na dvou faktorech:
-     *      1. Jak je nastavený filtr cílového ItemStacku
-     *      2. Jestli je v cílovém ItemStacku dostatečné místo pro vložení požadovaného počtu
+     * 1. Jak je nastavený filtr cílového ItemStacku
+     * 2. Jestli je v cílovém ItemStacku dostatečné místo pro vložení požadovaného počtu
      *
      * @param itemStack {@link ItemStack} ItemStack, který chci vložit do slotu
      * @return True, pokud lze item vložit, jinak false

@@ -125,7 +125,7 @@ public final class CellUtils {
 
                 final MoneyWidget moneyWidget = new MoneyWidget();
 
-                if(empty) {
+                if (empty) {
                     setText(null);
                     setGraphic(null);
                 } else {
@@ -165,6 +165,7 @@ public final class CellUtils {
      * @param <T> Datový typ modelu listView
      */
     public static class RawImageListCell<T extends WithImage> extends ListCell<T> {
+
         final ImageView imageView = new ImageView();
         final Label label = new Label();
         final HBox container = new HBox(imageView, label);

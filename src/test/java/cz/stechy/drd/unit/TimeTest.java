@@ -21,7 +21,8 @@ public class TimeTest {
     @Test
     public void constructorTest1() {
         final DrDTime time = new DrDTime();
-        assertEquals("Chyba, instance času obsahuje špatný údaj.", DrDTime.DEFAULT_VALUE, time.getRaw());
+        assertEquals("Chyba, instance času obsahuje špatný údaj.", DrDTime.DEFAULT_VALUE,
+            time.getRaw());
     }
 
     // Test kopy konstruktoru
@@ -41,7 +42,8 @@ public class TimeTest {
         time.setInning(expectedInning);
         final int expectedRaw = time.getRaw();
         final DrDTime testTime = new DrDTime(expectedRaw);
-        assertEquals("Chyba, konstruktor s parametrem surového času nefunguje.", expectedRaw, testTime.getRaw());
+        assertEquals("Chyba, konstruktor s parametrem surového času nefunguje.", expectedRaw,
+            testTime.getRaw());
     }
 
     // endregion
@@ -256,8 +258,6 @@ public class TimeTest {
     // endregion
 
     // region Value Multiply testing
-
-
 
     // endregion
 }

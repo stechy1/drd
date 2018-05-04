@@ -2,8 +2,8 @@ package cz.stechy.drd.app.shop;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.MoneyController;
-import cz.stechy.drd.model.Money;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
+import cz.stechy.drd.model.Money;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.util.ResourceBundle;
@@ -99,10 +99,11 @@ final class ShopHelper {
                             entry.getAmmount().setActValue(0);
                         });
 
-                        final BooleanBinding addRemoveCondition = Bindings.createBooleanBinding(() ->
-                                entry.getAmmount().actValueProperty().get() == null
-                                    || entry.getAmmount().actValueProperty().get().intValue() == 0,
-                            entry.getAmmount().actValueProperty());
+                        final BooleanBinding addRemoveCondition = Bindings
+                            .createBooleanBinding(() ->
+                                    entry.getAmmount().actValueProperty().get() == null
+                                        || entry.getAmmount().actValueProperty().get().intValue() == 0,
+                                entry.getAmmount().actValueProperty());
 
                         btnAddRemove.disableProperty().bind(Bindings
                             .or(entry.inShoppingCartProperty().not().and(addRemoveCondition),
@@ -137,7 +138,8 @@ final class ShopHelper {
      * @param bundle {@link Bundle}
      * @param price {@link Money}
      */
-    public static void setItemPrice(int statusCode, int actionId, int requestedAction, Bundle bundle, Money price) {
+    public static void setItemPrice(int statusCode, int actionId, int requestedAction,
+        Bundle bundle, Money price) {
         if (actionId != requestedAction || statusCode != BaseController.RESULT_SUCCESS) {
             return;
         }

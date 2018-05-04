@@ -44,7 +44,8 @@ public class ModifierDraggableSpellNode extends DraggableSpellNode {
         lblTitle.textProperty().bind(Bindings.concat(
             translator.translate(R.Translate.SPELL_PRICE_TYPE_MODIFIER),
             Bindings.createStringBinding(() -> {
-                final ModifierType modifierType = cmbOperation.getSelectionModel().selectedItemProperty()
+                final ModifierType modifierType = cmbOperation.getSelectionModel()
+                    .selectedItemProperty()
                     .get();
                 if (modifierType == null) {
                     return "";

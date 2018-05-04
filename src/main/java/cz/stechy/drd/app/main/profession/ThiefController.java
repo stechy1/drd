@@ -42,7 +42,8 @@ public class ThiefController implements IProfessionController, Initializable {
 
     // endregion
 
-    private final ObservableList<Ability> abilities = FXCollections.observableArrayList(Ability.values());
+    private final ObservableList<Ability> abilities = FXCollections
+        .observableArrayList(Ability.values());
     private final ObjectProperty<Ability> selectedAbility = new SimpleObjectProperty<>();
     private final IntegerProperty success = new SimpleIntegerProperty();
     private final Translator translator;
@@ -96,7 +97,8 @@ public class ThiefController implements IProfessionController, Initializable {
 
         final Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("Úspěšnost zloděje");
-        alert.setHeaderText(translator.getSingleTranslationFor(Key.THIEF_ABILITIES, selectedAbility.get()));
+        alert.setHeaderText(
+            translator.getSingleTranslationFor(Key.THIEF_ABILITIES, selectedAbility.get()));
         alert.setContentText(fail ? failText : successText);
         alert.showAndWait();
     }

@@ -274,19 +274,22 @@ public class ItemArmorController extends BaseController implements Initializable
     @FXML
     private void handleShowMoneyAPopup(ActionEvent actionEvent) {
         Bundle bundle = new Bundle().put(MoneyController.MONEY, model.priceA.getRaw());
-        startNewPopupWindowForResult("money", ACTION_MONEY_A, bundle, (Node) actionEvent.getSource());
+        startNewPopupWindowForResult("money", ACTION_MONEY_A, bundle,
+            (Node) actionEvent.getSource());
     }
 
     @FXML
     private void handleShowMoneyBPopup(ActionEvent actionEvent) {
         Bundle bundle = new Bundle().put(MoneyController.MONEY, model.priceB.getRaw());
-        startNewPopupWindowForResult("money", ACTION_MONEY_B, bundle, (Node) actionEvent.getSource());
+        startNewPopupWindowForResult("money", ACTION_MONEY_B, bundle,
+            (Node) actionEvent.getSource());
     }
 
     @FXML
     private void handleShowMoneyCPopup(ActionEvent actionEvent) {
         Bundle bundle = new Bundle().put(MoneyController.MONEY, model.priceC.getRaw());
-        startNewPopupWindowForResult("money", ACTION_MONEY_C,  bundle, (Node) actionEvent.getSource());
+        startNewPopupWindowForResult("money", ACTION_MONEY_C, bundle,
+            (Node) actionEvent.getSource());
     }
 
     @FXML
@@ -344,12 +347,17 @@ public class ItemArmorController extends BaseController implements Initializable
             name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
             description.addListener(FormUtils.notEmptyCondition(this, FLAG_DESCRIPTION));
             defence.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_DEFENCE));
-            minimumStrength.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_MINIMUM_STRENGTH));
+            minimumStrength.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_MINIMUM_STRENGTH));
             type.addListener(FormUtils.notEmptyCondition(this, FLAG_TYPE));
-            weightA.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT_A));
-            weightB.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT_B));
-            weightC.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT_C));
-            stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
+            weightA.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT_A));
+            weightB.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT_B));
+            weightC.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT_C));
+            stackSize.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_TYPE + FLAG_IMAGE);
         }

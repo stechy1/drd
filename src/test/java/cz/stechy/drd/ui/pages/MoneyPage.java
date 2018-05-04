@@ -1,7 +1,7 @@
 package cz.stechy.drd.ui.pages;
 
-import cz.stechy.drd.model.Money;
 import cz.stechy.drd.R;
+import cz.stechy.drd.model.Money;
 import cz.stechy.drd.ui.APage;
 import org.testfx.api.FxRobot;
 

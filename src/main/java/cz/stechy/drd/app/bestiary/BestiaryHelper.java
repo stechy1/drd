@@ -47,38 +47,39 @@ public final class BestiaryHelper {
 
     // region Constructors
 
-    private BestiaryHelper() {}
+    private BestiaryHelper() {
+    }
 
     // endregion
 
     public static Bundle mobToBundle(Mob mob) {
         final Bundle bundle = new Bundle();
 
-            bundle.putString(ID, mob.getId());
-            bundle.putString(NAME, mob.getName());
-            bundle.putString(DESCRIPTION, mob.getDescription());
-            bundle.putString(AUTHOR, mob.getAuthor());
-            bundle.put(IMAGE, mob.getImage());
-            bundle.putInt(MOB_CLASS, mob.getMobClass().ordinal());
-            bundle.putInt(RULES_TYPE, mob.getRulesType().ordinal());
-            bundle.putInt(CONVICTION, mob.getConviction().ordinal());
-            bundle.putInt(HEIGHT, mob.getHeight().ordinal());
-            bundle.putInt(ATTACK, mob.getAttackNumber());
-            bundle.putInt(DEFENCE, mob.getDefenceNumber());
-            bundle.putInt(VIABILITY, mob.getViability());
-            bundle.putInt(IMMUNITY, mob.getImmunity().getValue());
-            bundle.putInt(METTLE, mob.getMettle());
-            bundle.putInt(VULNERABILITY, mob.getVulnerability());
-            bundle.putInt(MOBILITY, mob.getMobility());
-            bundle.putInt(PERSERVANCE, mob.getPerservance());
-            bundle.putInt(CONTROL_ABILITY, mob.getControlAbility());
-            bundle.putInt(INTELLIGENCE, mob.getIntelligence().getValue());
-            bundle.putInt(CHARISMA, mob.getCharisma().getValue());
-            bundle.putInt(BASIC_BOWER_OF_MIND, mob.getBasicPowerOfMind());
-            bundle.putInt(EXPERIENCE, mob.getExperience());
-            bundle.putInt(DOMESTICATION, mob.getDomestication());
-            bundle.putBoolean(DOWNLOADED, mob.isDownloaded());
-            bundle.putBoolean(UPLOADED, mob.isUploaded());
+        bundle.putString(ID, mob.getId());
+        bundle.putString(NAME, mob.getName());
+        bundle.putString(DESCRIPTION, mob.getDescription());
+        bundle.putString(AUTHOR, mob.getAuthor());
+        bundle.put(IMAGE, mob.getImage());
+        bundle.putInt(MOB_CLASS, mob.getMobClass().ordinal());
+        bundle.putInt(RULES_TYPE, mob.getRulesType().ordinal());
+        bundle.putInt(CONVICTION, mob.getConviction().ordinal());
+        bundle.putInt(HEIGHT, mob.getHeight().ordinal());
+        bundle.putInt(ATTACK, mob.getAttackNumber());
+        bundle.putInt(DEFENCE, mob.getDefenceNumber());
+        bundle.putInt(VIABILITY, mob.getViability());
+        bundle.putInt(IMMUNITY, mob.getImmunity().getValue());
+        bundle.putInt(METTLE, mob.getMettle());
+        bundle.putInt(VULNERABILITY, mob.getVulnerability());
+        bundle.putInt(MOBILITY, mob.getMobility());
+        bundle.putInt(PERSERVANCE, mob.getPerservance());
+        bundle.putInt(CONTROL_ABILITY, mob.getControlAbility());
+        bundle.putInt(INTELLIGENCE, mob.getIntelligence().getValue());
+        bundle.putInt(CHARISMA, mob.getCharisma().getValue());
+        bundle.putInt(BASIC_BOWER_OF_MIND, mob.getBasicPowerOfMind());
+        bundle.putInt(EXPERIENCE, mob.getExperience());
+        bundle.putInt(DOMESTICATION, mob.getDomestication());
+        bundle.putBoolean(DOWNLOADED, mob.isDownloaded());
+        bundle.putBoolean(UPLOADED, mob.isUploaded());
 
         return bundle;
     }
@@ -129,7 +130,7 @@ public final class BestiaryHelper {
             int rolled;
             do {
                 rolled = dice.roll();
-            } while (rolled >=8);
+            } while (rolled >= 8);
             total += rolled;
         }
         return total + immunity.getRepair() * viability;

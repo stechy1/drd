@@ -179,7 +179,8 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         txtDescription.textProperty().bindBidirectional(model.description);
 
         cmbWeaponType.valueProperty().bindBidirectional(model.weaponType);
-        cmbWeaponType.converterProperty().setValue(translator.getConvertor(Key.WEAPON_RANGED_TYPES));
+        cmbWeaponType.converterProperty()
+            .setValue(translator.getConvertor(Key.WEAPON_RANGED_TYPES));
 
         FormUtils.initTextFormater(txtStrength, model.strength);
         FormUtils.initTextFormater(txtRampancy, model.rampancy);
@@ -301,11 +302,12 @@ public class ItemWeaponRangedController extends BaseController implements Initia
         final Money price = new Money();
         final MaxActValue weight = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue strength = new MaxActValue(Integer.MAX_VALUE);
-        final MaxActValue rampancy = new MaxActValue(Integer.MIN_VALUE ,Integer.MAX_VALUE, 0);
+        final MaxActValue rampancy = new MaxActValue(Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
         final MaxActValue rangeLow = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue rangeMedium = new MaxActValue(Integer.MAX_VALUE);
         final MaxActValue rangeLong = new MaxActValue(Integer.MAX_VALUE);
-        final ObjectProperty<RangedWeaponType> weaponType = new SimpleObjectProperty<>(this, "weaponType", null);
+        final ObjectProperty<RangedWeaponType> weaponType = new SimpleObjectProperty<>(this,
+            "weaponType", null);
         final StringProperty author = new SimpleStringProperty(this, "author", null);
         final MaxActValue renown = new MaxActValue(Integer.MAX_VALUE);
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "imageRaw");
@@ -322,14 +324,20 @@ public class ItemWeaponRangedController extends BaseController implements Initia
 
             name.addListener(FormUtils.notEmptyCondition(this, FLAG_NAME));
             weight.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_WEIGHT));
-            strength.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STRENGTH));
-            rampancy.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RAMPANCY));
-            rangeLow.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RANGE_LOW));
-            rangeMedium.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RANGE_MEDIUM));
-            rangeLong.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RANGE_LONG));
+            strength.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_STRENGTH));
+            rampancy.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_RAMPANCY));
+            rangeLow.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_RANGE_LOW));
+            rangeMedium.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_RANGE_MEDIUM));
+            rangeLong.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_RANGE_LONG));
             weaponType.addListener(FormUtils.notEmptyCondition(this, FLAG_WEAPON_TYPE));
             renown.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_RENOWN));
-            stackSize.actValueProperty().addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
+            stackSize.actValueProperty()
+                .addListener(FormUtils.notEmptyCondition(this, FLAG_STACK_SIZE));
 
             validityFlag.set(FLAG_NAME + FLAG_WEAPON_TYPE + FLAG_IMAGE);
         }
