@@ -4,8 +4,11 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd.iml" filepath="$PROJECT_DIR$/.idea/modules/drd.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_main.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_main.iml" group="drd" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_share/drd_share.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_share/drd_share.iml" group="drd_share" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_share.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_share.iml" group="drd_share" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_share/drd_share_main.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_share/drd_share_main.iml" group="drd_share" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_share/drd_share_main.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_share/drd_share_main.iml" group="drd_share" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_share/drd_share_test.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_share/drd_share_test.iml" group="drd_share" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_share/drd_share_test.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_share/drd_share_test.iml" group="drd_share" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_test.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_test.iml" group="drd" />
     </modules>
