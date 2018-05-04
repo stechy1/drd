@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd.iml" filepath="$PROJECT_DIR$/.idea/modules/drd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_client.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_client.iml" group="drd_client" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_client/drd_client_main.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_client/drd_client_main.iml" group="drd_client" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_client/drd_client_test.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_client/drd_client_test.iml" group="drd_client" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_main.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_main.iml" group="drd" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_share/drd_share.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_share/drd_share.iml" group="drd_share" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/drd_share.iml" filepath="$PROJECT_DIR$/.idea/modules/drd_share.iml" group="drd_share" />

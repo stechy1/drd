@@ -10,6 +10,8 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="drd_client_main" target="1.8" />
+      <module name="drd_client_test" target="1.8" />
       <module name="drd_main" target="1.8" />
       <module name="drd_share_main" target="1.8" />
       <module name="drd_share_test" target="1.8" />
