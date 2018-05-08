@@ -1,5 +1,6 @@
 package cz.stechy.drd;
 
+import cz.stechy.drd.net.message.KeepAliveMessage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,7 +35,7 @@ public class ClientDispatcher extends Thread {
 
     @Override
     public void run() {
-        LOGGER.info("Spouštím client dispatchera");
+        LOGGER.info("Spouštím client dispatchera.");
         while(!interupt) {
             while(waitingQueue.isEmpty() && !interupt) {
                 try {
@@ -45,7 +46,7 @@ public class ClientDispatcher extends Thread {
 
             waitingQueue.iterator().forEachRemaining(client -> {
                 try {
-                    client.writer.writeObject("Keep alive");
+                    client.writer.writeObject(new KeepAliveMessage());
                 } catch (IOException e) {
                     LOGGER.info("Klient neudržel spojení, musím se ho zbavit.");
                     clientsToRemove.add(client);

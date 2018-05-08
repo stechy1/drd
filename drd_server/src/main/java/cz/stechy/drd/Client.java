@@ -1,5 +1,6 @@
 package cz.stechy.drd;
 
+import cz.stechy.drd.net.message.IMessage;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,15 +19,17 @@ public class Client implements Runnable {
     private final Socket socket;
     private final InputStream inputStream;
     final ObjectOutputStream writer;
+    private final WriterThread writerThread;
 
     private OnConnectionClosedListener connectionClosedListener;
     private boolean interrupt = false;
 
-    public Client(Socket client) throws IOException {
-        LOGGER.info("Nový klient byl vytvořen.");
+    public Client(Socket client, WriterThread writerThread) throws IOException {
+        this.writerThread = writerThread;
         this.inputStream = client.getInputStream();
         this.writer = new ObjectOutputStream(client.getOutputStream());
         socket = client;
+        LOGGER.info("Nový klient byl vytvořen.");
     }
 
     @Override
@@ -72,6 +75,10 @@ public class Client implements Runnable {
 
     public void disconnect() {
         interrupt = true;
+    }
+
+    public void sendMessage(IMessage message) {
+        writerThread.sendMessage(writer, message);
     }
 
     @FunctionalInterface

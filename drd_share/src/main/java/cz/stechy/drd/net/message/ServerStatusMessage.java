@@ -12,7 +12,7 @@ public class ServerStatusMessage implements IMessage {
 
     @Override
     public MessageType getType() {
-        return MessageType.SERVER_FULL;
+        return MessageType.SERVER_STATUS;
     }
 
     @Override
@@ -27,5 +27,10 @@ public class ServerStatusMessage implements IMessage {
 
     public enum ServerStatus {
         EMPTY, HAVE_SPACE, FULL
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(getData());
     }
 }

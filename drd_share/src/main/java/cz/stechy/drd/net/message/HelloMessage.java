@@ -24,4 +24,9 @@ public class HelloMessage implements IMessage {
     public Object getData() {
         return "Hello";
     }
+
+    @Override
+    public String toString() {
+        return (String) getData();
+    }
 }

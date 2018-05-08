@@ -3,6 +3,8 @@ package cz.stechy.drd;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import cz.stechy.drd.net.message.HelloMessage;
+import cz.stechy.drd.net.message.MessageSource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -37,6 +39,7 @@ public class Server extends Thread {
     private boolean running = false;
     private final List<Client> clients = new ArrayList<>();
     private final ClientDispatcher clientDispatcher;
+    private final WriterThread writerThread;
 
     public static void main(String[] args) throws InterruptedException {
         final Server server = new Server(new CmdParser().parse(args));
@@ -62,6 +65,7 @@ public class Server extends Thread {
         final int waitingQueueSize = settings.getInteger(CmdParser.MAX_WAITING_QUEUE, DEFAULT_WAITING_QUEUE_SIZE);
 
         this.clientDispatcher = new ClientDispatcher(waitingQueueSize);
+        this.writerThread = new WriterThread();
         init();
     }
 
@@ -104,6 +108,8 @@ public class Server extends Thread {
         LOGGER.info("Inicializuji klientská vlákna.");
         pool = Executors.newFixedThreadPool(maxClients);
         running = true;
+        clientDispatcher.start();
+        writerThread.start();
         super.start();
     }
 
@@ -125,6 +131,7 @@ public class Server extends Thread {
                 }
             });
             pool.submit(client);
+            client.sendMessage(new HelloMessage(MessageSource.SERVER));
         } else {
             if (clientDispatcher.addClientToQueue(client)) {
                 LOGGER.info("Přidávám klienta na čekací listinu.");
@@ -137,7 +144,6 @@ public class Server extends Thread {
 
     @Override
     public void run() {
-        clientDispatcher.start();
         try (ServerSocket serverSocket = new ServerSocket(SERVER_PORT)) {
             serverSocket.setSoTimeout(5000);
             LOGGER.info(String.format("Server naslouchá na portu: %d.", serverSocket.getLocalPort()));
@@ -147,7 +153,7 @@ public class Server extends Thread {
                     final Socket socket = serverSocket.accept();
                     LOGGER.info("Server přijal nové spojení.");
 
-                    final Client client = new Client(socket);
+                    final Client client = new Client(socket, writerThread);
                     this.insertClientToListOrQueue(client);
                 } catch (SocketTimeoutException e) {}
             }
@@ -163,6 +169,11 @@ public class Server extends Thread {
             clientDispatcher.shutdown();
             try {
                 clientDispatcher.join();
+            } catch (InterruptedException e) {}
+            LOGGER.info("Ukončuji writer thread");
+            writerThread.shutdown();
+            try {
+                writerThread.join();
             } catch (InterruptedException e) {}
             LOGGER.info("Naslouchací vlákno bylo úspěšně ukončeno.");
 
