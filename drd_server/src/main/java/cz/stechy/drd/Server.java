@@ -10,9 +10,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.slf4j.Logger;
@@ -34,12 +32,11 @@ public class Server extends Thread {
     // Nastavení serveru
     private final CmdParser settings;
     private final int maxClients;
-    private final int waitingQueueSize;
 
     ExecutorService pool;
     private boolean running = false;
     private final List<Client> clients = new ArrayList<>();
-    private final Queue<Client> waitingQueue = new ConcurrentLinkedQueue<>();
+    private final ClientDispatcher clientDispatcher;
 
     public static void main(String[] args) throws InterruptedException {
         final Server server = new Server(new CmdParser().parse(args));
@@ -62,7 +59,9 @@ public class Server extends Thread {
         LOGGER.info("Spouštím server.");
         this.settings = parser;
         this.maxClients = settings.getInteger(CmdParser.CLIENTS_COUNT, DEFAULT_MAX_CLIENTS);
-        this.waitingQueueSize = settings.getInteger(CmdParser.MAX_WAITING_QUEUE, DEFAULT_WAITING_QUEUE_SIZE);
+        final int waitingQueueSize = settings.getInteger(CmdParser.MAX_WAITING_QUEUE, DEFAULT_WAITING_QUEUE_SIZE);
+
+        this.clientDispatcher = new ClientDispatcher(waitingQueueSize);
         init();
     }
 
@@ -116,11 +115,19 @@ public class Server extends Thread {
         if (clients.size() < maxClients) {
             LOGGER.info("Přidávám klienta do kolekce klientů a spouštím komunikaci.");
             clients.add(client);
+            client.setConnectionClosedListener(() -> {
+                LOGGER.info("Odebírám klienta ze seznamu na serveru.");
+                clients.remove(client);
+                LOGGER.info("Počet připojených klientů: " + clients.size());
+                if (clientDispatcher.hasClientInQueue()) {
+                    LOGGER.info("V čekací listině se našel klient, který by rád komunikoval.");
+                    this.insertClientToListOrQueue(clientDispatcher.getClientFromQueue());
+                }
+            });
             pool.submit(client);
         } else {
-            if (waitingQueue.size() < waitingQueueSize) {
+            if (clientDispatcher.addClientToQueue(client)) {
                 LOGGER.info("Přidávám klienta na čekací listinu.");
-                waitingQueue.add(client);
             } else {
                 LOGGER.warn("Odpojuji klienta od serveru. Je připojeno příliš mnoho uživatelů.");
                 client.close();
@@ -130,6 +137,7 @@ public class Server extends Thread {
 
     @Override
     public void run() {
+        clientDispatcher.start();
         try (ServerSocket serverSocket = new ServerSocket(SERVER_PORT)) {
             serverSocket.setSoTimeout(5000);
             LOGGER.info(String.format("Server naslouchá na portu: %d.", serverSocket.getLocalPort()));
@@ -140,28 +148,23 @@ public class Server extends Thread {
                     LOGGER.info("Server přijal nové spojení.");
 
                     final Client client = new Client(socket);
-                    client.setConnectionClosedListener(() -> {
-                        LOGGER.info("Odebírám klienta ze seznamu na serveru.");
-                        clients.remove(client);
-                        LOGGER.info("Počet připojených klientů: " + clients.size());
-                        if (!waitingQueue.isEmpty()) {
-                            LOGGER.info("V čekací listině se našel klient, který by rád komunikoval.");
-                            this.insertClientToListOrQueue(waitingQueue.poll());
-                        }
-                    });
-
                     this.insertClientToListOrQueue(client);
-//                    clients.add(client);
-//                    pool.submit(client);
                 } catch (SocketTimeoutException e) {}
             }
 
             LOGGER.info("Ukončuji server.");
+            LOGGER.info("Odpojuji připojené klienty.");
             for (Client client : clients) {
                 client.disconnect();
             }
+            LOGGER.info("Ukončuji činnost thread poolu.");
             pool.shutdown();
-            LOGGER.info("Naslouchací vlákno bylo ukončeno.");
+            LOGGER.info("Ukončuji client dispatcher.");
+            clientDispatcher.shutdown();
+            try {
+                clientDispatcher.join();
+            } catch (InterruptedException e) {}
+            LOGGER.info("Naslouchací vlákno bylo úspěšně ukončeno.");
 
         } catch (IOException e) {
             e.printStackTrace();

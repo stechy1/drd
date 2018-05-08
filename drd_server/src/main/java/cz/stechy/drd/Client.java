@@ -17,7 +17,7 @@ public class Client implements Runnable {
 
     private final Socket socket;
     private final InputStream inputStream;
-    private final ObjectOutputStream writer;
+    final ObjectOutputStream writer;
 
     private OnConnectionClosedListener connectionClosedListener;
     private boolean interrupt = false;
@@ -33,9 +33,6 @@ public class Client implements Runnable {
     public void run() {
         LOGGER.info("Spouštím nekonečnou smyčku pro komunikaci s klientem.");
         try (ObjectInputStream reader = new ObjectInputStream(inputStream)) {
-            //try(BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-//            String received;
-            //while((received = reader.readLine()) != null && !interrupt) {
             Object received;
             while ((received = reader.readObject()) != null && !interrupt) {
                 LOGGER.debug(String.format("Bylo přijato: '%s'", received));
