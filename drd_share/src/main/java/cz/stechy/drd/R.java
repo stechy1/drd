@@ -46,6 +46,7 @@ public final class R {
         public static final String WARRIOR = "warrior";
         public static final String WIZARD = "wizard";
         public static final String MONEY_XP = "money_xp";
+        public static final String SERVER = "server";
         public static final String SETTINGS = "settings";
         public static final String ITEM_ARMOR = "item_armor";
         public static final String ITEM_BACKPACK = "item_backpack";
@@ -441,7 +442,6 @@ public final class R {
 
         public static class Icon {
 
-            public static final String IMPORT = "/images/icon/import.png";
             public static final String ABOUT = "/images/icon/about.png";
             public static final String ADD = "/images/icon/add.png";
             public static final String BANK = "/images/icon/bank.png";
@@ -461,6 +461,7 @@ public final class R {
             public static final String GENERATE = "/images/icon/generate.png";
             public static final String HAND_CLICK = "/images/icon/hand_click.png";
             public static final String HELP = "/images/icon/help.png";
+            public static final String IMPORT = "/images/icon/import.png";
             public static final String LOGIN = "/images/icon/login.png";
             public static final String MANA = "/images/icon/mana.png";
             public static final String NEW = "/images/icon/new.png";
@@ -485,7 +486,6 @@ public final class R {
         }
 
         public static final String LOGO = "/images/logo.png";
-
         public static class Source {
 
             public static final String LOGIN = "/images/source/login.png";

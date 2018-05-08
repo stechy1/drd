@@ -1,69 +1,15 @@
 group 'cz.stechy'
 version 'alfa-0.1'
 
-
-buildscript {
-    dependencies {
-        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
-    }
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-    }
-}
-
 apply plugin: 'java'
-apply plugin: 'javafx-gradle-plugin'
 
 sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-task buildResources(type: Exec) {
-    println 'Generuji soubor R.java'
-    commandLine 'python3', './scripts/src/resource_generator.py'
-}
-processResources.dependsOn buildResources
 
 repositories {
-    jcenter()
-    maven { url 'https://jitpack.io' }
-}
-
-jfx {
-    mainClass = 'cz.stechy.drd.App'
-    vendor = 'Petr Štechmüller'
-    additionalAppResources = 'src/main/resources'
-    jfxMainAppJarName = "drd.jar"
-//    copyAdditionalAppResourcesToJar = true
-}
-
-javadoc {
-    options.charSet = 'UTF-8'
+    mavenCentral()
 }
 
 dependencies {
 
     compile project(':drd_share')
-
-    compile group: 'com.github.stechy1', name: 'screens', version: 'v2.3'
-    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'
-    compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.3.0'
-    compile group: 'com.github.harawata', name: 'appdirs', version: '1.0.0-SNAPSHOT'
-    compile group: 'com.google.firebase', name: 'firebase-admin', version: '5.8.0'
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
-
-    compile group: 'com.jfoenix', name: 'jfoenix', version: '8.0.1'
-
-
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    // TestFX dependencies
-    testCompile group: 'org.testfx', name: 'testfx-core', version: '4.0.6-alpha'
-    testCompile group: 'org.testfx', name: 'testfx-junit', version: '4.0.6-alpha'
-    testCompile group: 'org.testfx', name: 'testfx-legacy', version: '4.0.6-alpha'
-    testCompile group: 'org.testfx', name: 'openjfx-monocle', version: '8u76-b04'
-    testCompile group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.0'
-
 }
