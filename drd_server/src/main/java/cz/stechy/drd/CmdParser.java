@@ -22,6 +22,7 @@ public class CmdParser {
     public static final String FB_URL = "fb_url";
     // Konstanta parametru definujícího maximální počet klientů čekajících ve frontě na spojení
     public static final String MAX_WAITING_QUEUE = "max_waiting_queue";
+    public static final String PORT = "port";
 
     private final Map<String, String> map = new HashMap<>();
 
