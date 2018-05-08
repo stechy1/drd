@@ -203,6 +203,7 @@
         <Tooltip text="%drd_main_menu_tools_shop"/>
       </tooltip>
     </JFXButton>
+    <JFXButton onAction="#handleShowServer" styleClass="toolbar-button"/>
     <Separator/>
     <Region HBox.hgrow="ALWAYS"/>
     <JFXButton fx:id="btnLevelUp" onAction="#handleMenuLevelUp"

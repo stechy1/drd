@@ -46,6 +46,7 @@ public final class R {
         public static final String WARRIOR = "warrior";
         public static final String WIZARD = "wizard";
         public static final String MONEY_XP = "money_xp";
+        public static final String SERVER = "server";
         public static final String SETTINGS = "settings";
         public static final String ITEM_ARMOR = "item_armor";
         public static final String ITEM_BACKPACK = "item_backpack";

@@ -1,4 +1,5 @@
 rootProject.name = 'drd'
 include 'drd_share'
 include 'drd_client'
+include 'drd_server'
 

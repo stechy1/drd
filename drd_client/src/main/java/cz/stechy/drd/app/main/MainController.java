@@ -466,5 +466,9 @@ public class MainController extends BaseController implements Initializable {
         startNewDialogForResult(R.FXML.LEVELUP, ACTION_LEVEL_UP, bundle);
     }
 
+    public void handleShowServer(ActionEvent actionEvent) {
+        startNewDialog("server");
+    }
+
     // endregion
 }
