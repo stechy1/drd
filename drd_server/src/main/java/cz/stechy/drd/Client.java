@@ -1,6 +1,7 @@
 package cz.stechy.drd;
 
 import cz.stechy.drd.net.message.IMessage;
+import cz.stechy.drd.net.message.SimpleResponce;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,11 +37,12 @@ public class Client implements Runnable {
     public void run() {
         LOGGER.info("Spouštím nekonečnou smyčku pro komunikaci s klientem.");
         try (ObjectInputStream reader = new ObjectInputStream(inputStream)) {
-            Object received;
-            while ((received = reader.readObject()) != null && !interrupt) {
-                LOGGER.debug(String.format("Bylo přijato: '%s'", received));
-                writer.writeObject("responce" + received);
-                if (received.equals("konec")) {
+            LOGGER.info("ObjectInputStream byl úspěšně vytvořen.");
+            IMessage received;
+            while ((received = (IMessage) reader.readObject()) != null && !interrupt) {
+                LOGGER.info(String.format("Bylo přijato: '%s'", received));
+                sendMessage(new SimpleResponce("responce: " + received.toString()));
+                if (received.toString().equals("konec")) {
                     interrupt = true;
                 }
             }
@@ -52,6 +54,7 @@ public class Client implements Runnable {
             // Nikdy by nemělo nastat
             LOGGER.error("Nebyla nalezena třída.", e);
         } finally {
+            LOGGER.info("Volám connectionClosedListener.");
             if (connectionClosedListener != null) {
                 connectionClosedListener.onConnectionClosed();
             }
@@ -73,11 +76,9 @@ public class Client implements Runnable {
         }
     }
 
-    public void disconnect() {
-        interrupt = true;
-    }
-
     public void sendMessage(IMessage message) {
+        LOGGER.info(
+            String.format("Přidávám novou zprávu do fronty pro klienta: '%s'", message.toString()));
         writerThread.sendMessage(writer, message);
     }
 

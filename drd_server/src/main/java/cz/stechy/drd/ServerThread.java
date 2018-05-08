@@ -62,6 +62,8 @@ public class ServerThread extends Thread {
 
     @Override
     public synchronized void start() {
+        clientDispatcher.start();
+        writerThread.start();
         running = true;
         super.start();
     }
@@ -85,7 +87,7 @@ public class ServerThread extends Thread {
             LOGGER.info("Ukončuji server.");
             LOGGER.info("Odpojuji připojené klienty.");
             for (Client client : clients) {
-                client.disconnect();
+                client.close();
             }
             LOGGER.info("Ukončuji činnost thread poolu.");
             pool.shutdown();

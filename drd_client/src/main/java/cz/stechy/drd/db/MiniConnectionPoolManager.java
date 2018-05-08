@@ -116,7 +116,7 @@ public class MiniConnectionPoolManager {
      *
      * <p>If <code>maxConnections</code> connections are already in use, the method
      * waits until a connection becomes available or <code>timeout</code> seconds elapsed.
-     * When the application is finished using the connection, it must close it
+     * When the application is finished using the connection, it must disconnect it
      * in order to return it to the pool.
      *
      * @return a new <code>Connection</code> object.
@@ -244,7 +244,7 @@ public class MiniConnectionPoolManager {
         // JDBC driver which we ignore and assume that the connection is not valid.
         // When isValid() returns false, the JDBC driver should have already called connectionErrorOccurred()
         // and the PooledConnection has been removed from the pool, i.e. the PooledConnection will
-        // not be added to recycledConnections when Connection.close() is called.
+        // not be added to recycledConnections when Connection.disconnect() is called.
         // But to be sure that this works even with a faulty JDBC driver, we call purgeConnection().
         purgeConnection(conn);
         return null;
@@ -256,11 +256,11 @@ public class MiniConnectionPoolManager {
             doPurgeConnection = true;
             // (A potential problem of this program logic is that setting the doPurgeConnection flag
             // has an effect only if the JDBC driver calls connectionClosed() synchronously within
-            // Connection.close().)
+            // Connection.disconnect().)
             conn.close();
         } catch (SQLException ignored) {
         }
-        // ignore exception from close()
+        // ignore exception from disconnect()
         finally {
             doPurgeConnection = false;
         }
@@ -350,7 +350,7 @@ public class MiniConnectionPoolManager {
      * Returns the number of active (open) connections of this pool.
      *
      * <p>This is the number of <code>Connection</code> objects that have been
-     * issued by {@link #getConnection()}, for which <code>Connection.close()</code>
+     * issued by {@link #getConnection()}, for which <code>Connection.disconnect()</code>
      * has not yet been called.
      *
      * @return the number of active connections.
@@ -363,7 +363,7 @@ public class MiniConnectionPoolManager {
      * Returns the number of inactive (unused) connections in this pool.
      *
      * <p>This is the number of internally kept recycled connections,
-     * for which <code>Connection.close()</code> has been called and which
+     * for which <code>Connection.disconnect()</code> has been called and which
      * have not yet been reused.
      *
      * @return the number of inactive connections.

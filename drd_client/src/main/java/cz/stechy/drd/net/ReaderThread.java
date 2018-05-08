@@ -1,5 +1,6 @@
 package cz.stechy.drd.net;
 
+import cz.stechy.drd.net.message.IMessage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -30,9 +31,10 @@ public class ReaderThread extends Thread {
     @Override
     public void run() {
         LOGGER.info("Spouštím nekonečnou smyčku pro komunikaci se serverem.");
-        try (ObjectInputStream reader = new ObjectInputStream(inputStream)) {
-            Object received;
-            while((received = reader.readObject()) != null && !interrupt) {
+        try (final ObjectInputStream reader = new ObjectInputStream(inputStream)) {
+            IMessage received;
+            while((received = (IMessage) reader.readObject()) != null && !interrupt) {
+                LOGGER.info(String.format("Byla přijata nějaká data: '%s'", received.toString()));
                 listener.onDataReceived(received);
             }
         } catch (IOException e) {

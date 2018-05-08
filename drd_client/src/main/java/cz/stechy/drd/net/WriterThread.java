@@ -1,5 +1,6 @@
 package cz.stechy.drd.net;
 
+import cz.stechy.drd.net.message.IMessage;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -15,7 +16,7 @@ public class WriterThread extends Thread {
     private static final Logger LOGGER = LoggerFactory.getLogger(WriterThread.class);
 
     private final Semaphore semaphore = new Semaphore(0);
-    private final Queue<String> messageQueue = new ConcurrentLinkedQueue<>();
+    private final Queue<IMessage> messageQueue = new ConcurrentLinkedQueue<>();
     private final ObjectOutputStream writer;
     private boolean interrupt = false;
 
@@ -43,10 +44,11 @@ public class WriterThread extends Thread {
 
             LOGGER.info("Vzbudil jsme se na semaforu, jdu pracovat.");
             while (!messageQueue.isEmpty()) {
-                final String msg = messageQueue.poll();
-                LOGGER.info(String.format("Odesílám zprávu: '%s'", msg));
+                final IMessage msg = messageQueue.poll();
+                LOGGER.info(String.format("Odesílám zprávu: '%s'", msg.toString()));
                 try {
                     writer.writeObject(msg);
+                    writer.flush();
                     LOGGER.info("Zpráva byla úspěšně odeslána.");
                 } catch (IOException e) {
                     LOGGER.info("Zprávu se nepodařilo odeslat.", e);
@@ -55,9 +57,10 @@ public class WriterThread extends Thread {
         } while(!interrupt);
     }
 
-    public void addMessageToQueue(String message) {
+    public void addMessageToQueue(IMessage message) {
         LOGGER.info(String.format("Přidávám zprávu '%s' do fronty zpráv.", message));
         messageQueue.add(message);
+        LOGGER.info("Probouzím vlákno spící na semaforu.");
         semaphore.release();
     }
 }

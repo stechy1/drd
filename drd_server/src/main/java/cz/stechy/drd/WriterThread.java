@@ -24,6 +24,7 @@ public class WriterThread extends Thread {
 
     public void sendMessage(ObjectOutputStream outputStream, IMessage message) {
         messageQueue.add(new QueueTuple(outputStream, message));
+        LOGGER.info("Probouzím vlákno na semaforu.");
         semaphore.release();
     }
 
@@ -42,10 +43,14 @@ public class WriterThread extends Thread {
                 } catch (InterruptedException e) {}
             }
 
+            LOGGER.info("Vzbudil jsem se na semaforu, jdu pracovat.");
             while(!messageQueue.isEmpty()) {
                 final QueueTuple entry = messageQueue.poll();
+                LOGGER.info(String.format("Odesílám zprávu: '%s'", entry.message.toString()));
                     try {
                         entry.writer.writeObject(entry.message);
+                        entry.writer.flush();
+                        LOGGER.info("Zpráva byla úspěšně odeslána.");
                     } catch (IOException e) {
                         LOGGER.info("Zprávu se nepodařio doručit.");
                     }

@@ -39,7 +39,7 @@ public class ClientDispatcher extends Thread {
         while(!interupt) {
             while(waitingQueue.isEmpty() && !interupt) {
                 try {
-                    LOGGER.debug("Jdu spát na semaforu");
+                    LOGGER.info("Jdu spát na semaforu");
                     semaphore.acquire();
                 } catch (InterruptedException e) {}
             }

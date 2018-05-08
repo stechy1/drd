@@ -16,7 +16,7 @@
       <padding>
         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
       </padding>
-      <TextField fx:id="txtMessage" HBox.hgrow="ALWAYS"/>
+      <TextField fx:id="txtMessage" HBox.hgrow="ALWAYS" onKeyPressed="#handleKeyPressed"/>
       <Button onAction="#handleSend" mnemonicParsing="false" text="Odeslat"/>
     </HBox>
   </bottom>
