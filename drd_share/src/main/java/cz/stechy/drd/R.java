@@ -420,6 +420,7 @@ public final class R {
         public static final String TERRAIN_CLOSE_EASY = "drd_terrain_close_easy";
         public static final String TERRAIN_CLOSE_HARD = "drd_terrain_close_hard";
         public static final String TERRAIN_CLOSE_UNUSABLE = "drd_terrain_close_unusable";
+        public static final String SERVER_STATUS = "drd_server_status";
     }
 
     public static class Config {
@@ -442,6 +443,7 @@ public final class R {
 
         public static class Icon {
 
+            public static final String HELP = "/images/icon/help.png";
             public static final String ABOUT = "/images/icon/about.png";
             public static final String ADD = "/images/icon/add.png";
             public static final String BANK = "/images/icon/bank.png";
@@ -460,7 +462,6 @@ public final class R {
             public static final String FIGHT = "/images/icon/fight.png";
             public static final String GENERATE = "/images/icon/generate.png";
             public static final String HAND_CLICK = "/images/icon/hand_click.png";
-            public static final String HELP = "/images/icon/help.png";
             public static final String IMPORT = "/images/icon/import.png";
             public static final String LOGIN = "/images/icon/login.png";
             public static final String MANA = "/images/icon/mana.png";
@@ -473,6 +474,8 @@ public final class R {
             public static final String REMOVE_ONLINE = "/images/icon/remove_online.png";
             public static final String SAVE = "/images/icon/save.png";
             public static final String SAVE_AS = "/images/icon/save_as.png";
+            public static final String SERVER_OFFLINE = "/images/icon/server_offline.png";
+            public static final String SERVER_ONLINE = "/images/icon/server_online.png";
             public static final String SETTINGS = "/images/icon/settings.png";
             public static final String SHOP = "/images/icon/shop.png";
             public static final String START = "/images/icon/start.png";

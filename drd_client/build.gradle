@@ -35,7 +35,7 @@ jfx {
     mainClass = 'cz.stechy.drd.App'
     vendor = 'Petr Štechmüller'
     additionalAppResources = 'src/main/resources'
-    jfxMainAppJarName = "drd.jar"
+    jfxMainAppJarName = "drdd.jar"
 //    copyAdditionalAppResourcesToJar = true
 }
 

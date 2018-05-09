@@ -3,6 +3,7 @@ package cz.stechy.drd.app.main;
 import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.AppSettings;
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Images.Icon;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.app.InjectableChild;
 import cz.stechy.drd.app.hero.HeroHelper;
@@ -15,6 +16,7 @@ import cz.stechy.drd.app.moneyxp.MoneyXpController;
 import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
+import cz.stechy.drd.net.ClientCommunicator;
 import cz.stechy.drd.service.HeroService;
 import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.Translator;
@@ -40,6 +42,9 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -105,6 +110,8 @@ public class MainController extends BaseController implements Initializable {
     @FXML
     private Tab tabProfession;
 
+    private ImageView serverIndicator;
+
     // endregion
 
     private final BooleanProperty useFirebase = new SimpleBooleanProperty(this, "useFirebase",
@@ -114,6 +121,7 @@ public class MainController extends BaseController implements Initializable {
     private final HeroService heroService;
     private final UserService userService;
     private final Translator translator;
+    private final ClientCommunicator communicator;
 
     private MainScreen[] controllers;
     private String title;
@@ -125,12 +133,13 @@ public class MainController extends BaseController implements Initializable {
     // region Constructors
 
     public MainController(HeroService heroService, UserService userService, AppSettings settings,
-        Translator translator) {
+        Translator translator, ClientCommunicator communicator) {
         this.heroService = heroService;
         this.userService = userService;
         this.translator = translator;
         this.hero = heroService.heroProperty();
         this.user = userService.userProperty();
+        this.communicator = communicator;
         settings.addListener(R.Config.USE_ONLINE_DATABASE, this::useOnlineDatabaseHandler);
         useFirebase.set(Boolean.parseBoolean(settings.getProperty(R.Config.USE_ONLINE_DATABASE)));
     }
@@ -165,6 +174,21 @@ public class MainController extends BaseController implements Initializable {
     private void resetChildScreensAndHero() {
         closeChildScreens();
         heroService.resetHero();
+    }
+
+    private void initServerIndicator() {
+        this.serverIndicator = new ImageView();
+        this.serverIndicator.setFitWidth(24);
+        this.serverIndicator.setFitHeight(24);
+        this.serverIndicator.imageProperty().bind(Bindings.createObjectBinding(() -> {
+            final boolean connected = communicator.isConnected();
+            return new Image(getClass().getResourceAsStream(connected ? Icon.SERVER_ONLINE : Icon.SERVER_OFFLINE));
+        }, communicator.connectedProperty()));
+        final AnchorPane root = (AnchorPane) getRoot().getParent();
+        AnchorPane.setBottomAnchor(this.serverIndicator, 4.0);
+        AnchorPane.setRightAnchor(this.serverIndicator, 4.0);
+        Tooltip.install(serverIndicator, new Tooltip(translator.translate(R.Translate.SERVER_STATUS)));
+        root.getChildren().add(serverIndicator);
     }
 
     // region Method handlers
@@ -246,6 +270,7 @@ public class MainController extends BaseController implements Initializable {
     @Override
     protected void onCreate(Bundle bundle) {
         heroService.resetHero();
+        initServerIndicator();
     }
 
     @Override
