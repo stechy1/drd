@@ -52,7 +52,7 @@ public final class ClientCommunicator {
     public ClientCommunicator() {
         socket.addListener(this::socketListener);
         connectedServer.bind(Bindings.createStringBinding(
-            () -> connectionState.get().getKeyForTranslation(),
+            () -> String.format("%s:%d", host.get(), port.get()),
             host, port, connectionState));
     }
     // endregion
@@ -64,7 +64,6 @@ public final class ClientCommunicator {
         if (newSocket == null) {
             readerThread = null;
             writerThread = null;
-            changeState(ConnectionState.DISCONNECTED);
             return;
         }
 
@@ -74,7 +73,6 @@ public final class ClientCommunicator {
 
             readerThread.start();
             writerThread.start();
-            changeState(ConnectionState.CONNECTED);
         } catch (IOException e) {
             LOGGER.error("Vyskytl se problém při vytváření komunikace se serverem.");
         }
@@ -107,7 +105,7 @@ public final class ClientCommunicator {
      */
     public CompletableFuture<Boolean> connect(String host, int port) {
         if (isConnected()) {
-            return CompletableFuture.completedFuture(null);
+            return CompletableFuture.completedFuture(false);
         }
 
         changeState(ConnectionState.CONNECTING);
@@ -126,8 +124,11 @@ public final class ClientCommunicator {
                 if (socket != null) {
                     this.host.set(host);
                     this.port.set(port);
+                    changeState(ConnectionState.CONNECTED);
                 } else {
                     changeState(ConnectionState.DISCONNECTED);
+                    this.host.set(null);
+                    this.port.set(-1);
                 }
                 return socket != null;
             }, ThreadPool.JAVAFX_EXECUTOR);
@@ -167,6 +168,7 @@ public final class ClientCommunicator {
         }
 
         this.socket.set(null);
+        changeState(ConnectionState.DISCONNECTED);
     }
 
     /**
