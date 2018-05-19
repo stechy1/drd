@@ -3,8 +3,6 @@ package cz.stechy.drd.app.main;
 import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.AppSettings;
 import cz.stechy.drd.R;
-import cz.stechy.drd.R.Images.Icon;
-import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.app.InjectableChild;
 import cz.stechy.drd.app.hero.HeroHelper;
 import cz.stechy.drd.app.hero.levelup.LevelUpController;
@@ -17,6 +15,7 @@ import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.net.ClientCommunicator;
+import cz.stechy.drd.net.ConnectionState;
 import cz.stechy.drd.service.HeroService;
 import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.Translator;
@@ -181,9 +180,16 @@ public class MainController extends BaseController implements Initializable {
         this.serverIndicator.setFitWidth(24);
         this.serverIndicator.setFitHeight(24);
         this.serverIndicator.imageProperty().bind(Bindings.createObjectBinding(() -> {
-            final boolean connected = communicator.isConnected();
-            return new Image(getClass().getResourceAsStream(connected ? Icon.SERVER_ONLINE : Icon.SERVER_OFFLINE));
-        }, communicator.connectedProperty()));
+            final ConnectionState state = communicator.getConnectionState();
+            switch (state) {
+                case CONNECTING:
+                    return new Image(getClass().getResourceAsStream(R.Images.Icon.SERVER_STATUS_CONNECTING));
+                case CONNECTED:
+                    return new Image(getClass().getResourceAsStream(R.Images.Icon.SERVER_STATUS_ONLINE));
+                default:
+                    return new Image(getClass().getResourceAsStream(R.Images.Icon.SERVER_STATUS_OFFLINE));
+            }
+        }, communicator.connectionStateProperty()));
         final AnchorPane root = (AnchorPane) getRoot().getParent();
         AnchorPane.setBottomAnchor(this.serverIndicator, 4.0);
         AnchorPane.setRightAnchor(this.serverIndicator, 4.0);
@@ -302,7 +308,7 @@ public class MainController extends BaseController implements Initializable {
                     .thenAccept(aVoid ->
                     {
                         showNotification(new Notification(String.format(translator.translate(
-                            Translate.NOTIFY_HERO_IS_CREATED), hero.getName())));
+                            R.Translate.NOTIFY_HERO_IS_CREATED), hero.getName())));
                         heroService.loadAsync(hero.getId());
                     });
 
@@ -322,7 +328,7 @@ public class MainController extends BaseController implements Initializable {
                     })
                     .thenAccept(h ->
                         showNotification(new Notification(String.format(translator.translate(
-                            Translate.NOTIFY_HERO_IS_LOADED), h.getName()))));
+                            R.Translate.NOTIFY_HERO_IS_LOADED), h.getName()))));
                 break;
             case ACTION_LOGIN:
                 if (statusCode != RESULT_SUCCESS) {

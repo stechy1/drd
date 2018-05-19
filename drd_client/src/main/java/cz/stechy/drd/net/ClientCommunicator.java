@@ -11,10 +11,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import javafx.beans.property.BooleanProperty;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +35,13 @@ public final class ClientCommunicator {
     // region Variables
 
     private final ObjectProperty<Socket> socket = new SimpleObjectProperty<>(this, "socket", null);
-    private final BooleanProperty connected = new SimpleBooleanProperty(this, "connected", false);
+    private final ObjectProperty<ConnectionState> connectionState = new SimpleObjectProperty<>(this,
+        "connectionState", ConnectionState.DISCONNECTED);
     private final HashMap<MessageType, List<OnDataReceivedListener>> listeners = new HashMap<>();
+    private final StringProperty host = new SimpleStringProperty(this, "host", null);
+    private final IntegerProperty port = new SimpleIntegerProperty(this, "port", -1);
+    private final StringProperty connectedServer = new SimpleStringProperty(this, "connectedServer",
+        null);
     private ReaderThread readerThread;
     private WriterThread writerThread;
 
@@ -42,8 +50,10 @@ public final class ClientCommunicator {
     // region Constructors
 
     public ClientCommunicator() {
-        connected.bind(socket.isNotNull());
         socket.addListener(this::socketListener);
+        connectedServer.bind(Bindings.createStringBinding(
+            () -> connectionState.get().getKeyForTranslation(),
+            host, port, connectionState));
     }
     // endregion
 
@@ -54,6 +64,7 @@ public final class ClientCommunicator {
         if (newSocket == null) {
             readerThread = null;
             writerThread = null;
+            changeState(ConnectionState.DISCONNECTED);
             return;
         }
 
@@ -63,6 +74,7 @@ public final class ClientCommunicator {
 
             readerThread.start();
             writerThread.start();
+            changeState(ConnectionState.CONNECTED);
         } catch (IOException e) {
             LOGGER.error("Vyskytl se problém při vytváření komunikace se serverem.");
         }
@@ -79,6 +91,10 @@ public final class ClientCommunicator {
         }
     };
 
+    private void changeState(ConnectionState state) {
+        connectionState.set(state);
+    }
+
     // endregion
 
     // region Public methods
@@ -89,10 +105,12 @@ public final class ClientCommunicator {
      * @param host Adresa serveru
      * @param port Port, na kterém server naslouchá
      */
-    public CompletableFuture<Void> connect(String host, int port) {
+    public CompletableFuture<Boolean> connect(String host, int port) {
         if (isConnected()) {
             return CompletableFuture.completedFuture(null);
         }
+
+        changeState(ConnectionState.CONNECTING);
 
         return CompletableFuture.supplyAsync(() -> {
             final Socket socket = new Socket();
@@ -100,12 +118,18 @@ public final class ClientCommunicator {
                 socket.connect(new InetSocketAddress(host, port), 3000);
                 return socket;
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                return null;
             }
         }, ThreadPool.COMMON_EXECUTOR)
             .thenApplyAsync(socket -> {
                 this.socket.set(socket);
-                return null;
+                if (socket != null) {
+                    this.host.set(host);
+                    this.port.set(port);
+                } else {
+                    changeState(ConnectionState.DISCONNECTED);
+                }
+                return socket != null;
             }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
@@ -147,7 +171,6 @@ public final class ClientCommunicator {
 
     /**
      * Pošle zprávu na server
-     * @param message
      */
     public void sendMessage(IMessage message) {
         writerThread.addMessageToQueue(message);
@@ -175,7 +198,8 @@ public final class ClientCommunicator {
      * @param messageType {@link MessageType} Typ zprávy
      * @param listener {@link OnDataReceivedListener} Listener
      */
-    public void unregisterMessageObserver(MessageType messageType, OnDataReceivedListener listener) {
+    public void unregisterMessageObserver(MessageType messageType,
+        OnDataReceivedListener listener) {
         List<OnDataReceivedListener> listenerList = listeners.get(messageType);
         if (listenerList == null) {
             return;
@@ -188,12 +212,24 @@ public final class ClientCommunicator {
 
     // region Getters & Setters
 
-    public boolean isConnected() {
-        return connected.get();
+    public ConnectionState getConnectionState() {
+        return connectionState.get();
     }
 
-    public BooleanProperty connectedProperty() {
-        return connected;
+    public ObjectProperty<ConnectionState> connectionStateProperty() {
+        return connectionState;
+    }
+
+    public boolean isConnected() {
+        return connectionState.get() == ConnectionState.CONNECTED;
+    }
+
+    public String getConnectedServer() {
+        return connectedServer.get();
+    }
+
+    public StringProperty connectedServerProperty() {
+        return connectedServer;
     }
 
     // endregion
