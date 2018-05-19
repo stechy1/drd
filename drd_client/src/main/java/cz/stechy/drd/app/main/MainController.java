@@ -381,6 +381,7 @@ public class MainController extends BaseController implements Initializable {
     @Override
     protected void onClose() {
         closeChildScreens();
+        communicator.disconnect();
     }
 
     // region Button handlers
