@@ -86,7 +86,10 @@ public class ServerController extends BaseController implements Initializable {
         setTitle(title);
     }
 
-    public void handleConnect(ActionEvent actionEvent) {
+    // region Button handler
+
+    @FXML
+    private void handleConnect(ActionEvent actionEvent) {
         final String hostPort = txtHostPort.textProperty().get();
         final String host = hostPort.substring(0, hostPort.indexOf(":"));
         final String portRaw = hostPort.substring(hostPort.indexOf(":") + 1);
@@ -111,4 +114,11 @@ public class ServerController extends BaseController implements Initializable {
             ((Parent)(actionEvent.getSource())).getScene().setCursor(Cursor.DEFAULT);
         });
     }
+
+    @FXML
+    private void handleDisconnect(ActionEvent actionEvent) {
+        communicator.disconnect();
+    }
+
+    // endregion
 }
