@@ -4,6 +4,9 @@ import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageType;
+import cz.stechy.drd.net.message.ServerStatusMessage;
+import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatus;
+import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatusData;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -42,6 +45,7 @@ public final class ClientCommunicator {
     private final IntegerProperty port = new SimpleIntegerProperty(this, "port", -1);
     private final StringProperty connectedServer = new SimpleStringProperty(this, "connectedServer",
         null);
+    private final ObjectProperty<ServerStatus> serverStatus = new SimpleObjectProperty<>(this, "serverStatus", ServerStatus.EMPTY);
     private ReaderThread readerThread;
     private WriterThread writerThread;
 
@@ -64,6 +68,7 @@ public final class ClientCommunicator {
         if (newSocket == null) {
             readerThread = null;
             writerThread = null;
+            unregisterMessageObserver(MessageType.SERVER_STATUS, this.serverStatusListener);
             return;
         }
 
@@ -73,6 +78,7 @@ public final class ClientCommunicator {
 
             readerThread.start();
             writerThread.start();
+            registerMessageObserver(MessageType.SERVER_STATUS, this.serverStatusListener);
         } catch (IOException e) {
             LOGGER.error("Vyskytl se problém při vytváření komunikace se serverem.");
         }
@@ -92,6 +98,13 @@ public final class ClientCommunicator {
     private void changeState(ConnectionState state) {
         connectionState.set(state);
     }
+
+    private final OnDataReceivedListener serverStatusListener = message -> {
+        final ServerStatusMessage statusMessage = (ServerStatusMessage) message;
+        final ServerStatusData status = (ServerStatusData) statusMessage.getData();
+        serverStatus.set(status.serverStatus);
+        System.out.println(status.toString());
+    };
 
     // endregion
 
@@ -242,6 +255,14 @@ public final class ClientCommunicator {
 
     public StringProperty connectedServerProperty() {
         return connectedServer;
+    }
+
+    public ServerStatus getServerStatus() {
+        return serverStatus.get();
+    }
+
+    public ObjectProperty<ServerStatus> serverStatusProperty() {
+        return serverStatus;
     }
 
     // endregion

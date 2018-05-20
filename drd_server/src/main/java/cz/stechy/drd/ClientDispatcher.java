@@ -1,6 +1,6 @@
 package cz.stechy.drd;
 
-import cz.stechy.drd.net.message.KeepAliveMessage;
+import cz.stechy.drd.net.message.ServerStatusMessage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,10 +22,12 @@ public class ClientDispatcher extends Thread {
     private final Queue<Client> waitingQueue = new ConcurrentLinkedQueue<>();
     private final Collection<Client> clientsToRemove = new ArrayList<>();
     private final int waitingQueueSize;
+    private final ServerInfoProvider serverInfoProvider;
 
-    public ClientDispatcher(int waitingQueueSize) {
+    public ClientDispatcher(int waitingQueueSize, ServerInfoProvider serverInfoProvider) {
         super("ClientDispatcher");
         this.waitingQueueSize = waitingQueueSize;
+        this.serverInfoProvider = serverInfoProvider;
     }
 
     public void shutdown() {
@@ -39,14 +41,15 @@ public class ClientDispatcher extends Thread {
         while(!interupt) {
             while(waitingQueue.isEmpty() && !interupt) {
                 try {
-                    LOGGER.info("Jdu spát na semaforu");
+                    LOGGER.info("Jdu spát na semaforu.");
                     semaphore.acquire();
                 } catch (InterruptedException e) {}
             }
 
+            final ServerStatusMessage statusMessage = serverInfoProvider.getServerStatusMessage();
             waitingQueue.iterator().forEachRemaining(client -> {
                 try {
-                    client.writer.writeObject(new KeepAliveMessage());
+                    client.writer.writeObject(statusMessage);
                 } catch (IOException e) {
                     LOGGER.info("Klient neudržel spojení, musím se ho zbavit.");
                     clientsToRemove.add(client);

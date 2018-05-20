@@ -1,7 +1,11 @@
 package cz.stechy.drd;
 
 import cz.stechy.drd.net.message.HelloMessage;
+import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
+import cz.stechy.drd.net.message.ServerStatusMessage;
+import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatus;
+import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatusData;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,7 +17,7 @@ import java.util.concurrent.Executors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServerThread extends Thread {
+public class ServerThread extends Thread implements ServerInfoProvider {
 
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerThread.class);
@@ -24,15 +28,34 @@ public class ServerThread extends Thread {
     private final int port;
     private final int maxClients;
     private final ExecutorService pool;
+    private final String serverName ="Default DrD server";
     private boolean running = false;
 
     public ServerThread(int port, int maxClients, int waitingQueueSize) {
         super("ServerThread");
         this.port = port;
         this.maxClients = maxClients;
-        this.clientDispatcher = new ClientDispatcher(waitingQueueSize);
+        this.clientDispatcher = new ClientDispatcher(waitingQueueSize, this::getServerStatusMessage);
         this.writerThread = new WriterThread();
         pool = Executors.newFixedThreadPool(maxClients);
+    }
+
+    @Override
+    public ServerStatusMessage getServerStatusMessage() {
+        final int connectedClients = clients.size();
+        final int delta = maxClients - connectedClients;
+        ServerStatus status = ServerStatus.EMPTY;
+        if (delta == 0) {
+            status = ServerStatus.FULL;
+        } else if (delta > 0) {
+            status = ServerStatus.HAVE_SPACE;
+        }
+
+        return new ServerStatusMessage(new ServerStatusData(status, connectedClients, maxClients, serverName));
+    }
+
+    private void broadcast(final IMessage message) {
+        clients.forEach(client -> client.sendMessage(message));
     }
 
     private synchronized void insertClientToListOrQueue(Client client) {
@@ -46,10 +69,13 @@ public class ServerThread extends Thread {
                 if (clientDispatcher.hasClientInQueue()) {
                     LOGGER.info("V čekací listině se našel klient, který by rád komunikoval.");
                     this.insertClientToListOrQueue(clientDispatcher.getClientFromQueue());
+                } else {
+                    broadcast(getServerStatusMessage());
                 }
             });
             pool.submit(client);
             client.sendMessage(new HelloMessage(MessageSource.SERVER));
+            broadcast(getServerStatusMessage());
         } else {
             if (clientDispatcher.addClientToQueue(client)) {
                 LOGGER.info("Přidávám klienta na čekací listinu.");
