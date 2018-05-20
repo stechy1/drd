@@ -137,38 +137,48 @@ public final class ClientCommunicator {
     /**
      * Ukončí spojení se serverem
      */
-    public void disconnect() {
+    public CompletableFuture<Boolean> disconnect() {
         if (!isConnected()) {
-            return;
+            return CompletableFuture.completedFuture(false);
         }
 
-        LOGGER.info("Ukončuji spojení se serverem.");
-        try {
-            socket.get().close();
-
-            LOGGER.info("Ukončuji čtecí vlákno.");
-            readerThread.shutdown();
+        return CompletableFuture.supplyAsync(() -> {
+            LOGGER.info("Ukončuji spojení se serverem.");
             try {
-                readerThread.join();
-            } catch (InterruptedException e) {
+                socket.get().close();
+
+                LOGGER.info("Ukončuji čtecí vlákno.");
+                readerThread.shutdown();
+                try {
+                    readerThread.join();
+                } catch (InterruptedException e) {
+                }
+                LOGGER.info("Čtecí vlákno bylo úspěšně ukončeno.");
+
+                LOGGER.info("Ukončuji zapisovací vlákno.");
+                writerThread.shutdown();
+                try {
+                    writerThread.join();
+                } catch (InterruptedException e) {
+                }
+                LOGGER.info("Zapisovací vlákno bylo úspěšně ukončeno.");
+
+                LOGGER.info("Spojení se podařilo ukončit");
+            } catch (IOException e) {
+                LOGGER.error("Nastala neočekávaná chyba při uzavírání socketu.", e);
+                return false;
             }
-            LOGGER.info("Čtecí vlákno bylo úspěšně ukončeno.");
 
-            LOGGER.info("Ukončuji zapisovací vlákno.");
-            writerThread.shutdown();
-            try {
-                writerThread.join();
-            } catch (InterruptedException e) {
-            }
-            LOGGER.info("Zapisovací vlákno bylo úspěšně ukončeno.");
+            return true;
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenApplyAsync(success -> {
+                if (success) {
+                    this.socket.set(null);
+                    changeState(ConnectionState.DISCONNECTED);
+                }
 
-            LOGGER.info("Spojení se podařilo ukončit");
-        } catch (IOException e) {
-            LOGGER.error("Nastala neočekávaná chyba při uzavírání socketu.", e);
-        }
-
-        this.socket.set(null);
-        changeState(ConnectionState.DISCONNECTED);
+                return success;
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     /**

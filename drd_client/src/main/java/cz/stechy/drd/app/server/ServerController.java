@@ -117,7 +117,14 @@ public class ServerController extends BaseController implements Initializable {
 
     @FXML
     private void handleDisconnect(ActionEvent actionEvent) {
-        communicator.disconnect();
+        communicator.disconnect()
+            .thenAccept(success -> {
+                if (success) {
+                    showNotification(new Notification("Spojení bylo ukončeno."));
+                } else {
+                    showNotification(new Notification("Spojení se nezdařilo ukončit."));
+                }
+            });
     }
 
     // endregion
