@@ -17,7 +17,7 @@
   <HBox alignment="CENTER_LEFT" spacing="8.0">
     <Label fx:id="lblConnectedTo"/>
     <Region HBox.hgrow="ALWAYS" />
-    <JFXButton fx:id="btnDisconnect" text="%drd_server_disconnect" onAction="#handleDisconnect" />
+    <JFXButton fx:id="btnDisconnect" text="%drd_server_disconnect" onAction="#handleDisconnect" styleClass="btn, btn-danger, btn-small, btn-raised" />
       <padding>
          <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
       </padding>
@@ -29,6 +29,6 @@
     </padding>
     <JFXTextField fx:id="txtHostPort" labelFloat="true" promptText="%drd_server_host_port" text="localhost:15378" />
     <Region HBox.hgrow="ALWAYS" />
-    <JFXButton fx:id="btnConnect" onAction="#handleConnect" text="%drd_server_connect" />
+    <JFXButton fx:id="btnConnect" onAction="#handleConnect" text="%drd_server_connect" styleClass="btn, btn-primary, btn-small, btn-raised" />
   </HBox>
 </VBox>

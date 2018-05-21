@@ -1,5 +1,7 @@
 package cz.stechy.drd.net;
 
+import cz.stechy.drd.app.server.ServerStatusModel;
+import cz.stechy.drd.net.message.ServerStatusMessage;
 import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatusData;
 import cz.stechy.drd.util.ObservableMergers;
 import java.io.ByteArrayInputStream;
@@ -9,10 +11,11 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
+import java.util.UUID;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
+import javafx.collections.ObservableMap;
 
 /**
  * Třída starající se o nalezení dostupných serverů v lokální síti
@@ -22,7 +25,7 @@ public class LanServerFinder implements Runnable {
     // region Variables
 
     // Kolekce nalezených serverů
-    private final ObservableSet<ServerStatusData> serverSet = FXCollections.observableSet();
+    private final ObservableMap<UUID, ServerStatusModel> serverMap = FXCollections.observableHashMap();
     // Broadcast adresa
     private final InetAddress broadcastAddress;
     // Socket, na kterém se naslouchá
@@ -64,8 +67,16 @@ public class LanServerFinder implements Runnable {
             final ByteArrayInputStream bais = new ByteArrayInputStream(datagramPacket.getData(), datagramPacket.getOffset(), datagramPacket.getLength());
             try {
                 final ObjectInputStream ois = new ObjectInputStream(bais);
-                final ServerStatusData statusData = (ServerStatusData) ois.readObject();
-                Platform.runLater(() -> serverSet.add(statusData));
+                final ServerStatusMessage statusMessage = (ServerStatusMessage) ois.readObject();
+                final ServerStatusData statusData = (ServerStatusData) statusMessage.getData();
+                final UUID serverID = statusData.serverID;
+                Platform.runLater(() -> {
+                    if (serverMap.containsKey(serverID)) {
+                        serverMap.get(serverID).update(statusData);
+                    } else {
+                        serverMap.put(serverID, new ServerStatusModel(statusData, datagramPacket.getAddress()));
+                    }
+                });
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -74,9 +85,9 @@ public class LanServerFinder implements Runnable {
         }
     }
 
-    public ObservableList<ServerStatusData> getServerList() {
-        final ObservableList<ServerStatusData> observableList = FXCollections.observableArrayList();
-        ObservableMergers.listObserveSet(serverSet, observableList);
+    public ObservableList<ServerStatusModel> getServerList() {
+        final ObservableList<ServerStatusModel> observableList = FXCollections.observableArrayList();
+        ObservableMergers.listObserveMap(serverMap, observableList);
 
         return observableList;
     }

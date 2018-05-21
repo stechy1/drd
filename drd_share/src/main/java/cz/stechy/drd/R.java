@@ -13,6 +13,7 @@ public final class R {
         public static final String LABELED_MAX_ACT_VALUE = "labeled_max_act_value";
         public static final String MONEY = "money";
         public static final String PRELOADER = "preloader";
+        public static final String SERVER_STATUS_CELL = "server_status_cell";
         public static final String TIME = "time";
         public static final String VULNERABILITY = "vulnerability";
         public static final String BESTIARY = "bestiary";

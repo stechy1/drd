@@ -195,4 +195,16 @@ public final class ObservableMergers {
             }
         });
     }
+
+    public static <K, V> void listObserveMap(ObservableMap<K, V> map, ObservableList<V> list) {
+        list.setAll(map.values());
+        map.addListener((MapChangeListener<K, V>) c -> {
+            if (c.wasAdded()) {
+                list.add(c.getValueAdded());
+            }
+            if (c.wasRemoved()) {
+                list.remove(c.getValueRemoved());
+            }
+        });
+    }
 }

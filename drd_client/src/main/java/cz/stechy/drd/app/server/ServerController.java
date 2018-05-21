@@ -5,7 +5,6 @@ import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.net.ClientCommunicator;
 import cz.stechy.drd.net.ConnectionState;
 import cz.stechy.drd.net.LanServerFinder;
-import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatusData;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -39,7 +38,7 @@ public class ServerController extends BaseController implements Initializable {
     @FXML
     private Button btnDisconnect;
     @FXML
-    private ListView<ServerStatusData> lvServers; // TODO implementovat vyhledávání serverů
+    private ListView<ServerStatusModel> lvServers;
     @FXML
     private Label lblConnectedTo;
     @FXML
@@ -95,6 +94,7 @@ public class ServerController extends BaseController implements Initializable {
             .bind(txtHostPort.textProperty().isEmpty()
                 .or(disconnected.not()));
 
+        lvServers.setCellFactory(param -> new ServerStatusCell());
         lvServers.setItems(this.serverFinder.getServerList());
     }
 

@@ -6,6 +6,7 @@ import com.google.firebase.FirebaseOptions;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +16,8 @@ public class Server {
     private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
 
     private static final String FB_URL_TEMPLATE = "https://%s.firebaseio.com";
+
+    public static final UUID ID = UUID.randomUUID();
     // Výchozí port serveru = 0 --> automaticky se přiřadí
     private static final int SERVER_PORT = 15378;
     private static final int DEFAULT_MAX_CLIENTS = 3;
