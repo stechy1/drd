@@ -13,7 +13,6 @@ public final class R {
         public static final String LABELED_MAX_ACT_VALUE = "labeled_max_act_value";
         public static final String MONEY = "money";
         public static final String PRELOADER = "preloader";
-        public static final String SERVER_STATUS_CELL = "server_status_cell";
         public static final String TIME = "time";
         public static final String VULNERABILITY = "vulnerability";
         public static final String BESTIARY = "bestiary";
@@ -48,6 +47,7 @@ public final class R {
         public static final String WIZARD = "wizard";
         public static final String MONEY_XP = "money_xp";
         public static final String SERVER = "server";
+        public static final String SERVER_STATUS_CELL = "server_status_cell";
         public static final String SETTINGS = "settings";
         public static final String ITEM_ARMOR = "item_armor";
         public static final String ITEM_BACKPACK = "item_backpack";
