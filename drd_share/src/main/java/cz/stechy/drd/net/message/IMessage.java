@@ -1,5 +1,6 @@
 package cz.stechy.drd.net.message;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 public interface IMessage extends Serializable {
@@ -10,4 +11,7 @@ public interface IMessage extends Serializable {
 
     Object getData();
 
+    default byte[] toByteArray() throws IOException {
+        return new byte[0];
+    }
 }

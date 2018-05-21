@@ -26,12 +26,12 @@ public class Server {
     private final CmdParser settings;
     private final ServerThread serverThread;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         final Server server = new Server(new CmdParser().parse(args));
         server.run();
     }
 
-    private Server(final CmdParser parser) {
+    private Server(final CmdParser parser) throws IOException {
         LOGGER.info("Spouštím server.");
         this.settings = parser;
         final int port = settings.getInteger(CmdParser.PORT, SERVER_PORT);

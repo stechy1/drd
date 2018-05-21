@@ -1,15 +1,19 @@
 package cz.stechy.drd.net.message;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Objects;
 
 public class ServerStatusMessage implements IMessage {
 
     private static final long serialVersionUID = -1429760060957272567L;
 
-    private final ServerStatusData message;
+    private final ServerStatusData statusData;
 
-    public ServerStatusMessage(ServerStatusData message) {
-        this.message = message;
+    public ServerStatusMessage(ServerStatusData statusData) {
+        this.statusData = statusData;
     }
 
     @Override
@@ -24,7 +28,19 @@ public class ServerStatusMessage implements IMessage {
 
     @Override
     public Object getData() {
-        return message;
+        return statusData;
+    }
+
+    @Override
+    public byte[] toByteArray() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(statusData);
+        oos.writeByte(0);
+        final byte[] bytes = baos.toByteArray();
+        assert bytes.length < 1024;
+
+        return bytes;
     }
 
     @Override
@@ -59,6 +75,26 @@ public class ServerStatusMessage implements IMessage {
             this.clientCount = clientCount;
             this.maxClient = maxClient;
             this.serverName = serverName;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ServerStatusData that = (ServerStatusData) o;
+            return clientCount == that.clientCount &&
+                maxClient == that.maxClient &&
+                serverStatus == that.serverStatus &&
+                Objects.equals(serverName, that.serverName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(serverStatus, clientCount, maxClient, serverName);
         }
 
         @Override

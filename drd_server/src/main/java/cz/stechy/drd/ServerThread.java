@@ -25,18 +25,20 @@ public class ServerThread extends Thread implements ServerInfoProvider {
     private final List<Client> clients = new ArrayList<>();
     private final ClientDispatcher clientDispatcher;
     private final WriterThread writerThread;
+    private final MulticastSender multicastSender;
     private final int port;
     private final int maxClients;
     private final ExecutorService pool;
     private final String serverName ="Default DrD server";
     private boolean running = false;
 
-    public ServerThread(int port, int maxClients, int waitingQueueSize) {
+    public ServerThread(int port, int maxClients, int waitingQueueSize) throws IOException {
         super("ServerThread");
         this.port = port;
         this.maxClients = maxClients;
         this.clientDispatcher = new ClientDispatcher(waitingQueueSize, this::getServerStatusMessage);
         this.writerThread = new WriterThread();
+        this.multicastSender = new MulticastSender(this::getServerStatusMessage);
         pool = Executors.newFixedThreadPool(maxClients);
     }
 
@@ -47,7 +49,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
         ServerStatus status = ServerStatus.EMPTY;
         if (delta == 0) {
             status = ServerStatus.FULL;
-        } else if (delta > 0) {
+        } else if (delta > 0 && delta < maxClients) {
             status = ServerStatus.HAVE_SPACE;
         }
 
@@ -90,6 +92,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
     public synchronized void start() {
         clientDispatcher.start();
         writerThread.start();
+        multicastSender.start();
         running = true;
         super.start();
     }
@@ -117,12 +120,17 @@ public class ServerThread extends Thread implements ServerInfoProvider {
             }
             LOGGER.info("Ukončuji činnost thread poolu.");
             pool.shutdown();
+            LOGGER.info("Ukončuji multicast sender thread.");
+            multicastSender.shutdown();
+            try {
+                multicastSender.join();
+            } catch (InterruptedException e) {}
             LOGGER.info("Ukončuji client dispatcher.");
             clientDispatcher.shutdown();
             try {
                 clientDispatcher.join();
             } catch (InterruptedException e) {}
-            LOGGER.info("Ukončuji writer thread");
+            LOGGER.info("Ukončuji writer thread.");
             writerThread.shutdown();
             try {
                 writerThread.join();

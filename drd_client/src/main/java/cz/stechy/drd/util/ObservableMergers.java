@@ -176,4 +176,23 @@ public final class ObservableMergers {
             });
         }
     }
+
+    /**
+     * Pomocní knihovní funkce pro mergování pozorovatelného setu do pozorovatelného listu
+     *
+     * @param set Zdrojový set, který se pozoruje
+     * @param list Výsledný list, který pozoruje set
+     * @param <T> Typ, který používají jak zdrojový set, tak cílový list
+     */
+    public static <T> void listObserveSet(ObservableSet<T> set, ObservableList<T> list) {
+        list.setAll(set);
+        set.addListener((SetChangeListener<T>) c -> {
+            if (c.wasAdded()) {
+                list.add(c.getElementAdded());
+            }
+            if (c.wasRemoved()) {
+                list.remove(c.getElementRemoved());
+            }
+        });
+    }
 }

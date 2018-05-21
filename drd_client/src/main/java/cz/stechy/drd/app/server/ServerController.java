@@ -1,12 +1,18 @@
 package cz.stechy.drd.app.server;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.net.ClientCommunicator;
 import cz.stechy.drd.net.ConnectionState;
+import cz.stechy.drd.net.LanServerFinder;
+import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatusData;
 import cz.stechy.screens.BaseController;
+import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
@@ -33,7 +39,7 @@ public class ServerController extends BaseController implements Initializable {
     @FXML
     private Button btnDisconnect;
     @FXML
-    private ListView lvServers; // TODO implementovat vyhledávání serverů
+    private ListView<ServerStatusData> lvServers; // TODO implementovat vyhledávání serverů
     @FXML
     private Label lblConnectedTo;
     @FXML
@@ -44,12 +50,22 @@ public class ServerController extends BaseController implements Initializable {
     // endregion
 
     private final ClientCommunicator communicator;
+    private final LanServerFinder serverFinder;
     private String title;
 
     // endregion
 
     public ServerController(ClientCommunicator communicator) {
         this.communicator = communicator;
+        LanServerFinder tmpServerFinder;
+        try {
+            tmpServerFinder = new LanServerFinder();
+        } catch (IOException e) {
+            tmpServerFinder = null;
+            LOGGER.error("Nepodařilo se inicializovat vyhledávač serverů v lokální síti.");
+        }
+
+        this.serverFinder = tmpServerFinder;
     }
 
     @Override
@@ -78,12 +94,24 @@ public class ServerController extends BaseController implements Initializable {
         btnConnect.disableProperty()
             .bind(txtHostPort.textProperty().isEmpty()
                 .or(disconnected.not()));
+
+        lvServers.setItems(this.serverFinder.getServerList());
+    }
+
+    @Override
+    protected void onCreate(Bundle bundle) {
+        CompletableFuture.runAsync(serverFinder, ThreadPool.COMMON_EXECUTOR);
     }
 
     @Override
     protected void onResume() {
         setScreenSize(400, 300);
         setTitle(title);
+    }
+
+    @Override
+    protected void onClose() {
+        serverFinder.shutdown();
     }
 
     // region Button handler
