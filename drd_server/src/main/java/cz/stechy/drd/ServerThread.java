@@ -53,7 +53,8 @@ public class ServerThread extends Thread implements ServerInfoProvider {
             status = ServerStatus.HAVE_SPACE;
         }
 
-        return new ServerStatusMessage(new ServerStatusData(Server.ID, status, connectedClients, maxClients, serverName));
+        return new ServerStatusMessage(new ServerStatusData(
+            Server.ID, status, connectedClients, maxClients, serverName, port));
     }
 
     private void broadcast(final IMessage message) {

@@ -14,6 +14,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -54,6 +55,8 @@ public class ServerController extends BaseController implements Initializable {
 
     // endregion
 
+    // region Constructors
+
     public ServerController(ClientCommunicator communicator) {
         this.communicator = communicator;
         LanServerFinder tmpServerFinder;
@@ -66,6 +69,21 @@ public class ServerController extends BaseController implements Initializable {
 
         this.serverFinder = tmpServerFinder;
     }
+
+    // endregion
+
+    // region Private methods
+
+    private void serverSelectionListener(ObservableValue<? extends ServerStatusModel> observable,
+        ServerStatusModel oldValue, ServerStatusModel newValue) {
+        if (newValue == null) {
+            txtHostPort.textProperty().set(null);
+            return;
+        }
+        txtHostPort.textProperty().set(String.format("%s:%d", newValue.getServerAddress().getHostAddress(), newValue.getPort()));
+    }
+
+    // endregion
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -96,6 +114,7 @@ public class ServerController extends BaseController implements Initializable {
 
         lvServers.setCellFactory(param -> new ServerStatusCell());
         lvServers.setItems(this.serverFinder.getServerList());
+        lvServers.getSelectionModel().selectedItemProperty().addListener(this::serverSelectionListener);
     }
 
     @Override

@@ -62,23 +62,25 @@ public class ServerStatusMessage implements IMessage {
         public final int clientCount;
         public final int maxClients;
         public final String serverName;
+        public final int port;
 
         /**
          * Vytvoří novou instanci reprezentující informace o stavu serveru
-         *
-         * @param serverID
+         *  @param serverID
          * @param serverStatus {@link ServerStatus} stav serveru
          * @param clientCount Počet aktuálně připojených klientů
          * @param maxClients Počet maximálně připojených klientů
          * @param serverName Název serveru
+         * @param port
          */
         public ServerStatusData(UUID serverID, ServerStatus serverStatus, int clientCount,
-            int maxClients, String serverName) {
+            int maxClients, String serverName, int port) {
             this.serverID = serverID;
             this.serverStatus = serverStatus;
             this.clientCount = clientCount;
             this.maxClients = maxClients;
             this.serverName = serverName;
+            this.port = port;
         }
 
         @Override
@@ -92,6 +94,7 @@ public class ServerStatusMessage implements IMessage {
             ServerStatusData that = (ServerStatusData) o;
             return clientCount == that.clientCount &&
                 maxClients == that.maxClients &&
+                port == that.port &&
                 Objects.equals(serverID, that.serverID) &&
                 serverStatus == that.serverStatus &&
                 Objects.equals(serverName, that.serverName);
@@ -100,12 +103,12 @@ public class ServerStatusMessage implements IMessage {
         @Override
         public int hashCode() {
 
-            return Objects.hash(serverID, serverStatus, clientCount, maxClients, serverName);
+            return Objects.hash(serverID, serverStatus, clientCount, maxClients, serverName, port);
         }
 
         @Override
         public String toString() {
-            return String.format("%s: %d/%d - %s", serverName, clientCount, maxClients, serverStatus);
+            return String.format("%s: %d/%d - %s; port=%d", serverName, clientCount, maxClients, serverStatus, port);
         }
     }
 }

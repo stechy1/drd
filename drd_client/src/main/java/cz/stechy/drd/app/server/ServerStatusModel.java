@@ -30,6 +30,7 @@ public final class ServerStatusModel {
     public final IntegerProperty maxClients = new SimpleIntegerProperty(this, "maxClients", Integer.MAX_VALUE);
     public final ObjectProperty<ServerStatus> serverStatus = new SimpleObjectProperty<>(this, "serverStatus", ServerStatus.EMPTY);
     public final BooleanProperty connected = new SimpleBooleanProperty(this, "connected", false);
+    public final IntegerProperty port = new SimpleIntegerProperty(this, "port", 0);
 
     // endregion
 
@@ -42,6 +43,7 @@ public final class ServerStatusModel {
         this.connectedClients.set(serverStatusData.clientCount);
         this.maxClients.set(serverStatusData.maxClients);
         this.serverStatus.set(serverStatusData.serverStatus);
+        this.port.set(serverStatusData.port);
     }
 
     // endregion
@@ -58,6 +60,7 @@ public final class ServerStatusModel {
         this.connectedClients.set(newServerStatusData.clientCount);
         this.maxClients.set(newServerStatusData.maxClients);
         this.serverStatus.set(newServerStatusData.serverStatus);
+        this.port.set(newServerStatusData.port);
     }
 
     // endregion
@@ -104,6 +107,18 @@ public final class ServerStatusModel {
         return Bindings.createStringBinding(
             () -> String.format("%d/%d", connectedClients.get(), maxClients.get()),
             connectedClients, maxClients);
+    }
+
+    public int getPort() {
+        return port.get();
+    }
+
+    public IntegerProperty portProperty() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port.set(port);
     }
 
     public boolean isConnected() {
