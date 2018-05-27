@@ -230,8 +230,8 @@ public class BestiaryDao extends AdvancedDatabaseService<Mob> {
     }
 
     @Override
-    public Map<String, Object> toFirebaseMap(Mob mob) {
-        final Map<String, Object> map = super.toFirebaseMap(mob);
+    public Map<String, Object> toStringItemMap(Mob mob) {
+        final Map<String, Object> map = super.toStringItemMap(mob);
         map.put(COLUMN_IMAGE, blobToBase64(mob.getImage()));
         return map;
     }

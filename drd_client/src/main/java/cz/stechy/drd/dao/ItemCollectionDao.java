@@ -5,8 +5,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseReference.CompletionListener;
-import cz.stechy.drd.db.FirebaseWrapper;
-import cz.stechy.drd.db.base.Firebase;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.model.item.ItemCollection.Builder;

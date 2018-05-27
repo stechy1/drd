@@ -3,7 +3,6 @@ package cz.stechy.drd.app.fight;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.fight.Battlefield.BattlefieldAction;
 import cz.stechy.drd.dao.InventoryDao;
-import cz.stechy.drd.db.DatabaseException;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.service.HeroService;
 import cz.stechy.screens.BaseController;
@@ -170,7 +169,7 @@ public class FightController extends BaseController implements Initializable {
     // region Button handlers
 
     @FXML
-    private void handleBeginFight(ActionEvent actionEvent) throws DatabaseException {
+    private void handleBeginFight(ActionEvent actionEvent) {
         stopFight();
 
         Bundle bundle = new Bundle();

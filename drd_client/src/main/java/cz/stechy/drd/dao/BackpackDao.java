@@ -169,8 +169,8 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
     }
 
     @Override
-    public Map<String, Object> toFirebaseMap(Backpack item) {
-        final Map<String, Object> map = super.toFirebaseMap(item);
+    public Map<String, Object> toStringItemMap(Backpack item) {
+        final Map<String, Object> map = super.toStringItemMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;
     }

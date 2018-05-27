@@ -6,8 +6,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseReference.CompletionListener;
 import com.google.firebase.database.FirebaseDatabase;
-import cz.stechy.drd.db.FirebaseWrapper;
-import cz.stechy.drd.db.base.Firebase;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.User;
 import java.util.HashMap;

@@ -201,8 +201,8 @@ public final class RangedWeaponDao extends AdvancedDatabaseService<RangedWeapon>
     }
 
     @Override
-    public Map<String, Object> toFirebaseMap(RangedWeapon item) {
-        final Map<String, Object> map = super.toFirebaseMap(item);
+    public Map<String, Object> toStringItemMap(RangedWeapon item) {
+        final Map<String, Object> map = super.toStringItemMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;
     }

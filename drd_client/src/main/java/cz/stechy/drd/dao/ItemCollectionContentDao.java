@@ -5,7 +5,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseReference.CompletionListener;
-import cz.stechy.drd.db.base.Firebase;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.service.OnlineItemRegistry;
 import java.util.Map;

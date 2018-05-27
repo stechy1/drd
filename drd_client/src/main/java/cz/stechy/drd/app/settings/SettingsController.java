@@ -2,7 +2,6 @@ package cz.stechy.drd.app.settings;
 
 import cz.stechy.drd.AppSettings;
 import cz.stechy.drd.R;
-import cz.stechy.drd.db.FirebaseWrapper;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;

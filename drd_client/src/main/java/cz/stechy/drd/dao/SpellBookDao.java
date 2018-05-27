@@ -187,8 +187,8 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
     }
 
     @Override
-    public Map<String, Object> toFirebaseMap(Spell item) {
-        final Map<String, Object> map = super.toFirebaseMap(item);
+    public Map<String, Object> toStringItemMap(Spell item) {
+        final Map<String, Object> map = super.toStringItemMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;
     }

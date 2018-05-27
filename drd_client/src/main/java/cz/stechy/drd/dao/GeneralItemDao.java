@@ -161,8 +161,8 @@ public final class GeneralItemDao extends AdvancedDatabaseService<GeneralItem> {
     }
 
     @Override
-    public Map<String, Object> toFirebaseMap(GeneralItem item) {
-        final Map<String, Object> map = super.toFirebaseMap(item);
+    public Map<String, Object> toStringItemMap(GeneralItem item) {
+        final Map<String, Object> map = super.toStringItemMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;
     }

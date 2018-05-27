@@ -1,6 +1,5 @@
 package cz.stechy.drd.dao;
 
-import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -97,26 +96,26 @@ public final class ArmorDao extends AdvancedDatabaseService<Armor> {
 
     // region Private methods
 
-    @Override
-    public Armor parseDataSnapshot(DataSnapshot snapshot) {
-        return new Armor.Builder()
-            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-            .defenceNumber(snapshot.child(COLUMN_DEFENCE).getValue(Integer.class))
-            .minimumStrength(snapshot.child(COLUMN_MINIMUM_STRENGTH).getValue(Integer.class))
-            .type(snapshot.child(COLUMN_ARMOR_TYPE).getValue(Integer.class))
-            .weightA(snapshot.child(COLUMN_WEIGHT_A).getValue(Integer.class))
-            .weightB(snapshot.child(COLUMN_WEIGHT_B).getValue(Integer.class))
-            .weightC(snapshot.child(COLUMN_WEIGHT_C).getValue(Integer.class))
-            .priceA(snapshot.child(COLUMN_PRICE_A).getValue(Integer.class))
-            .priceB(snapshot.child(COLUMN_PRICE_B).getValue(Integer.class))
-            .priceC(snapshot.child(COLUMN_PRICE_C).getValue(Integer.class))
-            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
-            .build();
-    }
+//    @Override
+//    public Armor parseDataSnapshot(DataSnapshot snapshot) {
+//        return new Armor.Builder()
+//            .id(snapshot.child(COLUMN_ID).getValue(String.class))
+//            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
+//            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
+//            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
+//            .defenceNumber(snapshot.child(COLUMN_DEFENCE).getValue(Integer.class))
+//            .minimumStrength(snapshot.child(COLUMN_MINIMUM_STRENGTH).getValue(Integer.class))
+//            .type(snapshot.child(COLUMN_ARMOR_TYPE).getValue(Integer.class))
+//            .weightA(snapshot.child(COLUMN_WEIGHT_A).getValue(Integer.class))
+//            .weightB(snapshot.child(COLUMN_WEIGHT_B).getValue(Integer.class))
+//            .weightC(snapshot.child(COLUMN_WEIGHT_C).getValue(Integer.class))
+//            .priceA(snapshot.child(COLUMN_PRICE_A).getValue(Integer.class))
+//            .priceB(snapshot.child(COLUMN_PRICE_B).getValue(Integer.class))
+//            .priceC(snapshot.child(COLUMN_PRICE_C).getValue(Integer.class))
+//            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
+//            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
+//            .build();
+//    }
 
     @Override
     protected Armor parseResultSet(ResultSet resultSet) throws SQLException {
@@ -199,8 +198,8 @@ public final class ArmorDao extends AdvancedDatabaseService<Armor> {
     }
 
     @Override
-    public Map<String, Object> toFirebaseMap(Armor item) {
-        final Map<String, Object> map = super.toFirebaseMap(item);
+    public Map<String, Object> toStringItemMap(Armor item) {
+        final Map<String, Object> map = super.toStringItemMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;
     }
