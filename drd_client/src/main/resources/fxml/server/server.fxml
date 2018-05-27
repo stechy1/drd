@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="300.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.app.server.ServerController">
+  <HBox alignment="CENTER" styleClass="title-container">
+    <Label styleClass="title-label" text="%drd_server_title" HBox.hgrow="ALWAYS" />
+  </HBox>
+  <HBox alignment="CENTER_LEFT" spacing="8.0">
+    <Label fx:id="lblConnectedTo"/>
+    <Region HBox.hgrow="ALWAYS" />
+    <JFXButton fx:id="btnDisconnect" text="%drd_server_disconnect" onAction="#handleDisconnect" styleClass="btn, btn-danger, btn-small, btn-raised" />
+      <padding>
+         <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+      </padding>
+  </HBox>
+  <ListView fx:id="lvServers" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS" />
+  <HBox alignment="CENTER_LEFT" spacing="8.0">
+    <padding>
+      <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+    </padding>
+    <JFXTextField fx:id="txtHostPort" labelFloat="true" promptText="%drd_server_host_port" text="localhost:15378" />
+    <Region HBox.hgrow="ALWAYS" />
+    <JFXButton fx:id="btnConnect" onAction="#handleConnect" text="%drd_server_connect" styleClass="btn, btn-primary, btn-small, btn-raised" />
+  </HBox>
+</VBox>

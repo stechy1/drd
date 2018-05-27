@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<GridPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+  fx:controller="cz.stechy.drd.app.DrDTimeController" hgap="8.0" vgap="8.0">
+  <columnConstraints>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+  </rowConstraints>
+  <padding>
+    <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+  </padding>
+  <Label text="%drd_time_year_3"/>
+  <Label text="%drd_time_month_3" GridPane.rowIndex="1"/>
+  <Label text="%drd_time_day_3" GridPane.rowIndex="2"/>
+  <Label text="%drd_time_inning_3" GridPane.rowIndex="3"/>
+  <Label text="%drd_time_cycle_3" GridPane.rowIndex="4"/>
+  <TextField fx:id="txtYear" GridPane.columnIndex="1"/>
+  <TextField fx:id="txtMonth" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+  <TextField fx:id="txtDay" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+  <TextField fx:id="txtInning" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+  <TextField fx:id="txtCycle" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+  <JFXButton fx:id="btnFinish" onAction="#handleFinish" text="%drd_finish" GridPane.columnIndex="1"
+    GridPane.rowIndex="5" styleClass="btn, btn-raised, btn-small, btn-primary"/>
+
+</GridPane>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import cz.stechy.drd.widget.LabeledHeroProperty?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="400.0"
+  xmlns="http://javafx.com/javafx/8.0.121"
+  fx:controller="cz.stechy.drd.app.hero.opener.HeroOpenerController">
+  <top>
+    <HBox styleClass="title-container">
+      <Label HBox.hgrow="ALWAYS" styleClass="title-label" text="%drd_opener_title"/>
+    </HBox>
+  </top>
+  <left>
+    <JFXListView prefWidth="150.0" fx:id="lvHeroes"/>
+  </left>
+  <center>
+    <GridPane HBox.hgrow="ALWAYS">
+      <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" percentWidth="50.0"/>
+        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" percentWidth="50.0"/>
+      </columnConstraints>
+      <rowConstraints>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+      </rowConstraints>
+      <padding>
+        <Insets bottom="8.0" left="8.0" right="8.0"/>
+      </padding>
+      <Label text="%drd_hero_name"/>
+      <Label GridPane.columnIndex="1" fx:id="lblName"/>
+      <Label GridPane.rowIndex="1" text="%drd_hero_conviction"/>
+      <Label GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="lblConviction"/>
+      <Label GridPane.rowIndex="2" text="%drd_hero_race"/>
+      <Label GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="lblRace"/>
+      <Label GridPane.rowIndex="3" text="%drd_hero_profession"/>
+      <Label GridPane.columnIndex="1" GridPane.rowIndex="3" fx:id="lblProfession"/>
+      <Label GridPane.rowIndex="4" text="%drd_hero_strength"/>
+      <Label GridPane.rowIndex="5" text="%drd_hero_dexterity"/>
+      <Label GridPane.rowIndex="6" text="%drd_hero_immunity"/>
+      <Label GridPane.rowIndex="7" text="%drd_hero_intelligence"/>
+      <Label GridPane.rowIndex="8" text="%drd_hero_charisma"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="4" fx:id="lblStrength"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="5" fx:id="lblDexterity"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="6" fx:id="lblImmunity"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="7" fx:id="lblIntelligence"/>
+      <LabeledHeroProperty GridPane.columnIndex="1" GridPane.rowIndex="8" fx:id="lblCharisma"/>
+    </GridPane>
+  </center>
+  <bottom>
+    <HBox alignment="CENTER">
+      <JFXButton onAction="#handleDeleteHero" styleClass="btn, btn-danger" text="%drd_hero_delete"
+        fx:id="btnDelete"/>
+      <Region HBox.hgrow="ALWAYS"/>
+      <JFXButton onAction="#handleOpenHero" styleClass="btn, btn-primary, btn-raised"
+        text="%drd_opener_title"
+        fx:id="btnOpen"/>
+      <padding>
+        <Insets topRightBottomLeft="8.0"/>
+      </padding>
+    </HBox>
+  </bottom>
+</BorderPane>

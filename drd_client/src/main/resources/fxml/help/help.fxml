@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.web.WebView?>
+<WebView fx:id="webView" xmlns:fx="http://javafx.com/fxml/1"
+  xmlns="http://javafx.com/javafx/8.0.121"
+  fx:controller="cz.stechy.drd.app.help.HelpController"/>

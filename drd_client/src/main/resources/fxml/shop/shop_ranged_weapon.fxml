@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<TableView fx:id="tableRangedWeapons" prefHeight="400.0" prefWidth="1100.0" styleClass="shop-table"
+  xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="cz.stechy.drd.app.shop.ShopWeaponRangedController">
+  <columnResizePolicy>
+    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+  </columnResizePolicy>
+  <placeholder>
+    <Label text="%drd_notify_table_is_empty"/>
+  </placeholder>
+  <columns>
+    <TableColumn fx:id="columnImage" minWidth="60.0" prefWidth="60.0" maxWidth="60.0"
+      text="%drd_item_image" sortable="false">
+      <cellValueFactory>
+        <PropertyValueFactory property="image"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnName" prefWidth="100.0" text="%drd_item_name">
+      <cellValueFactory>
+        <PropertyValueFactory property="name"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnAuthor" prefWidth="100.0" text="%drd_item_author">
+      <cellValueFactory>
+        <PropertyValueFactory property="author"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnStrength" text="%drd_item_weapon_strength">
+      <cellValueFactory>
+        <PropertyValueFactory property="strength"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnRampancy" text="%drd_item_weapon_rampancy">
+      <cellValueFactory>
+        <PropertyValueFactory property="rampancy"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnType" text="%drd_item_weapon_mele_ranged_type">
+      <cellValueFactory>
+        <PropertyValueFactory property="weaponType"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn text="%drd_item_weapon_ranged_range">
+      <columns>
+        <TableColumn fx:id="columnRangeLow" text="%drd_item_weapon_ranged_range_low">
+          <cellValueFactory>
+            <PropertyValueFactory property="rangeLow"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnRangeMedium" text="%drd_item_weapon_ranged_range_medium">
+          <cellValueFactory>
+            <PropertyValueFactory property="rangeMedium"/>
+          </cellValueFactory>
+        </TableColumn>
+        <TableColumn fx:id="columnRangeLong" text="%drd_item_weapon_ranged_range_long">
+          <cellValueFactory>
+            <PropertyValueFactory property="rangeLong"/>
+          </cellValueFactory>
+        </TableColumn>
+      </columns>
+    </TableColumn>
+    <TableColumn fx:id="columnWeight" minWidth="50.0" prefWidth="50.0" maxWidth="50.0"
+      text="%drd_item_weight">
+      <cellValueFactory>
+        <PropertyValueFactory property="weight"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnPrice" minWidth="140.0" prefWidth="140.0" maxWidth="140.0"
+      text="%drd_item_price">
+      <cellValueFactory>
+        <PropertyValueFactory property="price"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnAmmount" minWidth="80.0" prefWidth="80.0" maxWidth="80.0"
+      text="%drd_item_ammount" sortable="false">
+      <cellValueFactory>
+        <PropertyValueFactory property="ammount"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnAction" minWidth="200.0" prefWidth="200.0" maxWidth="200.0"
+      text="%drd_shop_shoppint_cart" sortable="false"/>
+  </columns>
+</TableView>
