@@ -17,6 +17,8 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'javafx-gradle-plugin'
 
+compileJava.options.encoding = 'UTF-8'
+
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
@@ -32,10 +34,11 @@ repositories {
 }
 
 jfx {
+    verbose = true
     mainClass = 'cz.stechy.drd.App'
     vendor = 'Petr Štechmüller'
     additionalAppResources = 'src/main/resources'
-    jfxMainAppJarName = "drdd.jar"
+    jfxMainAppJarName = "drd.jar"
 //    copyAdditionalAppResourcesToJar = true
 }
 
