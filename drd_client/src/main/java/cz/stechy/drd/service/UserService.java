@@ -1,7 +1,5 @@
 package cz.stechy.drd.service;
 
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference.CompletionListener;
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.dao.UserDao;
 import cz.stechy.drd.di.Singleton;
@@ -73,20 +71,19 @@ public class UserService {
 
     /**
      * Zaregistruje nového uživatele
-     *
-     * @param username Uživatelské jméno
+     *  @param username Uživatelské jméno
      * @param password Uživatelské heslo
      */
-    public void registerAsync(String username, String password, CompletionListener listener) {
+    public void registerAsync(String username, String password) {
         final Optional<User> result = userDao.getUsers().stream()
             .filter(user -> user.getName().equals(username))
             .findFirst();
         if (result.isPresent()) {
-            listener.onComplete(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION), null);
+            //listener.onComplete(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION), null);
         }
 
         final User user = new User(username, password);
-        userDao.uploadAsync(user, listener);
+//        userDao.uploadAsync(user);
     }
 
     // endregion

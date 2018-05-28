@@ -1,6 +1,5 @@
 package cz.stechy.drd.dao;
 
-import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -82,21 +81,21 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
 
     // region Private methods
 
-    @Override
-    public Backpack parseDataSnapshot(DataSnapshot snapshot) {
-        return new Backpack.Builder()
-            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-            .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
-            .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
-            .maxLoad(snapshot.child(COLUMN_MAX_LOAD).getValue(Integer.class))
-            .size(snapshot.child(COLUMN_SIZE).getValue(Integer.class))
-            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
-            .build();
-    }
+//    @Override
+//    public Backpack parseDataSnapshot(DataSnapshot snapshot) {
+//        return new Backpack.Builder()
+//            .id(snapshot.child(COLUMN_ID).getValue(String.class))
+//            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
+//            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
+//            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
+//            .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
+//            .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
+//            .maxLoad(snapshot.child(COLUMN_MAX_LOAD).getValue(Integer.class))
+//            .size(snapshot.child(COLUMN_SIZE).getValue(Integer.class))
+//            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
+//            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
+//            .build();
+//    }
 
     @Override
     protected Backpack parseResultSet(ResultSet resultSet) throws SQLException {

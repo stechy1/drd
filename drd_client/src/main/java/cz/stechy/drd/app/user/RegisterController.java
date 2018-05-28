@@ -3,7 +3,6 @@ package cz.stechy.drd.app.user;
 import cz.stechy.drd.R;
 import cz.stechy.drd.service.UserService;
 import cz.stechy.screens.BaseController;
-import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -75,17 +74,8 @@ public class RegisterController extends BaseController implements Initializable 
     // region Button handlers
     @FXML
     private void handleRegister(ActionEvent actionEvent) {
-        userService.registerAsync(loginModel.login.getValue(), loginModel.password.getValue(),
-            (error, ref) -> {
-                if (error != null) {
-                    LOGGER.info("Registrace se nezdařila");
-                    showNotification(new Notification(registerFail));
-                    loginModel.valid.set(false);
-                } else {
-                    setResult(RESULT_SUCCESS);
-                    finish();
-                }
-            });
+        userService.registerAsync(loginModel.login.getValue(), loginModel.password.getValue()
+        );
     }
 
     // endregion

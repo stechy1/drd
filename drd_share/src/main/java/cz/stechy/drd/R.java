@@ -451,6 +451,7 @@ public final class R {
 
         public static class Icon {
 
+            public static final String HELP = "/images/icon/help.png";
             public static final String ABOUT = "/images/icon/about.png";
             public static final String ADD = "/images/icon/add.png";
             public static final String BANK = "/images/icon/bank.png";
@@ -469,7 +470,6 @@ public final class R {
             public static final String FIGHT = "/images/icon/fight.png";
             public static final String GENERATE = "/images/icon/generate.png";
             public static final String HAND_CLICK = "/images/icon/hand_click.png";
-            public static final String HELP = "/images/icon/help.png";
             public static final String IMPORT = "/images/icon/import.png";
             public static final String LOGIN = "/images/icon/login.png";
             public static final String MANA = "/images/icon/mana.png";

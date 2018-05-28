@@ -1,6 +1,5 @@
 package cz.stechy.drd.dao;
 
-import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -91,24 +90,24 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
 
     // region Private methods
 
-    @Override
-    public Spell parseDataSnapshot(DataSnapshot snapshot) {
-        return new Spell.Builder()
-            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-            .magicName(snapshot.child(COLUMN_MAGIC_NAME).getValue(String.class))
-            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-            .type(snapshot.child(COLUMN_PROFESSION_TYPE).getValue(Integer.class))
-            .price(new SpellParser(snapshot.child(COLUMN_PRICE).getValue(String.class)).parse())
-            .radius(snapshot.child(COLUMN_RADIUS).getValue(Integer.class))
-            .range(snapshot.child(COLUMN_RANGE).getValue(Integer.class))
-            .target(snapshot.child(COLUMN_TARGET).getValue(Integer.class))
-            .castTime(snapshot.child(COLUMN_CAST_TIME).getValue(Integer.class))
-            .duration(snapshot.child(COLUMN_DURATION).getValue(Integer.class))
-            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-            .build();
-    }
+//    @Override
+//    public Spell parseDataSnapshot(DataSnapshot snapshot) {
+//        return new Spell.Builder()
+//            .id(snapshot.child(COLUMN_ID).getValue(String.class))
+//            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
+//            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
+//            .magicName(snapshot.child(COLUMN_MAGIC_NAME).getValue(String.class))
+//            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
+//            .type(snapshot.child(COLUMN_PROFESSION_TYPE).getValue(Integer.class))
+//            .price(new SpellParser(snapshot.child(COLUMN_PRICE).getValue(String.class)).parse())
+//            .radius(snapshot.child(COLUMN_RADIUS).getValue(Integer.class))
+//            .range(snapshot.child(COLUMN_RANGE).getValue(Integer.class))
+//            .target(snapshot.child(COLUMN_TARGET).getValue(Integer.class))
+//            .castTime(snapshot.child(COLUMN_CAST_TIME).getValue(Integer.class))
+//            .duration(snapshot.child(COLUMN_DURATION).getValue(Integer.class))
+//            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
+//            .build();
+//    }
 
     @Override
     protected Spell parseResultSet(ResultSet resultSet) throws SQLException {

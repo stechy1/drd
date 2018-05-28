@@ -1,6 +1,5 @@
 package cz.stechy.drd.dao;
 
-import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -99,26 +98,26 @@ public final class RangedWeaponDao extends AdvancedDatabaseService<RangedWeapon>
 
     // region Private methods
 
-    @Override
-    public RangedWeapon parseDataSnapshot(DataSnapshot snapshot) {
-        return new RangedWeapon.Builder()
-            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-            .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
-            .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
-            .strength(snapshot.child(COLUMN_STRENGTH).getValue(Integer.class))
-            .rampancy(snapshot.child(COLUMN_RAMPANCY).getValue(Integer.class))
-            .weaponType(snapshot.child(COLUMN_TYPE).getValue(Integer.class))
-            .rangeLow(snapshot.child(COLUMN_RANGE_LOW).getValue(Integer.class))
-            .rangeMedium(snapshot.child(COLUMN_RANGE_MEDIUM).getValue(Integer.class))
-            .rangeLong(snapshot.child(COLUMN_RANGE_LONG).getValue(Integer.class))
-            .renown(snapshot.child(COLUMN_RENOWN).getValue(Integer.class))
-            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
-            .build();
-    }
+//    @Override
+//    public RangedWeapon parseDataSnapshot(DataSnapshot snapshot) {
+//        return new RangedWeapon.Builder()
+//            .id(snapshot.child(COLUMN_ID).getValue(String.class))
+//            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
+//            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
+//            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
+//            .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
+//            .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
+//            .strength(snapshot.child(COLUMN_STRENGTH).getValue(Integer.class))
+//            .rampancy(snapshot.child(COLUMN_RAMPANCY).getValue(Integer.class))
+//            .weaponType(snapshot.child(COLUMN_TYPE).getValue(Integer.class))
+//            .rangeLow(snapshot.child(COLUMN_RANGE_LOW).getValue(Integer.class))
+//            .rangeMedium(snapshot.child(COLUMN_RANGE_MEDIUM).getValue(Integer.class))
+//            .rangeLong(snapshot.child(COLUMN_RANGE_LONG).getValue(Integer.class))
+//            .renown(snapshot.child(COLUMN_RENOWN).getValue(Integer.class))
+//            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
+//            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
+//            .build();
+//    }
 
     @Override
     protected RangedWeapon parseResultSet(ResultSet resultSet) throws SQLException {

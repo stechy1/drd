@@ -1,11 +1,9 @@
 package cz.stechy.drd.dao;
 
-import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.entity.mob.Mob;
-import cz.stechy.drd.model.entity.mob.Mob.Builder;
 import cz.stechy.drd.model.item.Backpack;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -104,34 +102,34 @@ public class BestiaryDao extends AdvancedDatabaseService<Mob> {
 
     // region Private methods
 
-    @Override
-    public Mob parseDataSnapshot(DataSnapshot snapshot) {
-        return new Builder()
-            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-            .mobClass(snapshot.child(COLUMN_MOB_CLASS).getValue(Integer.class))
-            .rulesType(snapshot.child(COLUMN_RULES_TYPE).getValue(Integer.class))
-            .conviction(snapshot.child(COLUMN_CONVICTION).getValue(Integer.class))
-            .height(snapshot.child(COLUMN_HEIGHT).getValue(Integer.class))
-            .attackNumber(snapshot.child(COLUMN_ATTACK).getValue(Integer.class))
-            .defenceNumber(snapshot.child(COLUMN_DEFENCE).getValue(Integer.class))
-            .viability(snapshot.child(COLUMN_VIABILITY).getValue(Integer.class))
-            .immunity(snapshot.child(COLUMN_IMMUNITY).getValue(Integer.class))
-            .mettle(snapshot.child(COLUMN_METTLE).getValue(Integer.class))
-            .vulnerability(snapshot.child(COLUMN_VULNERABILITY).getValue(Integer.class))
-            .mobility(snapshot.child(COLUMN_MOBILITY).getValue(Integer.class))
-            .perservance(snapshot.child(COLUMN_PERSERVANCE).getValue(Integer.class))
-            .controlAbility(snapshot.child(COLUMN_CONTROL_ABILITY).getValue(Integer.class))
-            .intelligence(snapshot.child(COLUMN_INTELLIGENCE).getValue(Integer.class))
-            .charisma(snapshot.child(COLUMN_CHARISMA).getValue(Integer.class))
-            .basicPowerOfMind(snapshot.child(COLUMN_BACIS_BOWER_OF_MIND).getValue(Integer.class))
-            .experience(snapshot.child(COLUMN_EXPERIENCE).getValue(Integer.class))
-            .domestication(snapshot.child(COLUMN_DOMESTICATION).getValue(Integer.class))
-            .build();
-    }
+//    @Override
+//    public Mob parseDataSnapshot(DataSnapshot snapshot) {
+//        return new Builder()
+//            .id(snapshot.child(COLUMN_ID).getValue(String.class))
+//            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
+//            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
+//            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
+//            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
+//            .mobClass(snapshot.child(COLUMN_MOB_CLASS).getValue(Integer.class))
+//            .rulesType(snapshot.child(COLUMN_RULES_TYPE).getValue(Integer.class))
+//            .conviction(snapshot.child(COLUMN_CONVICTION).getValue(Integer.class))
+//            .height(snapshot.child(COLUMN_HEIGHT).getValue(Integer.class))
+//            .attackNumber(snapshot.child(COLUMN_ATTACK).getValue(Integer.class))
+//            .defenceNumber(snapshot.child(COLUMN_DEFENCE).getValue(Integer.class))
+//            .viability(snapshot.child(COLUMN_VIABILITY).getValue(Integer.class))
+//            .immunity(snapshot.child(COLUMN_IMMUNITY).getValue(Integer.class))
+//            .mettle(snapshot.child(COLUMN_METTLE).getValue(Integer.class))
+//            .vulnerability(snapshot.child(COLUMN_VULNERABILITY).getValue(Integer.class))
+//            .mobility(snapshot.child(COLUMN_MOBILITY).getValue(Integer.class))
+//            .perservance(snapshot.child(COLUMN_PERSERVANCE).getValue(Integer.class))
+//            .controlAbility(snapshot.child(COLUMN_CONTROL_ABILITY).getValue(Integer.class))
+//            .intelligence(snapshot.child(COLUMN_INTELLIGENCE).getValue(Integer.class))
+//            .charisma(snapshot.child(COLUMN_CHARISMA).getValue(Integer.class))
+//            .basicPowerOfMind(snapshot.child(COLUMN_BACIS_BOWER_OF_MIND).getValue(Integer.class))
+//            .experience(snapshot.child(COLUMN_EXPERIENCE).getValue(Integer.class))
+//            .domestication(snapshot.child(COLUMN_DOMESTICATION).getValue(Integer.class))
+//            .build();
+//    }
 
     @Override
     protected Mob parseResultSet(ResultSet resultSet) throws SQLException {
