@@ -246,14 +246,14 @@ public class ShopWeaponMeleController implements Initializable,
 
     @Override
     public void requestRemoveItem(ShopEntry entry, boolean remote) {
-        service.deleteRemoteAsync((MeleWeapon) entry.getItemBase(), remote, (error, ref) ->
-            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
+//        service.deleteRemoteAsync((MeleWeapon) entry.getItemBase(), remote, (error, ref) ->
+//            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        service.uploadAsync((MeleWeapon) item, (error, ref) ->
-            firebaseListener.handleItemUpload(item.getName(), error == null));
+//        service.uploadAsync((MeleWeapon) item, (error, ref) ->
+//            firebaseListener.handleItemUpload(item.getName(), error == null));
     }
 
     @Override

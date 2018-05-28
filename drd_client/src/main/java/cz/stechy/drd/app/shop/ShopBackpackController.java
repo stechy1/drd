@@ -227,14 +227,14 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     @Override
     public void requestRemoveItem(ShopEntry entry, boolean remote) {
-        service.deleteRemoteAsync((Backpack) entry.getItemBase(), remote, (error, ref) ->
-            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
+//        service.deleteRemoteAsync((Backpack) entry.getItemBase(), remote, (error, ref) ->
+//            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        service.uploadAsync((Backpack) item, (error, ref) ->
-            firebaseListener.handleItemUpload(item.getName(), error == null));
+//        service.uploadAsync((Backpack) item, (error, ref) ->
+//            firebaseListener.handleItemUpload(item.getName(), error == null));
     }
 
     @Override

@@ -253,14 +253,14 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
     @Override
     public void requestRemoveItem(ShopEntry entry, boolean remote) {
-        service.deleteRemoteAsync((Armor) entry.getItemBase(), remote, (error, ref) ->
-            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
+//        service.deleteRemoteAsync((Armor) entry.getItemBase(), remote, (error, ref) ->
+//            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        service.uploadAsync((Armor) item, (error, ref) ->
-            firebaseListener.handleItemUpload(item.getName(), error == null));
+//        service.uploadAsync((Armor) item, (error, ref) ->
+//            firebaseListener.handleItemUpload(item.getName(), error == null));
     }
 
     @Override

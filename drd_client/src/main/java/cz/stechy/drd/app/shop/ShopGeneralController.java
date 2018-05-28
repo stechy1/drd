@@ -225,14 +225,14 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
     @Override
     public void requestRemoveItem(ShopEntry entry, boolean remote) {
-        service.deleteRemoteAsync((GeneralItem) entry.getItemBase(), remote, (error, ref) ->
-            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
+//        service.deleteRemoteAsync((GeneralItem) entry.getItemBase(), remote, (error, ref) ->
+//            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        service.uploadAsync((GeneralItem) item, (error, ref) ->
-            firebaseListener.handleItemUpload(item.getName(), error == null));
+//        service.uploadAsync((GeneralItem) item, (error, ref) ->
+//            firebaseListener.handleItemUpload(item.getName(), error == null));
     }
 
     @Override

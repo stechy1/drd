@@ -250,14 +250,14 @@ public class ShopWeaponRangedController implements Initializable,
 
     @Override
     public void requestRemoveItem(ShopEntry entry, boolean remote) {
-        service.deleteRemoteAsync((RangedWeapon) entry.getItemBase(), remote, (error, ref) ->
-            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
+//        service.deleteRemoteAsync((RangedWeapon) entry.getItemBase(), remote, (error, ref) ->
+//            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        service.uploadAsync((RangedWeapon) item, (error, ref) ->
-            firebaseListener.handleItemUpload(item.getName(), error == null));
+//        service.uploadAsync((RangedWeapon) item, (error, ref) ->
+//            firebaseListener.handleItemUpload(item.getName(), error == null));
     }
 
     @Override
