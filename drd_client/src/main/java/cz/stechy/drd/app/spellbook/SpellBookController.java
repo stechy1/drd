@@ -41,7 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Kontroler knihy kouzel.
  */
 public class SpellBookController extends BaseController implements Initializable {
 
@@ -258,16 +258,16 @@ public class SpellBookController extends BaseController implements Initializable
                 }
 
                 spell = SpellBookHelper.fromBundle(bundle);
-                spellBook.uploadAsync(spell, (error, ref) -> {
-                    if (error != null) {
-                        showNotification(new Notification(String.format(translator.translate(
-                            R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), spell.getName())));
-                        LOGGER.warn("Položku {} se nepodařilo aktualizovat", spell.toString());
-                    } else {
-                        showNotification(new Notification(String.format(translator.translate(
-                            R.Translate.NOTIFY_RECORD_IS_UPDATED), spell.getName())));
-                    }
-                });
+//                spellBook.uploadAsync(spell, (error, ref) -> {
+//                    if (error != null) {
+//                        showNotification(new Notification(String.format(translator.translate(
+//                            R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), spell.getName())));
+//                        LOGGER.warn("Položku {} se nepodařilo aktualizovat", spell.toString());
+//                    } else {
+//                        showNotification(new Notification(String.format(translator.translate(
+//                            R.Translate.NOTIFY_RECORD_IS_UPDATED), spell.getName())));
+//                    }
+//                });
                 break;
         }
     }
@@ -313,18 +313,18 @@ public class SpellBookController extends BaseController implements Initializable
 
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(spell ->
-            spellBook.uploadAsync(spell, (error, ref) -> {
-                if (error != null) {
-                    showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), spell.getName())));
-                    LOGGER.error("Položku {} se nepodařilo nahrát", spell.getName());
-                } else {
-                    showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_RECORD_IS_DELETED), spell.getName())));
-                }
-            })
-        );
+//        getSelectedEntry().ifPresent(spell ->
+//            spellBook.uploadAsync(spell, (error, ref) -> {
+//                if (error != null) {
+//                    showNotification(new Notification(String.format(translator.translate(
+//                        R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), spell.getName())));
+//                    LOGGER.error("Položku {} se nepodařilo nahrát", spell.getName());
+//                } else {
+//                    showNotification(new Notification(String.format(translator.translate(
+//                        R.Translate.NOTIFY_RECORD_IS_DELETED), spell.getName())));
+//                }
+//            })
+//        );
     }
 
     @FXML
@@ -334,20 +334,20 @@ public class SpellBookController extends BaseController implements Initializable
 
     @FXML
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(spell ->
-            spellBook.deleteRemoteAsync(spell, true, (error, ref) -> {
-                if (error != null) {
-                    showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
-                        spell.getName())));
-                    LOGGER.error("Položku {} se nepodařilo odebrat z online databáze",
-                        spell.getName());
-                } else {
-                    showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
-                        spell.getName())));
-                }
-            }));
+//        getSelectedEntry().ifPresent(spell ->
+//            spellBook.deleteRemoteAsync(spell, true, (error, ref) -> {
+//                if (error != null) {
+//                    showNotification(new Notification(String.format(translator.translate(
+//                        R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
+//                        spell.getName())));
+//                    LOGGER.error("Položku {} se nepodařilo odebrat z online databáze",
+//                        spell.getName());
+//                } else {
+//                    showNotification(new Notification(String.format(translator.translate(
+//                        R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+//                        spell.getName())));
+//                }
+//            }));
     }
 
     @FXML
