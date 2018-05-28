@@ -77,7 +77,6 @@ public class App extends Application {
         manager.setOnCloseWindowHandler(event -> {
             LOGGER.info("Ukončuji aplikaci");
             context.saveConfiguration();
-            context.closeFirebase();
             ThreadPool.shutDown();
         });
     }
