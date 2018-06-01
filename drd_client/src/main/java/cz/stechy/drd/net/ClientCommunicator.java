@@ -2,7 +2,9 @@ package cz.stechy.drd.net;
 
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.di.Singleton;
+import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
+import cz.stechy.drd.net.message.MessageSource;
 import cz.stechy.drd.net.message.MessageType;
 import cz.stechy.drd.net.message.ServerStatusMessage;
 import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatus;
@@ -69,6 +71,7 @@ public final class ClientCommunicator {
             readerThread = null;
             writerThread = null;
             unregisterMessageObserver(MessageType.SERVER_STATUS, this.serverStatusListener);
+            unregisterMessageObserver(MessageType.HELLO, this.helloListener);
             return;
         }
 
@@ -79,6 +82,7 @@ public final class ClientCommunicator {
             readerThread.start();
             writerThread.start();
             registerMessageObserver(MessageType.SERVER_STATUS, this.serverStatusListener);
+            registerMessageObserver(MessageType.HELLO, this.helloListener);
         } catch (IOException e) {
             LOGGER.error("Vyskytl se problém při vytváření komunikace se serverem.");
         }
@@ -103,7 +107,10 @@ public final class ClientCommunicator {
         final ServerStatusMessage statusMessage = (ServerStatusMessage) message;
         final ServerStatusData status = (ServerStatusData) statusMessage.getData();
         serverStatus.set(status.serverStatus);
-        System.out.println(status.toString());
+    };
+
+    private final OnDataReceivedListener helloListener = message -> {
+       sendMessage(new HelloMessage(MessageSource.CLIENT));
     };
 
     // endregion

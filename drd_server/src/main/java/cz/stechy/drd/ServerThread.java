@@ -1,5 +1,8 @@
 package cz.stechy.drd;
 
+import cz.stechy.drd.net.message.ClientStatusMessage;
+import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatus;
+import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatusData;
 import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
@@ -14,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +62,11 @@ public class ServerThread extends Thread implements ServerInfoProvider {
     }
 
     private void broadcast(final IMessage message) {
-        clients.forEach(client -> client.sendMessage(message));
+        this.broadcast(message, client -> true);
+    }
+
+    private void broadcast(final IMessage message, Predicate<? super Client> filter) {
+        clients.stream().filter(filter).forEach(client -> client.sendMessage(message));
     }
 
     private synchronized void insertClientToListOrQueue(Client client) {
@@ -89,6 +97,23 @@ public class ServerThread extends Thread implements ServerInfoProvider {
         }
     }
 
+    /**
+     * Zavolá se vždy, když přijde zpráva
+     * !!! zpracovává se ve vlákně klienta !!!
+     *
+     * @param message {@link IMessage} Přijatá zpráva
+     * @param client {@link Client} Klient, který přijal zprávu
+     */
+    private void messageReceiveListener(IMessage message, Client client) {
+        switch (message.getType()) {
+            case HELLO:
+                IMessage clientStatusMessage = new ClientStatusMessage(
+                    new ClientStatusData(client.getId(), ClientStatus.CONNECTED));
+                broadcast(clientStatusMessage, client1 -> !client1.getId().equals(client.getId()));
+                break;
+        }
+    }
+
     @Override
     public synchronized void start() {
         clientDispatcher.start();
@@ -109,7 +134,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
                     final Socket socket = serverSocket.accept();
                     LOGGER.info("Server přijal nové spojení.");
 
-                    final Client client = new Client(socket, writerThread);
+                    final Client client = new Client(socket, writerThread, this::messageReceiveListener);
                     this.insertClientToListOrQueue(client);
                 } catch (SocketTimeoutException e) {}
             }
