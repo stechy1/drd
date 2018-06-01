@@ -32,7 +32,9 @@ public class DatabaseMessage implements IMessage {
 
     public interface IDatabaseMessageData extends Serializable {
 
-        DatabaseMessageDataType getType();
+        DatabaseMessageDataType getDataType();
+
+        DatabaseMessageItemType getItemType();
 
         Object getData();
     }
@@ -41,21 +43,33 @@ public class DatabaseMessage implements IMessage {
         DATA_ADMINISTRATION, DATA_MANIPULATION
     }
 
+    public enum DatabaseMessageItemType {
+        ITEM, SPELL, BEASTIARY, COLLECTION
+    }
+
     public static final class DatabaseMessageCRUD implements IDatabaseMessageData {
 
         private static final long serialVersionUID = -6367186706204237621L;
 
-        private final DatabaseAction action;
         private final Map<String, Object> itemMap;
+        private final DatabaseMessageItemType itemType;
+        private final DatabaseAction action;
 
-        public DatabaseMessageCRUD(DatabaseAction action, Map<String, Object> itemMap) {
+        public DatabaseMessageCRUD(DatabaseAction action, Map<String, Object> itemMap,
+            DatabaseMessageItemType itemType) {
             this.action = action;
             this.itemMap = itemMap;
+            this.itemType = itemType;
         }
 
         @Override
-        public DatabaseMessageDataType getType() {
+        public DatabaseMessageDataType getDataType() {
             return DatabaseMessageDataType.DATA_MANIPULATION;
+        }
+
+        @Override
+        public DatabaseMessageItemType getItemType() {
+            return itemType;
         }
 
         public DatabaseAction getAction() {
@@ -77,16 +91,24 @@ public class DatabaseMessage implements IMessage {
         private static final long serialVersionUID = -4557049744249570971L;
 
         private final String tableName;
+        private final DatabaseMessageItemType itemType;
         private final DatabaseAction action;
 
-        public DatabaseMessageAdministration(String tableName, DatabaseAction action) {
+        public DatabaseMessageAdministration(String tableName, DatabaseMessageItemType itemType,
+            DatabaseAction action) {
             this.tableName = tableName;
+            this.itemType = itemType;
             this.action = action;
         }
 
         @Override
-        public DatabaseMessageDataType getType() {
+        public DatabaseMessageDataType getDataType() {
             return DatabaseMessageDataType.DATA_ADMINISTRATION;
+        }
+
+        @Override
+        public DatabaseMessageItemType getItemType() {
+            return itemType;
         }
 
         public DatabaseAction getAction() {

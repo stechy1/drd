@@ -1,8 +1,17 @@
 package cz.stechy.drd;
 
+import cz.stechy.drd.firebase.FirebaseItemRepository;
+import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.net.message.ClientStatusMessage;
 import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatus;
 import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatusData;
+import cz.stechy.drd.net.message.DatabaseMessage;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration.DatabaseAction;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageDataType;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageItemType;
+import cz.stechy.drd.net.message.DatabaseMessage.IDatabaseMessageData;
 import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
@@ -15,6 +24,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
@@ -23,18 +33,29 @@ import org.slf4j.LoggerFactory;
 
 public class ServerThread extends Thread implements ServerInfoProvider {
 
+    // region Constants
+
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(ServerThread.class);
+
+    // endregion
+
+    // region Variables
 
     private final List<Client> clients = new ArrayList<>();
     private final ClientDispatcher clientDispatcher;
     private final WriterThread writerThread;
     private final MulticastSender multicastSender;
+    private final FirebaseItemRepository firebaseItemRepository;
     private final int port;
     private final int maxClients;
     private final ExecutorService pool;
     private final String serverName ="Default DrD server";
     private boolean running = false;
+
+    // endregion
+
+    // region Constructors
 
     public ServerThread(int port, int maxClients, int waitingQueueSize) throws IOException {
         super("ServerThread");
@@ -43,32 +64,78 @@ public class ServerThread extends Thread implements ServerInfoProvider {
         this.clientDispatcher = new ClientDispatcher(waitingQueueSize, this::getServerStatusMessage);
         this.writerThread = new WriterThread();
         this.multicastSender = new MulticastSender(this::getServerStatusMessage);
+        this.firebaseItemRepository = new FirebaseItemRepository();
         pool = Executors.newFixedThreadPool(maxClients);
     }
 
-    @Override
-    public ServerStatusMessage getServerStatusMessage() {
-        final int connectedClients = clients.size();
-        final int delta = maxClients - connectedClients;
-        ServerStatus status = ServerStatus.EMPTY;
-        if (delta == 0) {
-            status = ServerStatus.FULL;
-        } else if (delta > 0 && delta < maxClients) {
-            status = ServerStatus.HAVE_SPACE;
-        }
+    // endregion
 
-        return new ServerStatusMessage(new ServerStatusData(
-            Server.ID, status, connectedClients, maxClients, serverName, port));
+    // region Private methods
+
+    // region Message processing
+
+    private void processDatabaseMessage(DatabaseMessage message, Client client) {
+        final IDatabaseMessageData data = (IDatabaseMessageData) message.getData();
+        final DatabaseMessageDataType messageDataType = data.getDataType();
+        switch (messageDataType) {
+            case DATA_MANIPULATION:
+                final DatabaseMessageAdministration databaseMessageAdministration = (DatabaseMessageAdministration) data;
+                final DatabaseAction action = databaseMessageAdministration.getAction();
+                final String tableName = (String) databaseMessageAdministration.getData();
+                assert databaseMessageAdministration.getItemType() == DatabaseMessageItemType.ITEM;
+                final ItemType itemType = ItemType.valueOf(tableName);
+                switch (action) {
+                    case REGISTER:
+                        firebaseItemRepository.registerListener(itemType, event -> {
+                            final Map<String, Object> item = event.getItem();
+                            final DatabaseMessage databaseMessage = new DatabaseMessage(
+                                new DatabaseMessageCRUD(event.getAction(), item,
+                                    databaseMessageAdministration.getItemType()),
+                                MessageSource.SERVER);
+                            client.sendMessage(databaseMessage);
+                        });
+                        break;
+                    case UNGERISTER:
+
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Neplatný parametr");
+                }
+                break;
+            case DATA_ADMINISTRATION:
+
+                break;
+            default:
+                throw new IllegalArgumentException("Neplatný parametr");
+        }
     }
 
+    // endregion
+
+    /**
+     * Pošle zprávu všem připojeným klientům
+     *
+     * @param message {@link IMessage} Zpráva
+     */
     private void broadcast(final IMessage message) {
         this.broadcast(message, client -> true);
     }
 
+    /**
+     * Pošle zprávu všem připojeným klientům, kteří splňují kritéria filteru
+     *
+     * @param message {@link IMessage} Zpráva
+     * @param filter {@link Predicate} Filter klientů
+     */
     private void broadcast(final IMessage message, Predicate<? super Client> filter) {
         clients.stream().filter(filter).forEach(client -> client.sendMessage(message));
     }
 
+    /**
+     * Vloží klienta mezi připojené a aktivně komunikující klienty, nebo ho zařadí na čekací listinu
+     *
+     * @param client {@link Client} Klient, který se chce připojit
+     */
     private synchronized void insertClientToListOrQueue(Client client) {
         if (clients.size() < maxClients) {
             LOGGER.info("Přidávám klienta do kolekce klientů a spouštím komunikaci.");
@@ -111,7 +178,31 @@ public class ServerThread extends Thread implements ServerInfoProvider {
                     new ClientStatusData(client.getId(), ClientStatus.CONNECTED));
                 broadcast(clientStatusMessage, client1 -> !client1.getId().equals(client.getId()));
                 break;
+            case DATABASE:
+                processDatabaseMessage((DatabaseMessage) message, client);
+                break;
         }
+    }
+
+    // endregion
+
+    public void shutdown() {
+        running = false;
+    }
+
+    @Override
+    public ServerStatusMessage getServerStatusMessage() {
+        final int connectedClients = clients.size();
+        final int delta = maxClients - connectedClients;
+        ServerStatus status = ServerStatus.EMPTY;
+        if (delta == 0) {
+            status = ServerStatus.FULL;
+        } else if (delta > 0 && delta < maxClients) {
+            status = ServerStatus.HAVE_SPACE;
+        }
+
+        return new ServerStatusMessage(new ServerStatusData(
+            Server.ID, status, connectedClients, maxClients, serverName, port));
     }
 
     @Override
@@ -166,9 +257,5 @@ public class ServerThread extends Thread implements ServerInfoProvider {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public void shutdown() {
-        running = false;
     }
 }

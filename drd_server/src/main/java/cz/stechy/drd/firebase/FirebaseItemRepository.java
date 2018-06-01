@@ -5,8 +5,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemType;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +24,7 @@ public final class FirebaseItemRepository {
 
     // region Variables
 
-    private final Map<ItemType, List<?>> listeners = new HashMap<>();
+    private final Map<ItemType, List<ItemEventListener>> listeners = new HashMap<>();
     private final DatabaseReference itemsReference;
 
     // endregion
@@ -39,54 +39,66 @@ public final class FirebaseItemRepository {
 
     // region Public methods
 
-    public void registerListener(final ItemType itemType) {
+    public void registerListener(final ItemType itemType, ItemEventListener listener) {
         final String itemTypeName = itemType.path;
-        List<?> observables = listeners.get(itemType);
+        List<ItemEventListener> observables = listeners.get(itemType);
         // Pokud jsem ještě neprovedl žádnou registraci pro daný typ předmětu
         if (observables == null) {
-            itemsReference.child(itemTypeName).addChildEventListener(new MyListener(FirebaseItemConvertors.forItem(itemType)));
+            observables = new ArrayList<>();
+            itemsReference
+                .child(itemTypeName)
+                .addChildEventListener(
+                    new FirebaseItemListener(FirebaseItemConvertors.forItem(itemType), observables)
+                );
         }
+
+        observables.add(listener);
+    }
+
+    public void unregisterListener(final ItemType itemType, ItemEventListener listener) {
+        final List<ItemEventListener> observables = listeners.get(itemType);
+        if (observables == null) {
+            return;
+        }
+
+        observables.remove(listener);
     }
 
     // endregion
 
-    public interface ItemEventListener {
-
-        ItemEventAction getAction();
-
-        void getItem();
-
-        enum ItemEventAction {
-            ADD, CHANGE, REMOVE;
-        }
-    }
-
-    @FunctionalInterface
-    public interface ItemConvertor {
-        ItemBase convert(DataSnapshot snapshot);
-    }
-
-    private final class MyListener implements ChildEventListener {
+    private final class FirebaseItemListener implements ChildEventListener {
 
         private final ItemConvertor convertor;
+        private final List<ItemEventListener> listeners;
 
-        private MyListener(ItemConvertor convertor) {
+        private FirebaseItemListener(ItemConvertor convertor, List<ItemEventListener> listeners) {
             this.convertor = convertor;
+            this.listeners = listeners;
+        }
+
+        private void notifyListeners(ItemEvent event) {
+            listeners.forEach(itemEventListener -> itemEventListener.onEvent(event));
         }
 
         @Override
         public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
-
+            final Map<String, Object> item = convertor.convert(snapshot);
+            final ItemEvent event = FirebaseItemEvents.forChildAdded(item);
+            notifyListeners(event);
         }
 
         @Override
         public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
-
+            final Map<String, Object> item = convertor.convert(snapshot);
+            final ItemEvent event = FirebaseItemEvents.forChildChanged(item);
+            notifyListeners(event);
         }
 
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
-
+            final Map<String, Object> item = convertor.convert(snapshot);
+            final ItemEvent event = FirebaseItemEvents.forChildRemoved(item);
+            notifyListeners(event);
         }
 
         @Override
