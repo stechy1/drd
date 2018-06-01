@@ -154,7 +154,7 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
     @FXML
     private void handleShowMoneyPopup(ActionEvent actionEvent) {
         Bundle bundle = new Bundle().put(MoneyController.MONEY, treasure.getRaw());
-        parent.startNewPopupWindowForResult(R.FXML.MONEY, ACTION_MONEY, bundle,
+        parent.startNewPopupWindowForResult(R.Fxml.MONEY, ACTION_MONEY, bundle,
             (Node) actionEvent.getSource());
     }
 

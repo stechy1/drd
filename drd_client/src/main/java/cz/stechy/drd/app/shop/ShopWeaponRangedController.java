@@ -191,7 +191,7 @@ public class ShopWeaponRangedController implements Initializable,
 
     @Override
     public String getEditScreenName() {
-        return R.FXML.ITEM_RANGED_WEAPON;
+        return R.Fxml.ITEM_RANGED_WEAPON;
     }
 
     @Override

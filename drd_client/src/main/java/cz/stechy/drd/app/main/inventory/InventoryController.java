@@ -135,7 +135,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
                 bundle.putInt(BackpackController.BACKPACK_SIZE, backpack.getSize().size);
                 bundle.putString(BackpackController.INVENTORY_ID, childInventoryId);
                 bundle.putString(BackpackController.ITEM_NAME, itemName);
-                parent.startNewDialog(R.FXML.BACKPACK, bundle);
+                parent.startNewDialog(R.Fxml.BACKPACK, bundle);
                 break;
         }
     }

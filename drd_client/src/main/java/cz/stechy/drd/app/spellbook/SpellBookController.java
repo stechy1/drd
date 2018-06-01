@@ -283,7 +283,7 @@ public class SpellBookController extends BaseController implements Initializable
     private void handleAddItem(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
         bundle.putInt(SpellBookHelper.SPELL_ACTION, SpellBookHelper.SPELL_ACTION_ADD);
-        startNewDialogForResult(R.FXML.SPELLBOOK_EDIT, SpellBookHelper.SPELL_ACTION_ADD, bundle);
+        startNewDialogForResult(R.Fxml.SPELLBOOK_EDIT, SpellBookHelper.SPELL_ACTION_ADD, bundle);
     }
 
     @FXML
@@ -308,7 +308,7 @@ public class SpellBookController extends BaseController implements Initializable
         final Bundle bundle = new Bundle();
         bundle.putInt(SpellBookHelper.SPELL_ACTION, SpellBookHelper.SPELL_ACTION_UPDATE);
         SpellBookHelper.toBundle(bundle, entry);
-        startNewDialogForResult(R.FXML.SPELLBOOK_EDIT, SpellBookHelper.SPELL_ACTION_UPDATE, bundle);
+        startNewDialogForResult(R.Fxml.SPELLBOOK_EDIT, SpellBookHelper.SPELL_ACTION_UPDATE, bundle);
     }
 
     @FXML

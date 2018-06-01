@@ -167,7 +167,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
     @Override
     public String getEditScreenName() {
-        return R.FXML.ITEM_GENERAL;
+        return R.Fxml.ITEM_GENERAL;
     }
 
     @Override

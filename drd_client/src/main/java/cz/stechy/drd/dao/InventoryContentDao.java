@@ -1,5 +1,7 @@
 package cz.stechy.drd.dao;
 
+import static cz.stechy.drd.R.Database.Inventorycontent.*;
+
 import cz.stechy.drd.db.BaseDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.model.inventory.Inventory;
@@ -40,19 +42,9 @@ public final class InventoryContentDao extends BaseDatabaseService<InventoryReco
     private static final int SLOT_OCCUPIED = 1;
     private static final int SLOT_NOT_OCCUPIED = 0;
 
-    // Název tabulky
-    private static final String TABLE = "inventory_content";
-
-    // Názvy sloupců v databázi
-    private static final String COLUMN_ID = TABLE + "_id";
-    private static final String COLUMN_INVENTORY_ID = TABLE + "_inventory_id";
-    private static final String COLUMN_ITEM_ID = TABLE + "_item_id";
-    private static final String COLUMN_ITEM_AMMOUNT = TABLE + "_ammount";
-    private static final String COLUMN_SLOT = TABLE + "_slot";
-    private static final String COLUMN_METADATA = TABLE + "_metadata";
     // TODO poškození itemu?
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_INVENTORY_ID,
-        COLUMN_ITEM_ID, COLUMN_ITEM_AMMOUNT, COLUMN_SLOT, COLUMN_METADATA};
+        COLUMN_ITEM_ID, COLUMN_AMMOUNT, COLUMN_SLOT, COLUMN_METADATA};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
     private static final String COLUMNS_UPDATE = GENERATE_COLUMNS_UPDATE(COLUMNS);
@@ -63,7 +55,7 @@ public final class InventoryContentDao extends BaseDatabaseService<InventoryReco
             + "%S INT NOT NULL,"                                // ammount
             + "%s INT NOT NULL,"                                // slot index
             + "%s BLOB"                                         // image
-            + ");", TABLE, COLUMN_ID, COLUMN_INVENTORY_ID, COLUMN_ITEM_ID, COLUMN_ITEM_AMMOUNT,
+            + ");", TABLE_NAME, COLUMN_ID, COLUMN_INVENTORY_ID, COLUMN_ITEM_ID, COLUMN_AMMOUNT,
         COLUMN_SLOT, COLUMN_METADATA);
 
     // endregion
@@ -152,7 +144,7 @@ public final class InventoryContentDao extends BaseDatabaseService<InventoryReco
             .id(resultSet.getString(COLUMN_ID))
             .inventoryId(resultSet.getString(COLUMN_INVENTORY_ID))
             .itemId(resultSet.getString(COLUMN_ITEM_ID))
-            .ammount(resultSet.getInt(COLUMN_ITEM_AMMOUNT))
+            .ammount(resultSet.getInt(COLUMN_AMMOUNT))
             .slotId(resultSet.getInt(COLUMN_SLOT))
             .metadata(Metadata.deserialize(readBlob(resultSet, COLUMN_METADATA)))
             .build();
@@ -172,7 +164,7 @@ public final class InventoryContentDao extends BaseDatabaseService<InventoryReco
 
     @Override
     protected String getTable() {
-        return TABLE;
+        return TABLE_NAME;
     }
 
     @Override

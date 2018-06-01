@@ -116,7 +116,7 @@ public class LoginController extends BaseController implements Initializable {
 
     @FXML
     private void handleRegistration(ActionEvent actionEvent) {
-        startNewDialogForResult(R.FXML.REGISTER, ACTION_REGISTRATION);
+        startNewDialogForResult(R.Fxml.REGISTER, ACTION_REGISTRATION);
     }
 
     @FXML

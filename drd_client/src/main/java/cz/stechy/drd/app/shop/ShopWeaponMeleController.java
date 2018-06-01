@@ -187,7 +187,7 @@ public class ShopWeaponMeleController implements Initializable,
 
     @Override
     public String getEditScreenName() {
-        return R.FXML.ITEM_MELE_WEAPON;
+        return R.Fxml.ITEM_MELE_WEAPON;
     }
 
     @Override

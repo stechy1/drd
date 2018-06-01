@@ -1,5 +1,7 @@
 package cz.stechy.drd.dao;
 
+import static cz.stechy.drd.R.Database.Inventory.*;
+
 import cz.stechy.drd.db.BaseDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -29,14 +31,6 @@ public final class InventoryDao extends BaseDatabaseService<Inventory> {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(InventoryDao.class);
 
-    // Název tabulky
-    private static final String TABLE = "inventory";
-
-    // Názvy sloupců v databázi
-    private static final String COLUMN_ID = TABLE + "_id";
-    private static final String COLUMN_HERO_ID = TABLE + "_hero_id";
-    private static final String COLUMN_INVENTORY_TYPE = TABLE + "_inventory_type";
-    private static final String COLUMN_CAPACITY = TABLE + "_capacity";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_HERO_ID,
         COLUMN_INVENTORY_TYPE, COLUMN_CAPACITY};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
@@ -47,7 +41,7 @@ public final class InventoryDao extends BaseDatabaseService<Inventory> {
         + "%s VARCHAR(255) NOT NULL,"                        // hero id
         + "%s INT NOT NULL,"                                 // inventory type
         + "%s INT NOT NULL"                                  // capacity
-        + ");", TABLE, COLUMN_ID, COLUMN_HERO_ID, COLUMN_INVENTORY_TYPE, COLUMN_CAPACITY);
+        + ");", TABLE_NAME, COLUMN_ID, COLUMN_HERO_ID, COLUMN_INVENTORY_TYPE, COLUMN_CAPACITY);
 
     public static final Predicate<? super Inventory> MAIN_INVENTORY_FILTER = inventory ->
         inventory.getInventoryType() == InventoryType.MAIN;
@@ -135,7 +129,7 @@ public final class InventoryDao extends BaseDatabaseService<Inventory> {
 
     @Override
     protected String getTable() {
-        return TABLE;
+        return TABLE_NAME;
     }
 
     @Override

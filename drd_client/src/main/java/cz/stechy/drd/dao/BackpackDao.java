@@ -1,5 +1,7 @@
 package cz.stechy.drd.dao;
 
+import static cz.stechy.drd.R.Database.Backpack.*;
+
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -22,22 +24,8 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
 
     // region Constants
 
-    // Název tabulky
-    private static final String TABLE = "backpack";
     private static final String FIREBASE_CHILD_NAME = "items/backpack";
 
-    // Názvy sloupců v databázi
-    private static final String COLUMN_ID = TABLE + "_id";
-    private static final String COLUMN_NAME = TABLE + "_name";
-    private static final String COLUMN_DESCRIPTION = TABLE + "_description";
-    private static final String COLUMN_AUTHOR = TABLE + "_author";
-    private static final String COLUMN_WEIGHT = TABLE + "_weight";
-    private static final String COLUMN_PRICE = TABLE + "_price";
-    private static final String COLUMN_MAX_LOAD = TABLE + "_max_load";
-    private static final String COLUMN_SIZE = TABLE + "_size";
-    private static final String COLUMN_IMAGE = TABLE + "_image";
-    private static final String COLUMN_STACK_SIZE = TABLE + "_stack_size";
-    private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE,
         COLUMN_STACK_SIZE, COLUMN_UPLOADED};
@@ -56,7 +44,7 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
             + "%s BLOB,"                                        // image
             + "%s INT NOT NULL,"                                // stack size
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
-            + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
+            + "); ", TABLE_NAME, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
         COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE, COLUMN_STACK_SIZE,
         COLUMN_UPLOADED);
 
@@ -134,7 +122,7 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
 
     @Override
     protected String getTable() {
-        return TABLE;
+        return TABLE_NAME;
     }
 
     @Override

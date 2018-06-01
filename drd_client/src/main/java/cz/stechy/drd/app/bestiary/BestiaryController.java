@@ -281,7 +281,7 @@ public class BestiaryController extends BaseController implements Initializable 
     private void handleAddItem(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
         bundle.putInt(BestiaryHelper.MOB_ACTION, BestiaryHelper.MOB_ACTION_ADD);
-        startNewDialogForResult(R.FXML.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_ADD, bundle);
+        startNewDialogForResult(R.Fxml.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_ADD, bundle);
     }
 
     @FXML
@@ -303,7 +303,7 @@ public class BestiaryController extends BaseController implements Initializable 
         final MobEntry entry = sortedList.get(selectedRowIndex.get());
         final Bundle bundle = BestiaryHelper.mobToBundle(entry.getMobBase());
         bundle.putInt(BestiaryHelper.MOB_ACTION, BestiaryHelper.MOB_ACTION_UPDATE);
-        startNewDialogForResult(R.FXML.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_UPDATE, bundle);
+        startNewDialogForResult(R.Fxml.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_UPDATE, bundle);
     }
 
     @FXML

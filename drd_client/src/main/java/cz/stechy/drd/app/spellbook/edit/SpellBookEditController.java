@@ -253,7 +253,7 @@ public class SpellBookEditController extends BaseController implements Initializ
             price = model.price.get().pack();
         }
         bundle.putString(SpellBookHelper.PRICE, price);
-        startNewDialogForResult(R.FXML.SPELL_PRICE_EDITOR,
+        startNewDialogForResult(R.Fxml.SPELL_PRICE_EDITOR,
             SpellBookHelper.SPELL_PRICE_ACTION_UPDATE, bundle);
     }
 
@@ -261,7 +261,7 @@ public class SpellBookEditController extends BaseController implements Initializ
     private void handleCastTime(MouseEvent mouseEvent) {
         Bundle bundle = new Bundle();
         bundle.putInt(DrDTimeController.TIME, model.castTime.get().getRaw());
-        startNewPopupWindowForResult(R.FXML.TIME, ACTION_CAST_TIME, bundle,
+        startNewPopupWindowForResult(R.Fxml.TIME, ACTION_CAST_TIME, bundle,
             (Node) mouseEvent.getSource());
     }
 
@@ -269,7 +269,7 @@ public class SpellBookEditController extends BaseController implements Initializ
     private void handleDuration(MouseEvent mouseEvent) {
         Bundle bundle = new Bundle();
         bundle.putInt(DrDTimeController.TIME, model.duration.get().getRaw());
-        startNewPopupWindowForResult(R.FXML.TIME, ACTION_DURATION, bundle,
+        startNewPopupWindowForResult(R.Fxml.TIME, ACTION_DURATION, bundle,
             (Node) mouseEvent.getSource());
     }
 

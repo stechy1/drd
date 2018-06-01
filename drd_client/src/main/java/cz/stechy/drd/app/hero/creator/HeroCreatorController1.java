@@ -136,7 +136,7 @@ public class HeroCreatorController1 extends BaseController implements Initializa
         bundle.putInt(HeroHelper.RACE, model.race.getValue().ordinal());
         bundle.putInt(HeroHelper.PROFESSION, model.profession.getValue().ordinal());
         bundle.putString(HeroHelper.DESCRIPTION, model.description.getValue());
-        startScreen(R.FXML.HERO_CREATOR_2, bundle);
+        startScreen(R.Fxml.HERO_CREATOR_2, bundle);
     }
 
     // endregion

@@ -1,5 +1,7 @@
 package cz.stechy.drd.dao;
 
+import static cz.stechy.drd.R.Database.Spellbook.*;
+
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -21,25 +23,8 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
 
     // region Constants
 
-    // Název tabulky
-    private static final String TABLE = "spel";
     private static final String FIREBASE_CHILD_NAME = "spells";
 
-    // Názvy sloupců v databázi
-    private static final String COLUMN_ID = TABLE + "_id";
-    private static final String COLUMN_AUTHOR = TABLE + "_author";
-    private static final String COLUMN_NAME = TABLE + "_name";
-    private static final String COLUMN_MAGIC_NAME = TABLE + "_magic_name";
-    private static final String COLUMN_DESCRIPTION = TABLE + "_description";
-    private static final String COLUMN_PROFESSION_TYPE = TABLE + "_profession_type";
-    private static final String COLUMN_PRICE = TABLE + "_price";
-    private static final String COLUMN_RADIUS = TABLE + "_radius";
-    private static final String COLUMN_RANGE = TABLE + "_range";
-    private static final String COLUMN_TARGET = TABLE + "_target";
-    private static final String COLUMN_CAST_TIME = TABLE + "_cast_time";
-    private static final String COLUMN_DURATION = TABLE + "_duration";
-    private static final String COLUMN_IMAGE = TABLE + "_image";
-    private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_AUTHOR, COLUMN_NAME,
         COLUMN_MAGIC_NAME, COLUMN_DESCRIPTION, COLUMN_PROFESSION_TYPE, COLUMN_PRICE, COLUMN_RADIUS,
         COLUMN_RANGE, COLUMN_TARGET, COLUMN_CAST_TIME, COLUMN_DURATION, COLUMN_IMAGE,
@@ -62,7 +47,7 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
             + "%s INT NOT NULL,"                                // duration
             + "%s BLOB,"                                        // image
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
-            + "); ", TABLE, COLUMN_ID, COLUMN_AUTHOR, COLUMN_NAME,
+            + "); ", TABLE_NAME, COLUMN_ID, COLUMN_AUTHOR, COLUMN_NAME,
         COLUMN_MAGIC_NAME, COLUMN_DESCRIPTION, COLUMN_PROFESSION_TYPE, COLUMN_PRICE, COLUMN_RADIUS,
         COLUMN_RANGE, COLUMN_TARGET, COLUMN_CAST_TIME, COLUMN_DURATION, COLUMN_IMAGE,
         COLUMN_UPLOADED);
@@ -152,7 +137,7 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
 
     @Override
     protected String getTable() {
-        return TABLE;
+        return TABLE_NAME;
     }
 
     @Override

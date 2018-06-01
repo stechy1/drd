@@ -1,5 +1,7 @@
 package cz.stechy.drd.dao;
 
+import static cz.stechy.drd.R.Database.Weaponmele.*;
+
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -22,26 +24,8 @@ public final class MeleWeaponDao extends AdvancedDatabaseService<MeleWeapon> {
 
     // region Constants
 
-    // Název tabulky
-    private static final String TABLE = "weapon_mele";
     private static final String FIREBASE_CHILD_NAME = "items/weapon/mele";
 
-    // Názvy sloupců v databázi
-    private static final String COLUMN_ID = TABLE + "_id";
-    private static final String COLUMN_NAME = TABLE + "_name";
-    private static final String COLUMN_DESCRIPTION = TABLE + "_description";
-    private static final String COLUMN_AUTHOR = TABLE + "_author";
-    private static final String COLUMN_WEIGHT = TABLE + "_weight";
-    private static final String COLUMN_PRICE = TABLE + "_price";
-    private static final String COLUMN_STRENGTH = TABLE + "_strength";
-    private static final String COLUMN_RAMPANCY = TABLE + "_rampancy";
-    private static final String COLUMN_DEFENCE = TABLE + "_defence";
-    private static final String COLUMN_RENOWN = TABLE + "_renown";
-    private static final String COLUMN_CLASS = TABLE + "_class";
-    private static final String COLUMN_TYPE = TABLE + "_type";
-    private static final String COLUMN_IMAGE = TABLE + "_image";
-    private static final String COLUMN_STACK_SIZE = TABLE + "_stack_size";
-    private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY,
         COLUMN_DEFENCE, COLUMN_RENOWN, COLUMN_CLASS, COLUMN_TYPE, COLUMN_IMAGE, COLUMN_STACK_SIZE,
@@ -65,7 +49,7 @@ public final class MeleWeaponDao extends AdvancedDatabaseService<MeleWeapon> {
             + "%s BLOB,"                                        // image
             + "%s INT NOT NULL,"                                // stack size
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
-            + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
+            + "); ", TABLE_NAME, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
         COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY, COLUMN_DEFENCE, COLUMN_RENOWN, COLUMN_CLASS,
         COLUMN_TYPE, COLUMN_IMAGE, COLUMN_STACK_SIZE, COLUMN_UPLOADED);
 
@@ -160,7 +144,7 @@ public final class MeleWeaponDao extends AdvancedDatabaseService<MeleWeapon> {
 
     @Override
     protected String getTable() {
-        return TABLE;
+        return TABLE_NAME;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package cz.stechy.drd;
 
 import com.sun.javafx.application.LauncherImpl;
-import cz.stechy.drd.R.FXML;
 import cz.stechy.drd.model.MyPreloaderNotification;
 import cz.stechy.drd.service.KeyboardService;
 import cz.stechy.drd.util.UTF8ResourceBundleControl;
@@ -36,7 +35,7 @@ public class App extends Application {
     private static final String LANG_FILE_CONVENTION = "lang.translate";
     private static final String FILE_CONFIG = "config.properties";
     private static final String[] SCREENS_BLACKLIST = {
-        R.FXML.DEFAULT_STAFF_LEFT, R.FXML.DEFAULT_STAFF_RIGHT};
+        R.Fxml.DEFAULT_STAFF_LEFT, R.Fxml.DEFAULT_STAFF_RIGHT};
 
     // endregion
 
@@ -167,7 +166,7 @@ public class App extends Application {
         manager.setMainScreen(controlledScreen);
         manager.loadScreens();
         manager.showNewDialog(parent, primaryStage, false);
-        manager.showScreen(FXML.MAIN, null);
+        manager.showScreen(R.Fxml.MAIN, null);
     }
 
     private final PreloaderNotifier notifier = new PreloaderNotifier() {

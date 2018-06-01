@@ -96,7 +96,7 @@ def generate_table_columns(output_file):
     write_entry(12, "table_name", table_name, output_file)
     raw_columns = (column[column.find(":") + 2 :]).split(", ")
     for raw_column in raw_columns:
-      write_entry(12, raw_column, table_name + "_" + raw_column, output_file)
+      write_entry(12, "COLUMN_" + raw_column, table_name + "_" + raw_column, output_file)
 
     close_class(8, output_file)
     print(raw_columns)

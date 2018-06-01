@@ -1,5 +1,5 @@
 armor: id, name, description, author, defence, minimum_strength, type, weight_a, weight_b, weight_c, price_a, price_b, price_c, image, stack_size, uploaded
-general: id, name, description, author, weight, price, image, stack_size, uploaded
+general_items: id, name, description, author, weight, price, image, stack_size, uploaded
 backpack: id, name, description, author, weight, price, max_load, size, image, stack_size, uploaded
 weapon_mele: id, name, description, author, weight, price, strength, rampancy, defence, renown, class, type, image, stack_size, uploaded
 weapon_ranged: id, name, description, author, weight, price, strength, rampancy, type, range_low, range_medium, range_long, renown, image, stack_size, uploaded

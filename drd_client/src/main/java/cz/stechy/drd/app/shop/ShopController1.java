@@ -374,7 +374,7 @@ public class ShopController1 extends BaseController implements Initializable {
         Bundle bundle = new Bundle();
         bundle.put(ShopController2.HERO_ID, hero.getId());
         bundle.put(ShopController2.SHOPPING_CART, shoppingCart);
-        startScreen(R.FXML.SHOP2, bundle);
+        startScreen(R.Fxml.SHOP2, bundle);
     }
 
     @FXML

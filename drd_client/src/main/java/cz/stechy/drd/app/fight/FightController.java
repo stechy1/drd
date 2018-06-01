@@ -174,7 +174,7 @@ public class FightController extends BaseController implements Initializable {
 
         Bundle bundle = new Bundle();
         bundle.put(FightCommentController.COMMENT, comment);
-        startNewDialog(R.FXML.FIGHT_COMMENT, bundle);
+        startNewDialog(R.Fxml.FIGHT_COMMENT, bundle);
 
         heroService.getInventoryAsync()
             .thenCompose(inventoryService ->

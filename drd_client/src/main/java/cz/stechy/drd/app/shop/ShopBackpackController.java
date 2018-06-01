@@ -169,7 +169,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     @Override
     public String getEditScreenName() {
-        return R.FXML.ITEM_BACKPACK;
+        return R.Fxml.ITEM_BACKPACK;
     }
 
     @Override

@@ -1,5 +1,7 @@
 package cz.stechy.drd.dao;
 
+import static cz.stechy.drd.R.Database.Bestiary.*;
+
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -20,40 +22,13 @@ public class BestiaryDao extends AdvancedDatabaseService<Mob> {
 
     // region Constants
 
-    // Název tabulky
-    public static final String TABLE = "bestiary";
     private static final String FIREBASE_CHILD_NAME = "mobs";
 
-    // Názvy sloupců v databázi
-    private static final String COLUMN_ID = TABLE + "_id";
-    private static final String COLUMN_NAME = TABLE + "_name";
-    private static final String COLUMN_DESCRIPTION = TABLE + "_description";
-    private static final String COLUMN_AUTHOR = TABLE + "_author";
-    private static final String COLUMN_IMAGE = TABLE + "_image";
-    private static final String COLUMN_MOB_CLASS = TABLE + "_mob_class";
-    private static final String COLUMN_RULES_TYPE = TABLE + "_rules_type";
-    private static final String COLUMN_CONVICTION = TABLE + "_conviction";
-    private static final String COLUMN_HEIGHT = TABLE + "_height";
-    private static final String COLUMN_ATTACK = TABLE + "_attack";
-    private static final String COLUMN_DEFENCE = TABLE + "_defence";
-    private static final String COLUMN_VIABILITY = TABLE + "_viability";
-    private static final String COLUMN_IMMUNITY = TABLE + "_immunity";
-    private static final String COLUMN_METTLE = TABLE + "_mettle";
-    private static final String COLUMN_VULNERABILITY = TABLE + "_vulnerability";
-    private static final String COLUMN_MOBILITY = TABLE + "_mobility";
-    private static final String COLUMN_PERSERVANCE = TABLE + "_perservance";
-    private static final String COLUMN_CONTROL_ABILITY = TABLE + "_control_ability";
-    private static final String COLUMN_INTELLIGENCE = TABLE + "_intelligence";
-    private static final String COLUMN_CHARISMA = TABLE + "_charisma";
-    private static final String COLUMN_BACIS_BOWER_OF_MIND = TABLE + "_basic_power_of_mind";
-    private static final String COLUMN_EXPERIENCE = TABLE + "_experience";
-    private static final String COLUMN_DOMESTICATION = TABLE + "_domestication";
-    private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_IMAGE, COLUMN_MOB_CLASS, COLUMN_RULES_TYPE,
         COLUMN_CONVICTION, COLUMN_HEIGHT, COLUMN_ATTACK, COLUMN_DEFENCE, COLUMN_VIABILITY,
         COLUMN_IMMUNITY, COLUMN_METTLE, COLUMN_VULNERABILITY, COLUMN_MOBILITY, COLUMN_PERSERVANCE,
-        COLUMN_CONTROL_ABILITY, COLUMN_INTELLIGENCE, COLUMN_CHARISMA, COLUMN_BACIS_BOWER_OF_MIND,
+        COLUMN_CONTROL_ABILITY, COLUMN_INTELLIGENCE, COLUMN_CHARISMA, COLUMN_BASIC_POWER_OF_MIND,
         COLUMN_EXPERIENCE, COLUMN_DOMESTICATION, COLUMN_UPLOADED};
     private static final String COLUMNS_KEYS = GENERATE_COLUMN_KEYS(COLUMNS);
     private static final String COLUMNS_VALUES = GENERATE_COLUMNS_VALUES(COLUMNS);
@@ -83,11 +58,11 @@ public class BestiaryDao extends AdvancedDatabaseService<Mob> {
             + "%s INT NOT NULL,"                                // experience
             + "%s INT NOT NULL,"                                // domestication
             + "%s INT NOT NULL"                                 // uploaded
-            + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
+            + "); ", TABLE_NAME, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_IMAGE, COLUMN_MOB_CLASS, COLUMN_RULES_TYPE,
         COLUMN_CONVICTION, COLUMN_HEIGHT, COLUMN_ATTACK, COLUMN_DEFENCE, COLUMN_VIABILITY,
         COLUMN_IMMUNITY, COLUMN_METTLE, COLUMN_VULNERABILITY, COLUMN_MOBILITY, COLUMN_PERSERVANCE,
-        COLUMN_CONTROL_ABILITY, COLUMN_INTELLIGENCE, COLUMN_CHARISMA, COLUMN_BACIS_BOWER_OF_MIND,
+        COLUMN_CONTROL_ABILITY, COLUMN_INTELLIGENCE, COLUMN_CHARISMA, COLUMN_BASIC_POWER_OF_MIND,
         COLUMN_EXPERIENCE, COLUMN_DOMESTICATION, COLUMN_UPLOADED);
 
     // endregion
@@ -125,7 +100,7 @@ public class BestiaryDao extends AdvancedDatabaseService<Mob> {
 //            .controlAbility(snapshot.child(COLUMN_CONTROL_ABILITY).getValue(Integer.class))
 //            .intelligence(snapshot.child(COLUMN_INTELLIGENCE).getValue(Integer.class))
 //            .charisma(snapshot.child(COLUMN_CHARISMA).getValue(Integer.class))
-//            .basicPowerOfMind(snapshot.child(COLUMN_BACIS_BOWER_OF_MIND).getValue(Integer.class))
+//            .basicPowerOfMind(snapshot.child(COLUMN_BASIC_POWER_OF_MIND).getValue(Integer.class))
 //            .experience(snapshot.child(COLUMN_EXPERIENCE).getValue(Integer.class))
 //            .domestication(snapshot.child(COLUMN_DOMESTICATION).getValue(Integer.class))
 //            .build();
@@ -154,7 +129,7 @@ public class BestiaryDao extends AdvancedDatabaseService<Mob> {
             .controlAbility(resultSet.getInt(COLUMN_CONTROL_ABILITY))
             .intelligence(resultSet.getInt(COLUMN_INTELLIGENCE))
             .charisma(resultSet.getInt(COLUMN_CHARISMA))
-            .basicPowerOfMind(resultSet.getInt(COLUMN_BACIS_BOWER_OF_MIND))
+            .basicPowerOfMind(resultSet.getInt(COLUMN_BASIC_POWER_OF_MIND))
             .experience(resultSet.getInt(COLUMN_EXPERIENCE))
             .domestication(resultSet.getInt(COLUMN_DOMESTICATION))
             .downloaded(true)
@@ -194,7 +169,7 @@ public class BestiaryDao extends AdvancedDatabaseService<Mob> {
 
     @Override
     protected String getTable() {
-        return TABLE;
+        return TABLE_NAME;
     }
 
     @Override

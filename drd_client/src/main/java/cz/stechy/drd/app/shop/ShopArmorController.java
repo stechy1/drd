@@ -195,7 +195,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
     @Override
     public String getEditScreenName() {
-        return R.FXML.ITEM_ARMOR;
+        return R.Fxml.ITEM_ARMOR;
     }
 
     @Override
