@@ -5,7 +5,7 @@ public final class R {
 
     public static final int DATABASE_VERSION = 1;
 
-    public static class FXML {
+    public static class Fxml {
 
         public static final String ABOUT = "about";
         public static final String CARD = "card";
@@ -451,7 +451,6 @@ public final class R {
 
         public static class Icon {
 
-            public static final String HELP = "/images/icon/help.png";
             public static final String ABOUT = "/images/icon/about.png";
             public static final String ADD = "/images/icon/add.png";
             public static final String BANK = "/images/icon/bank.png";
@@ -470,6 +469,7 @@ public final class R {
             public static final String FIGHT = "/images/icon/fight.png";
             public static final String GENERATE = "/images/icon/generate.png";
             public static final String HAND_CLICK = "/images/icon/hand_click.png";
+            public static final String HELP = "/images/icon/help.png";
             public static final String IMPORT = "/images/icon/import.png";
             public static final String LOGIN = "/images/icon/login.png";
             public static final String MANA = "/images/icon/mana.png";
@@ -505,6 +505,196 @@ public final class R {
 
         public static final String TOOLBAR_BIG = "/images/toolbar-big.png";
         public static final String TOOLBAR_BIG2 = "/images/toolbar-big2.png";
+    }
+
+    public static class Database {
+
+        public static class Armor {
+
+            public static final String TABLE_NAME = "armor";
+            public static final String ID = "armor_id";
+            public static final String NAME = "armor_name";
+            public static final String DESCRIPTION = "armor_description";
+            public static final String AUTHOR = "armor_author";
+            public static final String DEFENCE = "armor_defence";
+            public static final String MINIMUM_STRENGTH = "armor_minimum_strength";
+            public static final String TYPE = "armor_type";
+            public static final String WEIGHT_A = "armor_weight_a";
+            public static final String WEIGHT_B = "armor_weight_b";
+            public static final String WEIGHT_C = "armor_weight_c";
+            public static final String PRICE_A = "armor_price_a";
+            public static final String PRICE_B = "armor_price_b";
+            public static final String PRICE_C = "armor_price_c";
+            public static final String IMAGE = "armor_image";
+            public static final String STACK_SIZE = "armor_stack_size";
+            public static final String UPLOADED = "armor_uploaded";
+        }
+
+        public static class General {
+
+            public static final String TABLE_NAME = "general";
+            public static final String ID = "general_id";
+            public static final String NAME = "general_name";
+            public static final String DESCRIPTION = "general_description";
+            public static final String AUTHOR = "general_author";
+            public static final String WEIGHT = "general_weight";
+            public static final String PRICE = "general_price";
+            public static final String IMAGE = "general_image";
+            public static final String STACK_SIZE = "general_stack_size";
+            public static final String UPLOADED = "general_uploaded";
+        }
+
+        public static class Backpack {
+
+            public static final String TABLE_NAME = "backpack";
+            public static final String ID = "backpack_id";
+            public static final String NAME = "backpack_name";
+            public static final String DESCRIPTION = "backpack_description";
+            public static final String AUTHOR = "backpack_author";
+            public static final String WEIGHT = "backpack_weight";
+            public static final String PRICE = "backpack_price";
+            public static final String MAX_LOAD = "backpack_max_load";
+            public static final String SIZE = "backpack_size";
+            public static final String IMAGE = "backpack_image";
+            public static final String STACK_SIZE = "backpack_stack_size";
+            public static final String UPLOADED = "backpack_uploaded";
+        }
+
+        public static class Weaponmele {
+
+            public static final String TABLE_NAME = "weapon_mele";
+            public static final String ID = "weapon_mele_id";
+            public static final String NAME = "weapon_mele_name";
+            public static final String DESCRIPTION = "weapon_mele_description";
+            public static final String AUTHOR = "weapon_mele_author";
+            public static final String WEIGHT = "weapon_mele_weight";
+            public static final String PRICE = "weapon_mele_price";
+            public static final String STRENGTH = "weapon_mele_strength";
+            public static final String RAMPANCY = "weapon_mele_rampancy";
+            public static final String DEFENCE = "weapon_mele_defence";
+            public static final String RENOWN = "weapon_mele_renown";
+            public static final String CLASS = "weapon_mele_class";
+            public static final String TYPE = "weapon_mele_type";
+            public static final String IMAGE = "weapon_mele_image";
+            public static final String STACK_SIZE = "weapon_mele_stack_size";
+            public static final String UPLOADED = "weapon_mele_uploaded";
+        }
+
+        public static class Weaponranged {
+
+            public static final String TABLE_NAME = "weapon_ranged";
+            public static final String ID = "weapon_ranged_id";
+            public static final String NAME = "weapon_ranged_name";
+            public static final String DESCRIPTION = "weapon_ranged_description";
+            public static final String AUTHOR = "weapon_ranged_author";
+            public static final String WEIGHT = "weapon_ranged_weight";
+            public static final String PRICE = "weapon_ranged_price";
+            public static final String STRENGTH = "weapon_ranged_strength";
+            public static final String RAMPANCY = "weapon_ranged_rampancy";
+            public static final String TYPE = "weapon_ranged_type";
+            public static final String RANGE_LOW = "weapon_ranged_range_low";
+            public static final String RANGE_MEDIUM = "weapon_ranged_range_medium";
+            public static final String RANGE_LONG = "weapon_ranged_range_long";
+            public static final String RENOWN = "weapon_ranged_renown";
+            public static final String IMAGE = "weapon_ranged_image";
+            public static final String STACK_SIZE = "weapon_ranged_stack_size";
+            public static final String UPLOADED = "weapon_ranged_uploaded";
+        }
+
+        public static class Bestiary {
+
+            public static final String TABLE_NAME = "bestiary";
+            public static final String ID = "bestiary_id";
+            public static final String NAME = "bestiary_name";
+            public static final String DESCRIPTION = "bestiary_description";
+            public static final String AUTHOR = "bestiary_author";
+            public static final String IMAGE = "bestiary_image";
+            public static final String MOB_CLASS = "bestiary_mob_class";
+            public static final String RULES_TYPE = "bestiary_rules_type";
+            public static final String CONVICTION = "bestiary_conviction";
+            public static final String HEIGHT = "bestiary_height";
+            public static final String ATTACK = "bestiary_attack";
+            public static final String DEFENCE = "bestiary_defence";
+            public static final String VIABILITY = "bestiary_viability";
+            public static final String IMMUNITY = "bestiary_immunity";
+            public static final String METTLE = "bestiary_mettle";
+            public static final String VULNERABILITY = "bestiary_vulnerability";
+            public static final String MOBILITY = "bestiary_mobility";
+            public static final String PERSERVANCE = "bestiary_perservance";
+            public static final String CONTROL_ABILITY = "bestiary_control_ability";
+            public static final String INTELLIGENCE = "bestiary_intelligence";
+            public static final String CHARISMA = "bestiary_charisma";
+            public static final String BASIC_POWER_OF_MIND = "bestiary_basic_power_of_mind";
+            public static final String EXPERIENCE = "bestiary_experience";
+            public static final String DOMESTICATION = "bestiary_domestication";
+            public static final String UPLOADED = "bestiary_uploaded";
+        }
+
+        public static class Hero {
+
+            public static final String TABLE_NAME = "hero";
+            public static final String ID = "hero_id";
+            public static final String NAME = "hero_name";
+            public static final String AUTHOR = "hero_author";
+            public static final String DESCRIPTION = "hero_description";
+            public static final String CONVICTION = "hero_conviction";
+            public static final String RACE = "hero_race";
+            public static final String PROFESSION = "hero_profession";
+            public static final String LEVEL = "hero_level";
+            public static final String MONEY = "hero_money";
+            public static final String EXPERIENCES = "hero_experiences";
+            public static final String STRENGTH = "hero_strength";
+            public static final String DEXTERITY = "hero_dexterity";
+            public static final String IMMUNITY = "hero_immunity";
+            public static final String INTELLIGENCE = "hero_intelligence";
+            public static final String CHARISMA = "hero_charisma";
+            public static final String HEIGHT = "hero_height";
+            public static final String DEFENCE_NUMBER = "hero_defence_number";
+            public static final String LIVE = "hero_live";
+            public static final String MAX_LIVE = "hero_max_live";
+            public static final String MAG = "hero_mag";
+            public static final String MAX_MAG = "hero_max_mag";
+        }
+
+        public static class Inventorycontent {
+
+            public static final String TABLE_NAME = "inventory_content";
+            public static final String ID = "inventory_content_id";
+            public static final String INVENTORY_ID = "inventory_content_inventory_id";
+            public static final String ITEM_ID = "inventory_content_item_id";
+            public static final String AMMOUNT = "inventory_content_ammount";
+            public static final String SLOT = "inventory_content_slot";
+            public static final String METADATA = "inventory_content_metadata";
+        }
+
+        public static class Inventory {
+
+            public static final String TABLE_NAME = "inventory";
+            public static final String ID = "inventory_id";
+            public static final String HERO_ID = "inventory_hero_id";
+            public static final String INVENTORY_TYPE = "inventory_inventory_type";
+            public static final String CAPACITY = "inventory_capacity";
+        }
+
+        public static class Spellbook {
+
+            public static final String TABLE_NAME = "spellbook";
+            public static final String ID = "spellbook_id";
+            public static final String AUTHOR = "spellbook_author";
+            public static final String NAME = "spellbook_name";
+            public static final String MAGIC_NAME = "spellbook_magic_name";
+            public static final String DESCRIPTION = "spellbook_description";
+            public static final String PROFESSION_TYPE = "spellbook_profession_type";
+            public static final String PRICE = "spellbook_price";
+            public static final String RADIUS = "spellbook_radius";
+            public static final String RANGE = "spellbook_range";
+            public static final String TARGET = "spellbook_target";
+            public static final String CAST_TIME = "spellbook_cast_time";
+            public static final String DURATION = "spellbook_duration";
+            public static final String IMAGE = "spellbook_image";
+            public static final String UPLOADED = "spellbook_uploaded";
+        }
+
     }
 
 }
