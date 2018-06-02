@@ -30,6 +30,7 @@ public final class FirebaseItemRepository {
     // region Variables
 
     private final Map<ItemType, List<ItemEventListener>> listeners = new HashMap<>();
+    private final Map<String, List<Map<String, Object>>> items = new HashMap<>();
     private DatabaseReference itemsReference;
 
     // endregion
@@ -57,12 +58,17 @@ public final class FirebaseItemRepository {
             itemsReference
                 .child(itemTypeName)
                 .addChildEventListener(
-                    new FirebaseItemListener(FirebaseItemConvertors.forItem(itemType), observables)
+                    new FirebaseItemListener(FirebaseItemConvertors.forItem(itemType), observables, itemTypeName)
                 );
             listeners.put(itemType, observables);
         }
 
         observables.add(listener);
+
+        // Tímto zajistím, že se ke každému klientovi dostanou všechny lokálně uložené itemy
+        // Při prvním průchodu bude toto prázdné...
+        final List<Map<String, Object>> itemList = items.get(itemTypeName);
+        itemList.stream().map(FirebaseItemEvents::forChildAdded).forEach(listener::onEvent);
     }
 
     public synchronized void unregisterListener(final ItemType itemType, ItemEventListener listener) {
@@ -80,10 +86,13 @@ public final class FirebaseItemRepository {
 
         private final ItemConvertor convertor;
         private final List<ItemEventListener> listeners;
+        private final String key;
 
-        private FirebaseItemListener(ItemConvertor convertor, List<ItemEventListener> listeners) {
+        private FirebaseItemListener(ItemConvertor convertor, List<ItemEventListener> listeners, String key) {
             this.convertor = convertor;
             this.listeners = listeners;
+            this.key = key;
+            items.put(key, new ArrayList<>());
         }
 
         private void notifyListeners(ItemEvent event) {
@@ -93,7 +102,10 @@ public final class FirebaseItemRepository {
         @Override
         public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
             final Map<String, Object> item = convertor.convert(snapshot);
-            LOGGER.info("Byl přidán nový item: " + item);
+            // Uložení itemu do lokální kolekce
+            final List<Map<String, Object>> list = items.get(key);
+            list.add(item);
+
             final ItemEvent event = FirebaseItemEvents.forChildAdded(item);
             notifyListeners(event);
         }
