@@ -78,7 +78,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
         final IDatabaseMessageData data = (IDatabaseMessageData) message.getData();
         final DatabaseMessageDataType messageDataType = data.getDataType();
         switch (messageDataType) {
-            case DATA_MANIPULATION:
+            case DATA_ADMINISTRATION:
                 final DatabaseMessageAdministration databaseMessageAdministration = (DatabaseMessageAdministration) data;
                 final DatabaseAction action = databaseMessageAdministration.getAction();
                 final String tableName = (String) databaseMessageAdministration.getData();
@@ -102,7 +102,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
                         throw new IllegalArgumentException("Neplatný parametr");
                 }
                 break;
-            case DATA_ADMINISTRATION:
+            case DATA_MANIPULATION:
 
                 break;
             default:
@@ -216,6 +216,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
 
     @Override
     public void run() {
+        firebaseItemRepository.init();
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             serverSocket.setSoTimeout(5000);
             LOGGER.info(String.format("Server naslouchá na portu: %d.", serverSocket.getLocalPort()));

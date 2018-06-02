@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Třída reprezentující repozitář s předměty
@@ -18,6 +20,9 @@ public final class FirebaseItemRepository {
 
     // region Constants
 
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger(FirebaseItemRepository.class);
+
     private static final String ITEMS_PATH = "items";
 
     // endregion
@@ -25,21 +30,25 @@ public final class FirebaseItemRepository {
     // region Variables
 
     private final Map<ItemType, List<ItemEventListener>> listeners = new HashMap<>();
-    private final DatabaseReference itemsReference;
+    private DatabaseReference itemsReference;
 
     // endregion
 
     // region Constructors
 
     public FirebaseItemRepository() {
-        itemsReference = FirebaseDatabase.getInstance().getReference(ITEMS_PATH);
+
     }
 
     // endregion
 
     // region Public methods
 
-    public void registerListener(final ItemType itemType, ItemEventListener listener) {
+    public void init() {
+        this.itemsReference = FirebaseDatabase.getInstance().getReference(ITEMS_PATH);
+    }
+
+    public synchronized void registerListener(final ItemType itemType, ItemEventListener listener) {
         final String itemTypeName = itemType.path;
         List<ItemEventListener> observables = listeners.get(itemType);
         // Pokud jsem ještě neprovedl žádnou registraci pro daný typ předmětu
@@ -50,12 +59,13 @@ public final class FirebaseItemRepository {
                 .addChildEventListener(
                     new FirebaseItemListener(FirebaseItemConvertors.forItem(itemType), observables)
                 );
+            listeners.put(itemType, observables);
         }
 
         observables.add(listener);
     }
 
-    public void unregisterListener(final ItemType itemType, ItemEventListener listener) {
+    public synchronized void unregisterListener(final ItemType itemType, ItemEventListener listener) {
         final List<ItemEventListener> observables = listeners.get(itemType);
         if (observables == null) {
             return;
@@ -83,6 +93,7 @@ public final class FirebaseItemRepository {
         @Override
         public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
             final Map<String, Object> item = convertor.convert(snapshot);
+            LOGGER.info("Byl přidán nový item: " + item);
             final ItemEvent event = FirebaseItemEvents.forChildAdded(item);
             notifyListeners(event);
         }
