@@ -5,8 +5,15 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +53,46 @@ public class Server {
     }
 
     /**
+     * Pomocná metoda pro převedení {@link InputStream} na {@link String}
+     *
+     * @param inputStream {@link InputStream} Vstupní proud dat
+     * @return Textový řetězec
+     * @throws IOException Pokud se to nepovede
+     */
+    private static String streamToString(InputStream inputStream) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+        char[] buffer = new char[256];
+
+        int length;
+        while ((length = reader.read(buffer)) != -1) {
+            stringBuilder.append(buffer, 0, length);
+        }
+
+        inputStream.close();
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Přečte credentials soubor a vytáhne ID projektu databáze, který koresponduje s url adresou
+     * databáze
+     *
+     * @param inputStream {@link InputStream}
+     * @return ID projektu databáze
+     */
+    private String resolveFirebaseUrl(InputStream inputStream) {
+        String id = "";
+        try {
+            JSONObject json = new JSONObject(streamToString(inputStream));
+            id = json.getString("project_id");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return String.format(FB_URL_TEMPLATE, id);
+    }
+
+    /**
      * Inicializuje spojení s firebase
      */
     private void initFirebase() {
@@ -53,12 +100,14 @@ public class Server {
         final String credentialsPath = settings.getString(CmdParser.FB_CREDENTIALS_PATH);
         LOGGER.info(String.format("Čtu přístupové údaje ze souboru: %s.", credentialsPath));
         try (FileInputStream serviceAccount = new FileInputStream(credentialsPath)) {
-            final String fbURL = settings.getString(CmdParser.FB_URL);
+            final String fbURL = resolveFirebaseUrl(new FileInputStream(credentialsPath));
+            final Map<String, Object> auth = new HashMap<>();
+            auth.put("uid", "my_resources");
             LOGGER.info(String.format("Připojuji se k firebase na adresu: %s.", fbURL));
             FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl(String.format(FB_URL_TEMPLATE, fbURL))
-                .setDatabaseAuthVariableOverride(null)
+                .setDatabaseUrl(fbURL)
+                .setDatabaseAuthVariableOverride(auth)
                 .build();
             FirebaseApp.initializeApp(options);
             LOGGER.info("Inicializace firebase se zdařila.");
