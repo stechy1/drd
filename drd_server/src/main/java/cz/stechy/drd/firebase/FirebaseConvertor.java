@@ -4,6 +4,6 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.Map;
 
 @FunctionalInterface
-public interface ItemConvertor {
+public interface FirebaseConvertor {
     Map<String, Object> convert(DataSnapshot snapshot);
 }

@@ -13,7 +13,7 @@ public enum ItemType {
     public final String path;
 
     ItemType(String path) {
-        this.path = path;
+        this.path = "items/" + path;
     }
 
     public static ItemType valueOf(int index) {

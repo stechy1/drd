@@ -1,7 +1,6 @@
 package cz.stechy.drd;
 
-import cz.stechy.drd.firebase.FirebaseItemRepository;
-import cz.stechy.drd.model.item.ItemType;
+import cz.stechy.drd.firebase.FirebaseRepository;
 import cz.stechy.drd.net.message.ClientStatusMessage;
 import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatus;
 import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatusData;
@@ -46,7 +45,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
     private final ClientDispatcher clientDispatcher;
     private final WriterThread writerThread;
     private final MulticastSender multicastSender;
-    private final FirebaseItemRepository firebaseItemRepository;
+    private final FirebaseRepository firebaseRepository;
     private final int port;
     private final int maxClients;
     private final ExecutorService pool;
@@ -61,10 +60,10 @@ public class ServerThread extends Thread implements ServerInfoProvider {
         super("ServerThread");
         this.port = port;
         this.maxClients = maxClients;
-        this.clientDispatcher = new ClientDispatcher(waitingQueueSize, this::getServerStatusMessage);
+        this.clientDispatcher = new ClientDispatcher(waitingQueueSize, this);
         this.writerThread = new WriterThread();
-        this.multicastSender = new MulticastSender(this::getServerStatusMessage);
-        this.firebaseItemRepository = new FirebaseItemRepository();
+        this.multicastSender = new MulticastSender(this);
+        this.firebaseRepository = new FirebaseRepository();
         pool = Executors.newFixedThreadPool(maxClients);
     }
 
@@ -83,10 +82,9 @@ public class ServerThread extends Thread implements ServerInfoProvider {
                 final DatabaseAction action = databaseMessageAdministration.getAction();
                 final String tableName = (String) databaseMessageAdministration.getData();
                 assert databaseMessageAdministration.getItemType() == DatabaseMessageItemType.ITEM;
-                final ItemType itemType = ItemType.valueOf(tableName);
                 switch (action) {
                     case REGISTER:
-                        firebaseItemRepository.registerListener(itemType, event -> {
+                        firebaseRepository.registerListener(tableName, event -> {
                             final Map<String, Object> item = event.getItem();
                             final DatabaseMessage databaseMessage = new DatabaseMessage(
                                 new DatabaseMessageCRUD(event.getAction(), item,
@@ -216,7 +214,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
 
     @Override
     public void run() {
-        firebaseItemRepository.init();
+        firebaseRepository.init();
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             serverSocket.setSoTimeout(5000);
             LOGGER.info(String.format("Server naslouchá na portu: %d.", serverSocket.getLocalPort()));
@@ -228,7 +226,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
 
                     final Client client = new Client(socket, writerThread, this::messageReceiveListener);
                     this.insertClientToListOrQueue(client);
-                } catch (SocketTimeoutException e) {}
+                } catch (SocketTimeoutException ignored) {}
             }
 
             LOGGER.info("Ukončuji server.");
@@ -242,17 +240,17 @@ public class ServerThread extends Thread implements ServerInfoProvider {
             multicastSender.shutdown();
             try {
                 multicastSender.join();
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException ignored) {}
             LOGGER.info("Ukončuji client dispatcher.");
             clientDispatcher.shutdown();
             try {
                 clientDispatcher.join();
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException ignored) {}
             LOGGER.info("Ukončuji writer thread.");
             writerThread.shutdown();
             try {
                 writerThread.join();
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException ignored) {}
             LOGGER.info("Naslouchací vlákno bylo úspěšně ukončeno.");
 
         } catch (IOException e) {

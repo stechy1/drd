@@ -5,7 +5,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import cz.stechy.drd.model.item.ItemType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,20 +15,17 @@ import org.slf4j.LoggerFactory;
 /**
  * Třída reprezentující repozitář s předměty
  */
-public final class FirebaseItemRepository {
+public final class FirebaseRepository {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(FirebaseItemRepository.class);
-
-    private static final String ITEMS_PATH = "items";
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(FirebaseRepository.class);
     // endregion
 
     // region Variables
 
-    private final Map<ItemType, List<ItemEventListener>> listeners = new HashMap<>();
+    private final Map<String, List<ItemEventListener>> listeners = new HashMap<>();
     private final Map<String, List<Map<String, Object>>> items = new HashMap<>();
     private DatabaseReference itemsReference;
 
@@ -37,7 +33,7 @@ public final class FirebaseItemRepository {
 
     // region Constructors
 
-    public FirebaseItemRepository() {
+    public FirebaseRepository() {
 
     }
 
@@ -46,33 +42,32 @@ public final class FirebaseItemRepository {
     // region Public methods
 
     public void init() {
-        this.itemsReference = FirebaseDatabase.getInstance().getReference(ITEMS_PATH);
+        this.itemsReference = FirebaseDatabase.getInstance().getReference();
     }
 
-    public synchronized void registerListener(final ItemType itemType, ItemEventListener listener) {
-        final String itemTypeName = itemType.path;
-        List<ItemEventListener> observables = listeners.get(itemType);
+    public synchronized void registerListener(final String key, ItemEventListener listener) {
+        List<ItemEventListener> observables = listeners.get(key);
         // Pokud jsem ještě neprovedl žádnou registraci pro daný typ předmětu
         if (observables == null) {
             observables = new ArrayList<>();
             itemsReference
-                .child(itemTypeName)
+                .child(key)
                 .addChildEventListener(
-                    new FirebaseItemListener(FirebaseItemConvertors.forItem(itemType), observables, itemTypeName)
+                    new FirebaseItemListener(FirebaseConvertors.forKey(key), observables, key)
                 );
-            listeners.put(itemType, observables);
+            listeners.put(key, observables);
         }
 
         observables.add(listener);
 
         // Tímto zajistím, že se ke každému klientovi dostanou všechny lokálně uložené itemy
         // Při prvním průchodu bude toto prázdné...
-        final List<Map<String, Object>> itemList = items.get(itemTypeName);
+        final List<Map<String, Object>> itemList = items.get(key);
         itemList.stream().map(FirebaseItemEvents::forChildAdded).forEach(listener::onEvent);
     }
 
-    public synchronized void unregisterListener(final ItemType itemType, ItemEventListener listener) {
-        final List<ItemEventListener> observables = listeners.get(itemType);
+    public synchronized void unregisterListener(final String key, ItemEventListener listener) {
+        final List<ItemEventListener> observables = listeners.get(key);
         if (observables == null) {
             return;
         }
@@ -84,11 +79,11 @@ public final class FirebaseItemRepository {
 
     private final class FirebaseItemListener implements ChildEventListener {
 
-        private final ItemConvertor convertor;
+        private final FirebaseConvertor convertor;
         private final List<ItemEventListener> listeners;
         private final String key;
 
-        private FirebaseItemListener(ItemConvertor convertor, List<ItemEventListener> listeners, String key) {
+        private FirebaseItemListener(FirebaseConvertor convertor, List<ItemEventListener> listeners, String key) {
             this.convertor = convertor;
             this.listeners = listeners;
             this.key = key;
