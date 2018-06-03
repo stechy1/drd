@@ -2,6 +2,7 @@ package cz.stechy.drd.dao;
 
 import static cz.stechy.drd.R.Database.Bestiary.*;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -21,9 +22,6 @@ import java.util.Map;
 public class BestiaryDao extends AdvancedDatabaseService<Mob> {
 
     // region Constants
-
-    private static final String FIREBASE_CHILD_NAME = "mobs";
-
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_IMAGE, COLUMN_MOB_CLASS, COLUMN_RULES_TYPE,
         COLUMN_CONVICTION, COLUMN_HEIGHT, COLUMN_ATTACK, COLUMN_DEFENCE, COLUMN_VIABILITY,
@@ -77,34 +75,34 @@ public class BestiaryDao extends AdvancedDatabaseService<Mob> {
 
     // region Private methods
 
-//    @Override
-//    public Mob parseDataSnapshot(DataSnapshot snapshot) {
-//        return new Builder()
-//            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-//            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-//            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-//            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-//            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-//            .mobClass(snapshot.child(COLUMN_MOB_CLASS).getValue(Integer.class))
-//            .rulesType(snapshot.child(COLUMN_RULES_TYPE).getValue(Integer.class))
-//            .conviction(snapshot.child(COLUMN_CONVICTION).getValue(Integer.class))
-//            .height(snapshot.child(COLUMN_HEIGHT).getValue(Integer.class))
-//            .attackNumber(snapshot.child(COLUMN_ATTACK).getValue(Integer.class))
-//            .defenceNumber(snapshot.child(COLUMN_DEFENCE).getValue(Integer.class))
-//            .viability(snapshot.child(COLUMN_VIABILITY).getValue(Integer.class))
-//            .immunity(snapshot.child(COLUMN_IMMUNITY).getValue(Integer.class))
-//            .mettle(snapshot.child(COLUMN_METTLE).getValue(Integer.class))
-//            .vulnerability(snapshot.child(COLUMN_VULNERABILITY).getValue(Integer.class))
-//            .mobility(snapshot.child(COLUMN_MOBILITY).getValue(Integer.class))
-//            .perservance(snapshot.child(COLUMN_PERSERVANCE).getValue(Integer.class))
-//            .controlAbility(snapshot.child(COLUMN_CONTROL_ABILITY).getValue(Integer.class))
-//            .intelligence(snapshot.child(COLUMN_INTELLIGENCE).getValue(Integer.class))
-//            .charisma(snapshot.child(COLUMN_CHARISMA).getValue(Integer.class))
-//            .basicPowerOfMind(snapshot.child(COLUMN_BASIC_POWER_OF_MIND).getValue(Integer.class))
-//            .experience(snapshot.child(COLUMN_EXPERIENCE).getValue(Integer.class))
-//            .domestication(snapshot.child(COLUMN_DOMESTICATION).getValue(Integer.class))
-//            .build();
-//    }
+    @Override
+    public Mob fromStringItemMap(Map<String, Object> map) {
+        return new Mob.Builder()
+            .id((String) map.get(COLUMN_ID))
+            .name((String) map.get(COLUMN_NAME))
+            .description((String) map.get(COLUMN_DESCRIPTION))
+            .author((String) map.get(COLUMN_AUTHOR))
+            .image(base64ToBlob((String) map.get(COLUMN_IMAGE)))
+            .mobClass((Integer) map.get(COLUMN_MOB_CLASS))
+            .rulesType((Integer) map.get(COLUMN_RULES_TYPE))
+            .conviction((Integer) map.get(COLUMN_CONVICTION))
+            .height((Integer) map.get(COLUMN_HEIGHT))
+            .attackNumber((Integer) map.get(COLUMN_ATTACK))
+            .defenceNumber((Integer) map.get(COLUMN_DEFENCE))
+            .viability((Integer) map.get(COLUMN_VIABILITY))
+            .immunity((Integer) map.get(COLUMN_IMMUNITY))
+            .mettle((Integer) map.get(COLUMN_METTLE))
+            .vulnerability((Integer) map.get(COLUMN_VULNERABILITY))
+            .mobility((Integer) map.get(COLUMN_MOBILITY))
+            .perservance((Integer) map.get(COLUMN_PERSERVANCE))
+            .controlAbility((Integer) map.get(COLUMN_CONTROL_ABILITY))
+            .intelligence((Integer) map.get(COLUMN_INTELLIGENCE))
+            .charisma((Integer) map.get(COLUMN_CHARISMA))
+            .basicPowerOfMind((Integer) map.get(COLUMN_BASIC_POWER_OF_MIND))
+            .experience((Integer) map.get(COLUMN_EXPERIENCE))
+            .domestication((Integer) map.get(COLUMN_DOMESTICATION))
+            .build();
+    }
 
     @Override
     protected Mob parseResultSet(ResultSet resultSet) throws SQLException {
@@ -174,7 +172,7 @@ public class BestiaryDao extends AdvancedDatabaseService<Mob> {
 
     @Override
     protected String getFirebaseChildName() {
-        return FIREBASE_CHILD_NAME;
+        return R.Database.Bestiary.FIREBASE_CHILD;
     }
 
     @Override

@@ -2,6 +2,7 @@ package cz.stechy.drd.dao;
 
 import static cz.stechy.drd.R.Database.Spellbook.*;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -22,9 +23,6 @@ import java.util.concurrent.CompletableFuture;
 public class SpellBookDao extends AdvancedDatabaseService<Spell> {
 
     // region Constants
-
-    private static final String FIREBASE_CHILD_NAME = "spells";
-
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_AUTHOR, COLUMN_NAME,
         COLUMN_MAGIC_NAME, COLUMN_DESCRIPTION, COLUMN_PROFESSION_TYPE, COLUMN_PRICE, COLUMN_RADIUS,
         COLUMN_RANGE, COLUMN_TARGET, COLUMN_CAST_TIME, COLUMN_DURATION, COLUMN_IMAGE,
@@ -75,24 +73,24 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
 
     // region Private methods
 
-//    @Override
-//    public Spell parseDataSnapshot(DataSnapshot snapshot) {
-//        return new Spell.Builder()
-//            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-//            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-//            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-//            .magicName(snapshot.child(COLUMN_MAGIC_NAME).getValue(String.class))
-//            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-//            .type(snapshot.child(COLUMN_PROFESSION_TYPE).getValue(Integer.class))
-//            .price(new SpellParser(snapshot.child(COLUMN_PRICE).getValue(String.class)).parse())
-//            .radius(snapshot.child(COLUMN_RADIUS).getValue(Integer.class))
-//            .range(snapshot.child(COLUMN_RANGE).getValue(Integer.class))
-//            .target(snapshot.child(COLUMN_TARGET).getValue(Integer.class))
-//            .castTime(snapshot.child(COLUMN_CAST_TIME).getValue(Integer.class))
-//            .duration(snapshot.child(COLUMN_DURATION).getValue(Integer.class))
-//            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-//            .build();
-//    }
+    @Override
+    public Spell fromStringItemMap(Map<String, Object> map) {
+        return new Spell.Builder()
+            .id((String) map.get(COLUMN_ID))
+            .author((String) map.get(COLUMN_AUTHOR))
+            .name((String) map.get(COLUMN_NAME))
+            .magicName((String) map.get(COLUMN_MAGIC_NAME))
+            .description((String) map.get(COLUMN_DESCRIPTION))
+            .type((Integer) map.get(COLUMN_PROFESSION_TYPE))
+            .price(new SpellParser((String) map.get(COLUMN_PRICE)).parse())
+            .radius((Integer) map.get(COLUMN_RADIUS))
+            .range((Integer) map.get(COLUMN_RANGE))
+            .target((Integer) map.get(COLUMN_TARGET))
+            .castTime((Integer) map.get(COLUMN_CAST_TIME))
+            .duration((Integer) map.get(COLUMN_DURATION))
+            .image(base64ToBlob((String) map.get(COLUMN_IMAGE)))
+            .build();
+    }
 
     @Override
     protected Spell parseResultSet(ResultSet resultSet) throws SQLException {
@@ -142,7 +140,7 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
 
     @Override
     protected String getFirebaseChildName() {
-        return FIREBASE_CHILD_NAME;
+        return R.Database.Spellbook.FIREBASE_CHILD;
     }
 
     @Override

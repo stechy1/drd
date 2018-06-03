@@ -512,6 +512,7 @@ public final class R {
         public static class Armor {
 
             public static final String TABLE_NAME = "armor";
+            public static final String FIREBASE_CHILD = "items/armor";
             public static final String COLUMN_ID = "armor_id";
             public static final String COLUMN_NAME = "armor_name";
             public static final String COLUMN_DESCRIPTION = "armor_description";
@@ -533,6 +534,7 @@ public final class R {
         public static class Generalitems {
 
             public static final String TABLE_NAME = "general_items";
+            public static final String FIREBASE_CHILD = "items/general";
             public static final String COLUMN_ID = "general_items_id";
             public static final String COLUMN_NAME = "general_items_name";
             public static final String COLUMN_DESCRIPTION = "general_items_description";
@@ -547,6 +549,7 @@ public final class R {
         public static class Backpack {
 
             public static final String TABLE_NAME = "backpack";
+            public static final String FIREBASE_CHILD = "items/backpack";
             public static final String COLUMN_ID = "backpack_id";
             public static final String COLUMN_NAME = "backpack_name";
             public static final String COLUMN_DESCRIPTION = "backpack_description";
@@ -563,6 +566,7 @@ public final class R {
         public static class Weaponmele {
 
             public static final String TABLE_NAME = "weapon_mele";
+            public static final String FIREBASE_CHILD = "items/weapon/mele";
             public static final String COLUMN_ID = "weapon_mele_id";
             public static final String COLUMN_NAME = "weapon_mele_name";
             public static final String COLUMN_DESCRIPTION = "weapon_mele_description";
@@ -583,6 +587,7 @@ public final class R {
         public static class Weaponranged {
 
             public static final String TABLE_NAME = "weapon_ranged";
+            public static final String FIREBASE_CHILD = "items/weapon/ranged";
             public static final String COLUMN_ID = "weapon_ranged_id";
             public static final String COLUMN_NAME = "weapon_ranged_name";
             public static final String COLUMN_DESCRIPTION = "weapon_ranged_description";
@@ -604,6 +609,7 @@ public final class R {
         public static class Bestiary {
 
             public static final String TABLE_NAME = "bestiary";
+            public static final String FIREBASE_CHILD = "mobs";
             public static final String COLUMN_ID = "bestiary_id";
             public static final String COLUMN_NAME = "bestiary_name";
             public static final String COLUMN_DESCRIPTION = "bestiary_description";
@@ -633,6 +639,7 @@ public final class R {
         public static class Hero {
 
             public static final String TABLE_NAME = "hero";
+            public static final String FIREBASE_CHILD = "";
             public static final String COLUMN_ID = "hero_id";
             public static final String COLUMN_NAME = "hero_name";
             public static final String COLUMN_AUTHOR = "hero_author";
@@ -659,6 +666,7 @@ public final class R {
         public static class Inventorycontent {
 
             public static final String TABLE_NAME = "inventory_content";
+            public static final String FIREBASE_CHILD = "";
             public static final String COLUMN_ID = "inventory_content_id";
             public static final String COLUMN_INVENTORY_ID = "inventory_content_inventory_id";
             public static final String COLUMN_ITEM_ID = "inventory_content_item_id";
@@ -670,6 +678,7 @@ public final class R {
         public static class Inventory {
 
             public static final String TABLE_NAME = "inventory";
+            public static final String FIREBASE_CHILD = "";
             public static final String COLUMN_ID = "inventory_id";
             public static final String COLUMN_HERO_ID = "inventory_hero_id";
             public static final String COLUMN_INVENTORY_TYPE = "inventory_inventory_type";
@@ -679,6 +688,7 @@ public final class R {
         public static class Spellbook {
 
             public static final String TABLE_NAME = "spellbook";
+            public static final String FIREBASE_CHILD = "spells";
             public static final String COLUMN_ID = "spellbook_id";
             public static final String COLUMN_AUTHOR = "spellbook_author";
             public static final String COLUMN_NAME = "spellbook_name";

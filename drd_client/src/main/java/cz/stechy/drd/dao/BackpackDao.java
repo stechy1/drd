@@ -2,6 +2,7 @@ package cz.stechy.drd.dao;
 
 import static cz.stechy.drd.R.Database.Backpack.*;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -23,9 +24,6 @@ import java.util.concurrent.CompletableFuture;
 public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
 
     // region Constants
-
-    private static final String FIREBASE_CHILD_NAME = "items/backpack";
-
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE,
         COLUMN_STACK_SIZE, COLUMN_UPLOADED};
@@ -69,21 +67,21 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
 
     // region Private methods
 
-//    @Override
-//    public Backpack parseDataSnapshot(DataSnapshot snapshot) {
-//        return new Backpack.Builder()
-//            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-//            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-//            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-//            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-//            .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
-//            .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
-//            .maxLoad(snapshot.child(COLUMN_MAX_LOAD).getValue(Integer.class))
-//            .size(snapshot.child(COLUMN_SIZE).getValue(Integer.class))
-//            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-//            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
-//            .build();
-//    }
+    @Override
+    public Backpack fromStringItemMap(Map<String, Object> map) {
+        return new Backpack.Builder()
+            .id((String) map.get(COLUMN_ID))
+            .name((String) map.get(COLUMN_NAME))
+            .description((String) map.get(COLUMN_DESCRIPTION))
+            .author((String) map.get(COLUMN_AUTHOR))
+            .weight((Integer) map.get(COLUMN_WEIGHT))
+            .price((Integer) map.get(COLUMN_PRICE))
+            .maxLoad((Integer) map.get(COLUMN_MAX_LOAD))
+            .size((Integer) map.get(COLUMN_SIZE))
+            .image(base64ToBlob((String) map.get(COLUMN_IMAGE)))
+            .stackSize((Integer) map.get(COLUMN_STACK_SIZE))
+            .build();
+    }
 
     @Override
     protected Backpack parseResultSet(ResultSet resultSet) throws SQLException {
@@ -127,7 +125,7 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
 
     @Override
     protected String getFirebaseChildName() {
-        return FIREBASE_CHILD_NAME;
+        return R.Database.Backpack.FIREBASE_CHILD;
     }
 
     @Override

@@ -39,7 +39,9 @@ public class WriterThread extends Thread {
                 try {
                     LOGGER.info("Jdu spát na semaforu.");
                     semaphore.acquire();
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException ignored) {
+                    LOGGER.error("Interupt", ignored);
+                }
             }
 
             LOGGER.info("Vzbudil jsme se na semaforu, jdu pracovat.");

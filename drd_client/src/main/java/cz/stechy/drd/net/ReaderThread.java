@@ -38,7 +38,7 @@ public class ReaderThread extends Thread {
                 listener.onDataReceived(received);
             }
         } catch (IOException e) {
-            LOGGER.warn("Čtecí vlákno bylo ukončeno.");
+            LOGGER.warn("Čtecí vlákno bylo ukončeno.", e);
         } catch (ClassNotFoundException e) {
             // Nikdy by nemělo nastat
             LOGGER.error("Nebyla nalezena třída.", e);

@@ -17,8 +17,6 @@ public class ItemCollectionDao {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemCollectionDao.class);
 
-    private static final String FIREBASE_CHILD_NAME = "collections/items";
-
     // region Názvy sloupečků v databázi
 
     private static final String COLUMN_ID = "id";

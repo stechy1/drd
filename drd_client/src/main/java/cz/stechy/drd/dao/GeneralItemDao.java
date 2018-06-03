@@ -2,6 +2,7 @@ package cz.stechy.drd.dao;
 
 import static cz.stechy.drd.R.Database.Generalitems.*;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -23,9 +24,6 @@ import java.util.concurrent.CompletableFuture;
 public final class GeneralItemDao extends AdvancedDatabaseService<GeneralItem> {
 
     // region Constants
-
-    private static final String FIREBASE_CHILD_NAME = "items/general";
-
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_IMAGE, COLUMN_STACK_SIZE,
         COLUMN_UPLOADED};
@@ -71,19 +69,19 @@ public final class GeneralItemDao extends AdvancedDatabaseService<GeneralItem> {
 
     // region Private methods
 
-//    @Override
-//    public GeneralItem parseDataSnapshot(DataSnapshot snapshot) {
-//        return new GeneralItem.Builder()
-//            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-//            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-//            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-//            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-//            .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
-//            .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
-//            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-//            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
-//            .build();
-//    }
+    @Override
+    public GeneralItem fromStringItemMap(Map<String, Object> map) {
+        return new GeneralItem.Builder()
+            .id((String) map.get(COLUMN_ID))
+            .name((String) map.get(COLUMN_NAME))
+            .description((String) map.get(COLUMN_DESCRIPTION))
+            .author((String) map.get(COLUMN_AUTHOR))
+            .weight((Integer) map.get(COLUMN_WEIGHT))
+            .price((Integer) map.get(COLUMN_PRICE))
+            .image(base64ToBlob((String) map.get(COLUMN_IMAGE)))
+            .stackSize((Integer) map.get(COLUMN_STACK_SIZE))
+            .build();
+    }
 
     @Override
     protected GeneralItem parseResultSet(ResultSet resultSet) throws SQLException {
@@ -123,7 +121,7 @@ public final class GeneralItemDao extends AdvancedDatabaseService<GeneralItem> {
 
     @Override
     protected String getFirebaseChildName() {
-        return FIREBASE_CHILD_NAME;
+        return R.Database.Generalitems.FIREBASE_CHILD;
     }
 
     @Override

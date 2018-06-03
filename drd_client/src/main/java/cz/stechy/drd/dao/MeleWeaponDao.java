@@ -2,6 +2,7 @@ package cz.stechy.drd.dao;
 
 import static cz.stechy.drd.R.Database.Weaponmele.*;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -23,9 +24,6 @@ import java.util.concurrent.CompletableFuture;
 public final class MeleWeaponDao extends AdvancedDatabaseService<MeleWeapon> {
 
     // region Constants
-
-    private static final String FIREBASE_CHILD_NAME = "items/weapon/mele";
-
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY,
         COLUMN_DEFENCE, COLUMN_RENOWN, COLUMN_CLASS, COLUMN_TYPE, COLUMN_IMAGE, COLUMN_STACK_SIZE,
@@ -79,25 +77,25 @@ public final class MeleWeaponDao extends AdvancedDatabaseService<MeleWeapon> {
 
     // region Private methods
 
-//    @Override
-//    public MeleWeapon parseDataSnapshot(DataSnapshot snapshot) {
-//        return new MeleWeapon.Builder()
-//            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-//            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-//            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-//            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-//            .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
-//            .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
-//            .strength(snapshot.child(COLUMN_STRENGTH).getValue(Integer.class))
-//            .rampancy(snapshot.child(COLUMN_RAMPANCY).getValue(Integer.class))
-//            .defence(snapshot.child(COLUMN_DEFENCE).getValue(Integer.class))
-//            .renown(snapshot.child(COLUMN_RENOWN).getValue(Integer.class))
-//            .weaponClass(snapshot.child(COLUMN_CLASS).getValue(Integer.class))
-//            .weaponType(snapshot.child(COLUMN_TYPE).getValue(Integer.class))
-//            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-//            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
-//            .build();
-//    }
+    @Override
+    public MeleWeapon fromStringItemMap(Map<String, Object> map) {
+        return new MeleWeapon.Builder()
+            .id((String) map.get(COLUMN_ID))
+            .name((String) map.get(COLUMN_NAME))
+            .description((String) map.get(COLUMN_DESCRIPTION))
+            .author((String) map.get(COLUMN_AUTHOR))
+            .weight((Integer) map.get(COLUMN_WEIGHT))
+            .price((Integer) map.get(COLUMN_PRICE))
+            .strength((Integer) map.get(COLUMN_STRENGTH))
+            .rampancy((Integer) map.get(COLUMN_RAMPANCY))
+            .defence((Integer) map.get(COLUMN_DEFENCE))
+            .renown((Integer) map.get(COLUMN_RENOWN))
+            .weaponClass((Integer) map.get(COLUMN_CLASS))
+            .weaponType((Integer) map.get(COLUMN_TYPE))
+            .image(base64ToBlob((String) map.get(COLUMN_IMAGE)))
+            .stackSize((Integer) map.get(COLUMN_STACK_SIZE))
+            .build();
+    }
 
     @Override
     protected MeleWeapon parseResultSet(ResultSet resultSet) throws SQLException {
@@ -149,7 +147,7 @@ public final class MeleWeaponDao extends AdvancedDatabaseService<MeleWeapon> {
 
     @Override
     protected String getFirebaseChildName() {
-        return FIREBASE_CHILD_NAME;
+        return R.Database.Weaponmele.FIREBASE_CHILD;
     }
 
     @Override

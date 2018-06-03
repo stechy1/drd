@@ -81,7 +81,7 @@ public class Client implements Runnable {
         }
     }
 
-    public void sendMessage(IMessage message) {
+    public synchronized void sendMessage(IMessage message) {
         LOGGER.info(
             String.format("Přidávám novou zprávu do fronty pro klienta: '%s'", message.toString()));
         writerThread.sendMessage(writer, message);

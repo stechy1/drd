@@ -9,7 +9,6 @@ import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration.DatabaseAction;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageDataType;
-import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageItemType;
 import cz.stechy.drd.net.message.DatabaseMessage.IDatabaseMessageData;
 import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
@@ -81,14 +80,12 @@ public class ServerThread extends Thread implements ServerInfoProvider {
                 final DatabaseMessageAdministration databaseMessageAdministration = (DatabaseMessageAdministration) data;
                 final DatabaseAction action = databaseMessageAdministration.getAction();
                 final String tableName = (String) databaseMessageAdministration.getData();
-                assert databaseMessageAdministration.getItemType() == DatabaseMessageItemType.ITEM;
                 switch (action) {
                     case REGISTER:
                         firebaseRepository.registerListener(tableName, event -> {
                             final Map<String, Object> item = event.getItem();
                             final DatabaseMessage databaseMessage = new DatabaseMessage(
-                                new DatabaseMessageCRUD(event.getAction(), item,
-                                    databaseMessageAdministration.getItemType()),
+                                new DatabaseMessageCRUD(event.getAction(), tableName, item),
                                 MessageSource.SERVER);
                             client.sendMessage(databaseMessage);
                         });
@@ -169,7 +166,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
      * @param message {@link IMessage} Přijatá zpráva
      * @param client {@link Client} Klient, který přijal zprávu
      */
-    private void messageReceiveListener(IMessage message, Client client) {
+    private synchronized void messageReceiveListener(IMessage message, Client client) {
         switch (message.getType()) {
             case HELLO:
                 IMessage clientStatusMessage = new ClientStatusMessage(

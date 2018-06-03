@@ -18,8 +18,6 @@ public final class UserDao {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(UserDao.class);
 
-    private static final String FIREBASE_CHILD_NAME = "users";
-
     // region Názvy sloupců v databázi
 
     private static final String COLUMN_PASSWORD = "password";

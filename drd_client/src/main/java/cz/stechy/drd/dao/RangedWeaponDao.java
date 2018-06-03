@@ -2,6 +2,7 @@ package cz.stechy.drd.dao;
 
 import static cz.stechy.drd.R.Database.Weaponranged.*;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -23,9 +24,6 @@ import java.util.concurrent.CompletableFuture;
 public final class RangedWeaponDao extends AdvancedDatabaseService<RangedWeapon> {
 
     // region Constants
-
-    private static final String FIREBASE_CHILD_NAME = "items/weapon/ranged";
-
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_STRENGTH, COLUMN_RAMPANCY,
         COLUMN_TYPE, COLUMN_RANGE_LOW, COLUMN_RANGE_MEDIUM, COLUMN_RANGE_LONG, COLUMN_RENOWN,
@@ -81,26 +79,26 @@ public final class RangedWeaponDao extends AdvancedDatabaseService<RangedWeapon>
 
     // region Private methods
 
-//    @Override
-//    public RangedWeapon parseDataSnapshot(DataSnapshot snapshot) {
-//        return new RangedWeapon.Builder()
-//            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-//            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-//            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-//            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-//            .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
-//            .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
-//            .strength(snapshot.child(COLUMN_STRENGTH).getValue(Integer.class))
-//            .rampancy(snapshot.child(COLUMN_RAMPANCY).getValue(Integer.class))
-//            .weaponType(snapshot.child(COLUMN_TYPE).getValue(Integer.class))
-//            .rangeLow(snapshot.child(COLUMN_RANGE_LOW).getValue(Integer.class))
-//            .rangeMedium(snapshot.child(COLUMN_RANGE_MEDIUM).getValue(Integer.class))
-//            .rangeLong(snapshot.child(COLUMN_RANGE_LONG).getValue(Integer.class))
-//            .renown(snapshot.child(COLUMN_RENOWN).getValue(Integer.class))
-//            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-//            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
-//            .build();
-//    }
+    @Override
+    public RangedWeapon fromStringItemMap(Map<String, Object> map) {
+        return new RangedWeapon.Builder()
+            .id((String) map.get(COLUMN_ID))
+            .name((String) map.get(COLUMN_NAME))
+            .description((String) map.get(COLUMN_DESCRIPTION))
+            .author((String) map.get(COLUMN_AUTHOR))
+            .weight((Integer) map.get(COLUMN_WEIGHT))
+            .price((Integer) map.get(COLUMN_PRICE))
+            .strength((Integer) map.get(COLUMN_STRENGTH))
+            .rampancy((Integer) map.get(COLUMN_RAMPANCY))
+            .weaponType((Integer) map.get(COLUMN_TYPE))
+            .rangeLow((Integer) map.get(COLUMN_RANGE_LOW))
+            .rangeMedium((Integer) map.get(COLUMN_RANGE_MEDIUM))
+            .rangeLong((Integer) map.get(COLUMN_RANGE_LONG))
+            .renown((Integer) map.get(COLUMN_RENOWN))
+            .image(base64ToBlob((String) map.get(COLUMN_IMAGE)))
+            .stackSize((Integer) map.get(COLUMN_STACK_SIZE))
+            .build();
+    }
 
     @Override
     protected RangedWeapon parseResultSet(ResultSet resultSet) throws SQLException {
@@ -154,7 +152,7 @@ public final class RangedWeaponDao extends AdvancedDatabaseService<RangedWeapon>
 
     @Override
     protected String getFirebaseChildName() {
-        return FIREBASE_CHILD_NAME;
+        return R.Database.Weaponranged.FIREBASE_CHILD;
     }
 
     @Override

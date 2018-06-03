@@ -37,22 +37,25 @@ public class WriterThread extends Thread {
     public void run() {
         LOGGER.info("Spouštím zapisovací vlákno.");
         while(!interrupt) {
+            LOGGER.info("Jdu spát.");
             while(messageQueue.isEmpty() && !interrupt) {
                 try {
                     semaphore.acquire();
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException ignored) {}
             }
 
             LOGGER.info("Vzbudil jsem se na semaforu, jdu pracovat.");
             while(!messageQueue.isEmpty()) {
                 final QueueTuple entry = messageQueue.poll();
+                assert entry != null;
                 LOGGER.info(String.format("Odesílám zprávu: '%s'", entry.message.toString()));
                     try {
                         entry.writer.writeObject(entry.message);
                         entry.writer.flush();
                         LOGGER.info("Zpráva byla úspěšně odeslána.");
                     } catch (IOException e) {
-                        LOGGER.info("Zprávu se nepodařio doručit.");
+                        LOGGER.info("Zprávu se nepodařio doručit.", e);
+                        break;
                     }
             }
         }

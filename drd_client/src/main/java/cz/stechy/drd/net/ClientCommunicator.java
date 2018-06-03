@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -111,6 +112,7 @@ public final class ClientCommunicator {
 
     private final OnDataReceivedListener helloListener = message -> {
        sendMessage(new HelloMessage(MessageSource.CLIENT));
+       Platform.runLater(() -> changeState(ConnectionState.CONNECTED));
     };
 
     // endregion
@@ -144,7 +146,7 @@ public final class ClientCommunicator {
                 if (socket != null) {
                     this.host.set(host);
                     this.port.set(port);
-                    changeState(ConnectionState.CONNECTED);
+//                    changeState(ConnectionState.CONNECTED);
                 } else {
                     changeState(ConnectionState.DISCONNECTED);
                     this.host.set(null);
@@ -204,7 +206,7 @@ public final class ClientCommunicator {
     /**
      * Pošle zprávu na server
      */
-    public void sendMessage(IMessage message) {
+    public synchronized void sendMessage(IMessage message) {
         writerThread.addMessageToQueue(message);
     }
 
@@ -214,12 +216,9 @@ public final class ClientCommunicator {
      * @param messageType {@link MessageType} Typ zprávy
      * @param listener {@link OnDataReceivedListener} Listener
      */
-    public void registerMessageObserver(MessageType messageType, OnDataReceivedListener listener) {
-        List<OnDataReceivedListener> listenerList = listeners.get(messageType);
-        if (listenerList == null) {
-            listenerList = new ArrayList<>();
-            listeners.put(messageType, listenerList);
-        }
+    public synchronized void registerMessageObserver(MessageType messageType, OnDataReceivedListener listener) {
+        List<OnDataReceivedListener> listenerList = listeners
+            .computeIfAbsent(messageType, k -> new ArrayList<>());
 
         listenerList.add(listener);
     }
@@ -230,7 +229,7 @@ public final class ClientCommunicator {
      * @param messageType {@link MessageType} Typ zprávy
      * @param listener {@link OnDataReceivedListener} Listener
      */
-    public void unregisterMessageObserver(MessageType messageType,
+    public synchronized void unregisterMessageObserver(MessageType messageType,
         OnDataReceivedListener listener) {
         List<OnDataReceivedListener> listenerList = listeners.get(messageType);
         if (listenerList == null) {

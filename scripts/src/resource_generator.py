@@ -91,15 +91,18 @@ def generate_table_columns(output_file):
   with open(table_columns_file, "r", encoding="utf8") as columns_file:
     columns = columns_file.read().splitlines()
   for column in columns:
-    table_name = column[:column.find(":")]
+    table_names_raw = column[:column.find(":")]
+    table_names = table_names_raw.split(", ")
+    table_name = table_names[0]
+    firebase_child_name = table_names[1] if (len(table_names) == 2) else ""
     write_class(8, table_name, output_file)
     write_entry(12, "table_name", table_name, output_file)
+    write_entry(12, "firebase_child", firebase_child_name, output_file)
     raw_columns = (column[column.find(":") + 2 :]).split(", ")
     for raw_column in raw_columns:
       write_entry(12, "COLUMN_" + raw_column, table_name + "_" + raw_column, output_file)
 
     close_class(8, output_file)
-    print(raw_columns)
 
   close_class(4, output_file)
 

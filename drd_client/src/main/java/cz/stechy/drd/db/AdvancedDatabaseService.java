@@ -2,12 +2,26 @@ package cz.stechy.drd.db;
 
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.db.base.OnlineItem;
+import cz.stechy.drd.di.Inject;
+import cz.stechy.drd.net.ClientCommunicator;
+import cz.stechy.drd.net.ConnectionState;
+import cz.stechy.drd.net.OnDataReceivedListener;
+import cz.stechy.drd.net.message.DatabaseMessage;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD.DatabaseAction;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageDataType;
+import cz.stechy.drd.net.message.DatabaseMessage.IDatabaseMessageData;
+import cz.stechy.drd.net.message.IMessage;
+import cz.stechy.drd.net.message.MessageSource;
+import cz.stechy.drd.net.message.MessageType;
 import cz.stechy.drd.util.Base64Util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -33,6 +47,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     private final ObservableList<T> usedItems = FXCollections.observableArrayList();
 
     private boolean showOnline = false;
+    private ClientCommunicator communicator;
 
     // endregion
 
@@ -82,6 +97,8 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
      */
     protected abstract String getFirebaseChildName();
 
+    protected abstract T fromStringItemMap(Map<String, Object> map);
+
     private void attachOfflineListener() {
         this.onlineDatabase.removeListener(listChangeListener);
         super.items.addListener(listChangeListener);
@@ -94,11 +111,65 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
         this.usedItems.setAll(this.onlineDatabase);
     }
 
+    private IMessage getRegistrationMessage() {
+        return new DatabaseMessage(
+            new DatabaseMessageAdministration(
+                getFirebaseChildName(),
+                DatabaseMessageAdministration.DatabaseAction.REGISTER),
+            MessageSource.CLIENT);
+    }
+
     // Listener reagující na změnu ve zdrojovém listu a propagujíce změnu do výstupného listu
     private final ListChangeListener<? super T> listChangeListener = (ListChangeListener<T>) c -> {
         while (c.next()) {
             this.usedItems.addAll(c.getAddedSubList());
             this.usedItems.removeAll(c.getRemoved());
+        }
+    };
+
+    @SuppressWarnings("unchecked")
+    private final OnDataReceivedListener databaseListener = message -> {
+        final DatabaseMessage databaseMessage = (DatabaseMessage) message;
+        final IDatabaseMessageData databaseMessageData = (IDatabaseMessageData) databaseMessage
+            .getData();
+        if (databaseMessageData.getDataType() != DatabaseMessageDataType.DATA_MANIPULATION) {
+            return;
+        }
+
+        final DatabaseMessageCRUD crudMessage = (DatabaseMessageCRUD) databaseMessageData;
+        if (!crudMessage.getTableName().equals(getFirebaseChildName())) {
+            return;
+        }
+
+        final DatabaseAction crudAction = crudMessage.getAction();
+        final Map<String, Object> data = (Map<String, Object>) crudMessage.getData();
+        final T item = fromStringItemMap(data);
+        switch (crudAction) {
+            case CREATE:
+                LOGGER.trace("Přidávám online item {} do svého povědomí.", item.toString());
+                Platform.runLater(() -> {
+                    items.stream()
+                        .filter(t -> item.getId().equals(t.getId()))
+                        .findFirst()
+                        .ifPresent(itemBase -> {
+                            item.setDownloaded(true);
+                            itemBase.setUploaded(true);
+                        });
+
+                    item.setUploaded(true);
+                    onlineDatabase.add(item);
+                });
+                break;
+            case UPDATE:
+                LOGGER.trace("Položka v online databázi byla změněna");
+                // TODO vymslet, jak aktualizovat údaj
+                break;
+            case DELETE:
+                LOGGER.trace("Položka v online databázi: {} byla odebrána", item.toString());
+                onlineDatabase.remove(item);
+                break;
+            default:
+                throw new IllegalArgumentException("Neplatný argument");
         }
     };
 
@@ -207,6 +278,23 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     // endregion
 
     // region Getters & Setters
+
+    @Inject
+    @SuppressWarnings("unused")
+    public void setCommunicator(ClientCommunicator communicator) {
+        this.communicator = communicator;
+        this.communicator.connectionStateProperty()
+            .addListener((observable, oldValue, newValue) -> {
+                if (newValue != ConnectionState.CONNECTED) {
+                    return;
+                }
+
+                this.communicator
+                    .registerMessageObserver(MessageType.DATABASE, this.databaseListener);
+                LOGGER.info("Posílám registrační požadavek pro tabulku: " + getFirebaseChildName());
+                this.communicator.sendMessage(getRegistrationMessage());
+            });
+    }
 
     // endregion
 
