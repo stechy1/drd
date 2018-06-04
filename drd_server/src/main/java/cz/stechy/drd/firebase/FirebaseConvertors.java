@@ -1,10 +1,10 @@
 package cz.stechy.drd.firebase;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.R.Database.Spellbook;
-import cz.stechy.drd.model.item.ItemType;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Pomocná knihovní třída obsahující pomocné metody pro konverzi
@@ -12,11 +12,15 @@ import java.util.Map;
  */
 final class FirebaseConvertors {
 
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger(FirebaseConvertors.class);
+
     private static final Map<String, FirebaseConvertor> CONVERTORS = new HashMap<>();
 
     static FirebaseConvertor forKey(String key) {
         final FirebaseConvertor convertor = CONVERTORS.get(key);
         if (convertor == null) {
+            LOGGER.error("Konvertor pro klíč {} nebyl nalezen", key);
             throw new IllegalArgumentException("Konvertor nebyl nalezen");
         }
 
@@ -110,31 +114,60 @@ final class FirebaseConvertors {
         return map;
     };
 
-    private static final FirebaseConvertor SPELLBOOK_CONVERTOR = snapshot -> {
+    private static final FirebaseConvertor SPELLS_CONVERTOR = snapshot -> {
         final Map<String, Object> map = new HashMap<>();
-        map.put(R.Database.Spellbook.COLUMN_ID, snapshot.child(R.Database.Spellbook.COLUMN_ID).getValue(String.class));
-        map.put(R.Database.Spellbook.COLUMN_AUTHOR, snapshot.child(R.Database.Spellbook.COLUMN_AUTHOR).getValue(String.class));
-        map.put(R.Database.Spellbook.COLUMN_NAME, snapshot.child(R.Database.Spellbook.COLUMN_NAME).getValue(String.class));
-        map.put(R.Database.Spellbook.COLUMN_MAGIC_NAME, snapshot.child(R.Database.Spellbook.COLUMN_MAGIC_NAME).getValue(String.class));
-        map.put(R.Database.Spellbook.COLUMN_DESCRIPTION, snapshot.child(R.Database.Spellbook.COLUMN_DESCRIPTION).getValue(String.class));
-        map.put(R.Database.Spellbook.COLUMN_PROFESSION_TYPE, snapshot.child(R.Database.Spellbook.COLUMN_PROFESSION_TYPE).getValue(Integer.class));
-        map.put(R.Database.Spellbook.COLUMN_PRICE, snapshot.child(R.Database.Spellbook.COLUMN_PRICE).getValue(String.class));
-        map.put(R.Database.Spellbook.COLUMN_RADIUS, snapshot.child(R.Database.Spellbook.COLUMN_RADIUS).getValue(Integer.class));
-        map.put(R.Database.Spellbook.COLUMN_RANGE, snapshot.child(R.Database.Spellbook.COLUMN_RANGE).getValue(Integer.class));
-        map.put(R.Database.Spellbook.COLUMN_TARGET, snapshot.child(R.Database.Spellbook.COLUMN_TARGET).getValue(Integer.class));
-        map.put(R.Database.Spellbook.COLUMN_CAST_TIME, snapshot.child(R.Database.Spellbook.COLUMN_CAST_TIME).getValue(Integer.class));
-        map.put(R.Database.Spellbook.COLUMN_DURATION, snapshot.child(R.Database.Spellbook.COLUMN_DURATION).getValue(Integer.class));
-        map.put(R.Database.Spellbook.COLUMN_IMAGE, snapshot.child(R.Database.Spellbook.COLUMN_IMAGE).getValue(String.class));
+        map.put(R.Database.Spells.COLUMN_ID, snapshot.child(R.Database.Spells.COLUMN_ID).getValue(String.class));
+        map.put(R.Database.Spells.COLUMN_AUTHOR, snapshot.child(R.Database.Spells.COLUMN_AUTHOR).getValue(String.class));
+        map.put(R.Database.Spells.COLUMN_NAME, snapshot.child(R.Database.Spells.COLUMN_NAME).getValue(String.class));
+        map.put(R.Database.Spells.COLUMN_MAGIC_NAME, snapshot.child(R.Database.Spells.COLUMN_MAGIC_NAME).getValue(String.class));
+        map.put(R.Database.Spells.COLUMN_DESCRIPTION, snapshot.child(R.Database.Spells.COLUMN_DESCRIPTION).getValue(String.class));
+        map.put(R.Database.Spells.COLUMN_PROFESSION_TYPE, snapshot.child(R.Database.Spells.COLUMN_PROFESSION_TYPE).getValue(Integer.class));
+        map.put(R.Database.Spells.COLUMN_PRICE, snapshot.child(R.Database.Spells.COLUMN_PRICE).getValue(String.class));
+        map.put(R.Database.Spells.COLUMN_RADIUS, snapshot.child(R.Database.Spells.COLUMN_RADIUS).getValue(Integer.class));
+        map.put(R.Database.Spells.COLUMN_RANGE, snapshot.child(R.Database.Spells.COLUMN_RANGE).getValue(Integer.class));
+        map.put(R.Database.Spells.COLUMN_TARGET, snapshot.child(R.Database.Spells.COLUMN_TARGET).getValue(Integer.class));
+        map.put(R.Database.Spells.COLUMN_CAST_TIME, snapshot.child(R.Database.Spells.COLUMN_CAST_TIME).getValue(Integer.class));
+        map.put(R.Database.Spells.COLUMN_DURATION, snapshot.child(R.Database.Spells.COLUMN_DURATION).getValue(Integer.class));
+        map.put(R.Database.Spells.COLUMN_IMAGE, snapshot.child(R.Database.Spells.COLUMN_IMAGE).getValue(String.class));
+        return map;
+    };
+
+    private static final FirebaseConvertor BESTIARY_CONVERTOR = snapshot -> {
+        final Map<String, Object> map = new HashMap<>();
+        map.put(R.Database.Bestiary.COLUMN_ID, snapshot.child(R.Database.Bestiary.COLUMN_ID).getValue(String.class));
+        map.put(R.Database.Bestiary.COLUMN_NAME, snapshot.child(R.Database.Bestiary.COLUMN_NAME).getValue(String.class));
+        map.put(R.Database.Bestiary.COLUMN_DESCRIPTION,snapshot.child(R.Database.Bestiary.COLUMN_DESCRIPTION).getValue(String.class));
+        map.put(R.Database.Bestiary.COLUMN_AUTHOR, snapshot.child(R.Database.Bestiary.COLUMN_AUTHOR).getValue(String.class));
+        map.put(R.Database.Bestiary.COLUMN_IMAGE,snapshot.child(R.Database.Bestiary.COLUMN_IMAGE).getValue(String.class));
+        map.put(R.Database.Bestiary.COLUMN_MOB_CLASS,snapshot.child(R.Database.Bestiary.COLUMN_MOB_CLASS).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_RULES_TYPE,snapshot.child(R.Database.Bestiary.COLUMN_RULES_TYPE).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_CONVICTION,snapshot.child(R.Database.Bestiary.COLUMN_CONVICTION).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_HEIGHT, snapshot.child(R.Database.Bestiary.COLUMN_HEIGHT).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_ATTACK,snapshot.child(R.Database.Bestiary.COLUMN_ATTACK).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_DEFENCE,snapshot.child(R.Database.Bestiary.COLUMN_DEFENCE).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_VIABILITY,snapshot.child(R.Database.Bestiary.COLUMN_VIABILITY).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_IMMUNITY,snapshot.child(R.Database.Bestiary.COLUMN_IMMUNITY).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_METTLE, snapshot.child(R.Database.Bestiary.COLUMN_METTLE).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_VULNERABILITY,snapshot.child(R.Database.Bestiary.COLUMN_VULNERABILITY).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_MOBILITY,snapshot.child(R.Database.Bestiary.COLUMN_MOBILITY).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_PERSERVANCE,snapshot.child(R.Database.Bestiary.COLUMN_PERSERVANCE).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_CONTROL_ABILITY,snapshot.child(R.Database.Bestiary.COLUMN_CONTROL_ABILITY).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_INTELLIGENCE,snapshot.child(R.Database.Bestiary.COLUMN_INTELLIGENCE).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_CHARISMA,snapshot.child(R.Database.Bestiary.COLUMN_CHARISMA).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_BASIC_POWER_OF_MIND, snapshot.child(R.Database.Bestiary.COLUMN_BASIC_POWER_OF_MIND).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_EXPERIENCE,snapshot.child(R.Database.Bestiary.COLUMN_EXPERIENCE).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_DOMESTICATION,snapshot.child(R.Database.Bestiary.COLUMN_DOMESTICATION).getValue(Integer.class));
         return map;
     };
 
     static {
-        CONVERTORS.put(ItemType.ARMOR.path, ARMOR_CONVERTOR);
-        CONVERTORS.put(ItemType.GENERAL.path, GENERAL_CONVERTOR);
-        CONVERTORS.put(ItemType.BACKPACK.path, BACKPACK_CONVERTOR);
-        CONVERTORS.put(ItemType.WEAPON_MELE.path, WEAPON_MELE_CONVERTOR);
-        CONVERTORS.put(ItemType.WEAPON_RANGED.path, WEAPON_RANGED_CONVERTOR);
-        CONVERTORS.put(Spellbook.TABLE_NAME, SPELLBOOK_CONVERTOR);
+        CONVERTORS.put(R.Database.Armor.FIREBASE_CHILD, ARMOR_CONVERTOR);
+        CONVERTORS.put(R.Database.Generalitems.FIREBASE_CHILD, GENERAL_CONVERTOR);
+        CONVERTORS.put(R.Database.Backpack.FIREBASE_CHILD, BACKPACK_CONVERTOR);
+        CONVERTORS.put(R.Database.Weaponmele.FIREBASE_CHILD, WEAPON_MELE_CONVERTOR);
+        CONVERTORS.put(R.Database.Weaponranged.FIREBASE_CHILD, WEAPON_RANGED_CONVERTOR);
+        CONVERTORS.put(R.Database.Spells.FIREBASE_CHILD, SPELLS_CONVERTOR);
+        CONVERTORS.put(R.Database.Bestiary.FIREBASE_CHILD, BESTIARY_CONVERTOR);
     }
 
 }

@@ -451,6 +451,7 @@ public final class R {
 
         public static class Icon {
 
+            public static final String HELP = "/images/icon/help.png";
             public static final String ABOUT = "/images/icon/about.png";
             public static final String ADD = "/images/icon/add.png";
             public static final String BANK = "/images/icon/bank.png";
@@ -469,7 +470,6 @@ public final class R {
             public static final String FIGHT = "/images/icon/fight.png";
             public static final String GENERATE = "/images/icon/generate.png";
             public static final String HAND_CLICK = "/images/icon/hand_click.png";
-            public static final String HELP = "/images/icon/help.png";
             public static final String IMPORT = "/images/icon/import.png";
             public static final String LOGIN = "/images/icon/login.png";
             public static final String MANA = "/images/icon/mana.png";
@@ -685,24 +685,24 @@ public final class R {
             public static final String COLUMN_CAPACITY = "inventory_capacity";
         }
 
-        public static class Spellbook {
+        public static class Spells {
 
-            public static final String TABLE_NAME = "spellbook";
+            public static final String TABLE_NAME = "spells";
             public static final String FIREBASE_CHILD = "spells";
-            public static final String COLUMN_ID = "spellbook_id";
-            public static final String COLUMN_AUTHOR = "spellbook_author";
-            public static final String COLUMN_NAME = "spellbook_name";
-            public static final String COLUMN_MAGIC_NAME = "spellbook_magic_name";
-            public static final String COLUMN_DESCRIPTION = "spellbook_description";
-            public static final String COLUMN_PROFESSION_TYPE = "spellbook_profession_type";
-            public static final String COLUMN_PRICE = "spellbook_price";
-            public static final String COLUMN_RADIUS = "spellbook_radius";
-            public static final String COLUMN_RANGE = "spellbook_range";
-            public static final String COLUMN_TARGET = "spellbook_target";
-            public static final String COLUMN_CAST_TIME = "spellbook_cast_time";
-            public static final String COLUMN_DURATION = "spellbook_duration";
-            public static final String COLUMN_IMAGE = "spellbook_image";
-            public static final String COLUMN_UPLOADED = "spellbook_uploaded";
+            public static final String COLUMN_ID = "spells_id";
+            public static final String COLUMN_AUTHOR = "spells_author";
+            public static final String COLUMN_NAME = "spells_name";
+            public static final String COLUMN_MAGIC_NAME = "spells_magic_name";
+            public static final String COLUMN_DESCRIPTION = "spells_description";
+            public static final String COLUMN_PROFESSION_TYPE = "spells_profession_type";
+            public static final String COLUMN_PRICE = "spells_price";
+            public static final String COLUMN_RADIUS = "spells_radius";
+            public static final String COLUMN_RANGE = "spells_range";
+            public static final String COLUMN_TARGET = "spells_target";
+            public static final String COLUMN_CAST_TIME = "spells_cast_time";
+            public static final String COLUMN_DURATION = "spells_duration";
+            public static final String COLUMN_IMAGE = "spells_image";
+            public static final String COLUMN_UPLOADED = "spells_uploaded";
         }
 
     }

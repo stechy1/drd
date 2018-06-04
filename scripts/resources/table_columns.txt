@@ -7,4 +7,4 @@ bestiary, mobs: id, name, description, author, image, mob_class, rules_type, con
 hero, : id, name, author, description, conviction, race, profession, level, money, experiences, strength, dexterity, immunity, intelligence, charisma, height, defence_number, live, max_live, mag, max_mag
 inventory_content, : id, inventory_id, item_id, ammount, slot, metadata
 inventory, : id, hero_id, inventory_type, capacity
-spellbook, spells: id, author, name, magic_name, description, profession_type, price, radius, range, target, cast_time, duration, image, uploaded
+spells, spells: id, author, name, magic_name, description, profession_type, price, radius, range, target, cast_time, duration, image, uploaded

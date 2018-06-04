@@ -1,6 +1,6 @@
 package cz.stechy.drd.dao;
 
-import static cz.stechy.drd.R.Database.Spellbook.*;
+import static cz.stechy.drd.R.Database.Spells.*;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.db.AdvancedDatabaseService;
@@ -140,7 +140,7 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
 
     @Override
     protected String getFirebaseChildName() {
-        return R.Database.Spellbook.FIREBASE_CHILD;
+        return R.Database.Spells.FIREBASE_CHILD;
     }
 
     @Override

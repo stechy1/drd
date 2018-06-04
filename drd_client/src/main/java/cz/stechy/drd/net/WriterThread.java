@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ public class WriterThread extends Thread {
 
     private final Semaphore semaphore = new Semaphore(0);
     private final Queue<IMessage> messageQueue = new ConcurrentLinkedQueue<>();
+    private final AtomicBoolean working = new AtomicBoolean(false);
     private final ObjectOutputStream writer;
     private boolean interrupt = false;
 
@@ -45,6 +47,7 @@ public class WriterThread extends Thread {
             }
 
             LOGGER.info("Vzbudil jsme se na semaforu, jdu pracovat.");
+            working.set(true);
             while (!messageQueue.isEmpty()) {
                 final IMessage msg = messageQueue.poll();
                 LOGGER.info(String.format("Odesílám zprávu: '%s'", msg.toString()));
@@ -56,13 +59,15 @@ public class WriterThread extends Thread {
                     LOGGER.info("Zprávu se nepodařilo odeslat.", e);
                 }
             }
+            working.set(false);
         } while(!interrupt);
     }
 
     public void addMessageToQueue(IMessage message) {
-        LOGGER.info(String.format("Přidávám zprávu '%s' do fronty zpráv.", message));
         messageQueue.add(message);
-        LOGGER.info("Probouzím vlákno spící na semaforu.");
-        semaphore.release();
+        if (!working.get()) {
+            LOGGER.info("Probouzím vlákno spící na semaforu.");
+            semaphore.release();
+        }
     }
 }

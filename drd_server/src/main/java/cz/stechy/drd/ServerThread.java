@@ -84,7 +84,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
                     case REGISTER:
                         firebaseRepository.registerListener(tableName, event -> {
                             final Map<String, Object> item = event.getItem();
-                            final DatabaseMessage databaseMessage = new DatabaseMessage(
+                            final IMessage databaseMessage = new DatabaseMessage(
                                 new DatabaseMessageCRUD(event.getAction(), tableName, item),
                                 MessageSource.SERVER);
                             client.sendMessage(databaseMessage);
