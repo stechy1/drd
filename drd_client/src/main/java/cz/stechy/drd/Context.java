@@ -1,14 +1,8 @@
 package cz.stechy.drd;
 
 import cz.stechy.drd.R.Config;
-import cz.stechy.drd.dao.ArmorDao;
-import cz.stechy.drd.dao.BackpackDao;
-import cz.stechy.drd.dao.BestiaryDao;
-import cz.stechy.drd.dao.GeneralItemDao;
 import cz.stechy.drd.dao.HeroDao;
 import cz.stechy.drd.dao.ItemCollectionDao;
-import cz.stechy.drd.dao.MeleWeaponDao;
-import cz.stechy.drd.dao.RangedWeaponDao;
 import cz.stechy.drd.dao.SpellBookDao;
 import cz.stechy.drd.dao.UserDao;
 import cz.stechy.drd.db.DatabaseService;
@@ -50,12 +44,12 @@ public class Context {
 
     private static final Class[] DAO = new Class[]{
         HeroDao.class,
-        MeleWeaponDao.class,
-        RangedWeaponDao.class,
-        ArmorDao.class,
-        GeneralItemDao.class,
-        BackpackDao.class,
-        BestiaryDao.class,
+//        MeleWeaponDao.class,
+//        RangedWeaponDao.class,
+//        ArmorDao.class,
+//        GeneralItemDao.class,
+//        BackpackDao.class,
+//        BestiaryDao.class,
         SpellBookDao.class
     };
 

@@ -63,7 +63,9 @@ public final class FirebaseRepository {
         // Tímto zajistím, že se ke každému klientovi dostanou všechny lokálně uložené itemy
         // Při prvním průchodu bude toto prázdné...
         final List<Map<String, Object>> itemList = items.get(key);
-        itemList.stream().map(FirebaseItemEvents::forChildAdded).forEach(listener::onEvent);
+        itemList.stream()
+            .map(item -> FirebaseItemEvents.forChildAdded(item, key))
+            .forEach(listener::onEvent);
     }
 
     public synchronized void unregisterListener(final String key, ItemEventListener listener) {
@@ -73,6 +75,12 @@ public final class FirebaseRepository {
         }
 
         observables.remove(listener);
+    }
+
+    public synchronized void unregisterFromAllListeners(ItemEventListener listener) {
+        for (List<ItemEventListener> itemEventListeners : listeners.values()) {
+            itemEventListeners.remove(listener);
+        }
     }
 
     // endregion
@@ -101,21 +109,21 @@ public final class FirebaseRepository {
             final List<Map<String, Object>> list = items.get(key);
             list.add(item);
 
-            final ItemEvent event = FirebaseItemEvents.forChildAdded(item);
+            final ItemEvent event = FirebaseItemEvents.forChildAdded(item, key);
             notifyListeners(event);
         }
 
         @Override
         public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
             final Map<String, Object> item = convertor.convert(snapshot);
-            final ItemEvent event = FirebaseItemEvents.forChildChanged(item);
+            final ItemEvent event = FirebaseItemEvents.forChildChanged(item, key);
             notifyListeners(event);
         }
 
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
             final Map<String, Object> item = convertor.convert(snapshot);
-            final ItemEvent event = FirebaseItemEvents.forChildRemoved(item);
+            final ItemEvent event = FirebaseItemEvents.forChildRemoved(item, key);
             notifyListeners(event);
         }
 

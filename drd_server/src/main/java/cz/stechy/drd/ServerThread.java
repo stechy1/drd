@@ -7,12 +7,9 @@ import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatusData;
 import cz.stechy.drd.net.message.DatabaseMessage;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration.DatabaseAction;
-import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageDataType;
 import cz.stechy.drd.net.message.DatabaseMessage.IDatabaseMessageData;
-import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
-import cz.stechy.drd.net.message.MessageSource;
 import cz.stechy.drd.net.message.ServerStatusMessage;
 import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatus;
 import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatusData;
@@ -22,7 +19,6 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
@@ -82,16 +78,10 @@ public class ServerThread extends Thread implements ServerInfoProvider {
                 final String tableName = (String) databaseMessageAdministration.getData();
                 switch (action) {
                     case REGISTER:
-                        firebaseRepository.registerListener(tableName, event -> {
-                            final Map<String, Object> item = event.getItem();
-                            final IMessage databaseMessage = new DatabaseMessage(
-                                new DatabaseMessageCRUD(event.getAction(), tableName, item),
-                                MessageSource.SERVER);
-                            client.sendMessage(databaseMessage);
-                        });
+                        firebaseRepository.registerListener(tableName, client.databaseRegisterListener);
                         break;
                     case UNGERISTER:
-
+                        firebaseRepository.unregisterListener(tableName, client.databaseRegisterListener);
                         break;
                     default:
                         throw new IllegalArgumentException("Neplatný parametr");
@@ -138,6 +128,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
             client.setConnectionClosedListener(() -> {
                 LOGGER.info("Odebírám klienta ze seznamu na serveru.");
                 clients.remove(client);
+                unregisterClientFromFirebase(client);
                 LOGGER.info("Počet připojených klientů: " + clients.size());
                 if (clientDispatcher.hasClientInQueue()) {
                     LOGGER.info("V čekací listině se našel klient, který by rád komunikoval.");
@@ -147,7 +138,6 @@ public class ServerThread extends Thread implements ServerInfoProvider {
                 }
             });
             pool.submit(client);
-            client.sendMessage(new HelloMessage(MessageSource.SERVER));
             broadcast(getServerStatusMessage());
         } else {
             if (clientDispatcher.addClientToQueue(client)) {
@@ -177,6 +167,10 @@ public class ServerThread extends Thread implements ServerInfoProvider {
                 processDatabaseMessage((DatabaseMessage) message, client);
                 break;
         }
+    }
+
+    private void unregisterClientFromFirebase(Client client) {
+        firebaseRepository.unregisterFromAllListeners(client.databaseRegisterListener);
     }
 
     // endregion

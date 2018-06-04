@@ -1,6 +1,12 @@
 package cz.stechy.drd;
 
+import cz.stechy.drd.firebase.ItemEvent;
+import cz.stechy.drd.firebase.ItemEventListener;
+import cz.stechy.drd.net.message.DatabaseMessage;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
+import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
+import cz.stechy.drd.net.message.MessageSource;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Map;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,14 +49,11 @@ public class Client implements Runnable {
         LOGGER.info("Spouštím nekonečnou smyčku pro komunikaci s klientem.");
         try (ObjectInputStream reader = new ObjectInputStream(inputStream)) {
             LOGGER.info("ObjectInputStream byl úspěšně vytvořen.");
+            sendMessage(new HelloMessage(MessageSource.SERVER));
             IMessage received;
             while ((received = (IMessage) reader.readObject()) != null && !interrupt) {
                 LOGGER.info(String.format("Bylo přijato: '%s'", received));
                 messageReceiveListener.onMessageReceive(received, this);
-//                sendMessage(new SimpleResponce("responce: " + received.toString()));
-//                if (received.toString().equals("konec")) {
-//                    interrupt = true;
-//                }
             }
         } catch (EOFException|SocketException e) {
             LOGGER.info("Klient ukončil spojení.");
@@ -90,6 +94,14 @@ public class Client implements Runnable {
     public UUID getId() {
         return id;
     }
+
+    public final ItemEventListener databaseRegisterListener = (ItemEvent event) -> {
+        final Map<String, Object> item = event.getItem();
+        final IMessage databaseMessage = new DatabaseMessage(
+            new DatabaseMessageCRUD(event.getAction(), event.getTableName(), item),
+            MessageSource.SERVER);
+        sendMessage(databaseMessage);
+    };
 
     @FunctionalInterface
     public interface OnConnectionClosedListener {

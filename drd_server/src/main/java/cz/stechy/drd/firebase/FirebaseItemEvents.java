@@ -8,8 +8,13 @@ import java.util.Map;
  */
 public final class FirebaseItemEvents {
 
-    public static ItemEvent forChildAdded(Map<String, Object> item) {
+    public static ItemEvent forChildAdded(Map<String, Object> item, String tableName) {
         return new ItemEvent() {
+            @Override
+            public String getTableName() {
+                return tableName;
+            }
+
             @Override
             public DatabaseAction getAction() {
                 return DatabaseAction.CREATE;
@@ -22,8 +27,13 @@ public final class FirebaseItemEvents {
         };
     }
 
-    public static ItemEvent forChildChanged(Map<String, Object> item) {
+    public static ItemEvent forChildChanged(Map<String, Object> item, String tableName) {
         return new ItemEvent() {
+            @Override
+            public String getTableName() {
+                return tableName;
+            }
+
             @Override
             public DatabaseAction getAction() {
                 return DatabaseAction.UPDATE;
@@ -36,8 +46,13 @@ public final class FirebaseItemEvents {
         };
     }
 
-    public static ItemEvent forChildRemoved(Map<String, Object> item) {
+    public static ItemEvent forChildRemoved(Map<String, Object> item, String tableName) {
         return new ItemEvent() {
+            @Override
+            public String getTableName() {
+                return tableName;
+            }
+
             @Override
             public DatabaseAction getAction() {
                 return DatabaseAction.DELETE;
