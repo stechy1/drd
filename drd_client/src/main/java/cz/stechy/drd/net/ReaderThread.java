@@ -8,15 +8,28 @@ import java.io.ObjectInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Třída reprezentující vlákno, které přijímá data ze serveru
+ */
 public class ReaderThread extends Thread {
+
+    // region Constants
 
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderThread.class);
+
+    // endregion
+
+    // region Variables
 
     private final InputStream inputStream;
     private final OnDataReceivedListener listener;
     private final LostConnectionHandler lostConnectionHandler;
     private boolean interrupt = false;
+
+    // endregion
+
+    // region Constructors
 
     public ReaderThread(final InputStream inputStream, OnDataReceivedListener listener,
         LostConnectionHandler lostConnectionHandler) {
@@ -28,9 +41,18 @@ public class ReaderThread extends Thread {
         this.inputStream = inputStream;
     }
 
+    // endregion
+
+    // region Public methods
+
+    /**
+     * Ukončí činnost čtecího vlákna
+     */
     public void shutdown() {
         interrupt = true;
     }
+
+    // endregion
 
     @Override
     public void run() {

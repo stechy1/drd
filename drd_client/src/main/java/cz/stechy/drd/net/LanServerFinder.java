@@ -50,10 +50,17 @@ public class LanServerFinder implements Runnable {
 
     // endregion
 
+    // region Public methods
+
+    /**
+     * Ukončí činnost vyhledávání serverů
+     */
     public void shutdown() {
         watchdog.shutdown();
         interrupt = true;
     }
+
+    // endregion
 
     @Override
     public void run() {

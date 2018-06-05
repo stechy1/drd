@@ -10,32 +10,57 @@ import javafx.application.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Třída pro sledování nedostupných serverů
+ */
 public final class LanServerWatchdog implements Runnable {
+
+    // region Constants
 
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(LanServerWatchdog.class);
 
     private static final long SLEEP_TIME = 3000l;
 
+    // endregion
+
+    // region Variables
+
     private final Map<UUID, ServerStatusModel> serverMap;
     private final Semaphore semaphore = new Semaphore(0);
     private boolean interupt = false;
     private AtomicBoolean mapEmpty = new AtomicBoolean(true);
 
+    // endregion
+
+    // region Constructors
+
     public LanServerWatchdog(Map<UUID, ServerStatusModel> serverMap) {
         this.serverMap = serverMap;
     }
 
+    // endregion
+
+    // region Public methods
+
+    /**
+     * Spustí hlídače
+     */
     public void startWatchdog() {
         semaphore.release();
         mapEmpty.set(false);
     }
 
+    /**
+     * Ukončí činnost hlídače
+     */
     public void shutdown() {
         interupt = true;
         mapEmpty.set(true);
         startWatchdog();
     }
+
+    // endregion
 
     @Override
     public void run() {

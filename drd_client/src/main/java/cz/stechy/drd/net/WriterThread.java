@@ -11,10 +11,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Třída reprezentující vlákno, která posílá data na server
+ */
 public class WriterThread extends Thread {
+
+    // region Constants
 
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(WriterThread.class);
+
+    // endregion
+
+    // region Variables
 
     private final Semaphore semaphore = new Semaphore(0);
     private final Queue<IMessage> messageQueue = new ConcurrentLinkedQueue<>();
@@ -22,6 +31,10 @@ public class WriterThread extends Thread {
     private final ObjectOutputStream writer;
     private final LostConnectionHandler lostConnectionHandler;
     private boolean interrupt = false;
+
+    // endregion
+
+    // region Constructors
 
     public WriterThread(final OutputStream outputStream,
         LostConnectionHandler lostConnectionHandler) throws IOException {
@@ -31,11 +44,33 @@ public class WriterThread extends Thread {
         this.writer = new ObjectOutputStream(outputStream);
     }
 
+    // endregion
+
+    // region Public methods
+
+    /**
+     * Ukončí činnost zapisovacího vlákna
+     */
     public void shutdown() {
         interrupt = true;
         messageQueue.clear();
         semaphore.release();
     }
+
+    /**
+     * Přidá zprávu do fronty k odeslání
+     *
+     * @param message {@link IMessage} Zpráva, která se má odeslat
+     */
+    public void addMessageToQueue(IMessage message) {
+        messageQueue.add(message);
+        if (!working.get()) {
+            LOGGER.info("Probouzím vlákno spící na semaforu.");
+            semaphore.release();
+        }
+    }
+
+    // endregion
 
     @Override
     public void run() {
@@ -68,13 +103,5 @@ public class WriterThread extends Thread {
             }
             working.set(false);
         } while(!interrupt);
-    }
-
-    public void addMessageToQueue(IMessage message) {
-        messageQueue.add(message);
-        if (!working.get()) {
-            LOGGER.info("Probouzím vlákno spící na semaforu.");
-            semaphore.release();
-        }
     }
 }

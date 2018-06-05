@@ -41,35 +41,51 @@ public final class FirebaseRepository {
 
     // region Public methods
 
+    /**
+     * Inicializuje firebase referenci na databázi.
+     * Musí se zavolat až po inicializaci samotné firebase.
+     */
     public void init() {
         this.itemsReference = FirebaseDatabase.getInstance().getReference();
     }
 
-    public synchronized void registerListener(final String key, ItemEventListener listener) {
-        List<ItemEventListener> observables = listeners.get(key);
+    /**
+     * Zaregistruje posluchače událostí pro danou tabulku
+     *
+     * @param tableName Název tabulky, pro kterou se registruje posluchač
+     * @param listener {@link ItemEventListener} posluchač událostí, který se hlásí k odběru
+     */
+    public synchronized void registerListener(final String tableName, ItemEventListener listener) {
+        List<ItemEventListener> observables = listeners.get(tableName);
         // Pokud jsem ještě neprovedl žádnou registraci pro daný typ předmětu
         if (observables == null) {
             observables = new ArrayList<>();
             itemsReference
-                .child(key)
+                .child(tableName)
                 .addChildEventListener(
-                    new FirebaseItemListener(FirebaseConvertors.forKey(key), observables, key)
+                    new FirebaseItemListener(FirebaseConvertors.forKey(tableName), observables, tableName)
                 );
-            listeners.put(key, observables);
+            listeners.put(tableName, observables);
         }
 
         observables.add(listener);
 
         // Tímto zajistím, že se ke každému klientovi dostanou všechny lokálně uložené itemy
         // Při prvním průchodu bude toto prázdné...
-        final List<Map<String, Object>> itemList = items.get(key);
+        final List<Map<String, Object>> itemList = items.get(tableName);
         itemList.stream()
-            .map(item -> FirebaseItemEvents.forChildAdded(item, key))
+            .map(item -> FirebaseItemEvents.forChildAdded(item, tableName))
             .forEach(listener::onEvent);
     }
 
-    public synchronized void unregisterListener(final String key, ItemEventListener listener) {
-        final List<ItemEventListener> observables = listeners.get(key);
+    /**
+     * Zruší odběr událostí pro danou tabulku
+     *
+     * @param tableName Název tabulky, pro kterou se má odhlásit odběr událostí
+     * @param listener {@link ItemEventListener} posluchač událostí, který se má odstranit
+     */
+    public synchronized void unregisterListener(final String tableName, ItemEventListener listener) {
+        final List<ItemEventListener> observables = listeners.get(tableName);
         if (observables == null) {
             return;
         }
@@ -77,6 +93,11 @@ public final class FirebaseRepository {
         observables.remove(listener);
     }
 
+    /**
+     * Odhlásí odběr pro daného posluchače ze všech tabulek
+     *
+     * @param listener {@link ItemEventListener} posluchač, který se má odstranit
+     */
     public synchronized void unregisterFromAllListeners(ItemEventListener listener) {
         for (List<ItemEventListener> itemEventListeners : listeners.values()) {
             itemEventListeners.remove(listener);
@@ -85,17 +106,20 @@ public final class FirebaseRepository {
 
     // endregion
 
+    /**
+     * Pomocná třída komunikující přímo s firebase databazí
+     */
     private final class FirebaseItemListener implements ChildEventListener {
 
         private final FirebaseConvertor convertor;
         private final List<ItemEventListener> listeners;
-        private final String key;
+        private final String tableName;
 
-        private FirebaseItemListener(FirebaseConvertor convertor, List<ItemEventListener> listeners, String key) {
+        private FirebaseItemListener(FirebaseConvertor convertor, List<ItemEventListener> listeners, String tableName) {
             this.convertor = convertor;
             this.listeners = listeners;
-            this.key = key;
-            items.put(key, new ArrayList<>());
+            this.tableName = tableName;
+            items.put(tableName, new ArrayList<>());
         }
 
         private void notifyListeners(ItemEvent event) {
@@ -106,24 +130,24 @@ public final class FirebaseRepository {
         public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
             final Map<String, Object> item = convertor.convert(snapshot);
             // Uložení itemu do lokální kolekce
-            final List<Map<String, Object>> list = items.get(key);
+            final List<Map<String, Object>> list = items.get(tableName);
             list.add(item);
 
-            final ItemEvent event = FirebaseItemEvents.forChildAdded(item, key);
+            final ItemEvent event = FirebaseItemEvents.forChildAdded(item, tableName);
             notifyListeners(event);
         }
 
         @Override
         public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
             final Map<String, Object> item = convertor.convert(snapshot);
-            final ItemEvent event = FirebaseItemEvents.forChildChanged(item, key);
+            final ItemEvent event = FirebaseItemEvents.forChildChanged(item, tableName);
             notifyListeners(event);
         }
 
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
             final Map<String, Object> item = convertor.convert(snapshot);
-            final ItemEvent event = FirebaseItemEvents.forChildRemoved(item, key);
+            final ItemEvent event = FirebaseItemEvents.forChildRemoved(item, tableName);
             notifyListeners(event);
         }
 

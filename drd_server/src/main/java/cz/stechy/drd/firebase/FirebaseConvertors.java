@@ -15,8 +15,16 @@ final class FirebaseConvertors {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(FirebaseConvertors.class);
 
+    // Kolekce konvertorů
     private static final Map<String, FirebaseConvertor> CONVERTORS = new HashMap<>();
 
+    /**
+     * Nalezne {@link FirebaseConvertor} konvertor pro zadaný klíč.
+     * Pokud konvertor není nalezen, je vyhozena vyjímka
+     *
+     * @param key Klíč, pod kterým se nachází konvertor
+     * @return {@link FirebaseConvertor}
+     */
     static FirebaseConvertor forKey(String key) {
         final FirebaseConvertor convertor = CONVERTORS.get(key);
         if (convertor == null) {

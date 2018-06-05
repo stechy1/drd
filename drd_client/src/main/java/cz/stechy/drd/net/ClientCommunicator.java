@@ -28,6 +28,9 @@ import javafx.beans.value.ObservableValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Třída starající se o komunikaci se serverem
+ */
 @Singleton
 public final class ClientCommunicator {
 
