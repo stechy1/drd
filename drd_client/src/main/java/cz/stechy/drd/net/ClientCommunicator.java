@@ -77,8 +77,9 @@ public final class ClientCommunicator {
         }
 
         try {
-            readerThread = new ReaderThread(newSocket.getInputStream(), listener);
-            writerThread = new WriterThread(newSocket.getOutputStream());
+            readerThread = new ReaderThread(newSocket.getInputStream(), listener,
+                lostConnectionHandler);
+            writerThread = new WriterThread(newSocket.getOutputStream(), lostConnectionHandler);
 
             readerThread.start();
             writerThread.start();
@@ -103,6 +104,11 @@ public final class ClientCommunicator {
     private void changeState(ConnectionState state) {
         connectionState.set(state);
     }
+
+    private final LostConnectionHandler lostConnectionHandler = () -> {
+        disconnect();
+        LOGGER.info("Spojení bylo ztraceno");
+    };
 
     private final OnDataReceivedListener serverStatusListener = message -> {
         final ServerStatusMessage statusMessage = (ServerStatusMessage) message;

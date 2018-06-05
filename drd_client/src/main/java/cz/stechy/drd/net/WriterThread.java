@@ -20,10 +20,13 @@ public class WriterThread extends Thread {
     private final Queue<IMessage> messageQueue = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean working = new AtomicBoolean(false);
     private final ObjectOutputStream writer;
+    private final LostConnectionHandler lostConnectionHandler;
     private boolean interrupt = false;
 
-    public WriterThread(final OutputStream outputStream) throws IOException {
+    public WriterThread(final OutputStream outputStream,
+        LostConnectionHandler lostConnectionHandler) throws IOException {
         super("WriterThread");
+        this.lostConnectionHandler = lostConnectionHandler;
         LOGGER.info("Bylo vytvořeno nové zapisovací vlákno.");
         this.writer = new ObjectOutputStream(outputStream);
     }
@@ -50,13 +53,17 @@ public class WriterThread extends Thread {
             working.set(true);
             while (!messageQueue.isEmpty()) {
                 final IMessage msg = messageQueue.poll();
-                LOGGER.info(String.format("Odesílám zprávu: '%s'", msg.toString()));
+                LOGGER.info(String.format("Odesílám zprávu: '%s'.", msg.toString()));
                 try {
                     writer.writeObject(msg);
                     writer.flush();
                     LOGGER.info("Zpráva byla úspěšně odeslána.");
                 } catch (IOException e) {
-                    LOGGER.info("Zprávu se nepodařilo odeslat.", e);
+                    LOGGER.info("Zprávu se nepodařilo odeslat, ukončuji spojení.", e);
+                    interrupt = true;
+                    if (lostConnectionHandler != null) {
+                        lostConnectionHandler.onLostConnection();
+                    }
                 }
             }
             working.set(false);
