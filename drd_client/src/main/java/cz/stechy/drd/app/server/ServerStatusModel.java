@@ -5,6 +5,7 @@ import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatusData;
 import java.net.InetAddress;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
@@ -31,6 +32,7 @@ public final class ServerStatusModel {
     public final ObjectProperty<ServerStatus> serverStatus = new SimpleObjectProperty<>(this, "serverStatus", ServerStatus.EMPTY);
     public final BooleanProperty connected = new SimpleBooleanProperty(this, "connected", false);
     public final IntegerProperty port = new SimpleIntegerProperty(this, "port", 0);
+    private final AtomicLong lastUpdate = new AtomicLong();
 
     // endregion
 
@@ -44,6 +46,7 @@ public final class ServerStatusModel {
         this.maxClients.set(serverStatusData.maxClients);
         this.serverStatus.set(serverStatusData.serverStatus);
         this.port.set(serverStatusData.port);
+        this.lastUpdate.set(System.currentTimeMillis());
     }
 
     // endregion
@@ -61,11 +64,21 @@ public final class ServerStatusModel {
         this.maxClients.set(newServerStatusData.maxClients);
         this.serverStatus.set(newServerStatusData.serverStatus);
         this.port.set(newServerStatusData.port);
+        this.lastUpdate.set(System.currentTimeMillis());
+    }
+
+    public boolean hasOldData() {
+        final long time = System.currentTimeMillis();
+        return time - lastUpdate.get() > 3000;
     }
 
     // endregion
 
     // region Getters & Setters
+
+    public UUID getServerID() {
+        return serverID;
+    }
 
     public String getServerName() {
         return serverName.get();

@@ -1,5 +1,6 @@
 package cz.stechy.drd.net;
 
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.app.server.ServerStatusModel;
 import cz.stechy.drd.net.message.ServerStatusMessage;
 import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatusData;
@@ -31,6 +32,8 @@ public class LanServerFinder implements Runnable {
     // Socket, na kterém se naslouchá
     private final MulticastSocket socket;
 
+    private final LanServerWatchdog watchdog;
+
     private boolean interrupt = false;
 
     // endregion
@@ -42,16 +45,19 @@ public class LanServerFinder implements Runnable {
         this.socket = new MulticastSocket(NetConfig.BROADCAST_PORT);
         this.socket.setSoTimeout(5000);
         this.socket.joinGroup(this.broadcastAddress);
+        this.watchdog = new LanServerWatchdog(serverMap);
     }
 
     // endregion
 
     public void shutdown() {
+        watchdog.shutdown();
         interrupt = true;
     }
 
     @Override
     public void run() {
+        ThreadPool.COMMON_EXECUTOR.submit(watchdog);
         final byte[] data = new byte[1024];
 
         while(!interrupt) {
@@ -75,6 +81,7 @@ public class LanServerFinder implements Runnable {
                         serverMap.get(serverID).update(statusData);
                     } else {
                         serverMap.put(serverID, new ServerStatusModel(statusData, datagramPacket.getAddress()));
+                        watchdog.startWatchdog();
                     }
                 });
             } catch (IOException e) {
