@@ -84,7 +84,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     private IntegerProperty selectedRowIndex;
     private ResourceBundle resources;
     private ShopNotificationProvider notifier;
-    private ShopFirebaseListener firebaseListener;
+    private ShopOnlineListener shopOnlineListener;
 
     // endregion
 
@@ -161,8 +161,8 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     }
 
     @Override
-    public void setFirebaseListener(ShopFirebaseListener firebaseListener) {
-        this.firebaseListener = firebaseListener;
+    public void setOnlineListener(ShopOnlineListener onlineListener) {
+        this.shopOnlineListener = onlineListener;
     }
 
     @Override
@@ -225,14 +225,22 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
     @Override
     public void requestRemoveItem(ShopEntry entry, boolean remote) {
-//        service.deleteRemoteAsync((GeneralItem) entry.getItemBase(), remote, (error, ref) ->
-//            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
+        service.deleteRemoteAsync((GeneralItem) entry.getItemBase())
+            .exceptionally(throwable -> {
+                shopOnlineListener.handleItemRemove(entry.getName(), remote, false);
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(aVoid -> shopOnlineListener.handleItemRemove(entry.getName(), remote, true));
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-//        service.uploadAsync((GeneralItem) item, (error, ref) ->
-//            firebaseListener.handleItemUpload(item.getName(), error == null));
+        service.uploadAsync((GeneralItem) item)
+            .exceptionally(throwable -> {
+                shopOnlineListener.handleItemUpload(item.getName(), false);
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(aVoid -> shopOnlineListener.handleItemUpload(item.getName(), true));
     }
 
     @Override

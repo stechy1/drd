@@ -52,9 +52,9 @@ interface ShopItemController<T> {
     /**
      * Nastaví reference na handlery z firebase
      *
-     * @param firebaseListener {@link ShopFirebaseListener}
+     * @param onlineListener {@link ShopOnlineListener}
      */
-    void setFirebaseListener(ShopFirebaseListener firebaseListener);
+    void setOnlineListener(ShopOnlineListener onlineListener);
 
     /**
      * @return Vrátí název screenu pro editaci itemu / přidání nového itemu

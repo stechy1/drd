@@ -277,7 +277,7 @@ public class ShopController1 extends BaseController implements Initializable {
             controller.setShowOnlineDatabase(showOnlineDatabase);
             controller.setAmmountEditableProperty(ammountEditable);
             controller.setNotificationProvider(notificationProvider);
-            controller.setFirebaseListener(firebaseListener);
+            controller.setOnlineListener(firebaseListener);
         }
     }
 
@@ -384,7 +384,7 @@ public class ShopController1 extends BaseController implements Initializable {
 
     // endregion
 
-    private final ShopFirebaseListener firebaseListener = new ShopFirebaseListener() {
+    private final ShopOnlineListener firebaseListener = new ShopOnlineListener() {
         @Override
         public void handleItemRemove(String name, boolean remote, boolean success) {
             if (!success) {
