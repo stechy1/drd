@@ -6,7 +6,7 @@ import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatus;
 import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatusData;
 import cz.stechy.drd.net.message.DatabaseMessage;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration;
-import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration.DatabaseAction;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageDataType;
 import cz.stechy.drd.net.message.DatabaseMessage.IDatabaseMessageData;
 import cz.stechy.drd.net.message.IMessage;
@@ -19,6 +19,7 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
@@ -71,11 +72,12 @@ public class ServerThread extends Thread implements ServerInfoProvider {
     private void processDatabaseMessage(DatabaseMessage message, Client client) {
         final IDatabaseMessageData data = (IDatabaseMessageData) message.getData();
         final DatabaseMessageDataType messageDataType = data.getDataType();
+        String tableName;
         switch (messageDataType) {
             case DATA_ADMINISTRATION:
                 final DatabaseMessageAdministration databaseMessageAdministration = (DatabaseMessageAdministration) data;
-                final DatabaseAction action = databaseMessageAdministration.getAction();
-                final String tableName = (String) databaseMessageAdministration.getData();
+                final DatabaseMessageAdministration.DatabaseAction action = databaseMessageAdministration.getAction();
+                tableName = (String) databaseMessageAdministration.getData();
                 switch (action) {
                     case REGISTER:
                         firebaseRepository.registerListener(tableName, client.databaseRegisterListener);
@@ -88,7 +90,25 @@ public class ServerThread extends Thread implements ServerInfoProvider {
                 }
                 break;
             case DATA_MANIPULATION:
-
+                final DatabaseMessageCRUD databaseMessageCRUD = (DatabaseMessageCRUD) data;
+                final DatabaseMessageCRUD.DatabaseAction crudAction = databaseMessageCRUD.getAction();
+                final String itemId = databaseMessageCRUD.getItemId();
+                tableName = databaseMessageCRUD.getTableName();
+                switch (crudAction) {
+                    case CREATE:
+                        firebaseRepository.performInsert(tableName,
+                            (Map<String, Object>) databaseMessageCRUD.getData(), itemId);
+                        break;
+                    case UPDATE:
+                        firebaseRepository.performUpdate(tableName,
+                            (Map<String, Object>) databaseMessageCRUD.getData(), itemId);
+                        break;
+                    case DELETE:
+                        firebaseRepository.performDelete(tableName, itemId);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Neplatný parametr");
+                }
                 break;
             default:
                 throw new IllegalArgumentException("Neplatný parametr");

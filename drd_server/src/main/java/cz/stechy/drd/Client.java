@@ -14,7 +14,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Map;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,9 +95,8 @@ public class Client implements Runnable {
     }
 
     public final ItemEventListener databaseRegisterListener = (ItemEvent event) -> {
-        final Map<String, Object> item = event.getItem();
         final IMessage databaseMessage = new DatabaseMessage(
-            new DatabaseMessageCRUD(event.getAction(), event.getTableName(), item),
+            new DatabaseMessageCRUD(event.getItem(), event.getTableName(), event.getAction()),
             MessageSource.SERVER);
         sendMessage(databaseMessage);
     };

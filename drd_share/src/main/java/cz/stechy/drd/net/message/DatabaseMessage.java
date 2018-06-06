@@ -47,13 +47,21 @@ public class DatabaseMessage implements IMessage {
 
         private final Map<String, Object> itemMap;
         private final String tableName;
+        private final String itemId;
         private final DatabaseAction action;
 
-        public DatabaseMessageCRUD(DatabaseAction action, String tableName,
-            Map<String, Object> itemMap) {
+        public DatabaseMessageCRUD(Map<String, Object> itemMap, String tableName,
+            DatabaseAction action) {
+            this(itemMap, tableName, action, "");
+        }
+
+        public DatabaseMessageCRUD(Map<String, Object> itemMap, String tableName,
+            DatabaseAction action,
+            String itemId) {
             this.action = action;
             this.tableName = tableName;
             this.itemMap = itemMap;
+            this.itemId = itemId;
         }
 
         @Override
@@ -67,6 +75,10 @@ public class DatabaseMessage implements IMessage {
 
         public String getTableName() {
             return tableName;
+        }
+
+        public String getItemId() {
+            return itemId;
         }
 
         @Override

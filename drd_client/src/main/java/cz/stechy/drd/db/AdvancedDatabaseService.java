@@ -231,9 +231,8 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
         return CompletableFuture.supplyAsync(() -> {
             communicator.sendMessage(new DatabaseMessage(
                 new DatabaseMessageCRUD(
-                    DatabaseAction.CREATE,
-                    getFirebaseChildName(),
-                    toStringItemMap(item)),
+                    toStringItemMap(item), getFirebaseChildName(), DatabaseAction.CREATE,
+                    item.getId()),
                 MessageSource.CLIENT));
 
             workingItemId = item.getId();
@@ -242,8 +241,13 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             } catch (InterruptedException ignored) {}
 
             LOGGER.info("Nahrání proběhlo v pořádku.");
-            return null;
+            return item;
         }, ONLINE_POOL)
+            .thenCompose(t -> {
+                final T itemCopy = t.duplicate();
+                itemCopy.setUploaded(true);
+                return updateAsync(itemCopy);
+            })
             .thenApplyAsync(ignored -> {
                 return null;
             }, ThreadPool.JAVAFX_EXECUTOR);
@@ -251,7 +255,30 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     @Override
     public CompletableFuture<Void> deleteRemoteAsync(T item) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            communicator.sendMessage(new DatabaseMessage(
+                new DatabaseMessageCRUD(
+                    toStringItemMap(item), getFirebaseChildName(), DatabaseAction.DELETE,
+                    item.getId()),
+                MessageSource.CLIENT));
+
+            workingItemId = item.getId();
+
+            try {
+                onlineSemaphore.acquire();
+            } catch (InterruptedException ignored) {}
+
+            LOGGER.info("Smazání proběhlo v pořádku.");
+            return item;
+        }, ONLINE_POOL)
+            .thenCompose(t -> {
+                final T itemCopy = t.duplicate();
+                itemCopy.setUploaded(false);
+                return updateAsync(itemCopy);
+            })
+            .thenApplyAsync(ignored -> {
+                return null;
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     /**

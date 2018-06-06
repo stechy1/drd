@@ -50,6 +50,47 @@ public final class FirebaseRepository {
     }
 
     /**
+     * Vloží záznam do firebase
+     *
+     * @param tableName Název tabulky
+     * @param item Záznam, který se má vložit
+     * @param id Id záznamu
+     */
+    public void performInsert(final String tableName, Map<String, Object> item, String id) {
+        this.itemsReference
+            .child(tableName)
+            .child(id)
+            .setValueAsync(item);
+    }
+
+    /**
+     * Aktualizuje záznam ve firebase
+     *
+     * @param tableName Název tabulky
+     * @param item Záznam, který se má aktualizovat
+     * @param id Id záznamu
+     */
+    public void performUpdate(final String tableName, Map<String, Object> item, String id) {
+        this.itemsReference
+            .child(tableName)
+            .child(id)
+            .updateChildrenAsync(item);
+    }
+
+    /**
+     * Odstraní záznam z firebase
+     *
+     * @param tableName Název tabulky
+     * @param id Id záznamu
+     */
+    public void performDelete(final String tableName, String id) {
+        this.itemsReference
+            .child(tableName)
+            .child(id)
+            .removeValueAsync();
+    }
+
+    /**
      * Zaregistruje posluchače událostí pro danou tabulku
      *
      * @param tableName Název tabulky, pro kterou se registruje posluchač
