@@ -124,7 +124,7 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
     }
 
     @Override
-    protected String getFirebaseChildName() {
+    public String getFirebaseChildName() {
         return R.Database.Backpack.FIREBASE_CHILD;
     }
 

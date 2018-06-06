@@ -171,7 +171,7 @@ public class BestiaryDao extends AdvancedDatabaseService<Mob> {
     }
 
     @Override
-    protected String getFirebaseChildName() {
+    public String getFirebaseChildName() {
         return R.Database.Bestiary.FIREBASE_CHILD;
     }
 

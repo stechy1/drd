@@ -146,7 +146,7 @@ public final class MeleWeaponDao extends AdvancedDatabaseService<MeleWeapon> {
     }
 
     @Override
-    protected String getFirebaseChildName() {
+    public String getFirebaseChildName() {
         return R.Database.Weaponmele.FIREBASE_CHILD;
     }
 

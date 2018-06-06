@@ -120,7 +120,7 @@ public final class GeneralItemDao extends AdvancedDatabaseService<GeneralItem> {
     }
 
     @Override
-    protected String getFirebaseChildName() {
+    public String getFirebaseChildName() {
         return R.Database.Generalitems.FIREBASE_CHILD;
     }
 

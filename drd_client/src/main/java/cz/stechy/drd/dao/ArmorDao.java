@@ -152,7 +152,7 @@ public final class ArmorDao extends AdvancedDatabaseService<Armor> {
     }
 
     @Override
-    protected String getFirebaseChildName() {
+    public String getFirebaseChildName() {
         return R.Database.Armor.FIREBASE_CHILD;
     }
 

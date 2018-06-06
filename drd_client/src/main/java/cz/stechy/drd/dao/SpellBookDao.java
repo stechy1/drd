@@ -139,7 +139,7 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
     }
 
     @Override
-    protected String getFirebaseChildName() {
+    public String getFirebaseChildName() {
         return R.Database.Spells.FIREBASE_CHILD;
     }
 

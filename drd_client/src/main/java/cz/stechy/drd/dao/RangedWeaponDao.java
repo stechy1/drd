@@ -151,7 +151,7 @@ public final class RangedWeaponDao extends AdvancedDatabaseService<RangedWeapon>
     }
 
     @Override
-    protected String getFirebaseChildName() {
+    public String getFirebaseChildName() {
         return R.Database.Weaponranged.FIREBASE_CHILD;
     }
 

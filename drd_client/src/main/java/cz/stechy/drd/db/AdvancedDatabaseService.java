@@ -1,6 +1,8 @@
 package cz.stechy.drd.db;
 
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.db.base.Database;
+import cz.stechy.drd.db.base.OnlineDatabase;
 import cz.stechy.drd.db.base.OnlineItem;
 import cz.stechy.drd.di.Inject;
 import cz.stechy.drd.net.ClientCommunicator;
@@ -21,6 +23,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Semaphore;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -32,12 +36,14 @@ import org.slf4j.LoggerFactory;
  * Vylepšený databázový manažer o možnost spojení s firebase
  */
 public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
-    BaseDatabaseService<T> {
+    BaseDatabaseService<T> implements OnlineDatabase<T> {
 
     // region Constants
 
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(AdvancedDatabaseService.class);
+
+    private static final ForkJoinPool ONLINE_POOL = new ForkJoinPool(1);
 
     // endregion
 
@@ -45,8 +51,10 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     protected final ObservableList<T> onlineDatabase = FXCollections.observableArrayList();
     private final ObservableList<T> usedItems = FXCollections.observableArrayList();
+    private final Semaphore onlineSemaphore = new Semaphore(0);
 
     private boolean showOnline = false;
+    private String workingItemId;
     private ClientCommunicator communicator;
 
     // endregion
@@ -91,13 +99,6 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     // endregion
 
     // region Private methods
-
-    /**
-     * @return Vrátí název potomka ve firebase
-     */
-    protected abstract String getFirebaseChildName();
-
-    protected abstract T fromStringItemMap(Map<String, Object> map);
 
     private void attachOfflineListener() {
         this.onlineDatabase.removeListener(listChangeListener);
@@ -171,6 +172,11 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             default:
                 throw new IllegalArgumentException("Neplatný argument");
         }
+
+        if (item.getId().equals(workingItemId)) {
+            workingItemId = null;
+            onlineSemaphore.release();
+        }
     };
 
     // endregion
@@ -218,6 +224,34 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
         } else {
             attachOfflineListener();
         }
+    }
+
+    @Override
+    public CompletableFuture<Void> uploadAsync(T item) {
+        return CompletableFuture.supplyAsync(() -> {
+            communicator.sendMessage(new DatabaseMessage(
+                new DatabaseMessageCRUD(
+                    DatabaseAction.CREATE,
+                    getFirebaseChildName(),
+                    toStringItemMap(item)),
+                MessageSource.CLIENT));
+
+            workingItemId = item.getId();
+            try {
+                onlineSemaphore.acquire();
+            } catch (InterruptedException ignored) {}
+
+            LOGGER.info("Nahrání proběhlo v pořádku.");
+            return null;
+        }, ONLINE_POOL)
+            .thenApplyAsync(ignored -> {
+                return null;
+            }, ThreadPool.JAVAFX_EXECUTOR);
+    }
+
+    @Override
+    public CompletableFuture<Void> deleteRemoteAsync(T item) {
+        return null;
     }
 
     /**
