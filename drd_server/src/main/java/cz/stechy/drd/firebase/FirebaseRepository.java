@@ -59,10 +59,12 @@ public final class FirebaseRepository implements ServerDatabase {
      */
     @Override
     public void performInsert(final String tableName, Map<String, Object> item, String id) {
-        this.itemsReference
-            .child(tableName)
-            .child(id)
-            .setValueAsync(item);
+        try {
+            this.itemsReference
+                .child(tableName)
+                .child(id)
+                .setValueAsync(item).get();
+        } catch (Exception ignored) {}
     }
 
     /**

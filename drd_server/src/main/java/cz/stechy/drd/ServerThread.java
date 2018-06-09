@@ -79,6 +79,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
         final AuthAction action = message.getAction();
         switch (action) {
             case REGISTER:
+                authService.register(data.name, data.password, client);
                 break;
             case LOGIN:
                 authService.login(data.name, data.password, client);

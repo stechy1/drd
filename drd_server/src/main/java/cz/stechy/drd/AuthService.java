@@ -87,6 +87,20 @@ public final class AuthService {
         this.repository.registerListener(FIREBASE_CHILD, this.userListener);
     }
 
+    public void register(String username, String password, Client client) {
+        final Optional<User> result = users.stream().filter(user -> user.name.equals(username)).findFirst();
+        if (result.isPresent()) {
+            // TODO uživatel již existuje
+            return;
+        }
+
+        final User user = new User(username, password);
+        final Map<String, Object> map = userToMap(user);
+        this.repository.performInsert(FIREBASE_CHILD, map, user.id);
+        client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.REGISTER,
+            new AuthMessageData(user.id, user.name, user.password)));
+    }
+
     public void login(String username, String password, Client client) {
         final Optional<User> result = users.stream().filter(user ->
             user.name.equals(username) && HashGenerator.checkSame(user.password, password))
@@ -123,6 +137,10 @@ public final class AuthService {
         public final String id;
         public final String name;
         public final String password;
+
+        public User(String name, String password) {
+            this(HashGenerator.createHash(), name, HashGenerator.createHash(password));
+        }
 
         public User(String id, String name, String password) {
             this.id = id;
