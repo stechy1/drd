@@ -5,6 +5,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import cz.stechy.drd.ServerDatabase;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Třída reprezentující repozitář s předměty
  */
-public final class FirebaseRepository {
+public final class FirebaseRepository implements ServerDatabase {
 
     // region Constants
 
@@ -56,6 +57,7 @@ public final class FirebaseRepository {
      * @param item Záznam, který se má vložit
      * @param id Id záznamu
      */
+    @Override
     public void performInsert(final String tableName, Map<String, Object> item, String id) {
         this.itemsReference
             .child(tableName)
@@ -70,6 +72,7 @@ public final class FirebaseRepository {
      * @param item Záznam, který se má aktualizovat
      * @param id Id záznamu
      */
+    @Override
     public void performUpdate(final String tableName, Map<String, Object> item, String id) {
         this.itemsReference
             .child(tableName)
@@ -83,6 +86,7 @@ public final class FirebaseRepository {
      * @param tableName Název tabulky
      * @param id Id záznamu
      */
+    @Override
     public void performDelete(final String tableName, String id) {
         this.itemsReference
             .child(tableName)
@@ -96,6 +100,7 @@ public final class FirebaseRepository {
      * @param tableName Název tabulky, pro kterou se registruje posluchač
      * @param listener {@link ItemEventListener} posluchač událostí, který se hlásí k odběru
      */
+    @Override
     public synchronized void registerListener(final String tableName, ItemEventListener listener) {
         List<ItemEventListener> observables = listeners.get(tableName);
         // Pokud jsem ještě neprovedl žádnou registraci pro daný typ předmětu
@@ -125,6 +130,7 @@ public final class FirebaseRepository {
      * @param tableName Název tabulky, pro kterou se má odhlásit odběr událostí
      * @param listener {@link ItemEventListener} posluchač událostí, který se má odstranit
      */
+    @Override
     public synchronized void unregisterListener(final String tableName, ItemEventListener listener) {
         final List<ItemEventListener> observables = listeners.get(tableName);
         if (observables == null) {
@@ -139,6 +145,7 @@ public final class FirebaseRepository {
      *
      * @param listener {@link ItemEventListener} posluchač, který se má odstranit
      */
+    @Override
     public synchronized void unregisterFromAllListeners(ItemEventListener listener) {
         for (List<ItemEventListener> itemEventListeners : listeners.values()) {
             itemEventListeners.remove(listener);

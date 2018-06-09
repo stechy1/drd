@@ -22,7 +22,6 @@ import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
-import java.beans.PropertyChangeEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -113,7 +112,7 @@ public class MainController extends BaseController implements Initializable {
 
     // endregion
 
-    private final BooleanProperty useFirebase = new SimpleBooleanProperty(this, "useFirebase",
+    private final BooleanProperty serverConnected = new SimpleBooleanProperty(this, "serverConnected",
         false);
     private final ReadOnlyObjectProperty<Hero> hero;
     private final ReadOnlyObjectProperty<User> user;
@@ -139,8 +138,7 @@ public class MainController extends BaseController implements Initializable {
         this.hero = heroService.heroProperty();
         this.user = userService.userProperty();
         this.communicator = communicator;
-        settings.addListener(R.Config.USE_ONLINE_DATABASE, this::useOnlineDatabaseHandler);
-        useFirebase.set(Boolean.parseBoolean(settings.getProperty(R.Config.USE_ONLINE_DATABASE)));
+        this.serverConnected.bind(this.communicator.connectionStateProperty().isEqualTo(ConnectionState.CONNECTED));
     }
 
     // endregion
@@ -198,10 +196,6 @@ public class MainController extends BaseController implements Initializable {
     }
 
     // region Method handlers
-
-    private void useOnlineDatabaseHandler(PropertyChangeEvent event) {
-        useFirebase.set(Boolean.parseBoolean((String) event.getNewValue()));
-    }
 
     private void levelUpHandler(ObservableValue<? extends Boolean> observable,
         Boolean oldValue, Boolean newValue) {
@@ -261,7 +255,7 @@ public class MainController extends BaseController implements Initializable {
         }
 
         tabProfession.disableProperty().bind(this.hero.isNull());
-        menuLogin.disableProperty().bind(useFirebase.not());
+        menuLogin.disableProperty().bind(serverConnected.not());
         menuCloseHero.disableProperty().bind(this.hero.isNull());
         btnCloseHero.disableProperty().bind(this.hero.isNull());
         final Tooltip loginTooltip = new Tooltip();

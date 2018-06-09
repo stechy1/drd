@@ -2,6 +2,9 @@ package cz.stechy.drd.dao;
 
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.User;
+import cz.stechy.drd.net.ClientCommunicator;
+import cz.stechy.drd.net.OnDataReceivedListener;
+import cz.stechy.drd.net.message.IMessage;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
@@ -11,6 +14,7 @@ import org.slf4j.LoggerFactory;
  * Služba spravující CRUD operace nad třídou {@link User}
  */
 @Singleton
+@Deprecated
 public final class UserDao {
 
     // region Constants
@@ -30,6 +34,7 @@ public final class UserDao {
     // region Variables
 
     private final ObservableList<User> onlineDatabase = FXCollections.observableArrayList();
+    private ClientCommunicator communicator;
 
     // endregion
 
@@ -51,6 +56,7 @@ public final class UserDao {
     // endregion
 
     // region Private methods
+
 
 //    @Override
 //    public void uploadAsync(User user, CompletionListener listener) {
@@ -87,6 +93,8 @@ public final class UserDao {
     public ObservableList<User> getUsers() {
         return FXCollections.unmodifiableObservableList(onlineDatabase);
     }
+
+
 
     // endregion
 

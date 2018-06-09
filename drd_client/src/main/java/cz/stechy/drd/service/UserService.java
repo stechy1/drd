@@ -1,12 +1,19 @@
 package cz.stechy.drd.service;
 
 import cz.stechy.drd.ThreadPool;
-import cz.stechy.drd.dao.UserDao;
+import cz.stechy.drd.di.Inject;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.User;
-import cz.stechy.drd.util.HashGenerator;
-import java.util.Optional;
+import cz.stechy.drd.net.ClientCommunicator;
+import cz.stechy.drd.net.OnDataReceivedListener;
+import cz.stechy.drd.net.message.AuthMessage;
+import cz.stechy.drd.net.message.AuthMessage.AuthAction;
+import cz.stechy.drd.net.message.AuthMessage.AuthMessageData;
+import cz.stechy.drd.net.message.IMessage;
+import cz.stechy.drd.net.message.MessageSource;
+import cz.stechy.drd.net.message.MessageType;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Semaphore;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -20,15 +27,28 @@ public class UserService {
     // region Variables
 
     private final ObjectProperty<User> user = new SimpleObjectProperty<>(this, "user", null);
-    private final UserDao userDao;
+    private final Semaphore semaphore = new Semaphore(0);
+    private ClientCommunicator communicator;
+    private String tmpId;
 
     // endregion
 
     // region Constructors
 
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
+    public UserService() {
+
     }
+
+    // endregion
+
+    // region Private methods
+
+    private final OnDataReceivedListener authListener = message -> {
+        final AuthMessage authMessage = (AuthMessage) message;
+        final AuthMessageData data = (AuthMessageData) authMessage.getData();
+        this.tmpId = data.id;
+        semaphore.release();
+    };
 
     // endregion
 
@@ -42,16 +62,33 @@ public class UserService {
      */
     public CompletableFuture<User> loginAsync(String username, String password) {
         return CompletableFuture.supplyAsync(() -> {
-            final Optional<User> result = userDao.getUsers().stream()
-                .filter(user -> user.getName().equals(username) && HashGenerator
-                    .checkSame(user.getPassword(), password))
-                .findFirst();
-            if (!result.isPresent()) {
-                throw new RuntimeException();
+            final IMessage loginMessage = new AuthMessage(MessageSource.CLIENT, AuthAction.LOGIN,
+                new AuthMessageData(username, password));
+            this.communicator.sendMessage(loginMessage);
+
+            try {
+                semaphore.acquire();
+            } catch (InterruptedException ignored) {}
+
+            if ("".equals(tmpId)) {
+                throw new RuntimeException("Uživatel nenalezen");
             }
 
-            return result.get();
-        }).thenApplyAsync(user -> {
+            final User u = new User(username, password);
+            u.setId(tmpId);
+            tmpId = null;
+            return u;
+//            final Optional<User> result = userDao.getUsers().stream()
+//                .filter(user -> user.getName().equals(username) && HashGenerator
+//                    .checkSame(user.getPassword(), password))
+//                .findFirst();
+//            if (!result.isPresent()) {
+//                throw new RuntimeException();
+//            }
+//
+//            return result.get();
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenApplyAsync(user -> {
             this.user.setValue(user);
             getUser().setLogged(true);
             return user;
@@ -74,15 +111,29 @@ public class UserService {
      *  @param username Uživatelské jméno
      * @param password Uživatelské heslo
      */
-    public void registerAsync(String username, String password) {
-        final Optional<User> result = userDao.getUsers().stream()
-            .filter(user -> user.getName().equals(username))
-            .findFirst();
-        if (result.isPresent()) {
-            //listener.onComplete(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION), null);
-        }
+    public CompletableFuture<Void> registerAsync(String username, String password) {
+        return CompletableFuture.supplyAsync(() -> {
+            final IMessage message = new AuthMessage(MessageSource.CLIENT, AuthAction.REGISTER,
+                new AuthMessageData(username, password));
+            this.communicator.sendMessage(message);
 
-        final User user = new User(username, password);
+            try {
+                semaphore.acquire();
+            } catch (InterruptedException ignored) {}
+
+            return null;
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenApplyAsync(ignored -> {
+                return null;
+            }, ThreadPool.JAVAFX_EXECUTOR);
+//        final Optional<User> result = userDao.getUsers().stream()
+//            .filter(user -> user.getName().equals(username))
+//            .findFirst();
+//        if (result.isPresent()) {
+//            //listener.onComplete(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION), null);
+//        }
+//
+//        final User user = new User(username, password);
 //        userDao.uploadAsync(user);
     }
 
@@ -96,6 +147,24 @@ public class UserService {
 
     public final User getUser() {
         return user.get();
+    }
+
+    @Inject
+    public void setCommunicator(ClientCommunicator communicator) {
+        this.communicator = communicator;
+        this.communicator.connectionStateProperty()
+            .addListener((observable, oldValue, newValue) -> {
+                switch (newValue) {
+                    case CONNECTED:
+                        this.communicator.registerMessageObserver(MessageType.AUTH, this.authListener);
+                        break;
+                    case CONNECTING:
+                        break;
+                    case DISCONNECTED:
+                        this.communicator.unregisterMessageObserver(MessageType.AUTH, this.authListener);
+                        break;
+                }
+            });
     }
 
     // endregion

@@ -1,5 +1,6 @@
 package cz.stechy.drd.firebase;
 
+import cz.stechy.drd.AuthService;
 import cz.stechy.drd.R;
 import java.util.HashMap;
 import java.util.Map;
@@ -168,6 +169,14 @@ final class FirebaseConvertors {
         return map;
     };
 
+    private static final FirebaseConvertor USER_CONVERTOR = snapshot -> {
+        final Map<String, Object> map = new HashMap<>();
+        map.put(AuthService.COLUMN_ID, snapshot.getKey());
+        map.put(AuthService.COLUMN_NAME, snapshot.child(AuthService.COLUMN_NAME).getValue(String.class));
+        map.put(AuthService.COLUMN_PASSWORD, snapshot.child(AuthService.COLUMN_PASSWORD).getValue(String.class));
+        return map;
+    };
+
     static {
         CONVERTORS.put(R.Database.Armor.FIREBASE_CHILD, ARMOR_CONVERTOR);
         CONVERTORS.put(R.Database.Generalitems.FIREBASE_CHILD, GENERAL_CONVERTOR);
@@ -176,6 +185,7 @@ final class FirebaseConvertors {
         CONVERTORS.put(R.Database.Weaponranged.FIREBASE_CHILD, WEAPON_RANGED_CONVERTOR);
         CONVERTORS.put(R.Database.Spells.FIREBASE_CHILD, SPELLS_CONVERTOR);
         CONVERTORS.put(R.Database.Bestiary.FIREBASE_CHILD, BESTIARY_CONVERTOR);
+        CONVERTORS.put(AuthService.FIREBASE_CHILD, USER_CONVERTOR);
     }
 
 }

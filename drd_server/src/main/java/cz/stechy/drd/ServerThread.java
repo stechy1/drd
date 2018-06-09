@@ -1,6 +1,9 @@
 package cz.stechy.drd;
 
 import cz.stechy.drd.firebase.FirebaseRepository;
+import cz.stechy.drd.net.message.AuthMessage;
+import cz.stechy.drd.net.message.AuthMessage.AuthAction;
+import cz.stechy.drd.net.message.AuthMessage.AuthMessageData;
 import cz.stechy.drd.net.message.ClientStatusMessage;
 import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatus;
 import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatusData;
@@ -42,6 +45,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
     private final WriterThread writerThread;
     private final MulticastSender multicastSender;
     private final FirebaseRepository firebaseRepository;
+    private final AuthService authService;
     private final int port;
     private final int maxClients;
     private final ExecutorService pool;
@@ -60,6 +64,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
         this.writerThread = new WriterThread();
         this.multicastSender = new MulticastSender(this);
         this.firebaseRepository = new FirebaseRepository();
+        this.authService = new AuthService(this.firebaseRepository);
         pool = Executors.newFixedThreadPool(maxClients);
     }
 
@@ -68,6 +73,22 @@ public class ServerThread extends Thread implements ServerInfoProvider {
     // region Private methods
 
     // region Message processing
+
+    private void processAuthMessage(AuthMessage message, Client client) {
+        final AuthMessageData data = (AuthMessageData) message.getData();
+        final AuthAction action = message.getAction();
+        switch (action) {
+            case REGISTER:
+                break;
+            case LOGIN:
+                authService.login(data.name, data.password, client);
+                break;
+            case LOGOUT:
+                break;
+            default:
+                throw new RuntimeException("Neplatný parametr");
+        }
+    }
 
     private void processDatabaseMessage(DatabaseMessage message, Client client) {
         final IDatabaseMessageData data = (IDatabaseMessageData) message.getData();
@@ -186,6 +207,9 @@ public class ServerThread extends Thread implements ServerInfoProvider {
             case DATABASE:
                 processDatabaseMessage((DatabaseMessage) message, client);
                 break;
+            case AUTH:
+                processAuthMessage((AuthMessage) message, client);
+                break;
         }
     }
 
@@ -226,6 +250,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
     @Override
     public void run() {
         firebaseRepository.init();
+        authService.init();
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             serverSocket.setSoTimeout(5000);
             LOGGER.info(String.format("Server naslouchá na portu: %d.", serverSocket.getLocalPort()));
