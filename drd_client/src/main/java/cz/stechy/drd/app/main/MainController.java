@@ -231,6 +231,13 @@ public class MainController extends BaseController implements Initializable {
         resetChildScreensAndHero();
     }
 
+    private void connectionStateHandler(ObservableValue<? extends ConnectionState> observable,
+        ConnectionState oldValue, ConnectionState newValue) {
+        if (newValue == ConnectionState.DISCONNECTED) {
+            this.userService.logoutAsync();
+        }
+    }
+
     // endregion
 
     // endregion
@@ -262,7 +269,9 @@ public class MainController extends BaseController implements Initializable {
         loginTooltip.textProperty().bind(menuLogin.textProperty());
         btnLogin.setTooltip(loginTooltip);
         btnLogin.onActionProperty().bind(menuLogin.onActionProperty());
+        btnLogin.disableProperty().bind(serverConnected.not());
 
+        this.communicator.connectionStateProperty().addListener(this::connectionStateHandler);
         this.hero.addListener(this::heroHandler);
         this.user.addListener(this::userHandler);
     }
