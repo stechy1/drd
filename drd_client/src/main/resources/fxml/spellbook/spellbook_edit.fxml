@@ -30,9 +30,9 @@
           <JFXTextField labelFloat="true" promptText="%drd_spell_magic_name" fx:id="txtMagicName"/>
         </VBox>
         <VBox HBox.hgrow="ALWAYS" spacing="16.0">
-          <EnumComboBox enumType="cz.stechy.drd.model.spell.SpellProfessionType" labelFloat="true"
+          <EnumComboBox enumType="cz.stechy.drd.model.spell.Spell$SpellProfessionType" labelFloat="true"
             promptText="%drd_spell_profession_type" fx:id="cmbType"/>
-          <EnumComboBox enumType="cz.stechy.drd.model.spell.SpellTarget" labelFloat="true"
+          <EnumComboBox enumType="cz.stechy.drd.model.spell.Spell$SpellTarget" labelFloat="true"
             promptText="%drd_spell_target_type" fx:id="cmbTarget"/>
           <SpellPriceWidget fx:id="widgetSpellPrice" styleClass="hyperlink"/>
         </VBox>
