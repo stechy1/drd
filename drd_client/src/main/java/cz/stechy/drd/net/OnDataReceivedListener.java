@@ -8,7 +8,7 @@ public interface OnDataReceivedListener {
     /**
      * Metoda je zavolána vždy, když dorazí nějaká data
      *
-     * @param message
+     * @param message {@link IMessage} Přijatá zpráva
      */
     void onDataReceived(IMessage message);
 }

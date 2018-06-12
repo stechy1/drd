@@ -1,5 +1,7 @@
 package cz.stechy.drd.dao;
 
+import static cz.stechy.drd.R.Database.Hero.*;
+
 import cz.stechy.drd.db.BaseDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -24,31 +26,6 @@ public final class HeroDao extends BaseDatabaseService<Hero> {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(HeroDao.class);
 
-    // Název tabulky
-    private static final String TABLE = "hero";
-
-    // Názvy sloupců v databázi
-    private static final String COLUMN_ID = TABLE + "_id";
-    private static final String COLUMN_NAME = TABLE + "_name";
-    private static final String COLUMN_AUTHOR = TABLE + "_author";
-    private static final String COLUMN_DESCRIPTION = TABLE + "_description";
-    private static final String COLUMN_CONVICTION = TABLE + "_conviction";
-    private static final String COLUMN_RACE = TABLE + "_race";
-    private static final String COLUMN_PROFESSION = TABLE + "_profession";
-    private static final String COLUMN_LEVEL = TABLE + "_level";
-    private static final String COLUMN_MONEY = TABLE + "_money";
-    private static final String COLUMN_EXPERIENCES = TABLE + "_experiences";
-    private static final String COLUMN_STRENGTH = TABLE + "_strength";
-    private static final String COLUMN_DEXTERITY = TABLE + "_dexterity";
-    private static final String COLUMN_IMMUNITY = TABLE + "_immunity";
-    private static final String COLUMN_INTELLIGENCE = TABLE + "_intelligence";
-    private static final String COLUMN_CHARISMA = TABLE + "_charisma";
-    private static final String COLUMN_HEIGHT = TABLE + "_height";
-    private static final String COLUMN_DEFENCE_NUMBER = TABLE + "_defence_number";
-    private static final String COLUMN_LIVE = TABLE + "_live";
-    private static final String COLUMN_MAX_LIVE = TABLE + "_max_live";
-    private static final String COLUMN_MAG = TABLE + "_mag";
-    private static final String COLUMN_MAX_MAG = TABLE + "_max_mag";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_AUTHOR,
         COLUMN_DESCRIPTION, COLUMN_CONVICTION, COLUMN_RACE, COLUMN_PROFESSION, COLUMN_LEVEL,
         COLUMN_MONEY, COLUMN_EXPERIENCES, COLUMN_STRENGTH, COLUMN_DEXTERITY, COLUMN_IMMUNITY,
@@ -79,7 +56,7 @@ public final class HeroDao extends BaseDatabaseService<Hero> {
             + "%s INT NOT NULL,"                                // max baseLive
             + "%s INT NOT NULL,"                                // mag
             + "%s INT NOT NULL"                                 // max mag
-            + ");", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_AUTHOR, COLUMN_DESCRIPTION,
+            + ");", TABLE_NAME, COLUMN_ID, COLUMN_NAME, COLUMN_AUTHOR, COLUMN_DESCRIPTION,
         COLUMN_CONVICTION, COLUMN_RACE, COLUMN_PROFESSION, COLUMN_LEVEL, COLUMN_MONEY,
         COLUMN_EXPERIENCES, COLUMN_STRENGTH, COLUMN_DEXTERITY, COLUMN_IMMUNITY, COLUMN_INTELLIGENCE,
         COLUMN_CHARISMA, COLUMN_HEIGHT, COLUMN_DEFENCE_NUMBER, COLUMN_LIVE, COLUMN_MAX_LIVE,
@@ -167,7 +144,7 @@ public final class HeroDao extends BaseDatabaseService<Hero> {
 
     @Override
     protected String getTable() {
-        return TABLE;
+        return TABLE_NAME;
     }
 
     @Override

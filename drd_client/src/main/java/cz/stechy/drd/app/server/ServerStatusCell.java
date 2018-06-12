@@ -12,7 +12,7 @@ public class ServerStatusCell extends ListCell<ServerStatusModel> {
 
     // region Constants
 
-    private static final String FXML_PATH = "/fxml/server/" + R.FXML.SERVER_STATUS_CELL + ".fxml";
+    private static final String FXML_PATH = "/fxml/server/" + R.Fxml.SERVER_STATUS_CELL + ".fxml";
     private static final String ADDRESS_PORT_FORMAT = "%s:%d";
 
     // endregion

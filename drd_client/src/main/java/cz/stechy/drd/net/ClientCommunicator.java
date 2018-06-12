@@ -2,7 +2,9 @@ package cz.stechy.drd.net;
 
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.di.Singleton;
+import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
+import cz.stechy.drd.net.message.MessageSource;
 import cz.stechy.drd.net.message.MessageType;
 import cz.stechy.drd.net.message.ServerStatusMessage;
 import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatus;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -25,6 +28,9 @@ import javafx.beans.value.ObservableValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Třída starající se o komunikaci se serverem
+ */
 @Singleton
 public final class ClientCommunicator {
 
@@ -69,16 +75,19 @@ public final class ClientCommunicator {
             readerThread = null;
             writerThread = null;
             unregisterMessageObserver(MessageType.SERVER_STATUS, this.serverStatusListener);
+            unregisterMessageObserver(MessageType.HELLO, this.helloListener);
             return;
         }
 
         try {
-            readerThread = new ReaderThread(newSocket.getInputStream(), listener);
-            writerThread = new WriterThread(newSocket.getOutputStream());
+            readerThread = new ReaderThread(newSocket.getInputStream(), listener,
+                lostConnectionHandler);
+            writerThread = new WriterThread(newSocket.getOutputStream(), lostConnectionHandler);
 
             readerThread.start();
             writerThread.start();
             registerMessageObserver(MessageType.SERVER_STATUS, this.serverStatusListener);
+            registerMessageObserver(MessageType.HELLO, this.helloListener);
         } catch (IOException e) {
             LOGGER.error("Vyskytl se problém při vytváření komunikace se serverem.");
         }
@@ -99,11 +108,20 @@ public final class ClientCommunicator {
         connectionState.set(state);
     }
 
+    private final LostConnectionHandler lostConnectionHandler = () -> {
+        disconnect();
+        LOGGER.info("Spojení bylo ztraceno");
+    };
+
     private final OnDataReceivedListener serverStatusListener = message -> {
         final ServerStatusMessage statusMessage = (ServerStatusMessage) message;
         final ServerStatusData status = (ServerStatusData) statusMessage.getData();
         serverStatus.set(status.serverStatus);
-        System.out.println(status.toString());
+    };
+
+    private final OnDataReceivedListener helloListener = message -> {
+       sendMessage(new HelloMessage(MessageSource.CLIENT));
+       Platform.runLater(() -> changeState(ConnectionState.CONNECTED));
     };
 
     // endregion
@@ -137,7 +155,7 @@ public final class ClientCommunicator {
                 if (socket != null) {
                     this.host.set(host);
                     this.port.set(port);
-                    changeState(ConnectionState.CONNECTED);
+//                    changeState(ConnectionState.CONNECTED);
                 } else {
                     changeState(ConnectionState.DISCONNECTED);
                     this.host.set(null);
@@ -197,7 +215,7 @@ public final class ClientCommunicator {
     /**
      * Pošle zprávu na server
      */
-    public void sendMessage(IMessage message) {
+    public synchronized void sendMessage(IMessage message) {
         writerThread.addMessageToQueue(message);
     }
 
@@ -207,12 +225,9 @@ public final class ClientCommunicator {
      * @param messageType {@link MessageType} Typ zprávy
      * @param listener {@link OnDataReceivedListener} Listener
      */
-    public void registerMessageObserver(MessageType messageType, OnDataReceivedListener listener) {
-        List<OnDataReceivedListener> listenerList = listeners.get(messageType);
-        if (listenerList == null) {
-            listenerList = new ArrayList<>();
-            listeners.put(messageType, listenerList);
-        }
+    public synchronized void registerMessageObserver(MessageType messageType, OnDataReceivedListener listener) {
+        List<OnDataReceivedListener> listenerList = listeners
+            .computeIfAbsent(messageType, k -> new ArrayList<>());
 
         listenerList.add(listener);
     }
@@ -223,7 +238,7 @@ public final class ClientCommunicator {
      * @param messageType {@link MessageType} Typ zprávy
      * @param listener {@link OnDataReceivedListener} Listener
      */
-    public void unregisterMessageObserver(MessageType messageType,
+    public synchronized void unregisterMessageObserver(MessageType messageType,
         OnDataReceivedListener listener) {
         List<OnDataReceivedListener> listenerList = listeners.get(messageType);
         if (listenerList == null) {

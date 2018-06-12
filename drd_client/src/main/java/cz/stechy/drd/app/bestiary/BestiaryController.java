@@ -1,11 +1,10 @@
 package cz.stechy.drd.app.bestiary;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.R.Translate;
-import cz.stechy.drd.model.User;
 import cz.stechy.drd.dao.BestiaryDao;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.Rule;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
 import cz.stechy.drd.service.UserService;
@@ -266,7 +265,7 @@ public class BestiaryController extends BaseController implements Initializable 
                 mob = BestiaryHelper.mobFromBundle(bundle);
                 service.updateAsync(mob)
                     .exceptionally(throwable -> {
-                        LOGGER.warn("Nestvůru {} se nepodařilo aktualizovat", mob.getName());
+                        LOGGER.warn("Příšeru {} se nepodařilo aktualizovat", mob.getName());
                         throw new RuntimeException(throwable);
                     })
                     .thenAccept(m -> showNotification(new Notification(String
@@ -282,7 +281,7 @@ public class BestiaryController extends BaseController implements Initializable 
     private void handleAddItem(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
         bundle.putInt(BestiaryHelper.MOB_ACTION, BestiaryHelper.MOB_ACTION_ADD);
-        startNewDialogForResult(R.FXML.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_ADD, bundle);
+        startNewDialogForResult(R.Fxml.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_ADD, bundle);
     }
 
     @FXML
@@ -304,21 +303,21 @@ public class BestiaryController extends BaseController implements Initializable 
         final MobEntry entry = sortedList.get(selectedRowIndex.get());
         final Bundle bundle = BestiaryHelper.mobToBundle(entry.getMobBase());
         bundle.putInt(BestiaryHelper.MOB_ACTION, BestiaryHelper.MOB_ACTION_UPDATE);
-        startNewDialogForResult(R.FXML.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_UPDATE, bundle);
+        startNewDialogForResult(R.Fxml.BESTIARY_EDIT, BestiaryHelper.MOB_ACTION_UPDATE, bundle);
     }
 
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(mob ->
-            service.uploadAsync(mob, (error, ref) -> {
-                if (error != null) {
-                    LOGGER.error("Položku {} se nepodařilo nahrát", mob);
-                } else {
-                    showNotification(new Notification(String
-                        .format(translator.translate(Translate.NOTIFY_RECORD_IS_UPLOADED),
-                            mob.getName())));
-                }
-            }));
+        getSelectedEntry().ifPresent(mob -> {
+            service.uploadAsync(mob)
+                .exceptionally(throwable -> {
+                    LOGGER.error("Příšeru {} se nepodařilo nahrát", mob);
+                    throw new RuntimeException(throwable);
+                })
+                .thenAccept(ignored -> showNotification(new Notification(String
+                    .format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPLOADED),
+                        mob.getName()))));
+        });
     }
 
     @FXML
@@ -334,24 +333,25 @@ public class BestiaryController extends BaseController implements Initializable 
 
     @FXML
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(mob ->
-            service.deleteRemoteAsync(mob, true, (error, ref) -> {
-                if (error != null) {
-                    LOGGER.error("Položku {} se nepodařilo odstranit z online databáze", mob);
-                } else {
+        getSelectedEntry().ifPresent(mob -> {
+            service.deleteRemoteAsync(mob)
+                .exceptionally(throwable -> {
+                    LOGGER.error("Příšeru {} se nepodařilo odstranit z online databáze", mob);
+                    throw new RuntimeException(throwable);
+                })
+                .thenAccept(ignored-> {
                     showNotification(new Notification(String.format(
-                        translator
-                            .translate(Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+                        translator.translate(R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
                         mob.getName())));
-                }
-            }));
+                });
+        });
     }
 
     @FXML
     private void handleSynchronize(ActionEvent actionEvent) {
         service.synchronize(user.getName())
             .thenAccept(
-                total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " nestvůr."));
+                total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " příšer."));
     }
 
     // endregion

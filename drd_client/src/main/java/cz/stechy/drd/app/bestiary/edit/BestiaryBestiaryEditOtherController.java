@@ -119,7 +119,7 @@ public class BestiaryBestiaryEditOtherController implements InjectableChild,
     private void handleShowVulnerabilityPopup(ActionEvent actionEvent) {
         Bundle bundle = new Bundle()
             .putInt(VulnerabilityController.VULNERABILITY, model.vulnerability.getValue());
-        baseController.startNewPopupWindowForResult(R.FXML.VULNERABILITY, ACTION_VULNERABILITY,
+        baseController.startNewPopupWindowForResult(R.Fxml.VULNERABILITY, ACTION_VULNERABILITY,
             bundle, (Node) actionEvent.getSource());
     }
 

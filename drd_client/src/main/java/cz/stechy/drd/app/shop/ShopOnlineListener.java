@@ -3,7 +3,7 @@ package cz.stechy.drd.app.shop;
 /**
  * Listener obsahující metody pro ošetření firebase odpovědi
  */
-interface ShopFirebaseListener {
+interface ShopOnlineListener {
 
     /**
      * Reakce na odstranění položky z online databáze

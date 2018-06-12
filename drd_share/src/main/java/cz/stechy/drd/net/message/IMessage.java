@@ -11,6 +11,10 @@ public interface IMessage extends Serializable {
 
     Object getData();
 
+    default boolean isSuccess() {
+        return true;
+    }
+
     default byte[] toByteArray() throws IOException {
         return new byte[0];
     }

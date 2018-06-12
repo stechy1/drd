@@ -22,7 +22,6 @@ import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
-import java.beans.PropertyChangeEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -113,7 +112,7 @@ public class MainController extends BaseController implements Initializable {
 
     // endregion
 
-    private final BooleanProperty useFirebase = new SimpleBooleanProperty(this, "useFirebase",
+    private final BooleanProperty serverConnected = new SimpleBooleanProperty(this, "serverConnected",
         false);
     private final ReadOnlyObjectProperty<Hero> hero;
     private final ReadOnlyObjectProperty<User> user;
@@ -139,8 +138,7 @@ public class MainController extends BaseController implements Initializable {
         this.hero = heroService.heroProperty();
         this.user = userService.userProperty();
         this.communicator = communicator;
-        settings.addListener(R.Config.USE_ONLINE_DATABASE, this::useOnlineDatabaseHandler);
-        useFirebase.set(Boolean.parseBoolean(settings.getProperty(R.Config.USE_ONLINE_DATABASE)));
+        this.serverConnected.bind(this.communicator.connectionStateProperty().isEqualTo(ConnectionState.CONNECTED));
     }
 
     // endregion
@@ -198,10 +196,6 @@ public class MainController extends BaseController implements Initializable {
     }
 
     // region Method handlers
-
-    private void useOnlineDatabaseHandler(PropertyChangeEvent event) {
-        useFirebase.set(Boolean.parseBoolean((String) event.getNewValue()));
-    }
 
     private void levelUpHandler(ObservableValue<? extends Boolean> observable,
         Boolean oldValue, Boolean newValue) {
@@ -261,7 +255,7 @@ public class MainController extends BaseController implements Initializable {
         }
 
         tabProfession.disableProperty().bind(this.hero.isNull());
-        menuLogin.disableProperty().bind(useFirebase.not());
+        menuLogin.disableProperty().bind(serverConnected.not());
         menuCloseHero.disableProperty().bind(this.hero.isNull());
         btnCloseHero.disableProperty().bind(this.hero.isNull());
         final Tooltip loginTooltip = new Tooltip();
@@ -388,12 +382,12 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuNewHero(ActionEvent actionEvent) {
-        startNewDialogForResult(R.FXML.HERO_CREATOR_1, ACTION_NEW_HERO);
+        startNewDialogForResult(R.Fxml.HERO_CREATOR_1, ACTION_NEW_HERO);
     }
 
     @FXML
     private void handleMenuLoadHero(ActionEvent actionEvent) {
-        startNewDialogForResult(R.FXML.OPEN_HERO, ACTION_LOAD_HERO);
+        startNewDialogForResult(R.Fxml.OPEN_HERO, ACTION_LOAD_HERO);
     }
 
     @FXML
@@ -414,7 +408,7 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuLogin(ActionEvent actionEvent) {
-        startNewDialogForResult(R.FXML.LOGIN, ACTION_LOGIN);
+        startNewDialogForResult(R.Fxml.LOGIN, ACTION_LOGIN);
     }
 
     @FXML
@@ -438,47 +432,47 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuDice(ActionEvent actionEvent) {
-        startNewDialog(R.FXML.DICE);
+        startNewDialog(R.Fxml.DICE);
     }
 
     @FXML
     private void handleMenuMoney(ActionEvent actionEvent) {
-        startNewDialogForResult(R.FXML.MONEY_XP, ACTION_MONEY_EXPERIENCE);
+        startNewDialogForResult(R.Fxml.MONEY_XP, ACTION_MONEY_EXPERIENCE);
     }
 
     @FXML
     private void handleMenuBestiary(ActionEvent actionEvent) {
-        startNewDialog(R.FXML.BESTIARY);
+        startNewDialog(R.Fxml.BESTIARY);
     }
 
     @FXML
     private void handleMenuShop(ActionEvent actionEvent) {
-        startNewDialog(R.FXML.SHOP1);
+        startNewDialog(R.Fxml.SHOP1);
     }
 
     @FXML
     private void handleMenuCollections(ActionEvent actionEvent) {
-        startNewDialog(R.FXML.COLLECTIONS);
+        startNewDialog(R.Fxml.COLLECTIONS);
     }
 
     @FXML
     private void handleMenuSpellBook(ActionEvent actionEvent) {
-        startNewDialog(R.FXML.SPELLBOOK);
+        startNewDialog(R.Fxml.SPELLBOOK);
     }
 
     @FXML
     private void handleMenuFight(ActionEvent actionEvent) {
-        startNewDialog(R.FXML.FIGHT);
+        startNewDialog(R.Fxml.FIGHT);
     }
 
     @FXML
     private void handleMenuSettings(ActionEvent actionEvent) {
-        startNewDialog(R.FXML.SETTINGS);
+        startNewDialog(R.Fxml.SETTINGS);
     }
 
     @FXML
     private void handleMenuAbout(ActionEvent actionEvent) {
-        startNewDialog(R.FXML.ABOUT);
+        startNewDialog(R.Fxml.ABOUT);
     }
 
     @FXML
@@ -488,14 +482,14 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private void handleMenuHelp(ActionEvent actionEvent) {
-        startNewDialog(R.FXML.HELP);
+        startNewDialog(R.Fxml.HELP);
     }
 
     @FXML
     private void handleMenuLevelUp(ActionEvent actionEvent) {
         final Bundle bundle = new Bundle();
         bundle.put(LevelUpController.HERO, hero.get());
-        startNewDialogForResult(R.FXML.LEVELUP, ACTION_LEVEL_UP, bundle);
+        startNewDialogForResult(R.Fxml.LEVELUP, ACTION_LEVEL_UP, bundle);
     }
 
     public void handleShowServer(ActionEvent actionEvent) {

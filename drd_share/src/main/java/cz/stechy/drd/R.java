@@ -5,7 +5,7 @@ public final class R {
 
     public static final int DATABASE_VERSION = 1;
 
-    public static class FXML {
+    public static class Fxml {
 
         public static final String ABOUT = "about";
         public static final String CARD = "card";
@@ -451,6 +451,7 @@ public final class R {
 
         public static class Icon {
 
+            public static final String HELP = "/images/icon/help.png";
             public static final String ABOUT = "/images/icon/about.png";
             public static final String ADD = "/images/icon/add.png";
             public static final String BANK = "/images/icon/bank.png";
@@ -469,7 +470,6 @@ public final class R {
             public static final String FIGHT = "/images/icon/fight.png";
             public static final String GENERATE = "/images/icon/generate.png";
             public static final String HAND_CLICK = "/images/icon/hand_click.png";
-            public static final String HELP = "/images/icon/help.png";
             public static final String IMPORT = "/images/icon/import.png";
             public static final String LOGIN = "/images/icon/login.png";
             public static final String MANA = "/images/icon/mana.png";
@@ -505,6 +505,206 @@ public final class R {
 
         public static final String TOOLBAR_BIG = "/images/toolbar-big.png";
         public static final String TOOLBAR_BIG2 = "/images/toolbar-big2.png";
+    }
+
+    public static class Database {
+
+        public static class Armor {
+
+            public static final String TABLE_NAME = "armor";
+            public static final String FIREBASE_CHILD = "items/armor";
+            public static final String COLUMN_ID = "armor_id";
+            public static final String COLUMN_NAME = "armor_name";
+            public static final String COLUMN_DESCRIPTION = "armor_description";
+            public static final String COLUMN_AUTHOR = "armor_author";
+            public static final String COLUMN_DEFENCE = "armor_defence";
+            public static final String COLUMN_MINIMUM_STRENGTH = "armor_minimum_strength";
+            public static final String COLUMN_TYPE = "armor_type";
+            public static final String COLUMN_WEIGHT_A = "armor_weight_a";
+            public static final String COLUMN_WEIGHT_B = "armor_weight_b";
+            public static final String COLUMN_WEIGHT_C = "armor_weight_c";
+            public static final String COLUMN_PRICE_A = "armor_price_a";
+            public static final String COLUMN_PRICE_B = "armor_price_b";
+            public static final String COLUMN_PRICE_C = "armor_price_c";
+            public static final String COLUMN_IMAGE = "armor_image";
+            public static final String COLUMN_STACK_SIZE = "armor_stack_size";
+            public static final String COLUMN_UPLOADED = "armor_uploaded";
+        }
+
+        public static class Generalitems {
+
+            public static final String TABLE_NAME = "general_items";
+            public static final String FIREBASE_CHILD = "items/general";
+            public static final String COLUMN_ID = "general_items_id";
+            public static final String COLUMN_NAME = "general_items_name";
+            public static final String COLUMN_DESCRIPTION = "general_items_description";
+            public static final String COLUMN_AUTHOR = "general_items_author";
+            public static final String COLUMN_WEIGHT = "general_items_weight";
+            public static final String COLUMN_PRICE = "general_items_price";
+            public static final String COLUMN_IMAGE = "general_items_image";
+            public static final String COLUMN_STACK_SIZE = "general_items_stack_size";
+            public static final String COLUMN_UPLOADED = "general_items_uploaded";
+        }
+
+        public static class Backpack {
+
+            public static final String TABLE_NAME = "backpack";
+            public static final String FIREBASE_CHILD = "items/backpack";
+            public static final String COLUMN_ID = "backpack_id";
+            public static final String COLUMN_NAME = "backpack_name";
+            public static final String COLUMN_DESCRIPTION = "backpack_description";
+            public static final String COLUMN_AUTHOR = "backpack_author";
+            public static final String COLUMN_WEIGHT = "backpack_weight";
+            public static final String COLUMN_PRICE = "backpack_price";
+            public static final String COLUMN_MAX_LOAD = "backpack_max_load";
+            public static final String COLUMN_SIZE = "backpack_size";
+            public static final String COLUMN_IMAGE = "backpack_image";
+            public static final String COLUMN_STACK_SIZE = "backpack_stack_size";
+            public static final String COLUMN_UPLOADED = "backpack_uploaded";
+        }
+
+        public static class Weaponmele {
+
+            public static final String TABLE_NAME = "weapon_mele";
+            public static final String FIREBASE_CHILD = "items/weapon/mele";
+            public static final String COLUMN_ID = "weapon_mele_id";
+            public static final String COLUMN_NAME = "weapon_mele_name";
+            public static final String COLUMN_DESCRIPTION = "weapon_mele_description";
+            public static final String COLUMN_AUTHOR = "weapon_mele_author";
+            public static final String COLUMN_WEIGHT = "weapon_mele_weight";
+            public static final String COLUMN_PRICE = "weapon_mele_price";
+            public static final String COLUMN_STRENGTH = "weapon_mele_strength";
+            public static final String COLUMN_RAMPANCY = "weapon_mele_rampancy";
+            public static final String COLUMN_DEFENCE = "weapon_mele_defence";
+            public static final String COLUMN_RENOWN = "weapon_mele_renown";
+            public static final String COLUMN_CLASS = "weapon_mele_class";
+            public static final String COLUMN_TYPE = "weapon_mele_type";
+            public static final String COLUMN_IMAGE = "weapon_mele_image";
+            public static final String COLUMN_STACK_SIZE = "weapon_mele_stack_size";
+            public static final String COLUMN_UPLOADED = "weapon_mele_uploaded";
+        }
+
+        public static class Weaponranged {
+
+            public static final String TABLE_NAME = "weapon_ranged";
+            public static final String FIREBASE_CHILD = "items/weapon/ranged";
+            public static final String COLUMN_ID = "weapon_ranged_id";
+            public static final String COLUMN_NAME = "weapon_ranged_name";
+            public static final String COLUMN_DESCRIPTION = "weapon_ranged_description";
+            public static final String COLUMN_AUTHOR = "weapon_ranged_author";
+            public static final String COLUMN_WEIGHT = "weapon_ranged_weight";
+            public static final String COLUMN_PRICE = "weapon_ranged_price";
+            public static final String COLUMN_STRENGTH = "weapon_ranged_strength";
+            public static final String COLUMN_RAMPANCY = "weapon_ranged_rampancy";
+            public static final String COLUMN_TYPE = "weapon_ranged_type";
+            public static final String COLUMN_RANGE_LOW = "weapon_ranged_range_low";
+            public static final String COLUMN_RANGE_MEDIUM = "weapon_ranged_range_medium";
+            public static final String COLUMN_RANGE_LONG = "weapon_ranged_range_long";
+            public static final String COLUMN_RENOWN = "weapon_ranged_renown";
+            public static final String COLUMN_IMAGE = "weapon_ranged_image";
+            public static final String COLUMN_STACK_SIZE = "weapon_ranged_stack_size";
+            public static final String COLUMN_UPLOADED = "weapon_ranged_uploaded";
+        }
+
+        public static class Bestiary {
+
+            public static final String TABLE_NAME = "bestiary";
+            public static final String FIREBASE_CHILD = "mobs";
+            public static final String COLUMN_ID = "bestiary_id";
+            public static final String COLUMN_NAME = "bestiary_name";
+            public static final String COLUMN_DESCRIPTION = "bestiary_description";
+            public static final String COLUMN_AUTHOR = "bestiary_author";
+            public static final String COLUMN_IMAGE = "bestiary_image";
+            public static final String COLUMN_MOB_CLASS = "bestiary_mob_class";
+            public static final String COLUMN_RULES_TYPE = "bestiary_rules_type";
+            public static final String COLUMN_CONVICTION = "bestiary_conviction";
+            public static final String COLUMN_HEIGHT = "bestiary_height";
+            public static final String COLUMN_ATTACK = "bestiary_attack";
+            public static final String COLUMN_DEFENCE = "bestiary_defence";
+            public static final String COLUMN_VIABILITY = "bestiary_viability";
+            public static final String COLUMN_IMMUNITY = "bestiary_immunity";
+            public static final String COLUMN_METTLE = "bestiary_mettle";
+            public static final String COLUMN_VULNERABILITY = "bestiary_vulnerability";
+            public static final String COLUMN_MOBILITY = "bestiary_mobility";
+            public static final String COLUMN_PERSERVANCE = "bestiary_perservance";
+            public static final String COLUMN_CONTROL_ABILITY = "bestiary_control_ability";
+            public static final String COLUMN_INTELLIGENCE = "bestiary_intelligence";
+            public static final String COLUMN_CHARISMA = "bestiary_charisma";
+            public static final String COLUMN_BASIC_POWER_OF_MIND = "bestiary_basic_power_of_mind";
+            public static final String COLUMN_EXPERIENCE = "bestiary_experience";
+            public static final String COLUMN_DOMESTICATION = "bestiary_domestication";
+            public static final String COLUMN_UPLOADED = "bestiary_uploaded";
+        }
+
+        public static class Hero {
+
+            public static final String TABLE_NAME = "hero";
+            public static final String FIREBASE_CHILD = "";
+            public static final String COLUMN_ID = "hero_id";
+            public static final String COLUMN_NAME = "hero_name";
+            public static final String COLUMN_AUTHOR = "hero_author";
+            public static final String COLUMN_DESCRIPTION = "hero_description";
+            public static final String COLUMN_CONVICTION = "hero_conviction";
+            public static final String COLUMN_RACE = "hero_race";
+            public static final String COLUMN_PROFESSION = "hero_profession";
+            public static final String COLUMN_LEVEL = "hero_level";
+            public static final String COLUMN_MONEY = "hero_money";
+            public static final String COLUMN_EXPERIENCES = "hero_experiences";
+            public static final String COLUMN_STRENGTH = "hero_strength";
+            public static final String COLUMN_DEXTERITY = "hero_dexterity";
+            public static final String COLUMN_IMMUNITY = "hero_immunity";
+            public static final String COLUMN_INTELLIGENCE = "hero_intelligence";
+            public static final String COLUMN_CHARISMA = "hero_charisma";
+            public static final String COLUMN_HEIGHT = "hero_height";
+            public static final String COLUMN_DEFENCE_NUMBER = "hero_defence_number";
+            public static final String COLUMN_LIVE = "hero_live";
+            public static final String COLUMN_MAX_LIVE = "hero_max_live";
+            public static final String COLUMN_MAG = "hero_mag";
+            public static final String COLUMN_MAX_MAG = "hero_max_mag";
+        }
+
+        public static class Inventorycontent {
+
+            public static final String TABLE_NAME = "inventory_content";
+            public static final String FIREBASE_CHILD = "";
+            public static final String COLUMN_ID = "inventory_content_id";
+            public static final String COLUMN_INVENTORY_ID = "inventory_content_inventory_id";
+            public static final String COLUMN_ITEM_ID = "inventory_content_item_id";
+            public static final String COLUMN_AMMOUNT = "inventory_content_ammount";
+            public static final String COLUMN_SLOT = "inventory_content_slot";
+            public static final String COLUMN_METADATA = "inventory_content_metadata";
+        }
+
+        public static class Inventory {
+
+            public static final String TABLE_NAME = "inventory";
+            public static final String FIREBASE_CHILD = "";
+            public static final String COLUMN_ID = "inventory_id";
+            public static final String COLUMN_HERO_ID = "inventory_hero_id";
+            public static final String COLUMN_INVENTORY_TYPE = "inventory_inventory_type";
+            public static final String COLUMN_CAPACITY = "inventory_capacity";
+        }
+
+        public static class Spells {
+
+            public static final String TABLE_NAME = "spells";
+            public static final String FIREBASE_CHILD = "spells";
+            public static final String COLUMN_ID = "spells_id";
+            public static final String COLUMN_AUTHOR = "spells_author";
+            public static final String COLUMN_NAME = "spells_name";
+            public static final String COLUMN_MAGIC_NAME = "spells_magic_name";
+            public static final String COLUMN_DESCRIPTION = "spells_description";
+            public static final String COLUMN_PROFESSION_TYPE = "spells_profession_type";
+            public static final String COLUMN_PRICE = "spells_price";
+            public static final String COLUMN_RADIUS = "spells_radius";
+            public static final String COLUMN_RANGE = "spells_range";
+            public static final String COLUMN_TARGET = "spells_target";
+            public static final String COLUMN_CAST_TIME = "spells_cast_time";
+            public static final String COLUMN_DURATION = "spells_duration";
+            public static final String COLUMN_IMAGE = "spells_image";
+            public static final String COLUMN_UPLOADED = "spells_uploaded";
+        }
+
     }
 
 }

@@ -12,7 +12,6 @@ import cz.stechy.drd.dao.RangedWeaponDao;
 import cz.stechy.drd.dao.SpellBookDao;
 import cz.stechy.drd.dao.UserDao;
 import cz.stechy.drd.db.DatabaseService;
-import cz.stechy.drd.db.FirebaseWrapper;
 import cz.stechy.drd.db.SQLite;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.DiContainer;
@@ -38,7 +37,6 @@ public class Context {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(Context.class);
 
-    private static final String FIREBASE_CREDENTIALS = "";
     private static final String CREDENTAILS_APP_NAME = "drd_helper";
     private static final String CREDENTAILS_APP_VERSION = "1.0";
     private static final String CREDENTILS_APP_AUTHOR = "stechy1";
@@ -67,8 +65,6 @@ public class Context {
 
     // DI kontejner obsahující všechny služby v aplikaci
     private final IDependencyManager container = new DiContainer();
-    // Pomocný wrapper na pozdější inicializaci firebase databáze
-    private final FirebaseWrapper firebaseWrapper = new FirebaseWrapper();
     // Pracovní adresář, kam můžu ukládat potřebné soubory
     private final File appDirectory;
     // Nastavení aplikace
@@ -106,7 +102,6 @@ public class Context {
             localDatabaseVersion);
         container.addService(Database.class, database);
         container.addService(Translator.class, new Translator(resources));
-        container.addService(FirebaseWrapper.class, firebaseWrapper);
     }
 
     // endregion
@@ -159,16 +154,6 @@ public class Context {
         return Boolean.parseBoolean(settings.getProperty(R.Config.USE_ONLINE_DATABASE, "false"));
     }
 
-    /**
-     * Inicializuje firebase databázi
-     *
-     * @param credentialsPath Cesta k souboru s přístupovými údaji k databázi
-     * @throws Exception Pokud se inicializace nezdařila
-     */
-    private void initFirebase(String credentialsPath) throws Exception {
-        firebaseWrapper.initDatabase(new File(credentialsPath));
-    }
-
     // endregion
 
     // region Package private methods
@@ -177,20 +162,7 @@ public class Context {
      * Inicializuje tabulky databáze
      */
     CompletableFuture<Void> init() {
-        return initDao().thenAccept(ignore -> {
-            if (useOnlineDatabase()) {
-                try {
-                    initFirebase(settings.getProperty(R.Config.ONLINE_DATABASE_CREDENTIALS_PATH,
-                        FIREBASE_CREDENTIALS));
-                } catch (Exception ex) {
-                    // Pokud se nepodaří inicializovat firebase při startu, tak se prakticky nic neděje
-                    // aplikace může bez firebase běžet
-                    // Pro jistotu nastavíme, že se přiště inicializace konat nebude
-                    settings.setProperty(R.Config.USE_ONLINE_DATABASE, "false");
-                }
-            }
-        });
-
+        return initDao();
     }
 
     /**
@@ -215,13 +187,6 @@ public class Context {
     // endregion
 
     // region Getters & Setters
-
-    /**
-     * Ukončí spojení online databáze s internetem
-     */
-    public void closeFirebase() {
-        firebaseWrapper.closeDatabase();
-    }
 
     public IDependencyManager getContainer() {
         return container;

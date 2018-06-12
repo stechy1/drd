@@ -212,38 +212,38 @@ public class CollectionsController extends BaseController implements Initializab
             .name(txtCollectionName.getText())
             .author(user != null ? user.getName() : "")
             .build();
-        collectionService.uploadAsync(collection, (error, ref) -> {
-            if (error != null) {
-                showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), collection.getName())));
-                LOGGER.error("Položku {} se nepodařilo nahrát do online databáze",
-                    collection.getName());
-            } else {
-                showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_UPLOADED), collection.getName())));
-            }
-
-            txtCollectionName.clear();
-        });
+//        collectionService.uploadAsync(collection, (error, ref) -> {
+//            if (error != null) {
+//                showNotification(new Notification(String.format(translator.translate(
+//                    R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), collection.getName())));
+//                LOGGER.error("Položku {} se nepodařilo nahrát do online databáze",
+//                    collection.getName());
+//            } else {
+//                showNotification(new Notification(String.format(translator.translate(
+//                    R.Translate.NOTIFY_RECORD_IS_UPLOADED), collection.getName())));
+//            }
+//
+//            txtCollectionName.clear();
+//        });
     }
 
     @FXML
     private void handleCollectionRemove(ActionEvent actionEvent) {
         final ItemCollection collection = selectedCollection.get();
-        collectionService.deleteRemoteAsync(collection, true, (error, ref) -> {
-            if (error != null) {
-                showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
-                    collection.getName())));
-                LOGGER.error("Položku {} se nepodařilo odstranit z online databáze",
-                    collection.getName());
-            } else {
-                showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
-                    collection.getName())));
-            }
-        });
-        lvCollections.getSelectionModel().clearSelection();
+//        collectionService.deleteRemoteAsync(collection, true, (error, ref) -> {
+//            if (error != null) {
+//                showNotification(new Notification(String.format(translator.translate(
+//                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
+//                    collection.getName())));
+//                LOGGER.error("Položku {} se nepodařilo odstranit z online databáze",
+//                    collection.getName());
+//            } else {
+//                showNotification(new Notification(String.format(translator.translate(
+//                    R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+//                    collection.getName())));
+//            }
+//        });
+//        lvCollections.getSelectionModel().clearSelection();
     }
 
     @FXML
@@ -263,21 +263,21 @@ public class CollectionsController extends BaseController implements Initializab
     @FXML
     private void handleCollectionItemAdd(ActionEvent actionEvent) {
         final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(itemRegistry);
-        entryOptional.ifPresent(choiceEntry ->
-            collectionContent.get().uploadAsync(choiceEntry.getItemBase(), (error, ref) -> {
-                final String itemName = choiceEntry.getName();
-                final String collectionName = selectedCollection.get().getName();
-                if (error != null) {
-                    showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
-                        collectionName)));
-                    LOGGER.error("Položku se nepodařilo přidat do kolekce");
-                } else {
-                    showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
-                        collectionName)));
-                }
-            }));
+//        entryOptional.ifPresent(choiceEntry ->
+//            collectionContent.get().uploadAsync(choiceEntry.getItemBase(), (error, ref) -> {
+//                final String itemName = choiceEntry.getName();
+//                final String collectionName = selectedCollection.get().getName();
+//                if (error != null) {
+//                    showNotification(new Notification(String.format(translator.translate(
+//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
+//                        collectionName)));
+//                    LOGGER.error("Položku se nepodařilo přidat do kolekce");
+//                } else {
+//                    showNotification(new Notification(String.format(translator.translate(
+//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
+//                        collectionName)));
+//                }
+//            }));
     }
 
     @FXML
@@ -291,19 +291,18 @@ public class CollectionsController extends BaseController implements Initializab
         final String itemName = selectedCollectionItem.get().getName();
         final String collectionName = selectedCollection.get().getName();
 
-        content
-            .deleteRemoteAsync(selectedCollectionItem.get().getItemBase(), true, (error, ref) -> {
-                if (error != null) {
-                    showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_DELETED), itemName,
-                        collectionName)));
-                    LOGGER.error("Položku se nepodařilo odebrat z kolekce");
-                } else {
-                    showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_DELETED), itemName,
-                        collectionName)));
-                }
-            });
+//        content.deleteRemoteAsync(selectedCollectionItem.get().getItemBase(), true, (error, ref) -> {
+//                if (error != null) {
+//                    showNotification(new Notification(String.format(translator.translate(
+//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_DELETED), itemName,
+//                        collectionName)));
+//                    LOGGER.error("Položku se nepodařilo odebrat z kolekce");
+//                } else {
+//                    showNotification(new Notification(String.format(translator.translate(
+//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_DELETED), itemName,
+//                        collectionName)));
+//                }
+//            });
     }
 
     // endregion

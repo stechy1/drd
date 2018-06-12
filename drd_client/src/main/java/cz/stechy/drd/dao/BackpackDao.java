@@ -1,6 +1,8 @@
 package cz.stechy.drd.dao;
 
-import com.google.firebase.database.DataSnapshot;
+import static cz.stechy.drd.R.Database.Backpack.*;
+
+import cz.stechy.drd.R;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -22,23 +24,6 @@ import java.util.concurrent.CompletableFuture;
 public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
 
     // region Constants
-
-    // Název tabulky
-    private static final String TABLE = "backpack";
-    private static final String FIREBASE_CHILD_NAME = "items/backpack";
-
-    // Názvy sloupců v databázi
-    private static final String COLUMN_ID = TABLE + "_id";
-    private static final String COLUMN_NAME = TABLE + "_name";
-    private static final String COLUMN_DESCRIPTION = TABLE + "_description";
-    private static final String COLUMN_AUTHOR = TABLE + "_author";
-    private static final String COLUMN_WEIGHT = TABLE + "_weight";
-    private static final String COLUMN_PRICE = TABLE + "_price";
-    private static final String COLUMN_MAX_LOAD = TABLE + "_max_load";
-    private static final String COLUMN_SIZE = TABLE + "_size";
-    private static final String COLUMN_IMAGE = TABLE + "_image";
-    private static final String COLUMN_STACK_SIZE = TABLE + "_stack_size";
-    private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION,
         COLUMN_AUTHOR, COLUMN_WEIGHT, COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE,
         COLUMN_STACK_SIZE, COLUMN_UPLOADED};
@@ -57,7 +42,7 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
             + "%s BLOB,"                                        // image
             + "%s INT NOT NULL,"                                // stack size
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
-            + "); ", TABLE, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
+            + "); ", TABLE_NAME, COLUMN_ID, COLUMN_NAME, COLUMN_DESCRIPTION, COLUMN_AUTHOR, COLUMN_WEIGHT,
         COLUMN_PRICE, COLUMN_MAX_LOAD, COLUMN_SIZE, COLUMN_IMAGE, COLUMN_STACK_SIZE,
         COLUMN_UPLOADED);
 
@@ -83,18 +68,18 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
     // region Private methods
 
     @Override
-    public Backpack parseDataSnapshot(DataSnapshot snapshot) {
+    public Backpack fromStringItemMap(Map<String, Object> map) {
         return new Backpack.Builder()
-            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-            .weight(snapshot.child(COLUMN_WEIGHT).getValue(Integer.class))
-            .price(snapshot.child(COLUMN_PRICE).getValue(Integer.class))
-            .maxLoad(snapshot.child(COLUMN_MAX_LOAD).getValue(Integer.class))
-            .size(snapshot.child(COLUMN_SIZE).getValue(Integer.class))
-            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
-            .stackSize(snapshot.child(COLUMN_STACK_SIZE).getValue(Integer.class))
+            .id((String) map.get(COLUMN_ID))
+            .name((String) map.get(COLUMN_NAME))
+            .description((String) map.get(COLUMN_DESCRIPTION))
+            .author((String) map.get(COLUMN_AUTHOR))
+            .weight((Integer) map.get(COLUMN_WEIGHT))
+            .price((Integer) map.get(COLUMN_PRICE))
+            .maxLoad((Integer) map.get(COLUMN_MAX_LOAD))
+            .size((Integer) map.get(COLUMN_SIZE))
+            .image(base64ToBlob((String) map.get(COLUMN_IMAGE)))
+            .stackSize((Integer) map.get(COLUMN_STACK_SIZE))
             .build();
     }
 
@@ -135,12 +120,12 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
 
     @Override
     protected String getTable() {
-        return TABLE;
+        return TABLE_NAME;
     }
 
     @Override
-    protected String getFirebaseChildName() {
-        return FIREBASE_CHILD_NAME;
+    public String getFirebaseChildName() {
+        return R.Database.Backpack.FIREBASE_CHILD;
     }
 
     @Override
@@ -169,8 +154,8 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
     }
 
     @Override
-    public Map<String, Object> toFirebaseMap(Backpack item) {
-        final Map<String, Object> map = super.toFirebaseMap(item);
+    public Map<String, Object> toStringItemMap(Backpack item) {
+        final Map<String, Object> map = super.toStringItemMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;
     }

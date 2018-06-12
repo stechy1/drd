@@ -1,8 +1,9 @@
 package cz.stechy.drd.app.spellbook;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.model.User;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.dao.SpellBookDao;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.spell.Spell;
 import cz.stechy.drd.model.spell.Spell.SpellProfessionType;
@@ -41,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * Kontroler knihy kouzel.
  */
 public class SpellBookController extends BaseController implements Initializable {
 
@@ -258,16 +259,16 @@ public class SpellBookController extends BaseController implements Initializable
                 }
 
                 spell = SpellBookHelper.fromBundle(bundle);
-                spellBook.uploadAsync(spell, (error, ref) -> {
-                    if (error != null) {
+                spellBook.updateAsync(spell)
+                    .exceptionally(throwable -> {
                         showNotification(new Notification(String.format(translator.translate(
                             R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), spell.getName())));
-                        LOGGER.warn("Položku {} se nepodařilo aktualizovat", spell.toString());
-                    } else {
+                        LOGGER.error("Kouzlo {} se nepodařilo aktualizovat", spell.getName());
+                        throw new RuntimeException(throwable);
+                    })
+                    .thenAccept(generalItem ->
                         showNotification(new Notification(String.format(translator.translate(
-                            R.Translate.NOTIFY_RECORD_IS_UPDATED), spell.getName())));
-                    }
-                });
+                            Translate.NOTIFY_RECORD_IS_NOT_UPDATED), spell.getName()))));
                 break;
         }
     }
@@ -283,7 +284,7 @@ public class SpellBookController extends BaseController implements Initializable
     private void handleAddItem(ActionEvent actionEvent) {
         Bundle bundle = new Bundle();
         bundle.putInt(SpellBookHelper.SPELL_ACTION, SpellBookHelper.SPELL_ACTION_ADD);
-        startNewDialogForResult(R.FXML.SPELLBOOK_EDIT, SpellBookHelper.SPELL_ACTION_ADD, bundle);
+        startNewDialogForResult(R.Fxml.SPELLBOOK_EDIT, SpellBookHelper.SPELL_ACTION_ADD, bundle);
     }
 
     @FXML
@@ -308,23 +309,23 @@ public class SpellBookController extends BaseController implements Initializable
         final Bundle bundle = new Bundle();
         bundle.putInt(SpellBookHelper.SPELL_ACTION, SpellBookHelper.SPELL_ACTION_UPDATE);
         SpellBookHelper.toBundle(bundle, entry);
-        startNewDialogForResult(R.FXML.SPELLBOOK_EDIT, SpellBookHelper.SPELL_ACTION_UPDATE, bundle);
+        startNewDialogForResult(R.Fxml.SPELLBOOK_EDIT, SpellBookHelper.SPELL_ACTION_UPDATE, bundle);
     }
 
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(spell ->
-            spellBook.uploadAsync(spell, (error, ref) -> {
-                if (error != null) {
+        getSelectedEntry().ifPresent(spell -> {
+            spellBook.uploadAsync(spell)
+                .exceptionally(throwable -> {
                     showNotification(new Notification(String.format(translator.translate(
                         R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), spell.getName())));
-                    LOGGER.error("Položku {} se nepodařilo nahrát", spell.getName());
-                } else {
+                    LOGGER.warn("Položku {} se nepodařilo nahrát", spell.toString());
+                    throw new RuntimeException(throwable);
+                })
+                .thenAccept(ignored ->
                     showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_RECORD_IS_DELETED), spell.getName())));
-                }
-            })
-        );
+                        R.Translate.NOTIFY_RECORD_IS_UPLOADED), spell.getName()))));
+        });
     }
 
     @FXML
@@ -334,20 +335,21 @@ public class SpellBookController extends BaseController implements Initializable
 
     @FXML
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(spell ->
-            spellBook.deleteRemoteAsync(spell, true, (error, ref) -> {
-                if (error != null) {
+        getSelectedEntry().ifPresent(spell -> {
+            spellBook.deleteRemoteAsync(spell)
+                .exceptionally(throwable -> {
                     showNotification(new Notification(String.format(translator.translate(
                         R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
                         spell.getName())));
                     LOGGER.error("Položku {} se nepodařilo odebrat z online databáze",
                         spell.getName());
-                } else {
+                    throw new RuntimeException(throwable);
+                })
+                .thenAccept(ignored ->
                     showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
-                        spell.getName())));
-                }
-            }));
+                    R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+                    spell.getName()))));
+        });
     }
 
     @FXML

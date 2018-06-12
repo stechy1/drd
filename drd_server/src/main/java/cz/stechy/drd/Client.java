@@ -1,7 +1,12 @@
 package cz.stechy.drd;
 
+import cz.stechy.drd.firebase.ItemEvent;
+import cz.stechy.drd.firebase.ItemEventListener;
+import cz.stechy.drd.net.message.DatabaseMessage;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
+import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
-import cz.stechy.drd.net.message.SimpleResponce;
+import cz.stechy.drd.net.message.MessageSource;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,19 +23,23 @@ public class Client implements Runnable {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
 
+    private final UUID id = UUID.randomUUID();
     private final Socket socket;
     private final InputStream inputStream;
     final ObjectOutputStream writer;
     private final WriterThread writerThread;
+    private final IMessageReceiveListener messageReceiveListener;
 
     private OnConnectionClosedListener connectionClosedListener;
     private boolean interrupt = false;
 
-    public Client(Socket client, WriterThread writerThread) throws IOException {
+    public Client(Socket client, WriterThread writerThread,
+        IMessageReceiveListener messageReceiveListener) throws IOException {
         this.writerThread = writerThread;
         this.inputStream = client.getInputStream();
         this.writer = new ObjectOutputStream(client.getOutputStream());
         socket = client;
+        this.messageReceiveListener = messageReceiveListener;
         LOGGER.info("Nový klient byl vytvořen.");
     }
 
@@ -38,13 +48,11 @@ public class Client implements Runnable {
         LOGGER.info("Spouštím nekonečnou smyčku pro komunikaci s klientem.");
         try (ObjectInputStream reader = new ObjectInputStream(inputStream)) {
             LOGGER.info("ObjectInputStream byl úspěšně vytvořen.");
+            sendMessage(new HelloMessage(MessageSource.SERVER));
             IMessage received;
             while ((received = (IMessage) reader.readObject()) != null && !interrupt) {
                 LOGGER.info(String.format("Bylo přijato: '%s'", received));
-                sendMessage(new SimpleResponce("responce: " + received.toString()));
-                if (received.toString().equals("konec")) {
-                    interrupt = true;
-                }
+                messageReceiveListener.onMessageReceive(received, this);
             }
         } catch (EOFException|SocketException e) {
             LOGGER.info("Klient ukončil spojení.");
@@ -76,11 +84,23 @@ public class Client implements Runnable {
         }
     }
 
-    public void sendMessage(IMessage message) {
+    public synchronized void sendMessage(IMessage message) {
         LOGGER.info(
             String.format("Přidávám novou zprávu do fronty pro klienta: '%s'", message.toString()));
         writerThread.sendMessage(writer, message);
     }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public final ItemEventListener databaseRegisterListener = (ItemEvent event) -> {
+        final IMessage databaseMessage = new DatabaseMessage(
+            MessageSource.SERVER,
+            new DatabaseMessageCRUD(event.getItem(), event.getTableName(), event.getAction())
+        );
+        sendMessage(databaseMessage);
+    };
 
     @FunctionalInterface
     public interface OnConnectionClosedListener {

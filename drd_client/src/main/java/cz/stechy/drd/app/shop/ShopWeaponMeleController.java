@@ -7,11 +7,11 @@ import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.MeleWeaponEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
-import cz.stechy.drd.model.User;
 import cz.stechy.drd.dao.MeleWeaponDao;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
@@ -100,7 +100,7 @@ public class ShopWeaponMeleController implements Initializable,
     private IntegerProperty selectedRowIndex;
     private ResourceBundle resources;
     private ShopNotificationProvider notifier;
-    private ShopFirebaseListener firebaseListener;
+    private ShopOnlineListener shopOnlineListener;
 
     // endregion
 
@@ -181,13 +181,13 @@ public class ShopWeaponMeleController implements Initializable,
     }
 
     @Override
-    public void setFirebaseListener(ShopFirebaseListener firebaseListener) {
-        this.firebaseListener = firebaseListener;
+    public void setOnlineListener(ShopOnlineListener onlineListener) {
+        this.shopOnlineListener = onlineListener;
     }
 
     @Override
     public String getEditScreenName() {
-        return R.FXML.ITEM_MELE_WEAPON;
+        return R.Fxml.ITEM_MELE_WEAPON;
     }
 
     @Override
@@ -246,14 +246,22 @@ public class ShopWeaponMeleController implements Initializable,
 
     @Override
     public void requestRemoveItem(ShopEntry entry, boolean remote) {
-        service.deleteRemoteAsync((MeleWeapon) entry.getItemBase(), remote, (error, ref) ->
-            firebaseListener.handleItemRemove(entry.getName(), remote, error == null));
+        service.deleteRemoteAsync((MeleWeapon) entry.getItemBase())
+            .exceptionally(throwable -> {
+                shopOnlineListener.handleItemRemove(entry.getName(), remote, false);
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(aVoid -> shopOnlineListener.handleItemRemove(entry.getName(), remote, true));
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
-        service.uploadAsync((MeleWeapon) item, (error, ref) ->
-            firebaseListener.handleItemUpload(item.getName(), error == null));
+        service.uploadAsync((MeleWeapon) item)
+            .exceptionally(throwable -> {
+                shopOnlineListener.handleItemUpload(item.getName(), false);
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(aVoid -> shopOnlineListener.handleItemUpload(item.getName(), true));
     }
 
     @Override

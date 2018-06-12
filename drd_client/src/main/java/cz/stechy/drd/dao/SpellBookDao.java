@@ -1,6 +1,8 @@
 package cz.stechy.drd.dao;
 
-import com.google.firebase.database.DataSnapshot;
+import static cz.stechy.drd.R.Database.Spells.*;
+
+import cz.stechy.drd.R;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
@@ -21,26 +23,6 @@ import java.util.concurrent.CompletableFuture;
 public class SpellBookDao extends AdvancedDatabaseService<Spell> {
 
     // region Constants
-
-    // Název tabulky
-    private static final String TABLE = "spel";
-    private static final String FIREBASE_CHILD_NAME = "spells";
-
-    // Názvy sloupců v databázi
-    private static final String COLUMN_ID = TABLE + "_id";
-    private static final String COLUMN_AUTHOR = TABLE + "_author";
-    private static final String COLUMN_NAME = TABLE + "_name";
-    private static final String COLUMN_MAGIC_NAME = TABLE + "_magic_name";
-    private static final String COLUMN_DESCRIPTION = TABLE + "_description";
-    private static final String COLUMN_PROFESSION_TYPE = TABLE + "_profession_type";
-    private static final String COLUMN_PRICE = TABLE + "_price";
-    private static final String COLUMN_RADIUS = TABLE + "_radius";
-    private static final String COLUMN_RANGE = TABLE + "_range";
-    private static final String COLUMN_TARGET = TABLE + "_target";
-    private static final String COLUMN_CAST_TIME = TABLE + "_cast_time";
-    private static final String COLUMN_DURATION = TABLE + "_duration";
-    private static final String COLUMN_IMAGE = TABLE + "_image";
-    private static final String COLUMN_UPLOADED = TABLE + "_uploaded";
     private static final String[] COLUMNS = new String[]{COLUMN_ID, COLUMN_AUTHOR, COLUMN_NAME,
         COLUMN_MAGIC_NAME, COLUMN_DESCRIPTION, COLUMN_PROFESSION_TYPE, COLUMN_PRICE, COLUMN_RADIUS,
         COLUMN_RANGE, COLUMN_TARGET, COLUMN_CAST_TIME, COLUMN_DURATION, COLUMN_IMAGE,
@@ -63,7 +45,7 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
             + "%s INT NOT NULL,"                                // duration
             + "%s BLOB,"                                        // image
             + "%s BOOLEAN NOT NULL"                             // je položka nahraná
-            + "); ", TABLE, COLUMN_ID, COLUMN_AUTHOR, COLUMN_NAME,
+            + "); ", TABLE_NAME, COLUMN_ID, COLUMN_AUTHOR, COLUMN_NAME,
         COLUMN_MAGIC_NAME, COLUMN_DESCRIPTION, COLUMN_PROFESSION_TYPE, COLUMN_PRICE, COLUMN_RADIUS,
         COLUMN_RANGE, COLUMN_TARGET, COLUMN_CAST_TIME, COLUMN_DURATION, COLUMN_IMAGE,
         COLUMN_UPLOADED);
@@ -92,21 +74,21 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
     // region Private methods
 
     @Override
-    public Spell parseDataSnapshot(DataSnapshot snapshot) {
+    public Spell fromStringItemMap(Map<String, Object> map) {
         return new Spell.Builder()
-            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class))
-            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-            .magicName(snapshot.child(COLUMN_MAGIC_NAME).getValue(String.class))
-            .description(snapshot.child(COLUMN_DESCRIPTION).getValue(String.class))
-            .type(snapshot.child(COLUMN_PROFESSION_TYPE).getValue(Integer.class))
-            .price(new SpellParser(snapshot.child(COLUMN_PRICE).getValue(String.class)).parse())
-            .radius(snapshot.child(COLUMN_RADIUS).getValue(Integer.class))
-            .range(snapshot.child(COLUMN_RANGE).getValue(Integer.class))
-            .target(snapshot.child(COLUMN_TARGET).getValue(Integer.class))
-            .castTime(snapshot.child(COLUMN_CAST_TIME).getValue(Integer.class))
-            .duration(snapshot.child(COLUMN_DURATION).getValue(Integer.class))
-            .image(base64ToBlob(snapshot.child(COLUMN_IMAGE).getValue(String.class)))
+            .id((String) map.get(COLUMN_ID))
+            .author((String) map.get(COLUMN_AUTHOR))
+            .name((String) map.get(COLUMN_NAME))
+            .magicName((String) map.get(COLUMN_MAGIC_NAME))
+            .description((String) map.get(COLUMN_DESCRIPTION))
+            .type((Integer) map.get(COLUMN_PROFESSION_TYPE))
+            .price(new SpellParser((String) map.get(COLUMN_PRICE)).parse())
+            .radius((Integer) map.get(COLUMN_RADIUS))
+            .range((Integer) map.get(COLUMN_RANGE))
+            .target((Integer) map.get(COLUMN_TARGET))
+            .castTime((Integer) map.get(COLUMN_CAST_TIME))
+            .duration((Integer) map.get(COLUMN_DURATION))
+            .image(base64ToBlob((String) map.get(COLUMN_IMAGE)))
             .build();
     }
 
@@ -153,12 +135,12 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
 
     @Override
     protected String getTable() {
-        return TABLE;
+        return TABLE_NAME;
     }
 
     @Override
-    protected String getFirebaseChildName() {
-        return FIREBASE_CHILD_NAME;
+    public String getFirebaseChildName() {
+        return R.Database.Spells.FIREBASE_CHILD;
     }
 
     @Override
@@ -187,8 +169,8 @@ public class SpellBookDao extends AdvancedDatabaseService<Spell> {
     }
 
     @Override
-    public Map<String, Object> toFirebaseMap(Spell item) {
-        final Map<String, Object> map = super.toFirebaseMap(item);
+    public Map<String, Object> toStringItemMap(Spell item) {
+        final Map<String, Object> map = super.toStringItemMap(item);
         map.put(COLUMN_IMAGE, blobToBase64(item.getImage()));
         return map;
     }

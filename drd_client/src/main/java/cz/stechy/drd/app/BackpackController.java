@@ -110,7 +110,7 @@ public class BackpackController extends BaseController implements TooltipTransla
                 bundle.putInt(BACKPACK_SIZE, backpack.getSize().size);
                 bundle.putString(INVENTORY_ID, childInventoryId);
                 bundle.putString(ITEM_NAME, itemName);
-                startNewDialog(R.FXML.BACKPACK, bundle);
+                startNewDialog(R.Fxml.BACKPACK, bundle);
                 break;
         }
     }

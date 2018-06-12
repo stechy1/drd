@@ -59,19 +59,19 @@ public class ProfessionController implements MainScreen, Initializable, Injectab
         String fxmlName = "";
         switch (profession) {
             case WARIOR:
-                fxmlName = R.FXML.WARRIOR;
+                fxmlName = R.Fxml.WARRIOR;
                 break;
             case RANGER:
-                fxmlName = R.FXML.RANGER;
+                fxmlName = R.Fxml.RANGER;
                 break;
             case ALCHEMIST:
-                fxmlName = R.FXML.ALCHEMIST;
+                fxmlName = R.Fxml.ALCHEMIST;
                 break;
             case WIZARD:
-                fxmlName = R.FXML.WIZARD;
+                fxmlName = R.Fxml.WIZARD;
                 break;
             case THIEF:
-                fxmlName = R.FXML.THIEF;
+                fxmlName = R.Fxml.THIEF;
                 break;
         }
 

@@ -45,7 +45,7 @@ public class LoginController extends BaseController implements Initializable {
     // endregion
 
     private final LoginModel loginModel = new LoginModel();
-    private final UserService userDao;
+    private final UserService userService;
 
     private String title;
     private String loginFail;
@@ -57,7 +57,7 @@ public class LoginController extends BaseController implements Initializable {
     // region Constructors
 
     public LoginController(UserService userService) {
-        this.userDao = userService;
+        this.userService = userService;
     }
 
     // endregion
@@ -101,9 +101,9 @@ public class LoginController extends BaseController implements Initializable {
 
     @FXML
     private void handleLogin(ActionEvent actionEvent) {
-        userDao.loginAsync(loginModel.login.getValue(), loginModel.password.getValue())
+        userService.loginAsync(loginModel.login.getValue(), loginModel.password.getValue())
             .exceptionally(throwable -> {
-                LOGGER.info("Přihlášení se nezdařilo", throwable);
+                LOGGER.info("Přihlášení se nezdařilo.");
                 showNotification(new Notification(loginFail));
                 loginModel.valid.set(false);
                 throw new RuntimeException(throwable);
@@ -116,7 +116,7 @@ public class LoginController extends BaseController implements Initializable {
 
     @FXML
     private void handleRegistration(ActionEvent actionEvent) {
-        startNewDialogForResult(R.FXML.REGISTER, ACTION_REGISTRATION);
+        startNewDialogForResult(R.Fxml.REGISTER, ACTION_REGISTRATION);
     }
 
     @FXML
