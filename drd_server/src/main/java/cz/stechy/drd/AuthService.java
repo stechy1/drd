@@ -90,7 +90,8 @@ public final class AuthService {
     public void register(String username, String password, Client client) {
         final Optional<User> result = users.stream().filter(user -> user.name.equals(username)).findFirst();
         if (result.isPresent()) {
-            // TODO uživatel již existuje
+            client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.REGISTER,
+                false, new AuthMessageData(username, password)));
             return;
         }
 
@@ -98,7 +99,7 @@ public final class AuthService {
         final Map<String, Object> map = userToMap(user);
         this.repository.performInsert(FIREBASE_CHILD, map, user.id);
         client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.REGISTER,
-            new AuthMessageData(user.id, user.name, user.password)));
+            true, new AuthMessageData(user.id, user.name, user.password)));
     }
 
     public void login(String username, String password, Client client) {
@@ -106,9 +107,16 @@ public final class AuthService {
             user.name.equals(username) && HashGenerator.checkSame(user.password, password))
             .findFirst();
 
-        final String id = result.isPresent() ? result.get().id : "";
+        if (!result.isPresent()) {
+            client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.LOGIN,
+                false, new AuthMessageData(username, password)));
+            return;
+        }
         client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.LOGIN,
-            new AuthMessageData(id, result.get().name, result.get().password)));
+            true, new AuthMessageData(result.get().id, result.get().name, result.get().password)));
+
+
+
     }
 
     // endregion

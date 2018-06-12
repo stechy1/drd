@@ -96,8 +96,9 @@ public class Client implements Runnable {
 
     public final ItemEventListener databaseRegisterListener = (ItemEvent event) -> {
         final IMessage databaseMessage = new DatabaseMessage(
-            new DatabaseMessageCRUD(event.getItem(), event.getTableName(), event.getAction()),
-            MessageSource.SERVER);
+            MessageSource.SERVER,
+            new DatabaseMessageCRUD(event.getItem(), event.getTableName(), event.getAction())
+        );
         sendMessage(databaseMessage);
     };
 

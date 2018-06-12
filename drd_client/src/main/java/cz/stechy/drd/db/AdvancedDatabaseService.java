@@ -114,10 +114,10 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     private IMessage getRegistrationMessage() {
         return new DatabaseMessage(
-            new DatabaseMessageAdministration(
+            MessageSource.CLIENT, new DatabaseMessageAdministration(
                 getFirebaseChildName(),
-                DatabaseMessageAdministration.DatabaseAction.REGISTER),
-            MessageSource.CLIENT);
+                DatabaseMessageAdministration.DatabaseAction.REGISTER)
+        );
     }
 
     // Listener reagující na změnu ve zdrojovém listu a propagujíce změnu do výstupného listu
@@ -230,10 +230,10 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     public CompletableFuture<Void> uploadAsync(T item) {
         return CompletableFuture.supplyAsync(() -> {
             communicator.sendMessage(new DatabaseMessage(
-                new DatabaseMessageCRUD(
+                MessageSource.CLIENT, new DatabaseMessageCRUD(
                     toStringItemMap(item), getFirebaseChildName(), DatabaseAction.CREATE,
-                    item.getId()),
-                MessageSource.CLIENT));
+                    item.getId())
+            ));
 
             workingItemId = item.getId();
             try {
@@ -257,10 +257,10 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     public CompletableFuture<Void> deleteRemoteAsync(T item) {
         return CompletableFuture.supplyAsync(() -> {
             communicator.sendMessage(new DatabaseMessage(
-                new DatabaseMessageCRUD(
+                MessageSource.CLIENT, new DatabaseMessageCRUD(
                     toStringItemMap(item), getFirebaseChildName(), DatabaseAction.DELETE,
-                    item.getId()),
-                MessageSource.CLIENT));
+                    item.getId())
+            ));
 
             workingItemId = item.getId();
 

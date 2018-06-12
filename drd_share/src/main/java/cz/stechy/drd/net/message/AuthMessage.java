@@ -8,11 +8,18 @@ public class AuthMessage implements IMessage {
 
     private final MessageSource source;
     private final AuthAction action;
+    private final boolean success;
     private final AuthMessageData data;
 
     public AuthMessage(MessageSource source, AuthAction action, AuthMessageData data) {
+        this(source, action, true, data);
+    }
+
+    public AuthMessage(MessageSource source, AuthAction action, boolean success,
+        AuthMessageData data) {
         this.source = source;
         this.action = action;
+        this.success = success;
         this.data = data;
     }
 
@@ -33,6 +40,11 @@ public class AuthMessage implements IMessage {
     @Override
     public Object getData() {
         return data;
+    }
+
+    @Override
+    public boolean isSuccess() {
+        return success;
     }
 
     public enum AuthAction {

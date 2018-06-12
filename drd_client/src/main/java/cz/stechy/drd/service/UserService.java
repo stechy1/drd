@@ -30,6 +30,7 @@ public class UserService {
     private final Semaphore semaphore = new Semaphore(0);
     private ClientCommunicator communicator;
     private String tmpId;
+    private boolean success;
 
     // endregion
 
@@ -44,6 +45,12 @@ public class UserService {
     // region Private methods
 
     private final OnDataReceivedListener authListener = message -> {
+        this.success = message.isSuccess();
+        if (!success) {
+            semaphore.release();
+            return;
+        }
+
         final AuthMessage authMessage = (AuthMessage) message;
         final AuthMessageData data = (AuthMessageData) authMessage.getData();
         this.tmpId = data.id;
@@ -70,23 +77,14 @@ public class UserService {
                 semaphore.acquire();
             } catch (InterruptedException ignored) {}
 
-            if ("".equals(tmpId)) {
-                throw new RuntimeException("Uživatel nenalezen");
+            if (!success) {
+                throw new RuntimeException("Přihlášení se nezdařilo.");
             }
 
             final User u = new User(username, password);
             u.setId(tmpId);
             tmpId = null;
             return u;
-//            final Optional<User> result = userDao.getUsers().stream()
-//                .filter(user -> user.getName().equals(username) && HashGenerator
-//                    .checkSame(user.getPassword(), password))
-//                .findFirst();
-//            if (!result.isPresent()) {
-//                throw new RuntimeException();
-//            }
-//
-//            return result.get();
         }, ThreadPool.COMMON_EXECUTOR)
             .thenApplyAsync(user -> {
             this.user.setValue(user);
@@ -121,20 +119,15 @@ public class UserService {
                 semaphore.acquire();
             } catch (InterruptedException ignored) {}
 
-            return null;
+            return success;
         }, ThreadPool.COMMON_EXECUTOR)
-            .thenApplyAsync(ignored -> {
+            .thenApplyAsync(success -> {
+                if (!success) {
+                    throw new RuntimeException("Registrace se nezdařila.");
+                }
+
                 return null;
             }, ThreadPool.JAVAFX_EXECUTOR);
-//        final Optional<User> result = userDao.getUsers().stream()
-//            .filter(user -> user.getName().equals(username))
-//            .findFirst();
-//        if (result.isPresent()) {
-//            //listener.onComplete(DatabaseError.fromCode(DatabaseError.USER_CODE_EXCEPTION), null);
-//        }
-//
-//        final User user = new User(username, password);
-//        userDao.uploadAsync(user);
     }
 
     // endregion
@@ -149,6 +142,7 @@ public class UserService {
         return user.get();
     }
 
+    @SuppressWarnings("unused")
     @Inject
     public void setCommunicator(ClientCommunicator communicator) {
         this.communicator = communicator;

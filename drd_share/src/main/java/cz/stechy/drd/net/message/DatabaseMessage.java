@@ -7,10 +7,16 @@ public class DatabaseMessage implements IMessage {
 
     private static final long serialVersionUID = 524340027525212916L;
 
-    private final IDatabaseMessageData data;
     private final MessageSource source;
+    private final boolean success;
+    private final IDatabaseMessageData data;
 
-    public DatabaseMessage(IDatabaseMessageData data, MessageSource source) {
+    public DatabaseMessage(MessageSource source, IDatabaseMessageData data) {
+        this(source, true, data);
+    }
+
+    public DatabaseMessage(MessageSource source, boolean success, IDatabaseMessageData data) {
+        this.success = success;
         this.data = data;
         this.source = source;
     }
@@ -28,6 +34,11 @@ public class DatabaseMessage implements IMessage {
     @Override
     public Object getData() {
         return data;
+    }
+
+    @Override
+    public boolean isSuccess() {
+        return success;
     }
 
     public interface IDatabaseMessageData extends Serializable {
