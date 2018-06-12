@@ -53,6 +53,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     private final ObservableList<T> usedItems = FXCollections.observableArrayList();
     private final Semaphore onlineSemaphore = new Semaphore(0);
 
+    private boolean success = false;
     private boolean showOnline = false;
     private String workingItemId;
     private ClientCommunicator communicator;
@@ -236,18 +237,23 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             ));
 
             workingItemId = item.getId();
+
             try {
                 onlineSemaphore.acquire();
             } catch (InterruptedException ignored) {}
 
+            if (!success) {
+                throw new RuntimeException("Nahrání se nezdařilo.");
+            }
+
             LOGGER.info("Nahrání proběhlo v pořádku.");
             return item;
         }, ONLINE_POOL)
-            .thenCompose(t -> {
+            .thenComposeAsync(t -> {
                 final T itemCopy = t.duplicate();
                 itemCopy.setUploaded(true);
                 return updateAsync(itemCopy);
-            })
+            }, ThreadPool.COMMON_EXECUTOR)
             .thenApplyAsync(ignored -> {
                 return null;
             }, ThreadPool.JAVAFX_EXECUTOR);
@@ -268,14 +274,18 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 onlineSemaphore.acquire();
             } catch (InterruptedException ignored) {}
 
+            if (!success) {
+                throw new RuntimeException("Odstranění z databáze se nezdařilo.");
+            }
+
             LOGGER.info("Smazání proběhlo v pořádku.");
             return item;
         }, ONLINE_POOL)
-            .thenCompose(t -> {
+            .thenComposeAsync(t -> {
                 final T itemCopy = t.duplicate();
                 itemCopy.setUploaded(false);
                 return updateAsync(itemCopy);
-            })
+            }, ThreadPool.COMMON_EXECUTOR)
             .thenApplyAsync(ignored -> {
                 return null;
             }, ThreadPool.JAVAFX_EXECUTOR);
