@@ -203,7 +203,6 @@
         <Tooltip text="%drd_main_menu_tools_shop"/>
       </tooltip>
     </JFXButton>
-    <JFXButton onAction="#handleShowServer" styleClass="toolbar-button"/>
     <Separator/>
     <Region HBox.hgrow="ALWAYS"/>
     <JFXButton fx:id="btnLevelUp" onAction="#handleMenuLevelUp"
@@ -215,6 +214,11 @@
     <JFXButton fx:id="btnLogin" onAction="#handleMenuLogin" styleClass="toolbar-button, icon-login">
       <tooltip>
         <Tooltip text="%drd_main_menu_file_login"/>
+      </tooltip>
+    </JFXButton>
+    <JFXButton onAction="#handleShowServer" styleClass="toolbar-button, icon-server">
+      <tooltip>
+        <Tooltip text="%drd_main_menu_tools_connect_to_server"/>
       </tooltip>
     </JFXButton>
   </ToolBar>

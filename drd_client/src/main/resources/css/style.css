@@ -106,6 +106,10 @@
   -fx-background-image: url("../images/icon/login.png");
 }
 
+.icon-server {
+  -fx-background-image: url("../images/icon/server.png");
+}
+
 .icon-online {
   -fx-background-image: url("../images/icon/online.png");
 }

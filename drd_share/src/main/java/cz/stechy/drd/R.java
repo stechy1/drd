@@ -170,6 +170,7 @@ public final class R {
         public static final String MAIN_MENU_TOOLS_COLLECTIONS = "drd_main_menu_tools_collections";
         public static final String MAIN_MENU_TOOLS_SPELL_BOOK = "drd_main_menu_tools_spell_book";
         public static final String MAIN_MENU_TOOLS_FIGHT = "drd_main_menu_tools_fight";
+        public static final String MAIN_MENU_TOOLS_CONNECT_TO_SERVER = "drd_main_menu_tools_connect_to_server";
         public static final String MAIN_MENU_HELP = "drd_main_menu_help";
         public static final String MAIN_MENU_HELP_CHANGELOG = "drd_main_menu_help_changelog";
         public static final String MAIN_MENU_HELP_ABOUT = "drd_main_menu_help_about";
@@ -482,6 +483,7 @@ public final class R {
             public static final String REMOVE_ONLINE = "/images/icon/remove_online.png";
             public static final String SAVE = "/images/icon/save.png";
             public static final String SAVE_AS = "/images/icon/save_as.png";
+            public static final String SERVER = "/images/icon/server.png";
             public static final String SERVER_STATUS_CONNECTING = "/images/icon/server_status_connecting.png";
             public static final String SERVER_STATUS_OFFLINE = "/images/icon/server_status_offline.png";
             public static final String SERVER_STATUS_ONLINE = "/images/icon/server_status_online.png";
