@@ -110,7 +110,7 @@ public class CollectionsController extends BaseController implements Initializab
         this.itemResolver = itemResolver;
         this.user = userService.getUser();
         this.translator = translator;
-        //itemRegistry.setAll(ItemRegistry.getINSTANCE().getChoices());
+        itemRegistry.setAll(DialogUtils.getItemRegistryChoices());
     }
 
     // endregion

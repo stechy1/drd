@@ -34,7 +34,7 @@ public final class ItemRegistry {
 
     // region Public static methods
 
-    public static ItemRegistry getINSTANCE() {
+    public static synchronized ItemRegistry getINSTANCE() {
         if (INSTANCE == null) {
             INSTANCE = new ItemRegistry();
         }
@@ -81,13 +81,6 @@ public final class ItemRegistry {
     public ObservableMap<String, DatabaseItem> getRegistry() {
         return registry;
     }
-
-//    public List<ChoiceEntry> getChoices() {
-//        return registry.entrySet()
-//            .stream()
-//            .map(entry -> new ChoiceEntry(entry.getValue()))
-//            .collect(Collectors.toList());
-//    }
 
     // endregion
 

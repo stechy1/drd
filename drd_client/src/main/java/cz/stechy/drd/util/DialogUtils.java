@@ -3,10 +3,12 @@ package cz.stechy.drd.util;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.model.WithImage;
 import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.service.ItemRegistry;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -81,6 +83,13 @@ public final class DialogUtils {
 
         final byte[] image = ImageUtils.readImage(file);
         return ImageUtils.resizeImageRaw(image, width, height);
+    }
+
+    public static List<ChoiceEntry> getItemRegistryChoices() {
+        return ItemRegistry.getINSTANCE().getRegistry().entrySet()
+            .stream()
+            .map(entry -> new ChoiceEntry(entry.getValue()))
+            .collect(Collectors.toList());
     }
 
     public static Optional<ChoiceEntry> selectItem(List<ChoiceEntry> items) {

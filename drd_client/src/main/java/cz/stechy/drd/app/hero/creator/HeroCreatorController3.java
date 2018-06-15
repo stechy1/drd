@@ -68,7 +68,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnItemCount.setCellFactory(param -> CellUtils.forMaxActValue());
 
-        //itemRegistry.setAll(ItemRegistry.getINSTANCE().getChoices());
+        itemRegistry.setAll(DialogUtils.getItemRegistryChoices());
 
         btnRemoveItem.disableProperty().bind(selectedItem.lessThan(0));
     }
