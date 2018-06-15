@@ -2,6 +2,7 @@ package cz.stechy.drd;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 
@@ -12,7 +13,11 @@ public final class ThreadPool {
 
     // region Constants
 
-    public static final ForkJoinPool DB_EXECUTOR = new ForkJoinPool(1);
+    public static final ForkJoinPool DB_EXECUTOR = new ForkJoinPool(1, forkJoinPool -> {
+            final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(forkJoinPool);
+            worker.setName("DB-executor-" + worker.getPoolIndex());
+            return worker;
+        }, null, false);
 
     public static final ForkJoinPool COMMON_EXECUTOR = ForkJoinPool.commonPool();
 
