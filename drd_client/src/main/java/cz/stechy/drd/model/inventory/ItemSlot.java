@@ -107,6 +107,11 @@ public class ItemSlot {
             ammount = itemStack.getAmmount() / 2;
         }
 
+        if (ammount == 0) {
+            event.consume();
+            return;
+        }
+
         content.put(MOVE_ITEM, "");
 
         db.setDragView(imgItem.getImage());
