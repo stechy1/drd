@@ -179,12 +179,11 @@ public class Hero extends EntityBase {
     private void initBindings() {
         // Nastavení pohyblivosti
         this.agility.bindTo(
-            Bindings
-                .add(race.get() == null ? 0 : AGILITY_BY_RACE[race.get().ordinal()], Bindings.add(
-                    dexterity.repairProperty(), Bindings.multiply(
-                        2, strength.repairProperty()
-                    ))
-                ));
+            Bindings.add(
+                Bindings.createIntegerBinding(() -> race.get() == null ? 0 : AGILITY_BY_RACE[race.get().ordinal()], this.race),
+                Bindings.add(
+                    dexterity.repairProperty(),
+                    Bindings.multiply(2, strength.repairProperty()))));
 
         // Nastavení nosnosti
         this.capacity.bind(Bindings.createIntegerBinding(() ->
