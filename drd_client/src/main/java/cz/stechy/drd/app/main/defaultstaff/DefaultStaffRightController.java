@@ -3,6 +3,7 @@ package cz.stechy.drd.app.main.defaultstaff;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.widget.LabeledHeroProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 
 public class DefaultStaffRightController {
 
@@ -22,6 +23,8 @@ public class DefaultStaffRightController {
     private LabeledHeroProperty lblObservationObjects;
     @FXML
     private LabeledHeroProperty lblObservationMechanics;
+    @FXML
+    private Label lblCapacity;
 
     // endregion
 
@@ -36,6 +39,8 @@ public class DefaultStaffRightController {
         lblLoadHigh.unbind();
         lblObservationObjects.unbind();
         lblObservationMechanics.unbind();
+        lblCapacity.textProperty().unbind();
+        lblCapacity.textProperty().set("0 mn");
     }
 
     private void bind(Hero hero) {
@@ -45,6 +50,7 @@ public class DefaultStaffRightController {
         lblLoadHigh.bind(hero.getHighLoad());
         lblObservationObjects.bind(hero.getObservationObjects());
         lblObservationMechanics.bind(hero.getObservationMechanics());
+        lblCapacity.textProperty().bind(hero.capacityProperty().asString("%d mn"));
     }
 
     // endregion
