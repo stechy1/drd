@@ -8,6 +8,7 @@ import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.service.ItemResolver;
 import cz.stechy.drd.service.ItemResolver.WithItemBase;
+import cz.stechy.drd.service.OnlineItemRegistry;
 import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
@@ -18,7 +19,6 @@ import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -30,6 +30,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -90,7 +91,7 @@ public class CollectionsController extends BaseController implements Initializab
         this, "selectedCollection", null);
     private final ObjectProperty<ItemEntry> selectedCollectionItem = new SimpleObjectProperty<>(
         this, "selectedCollectionItem", null);
-    private final ObjectProperty<Collection<String>> collectionContent = new SimpleObjectProperty<>(
+    private final ObjectProperty<ObservableList<String>> collectionContent = new SimpleObjectProperty<>(
         this, "collectionContent", null);
 
     private final ItemCollectionDao collectionService;
@@ -116,35 +117,62 @@ public class CollectionsController extends BaseController implements Initializab
 
     // region Private methods
 
-//    private void collectionContentListener(
-//        ObservableValue<? extends String> observable,
-//        String oldValue, String newValue) {
-//        collectionItems.clear();
-//        if (oldValue != null) {
-//            oldValue.getItems().removeListener(this.itemCollectionContentListener);
-//        }
-//        if (newValue == null) {
-//            return;
-//        }
-//
-//        collectionItems.setAll(collectionContent.get().stream()
-//            .map(ItemEntry::new).collect(Collectors.toList()));
-//        newValue.getItems().addListener(this.itemCollectionContentListener);
-//    }
+
+
+    private void collectionContentListener(
+        ObservableValue<? extends ObservableList<String>> observableValue,
+        ObservableList<String> oldValue, ObservableList<String> newValue) {
+        collectionItems.clear();
+        if (oldValue != null) {
+            oldValue.removeListener(this.itemCollectionContentListener);
+        }
+        if (newValue == null) {
+            return;
+        }
+
+        collectionItems.setAll(collectionContent.get().stream()
+            .map(this::stringToItemMap)
+            .map(ItemEntry::new)
+            .collect(Collectors.toList()));
+        newValue.addListener(this.itemCollectionContentListener);
+    }
+
+    private ItemBase stringToItemMap(String s) {
+        final Optional<ItemBase> optionalItem = OnlineItemRegistry.getINSTANCE().getItemById(s);
+        if (optionalItem.isPresent()) {
+            return optionalItem.get();
+        }
+
+        return null;
+    }
 
     // region Method handlers
 
-    private ListChangeListener<? super ItemBase> itemCollectionContentListener = (ListChangeListener<ItemBase>) c -> {
+    private ListChangeListener<? super String> itemCollectionContentListener = c -> {
         while (c.next()) {
-            collectionItems.addAll(c.getAddedSubList().stream().map(ItemEntry::new).collect(
-                Collectors.toList()));
+            collectionItems.addAll(c.getAddedSubList().stream()
+                .map(this::stringToItemMap)
+                .map(ItemEntry::new)
+                .collect(Collectors.toList()));
             c.getRemoved()
                 .forEach(o -> collectionItems.stream()
-                    .filter(itemEntry -> o.getId().equals(itemEntry.getId()))
+                    .filter(itemEntry -> o.equals(itemEntry.getId()))
                     .findFirst()
                     .ifPresent(collectionItems::remove));
         }
     };
+
+//    private ListChangeListener<? super ItemBase> itemCollectionContentListener = (ListChangeListener<String>) c -> {
+//        while (c.next()) {
+//            collectionItems.addAll(c.getAddedSubList().stream().map(ItemEntry::new).collect(
+//                Collectors.toList()));
+//            c.getRemoved()
+//                .forEach(o -> collectionItems.stream()
+//                    .filter(itemEntry -> o.getId().equals(itemEntry.getId()))
+//                    .findFirst()
+//                    .ifPresent(collectionItems::remove));
+//        }
+//    };
 
     // endregion
 
@@ -183,7 +211,7 @@ public class CollectionsController extends BaseController implements Initializab
             .bind(selectedCollectionItem.isNull().or(authorBinding.not()));
         btnCollectionItemAdd.disableProperty().bind(selectedBinding.or(authorBinding.not()));
 
-        //collectionContent.addListener(this::collectionContentListener);
+        collectionContent.addListener(this::collectionContentListener);
         selectedCollection.bind(lvCollections.getSelectionModel().selectedItemProperty());
         collectionContent.bind(Bindings.createObjectBinding(() -> {
             final ItemCollection collection = selectedCollection.get();
