@@ -2,6 +2,15 @@ package cz.stechy.drd.dao;
 
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.item.ItemCollection;
+import cz.stechy.drd.net.ClientCommunicator;
+import cz.stechy.drd.net.ConnectionState;
+import cz.stechy.drd.net.OnDataReceivedListener;
+import cz.stechy.drd.net.message.DatabaseMessage;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration.DatabaseAction;
+import cz.stechy.drd.net.message.IMessage;
+import cz.stechy.drd.net.message.MessageSource;
+import cz.stechy.drd.net.message.MessageType;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.collections.FXCollections;
@@ -19,6 +28,7 @@ public class ItemCollectionDao {
 
     // region Názvy sloupečků v databázi
 
+    private static final String TABLE_NAME = "collections/items";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_AUTHOR = "author";
     private static final String COLUMN_NAME = "name";
@@ -32,12 +42,25 @@ public class ItemCollectionDao {
 
     private final ObservableList<ItemCollection> collections = FXCollections.observableArrayList();
     private final Map<String, ItemCollectionContentDao> contentMap = new HashMap<>();
+    private final ClientCommunicator communicator;
 
     // endregion
 
     // region Constructors
 
-    public ItemCollectionDao() {
+    public ItemCollectionDao(ClientCommunicator clientCommunicator) {
+        this.communicator = clientCommunicator;
+        this.communicator.connectionStateProperty()
+            .addListener((observable, oldValue, newValue) -> {
+                if (newValue != ConnectionState.CONNECTED) {
+                    return;
+                }
+
+                this.communicator
+                    .registerMessageObserver(MessageType.DATABASE, this.databaseListener);
+                LOGGER.info("Posílám registrační požadavek pro tabulku: " + TABLE_NAME);
+                this.communicator.sendMessage(getRegistrationMessage());
+        });
 //        wrapper.firebaseProperty().addListener((observable, oldValue, newValue) -> {
 //            if (newValue != null) {
 //                collections.clear();
@@ -45,6 +68,15 @@ public class ItemCollectionDao {
 //                firebaseReference.addChildEventListener(childEventListener);
 //            }
 //        });
+    }
+
+    // endregion
+
+    // region Private methods
+
+    private IMessage getRegistrationMessage() {
+        return new DatabaseMessage(MessageSource.CLIENT, new DatabaseMessageAdministration(
+            TABLE_NAME, DatabaseAction.REGISTER));
     }
 
     // endregion
@@ -107,6 +139,10 @@ public class ItemCollectionDao {
     }
 
     // endregion
+
+    private final OnDataReceivedListener databaseListener = message -> {
+
+    };
 
 //    private final ChildEventListener childEventListener = new ChildEventListener() {
 //        @Override
