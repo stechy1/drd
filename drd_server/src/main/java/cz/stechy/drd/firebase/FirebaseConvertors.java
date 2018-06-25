@@ -1,7 +1,10 @@
 package cz.stechy.drd.firebase;
 
+import com.google.firebase.database.GenericTypeIndicator;
 import cz.stechy.drd.AuthService;
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Database.Collectionsitems;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -177,6 +180,19 @@ final class FirebaseConvertors {
         return map;
     };
 
+    private static final FirebaseConvertor ITEM_COLLECTIONS_CONVERTOR = snapshot -> {
+        final GenericTypeIndicator<HashMap<String, String>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, String>>() {};
+        final Map<String, Object> map = new HashMap<>();
+        map.put(Collectionsitems.COLUMN_ID, snapshot.getKey());
+        map.put(Collectionsitems.COLUMN_NAME, snapshot.child(Collectionsitems.COLUMN_NAME).getValue(String.class));
+        map.put(Collectionsitems.COLUMN_AUTHOR, snapshot.child(Collectionsitems.COLUMN_AUTHOR).getValue(String.class));
+        map.put(Collectionsitems.COLUMN_RECORDS,
+            new ArrayList<>(snapshot.child("collections_items_records")
+                .getValue(genericTypeIndicator)
+                .values()));
+        return map;
+    };
+
     static {
         CONVERTORS.put(R.Database.Armor.FIREBASE_CHILD, ARMOR_CONVERTOR);
         CONVERTORS.put(R.Database.Generalitems.FIREBASE_CHILD, GENERAL_CONVERTOR);
@@ -186,6 +202,7 @@ final class FirebaseConvertors {
         CONVERTORS.put(R.Database.Spells.FIREBASE_CHILD, SPELLS_CONVERTOR);
         CONVERTORS.put(R.Database.Bestiary.FIREBASE_CHILD, BESTIARY_CONVERTOR);
         CONVERTORS.put(AuthService.FIREBASE_CHILD, USER_CONVERTOR);
+        CONVERTORS.put(R.Database.Collectionsitems.FIREBASE_CHILD, ITEM_COLLECTIONS_CONVERTOR);
     }
 
 }

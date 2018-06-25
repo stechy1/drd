@@ -1,7 +1,6 @@
 package cz.stechy.drd.app.collections;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.dao.ItemCollectionContentDao;
 import cz.stechy.drd.dao.ItemCollectionDao;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.User;
@@ -19,6 +18,7 @@ import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -30,7 +30,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -91,7 +90,7 @@ public class CollectionsController extends BaseController implements Initializab
         this, "selectedCollection", null);
     private final ObjectProperty<ItemEntry> selectedCollectionItem = new SimpleObjectProperty<>(
         this, "selectedCollectionItem", null);
-    private final ObjectProperty<ItemCollectionContentDao> collectionContent = new SimpleObjectProperty<>(
+    private final ObjectProperty<Collection<String>> collectionContent = new SimpleObjectProperty<>(
         this, "collectionContent", null);
 
     private final ItemCollectionDao collectionService;
@@ -117,21 +116,21 @@ public class CollectionsController extends BaseController implements Initializab
 
     // region Private methods
 
-    private void collectionContentListener(
-        ObservableValue<? extends ItemCollectionContentDao> observable,
-        ItemCollectionContentDao oldValue, ItemCollectionContentDao newValue) {
-        collectionItems.clear();
-        if (oldValue != null) {
-            oldValue.getItems().removeListener(this.itemCollectionContentListener);
-        }
-        if (newValue == null) {
-            return;
-        }
-
-        collectionItems.setAll(collectionContent.get().getItems().stream()
-            .map(ItemEntry::new).collect(Collectors.toList()));
-        newValue.getItems().addListener(this.itemCollectionContentListener);
-    }
+//    private void collectionContentListener(
+//        ObservableValue<? extends String> observable,
+//        String oldValue, String newValue) {
+//        collectionItems.clear();
+//        if (oldValue != null) {
+//            oldValue.getItems().removeListener(this.itemCollectionContentListener);
+//        }
+//        if (newValue == null) {
+//            return;
+//        }
+//
+//        collectionItems.setAll(collectionContent.get().stream()
+//            .map(ItemEntry::new).collect(Collectors.toList()));
+//        newValue.getItems().addListener(this.itemCollectionContentListener);
+//    }
 
     // region Method handlers
 
@@ -184,17 +183,25 @@ public class CollectionsController extends BaseController implements Initializab
             .bind(selectedCollectionItem.isNull().or(authorBinding.not()));
         btnCollectionItemAdd.disableProperty().bind(selectedBinding.or(authorBinding.not()));
 
-        collectionContent.addListener(this::collectionContentListener);
+        //collectionContent.addListener(this::collectionContentListener);
         selectedCollection.bind(lvCollections.getSelectionModel().selectedItemProperty());
         collectionContent.bind(Bindings.createObjectBinding(() -> {
-                final ItemCollection collection = selectedCollection.get();
-                if (collection == null) {
-                    return null;
-                }
-                return collectionService.getContent(collection);
-            },
-            selectedCollection));
+            final ItemCollection collection = selectedCollection.get();
+            if (collection == null) {
+                return null;
+            }
 
+            return collection.getRecords();
+        }, selectedCollection));
+//        collectionContent.bind(Bindings.createObjectBinding(() -> {
+//                final ItemCollection collection = selectedCollection.get();
+//                if (collection == null) {
+//                    return null;
+//                }
+//                return collectionService.getContent(collection);
+//            },
+//            selectedCollection));
+//
         ObservableMergers.mergeList(collections, collectionService.getCollections());
     }
 
@@ -282,14 +289,14 @@ public class CollectionsController extends BaseController implements Initializab
 
     @FXML
     private void handleCollectionItemRemove(ActionEvent actionEvent) {
-        final ItemCollectionContentDao content = this.collectionContent.get();
-
-        if (content == null) {
-            return;
-        }
-
-        final String itemName = selectedCollectionItem.get().getName();
-        final String collectionName = selectedCollection.get().getName();
+//        final ItemCollectionContentDao content = this.collectionContent.get();
+//
+//        if (content == null) {
+//            return;
+//        }
+//
+//        final String itemName = selectedCollectionItem.get().getName();
+//        final String collectionName = selectedCollection.get().getName();
 
 //        content.deleteRemoteAsync(selectedCollectionItem.get().getItemBase(), true, (error, ref) -> {
 //                if (error != null) {

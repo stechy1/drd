@@ -1,5 +1,8 @@
 package cz.stechy.drd.dao;
 
+import static cz.stechy.drd.R.Database.Collectionsitems.*;
+
+import cz.stechy.drd.db.base.OnlineDatabase;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.net.ClientCommunicator;
@@ -8,33 +11,29 @@ import cz.stechy.drd.net.OnDataReceivedListener;
 import cz.stechy.drd.net.message.DatabaseMessage;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration.DatabaseAction;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageDataType;
+import cz.stechy.drd.net.message.DatabaseMessage.IDatabaseMessageData;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
 import cz.stechy.drd.net.message.MessageType;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class ItemCollectionDao {
+public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
     // region Constants
 
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(ItemCollectionDao.class);
-
-    // region Názvy sloupečků v databázi
-
-    private static final String TABLE_NAME = "collections/items";
-    private static final String COLUMN_ID = "id";
-    private static final String COLUMN_AUTHOR = "author";
-    private static final String COLUMN_NAME = "name";
-    private static final String COLUMN_RECORDS = "records";
-
-    // endregion
 
     // endregion
 
@@ -76,13 +75,14 @@ public class ItemCollectionDao {
 
     private IMessage getRegistrationMessage() {
         return new DatabaseMessage(MessageSource.CLIENT, new DatabaseMessageAdministration(
-            TABLE_NAME, DatabaseAction.REGISTER));
+            FIREBASE_CHILD, DatabaseAction.REGISTER));
     }
 
     // endregion
 
     // region Public methods
 
+    @Deprecated
     public ItemCollectionContentDao getContent(ItemCollection collection) {
         final String id = collection.getId();
         ItemCollectionContentDao collectionContent = null;
@@ -99,6 +99,41 @@ public class ItemCollectionDao {
     // endregion
 
     // region Private methods
+
+    @Override
+    public String getFirebaseChildName() {
+        return TABLE_NAME;
+    }
+
+    @Override
+    public ItemCollection fromStringItemMap(Map<String, Object> map) {
+        return new ItemCollection.Builder()
+            .id((String) map.get(COLUMN_ID))
+            .name((String) map.get(COLUMN_NAME))
+            .author((String) map.get(COLUMN_AUTHOR))
+            .records((Collection<String>) map.get(COLUMN_RECORDS))
+            .build();
+    }
+
+    @Override
+    public Map<String, Object> toStringItemMap(ItemCollection item) {
+        final Map<String, Object> map = new HashMap<>();
+        map.put(COLUMN_ID, item.getId());
+        map.put(COLUMN_NAME, item.getName());
+        map.put(COLUMN_AUTHOR, item.getAuthor());
+        map.put(COLUMN_RECORDS, item.getRecords().stream().map(s -> new SimpleEntry<>(s, s)));
+        return map;
+    }
+
+    @Override
+    public CompletableFuture<Void> uploadAsync(ItemCollection item) {
+        return null;
+    }
+
+    @Override
+    public CompletableFuture<Void> deleteRemoteAsync(ItemCollection item) {
+        return null;
+    }
 
 //    @Override
 //    public ItemCollection parseDataSnapshot(DataSnapshot snapshot) {
@@ -141,7 +176,39 @@ public class ItemCollectionDao {
     // endregion
 
     private final OnDataReceivedListener databaseListener = message -> {
+        final DatabaseMessage databaseMessage = (DatabaseMessage) message;
+        IDatabaseMessageData databaseMessageData = (IDatabaseMessageData) databaseMessage.getData();
 
+        if (databaseMessageData.getDataType() != DatabaseMessageDataType.DATA_MANIPULATION) {
+            return;
+        }
+
+        final DatabaseMessageCRUD crudMessage = (DatabaseMessageCRUD) databaseMessageData;
+        if (!crudMessage.getTableName().equals(FIREBASE_CHILD)) {
+            return;
+        }
+
+        final DatabaseMessageCRUD.DatabaseAction crudAction = crudMessage.getAction();
+        final Map<String, Object> data = (Map<String, Object>) crudMessage.getData();
+        final ItemCollection itemCollection = fromStringItemMap(data);
+
+        switch (crudAction) {
+            case CREATE:
+                LOGGER.info("Přidávám kolekci {} do svého povědomí.", itemCollection.toString());
+                collections.add(itemCollection);
+                break;
+            case UPDATE:
+                break;
+            case DELETE:
+            LOGGER.trace("Kolekce předmětů {} byla smazána z online databáze", itemCollection.toString());
+            collections.stream()
+                .filter(itemCollection::equals)
+                .findFirst()
+                .ifPresent(collections::remove);
+                break;
+            default:
+                throw new IllegalArgumentException("Neplatny argument");
+        }
     };
 
 //    private final ChildEventListener childEventListener = new ChildEventListener() {

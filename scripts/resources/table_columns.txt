@@ -8,3 +8,4 @@ hero, : id, name, author, description, conviction, race, profession, level, mone
 inventory_content, : id, inventory_id, item_id, ammount, slot, metadata
 inventory, : id, hero_id, inventory_type, capacity
 spells, spells: id, author, name, magic_name, description, profession_type, price, radius, range, target, cast_time, duration, image, uploaded
+collections_items, collections/items: id, name, author, records
