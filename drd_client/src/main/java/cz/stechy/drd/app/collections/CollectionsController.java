@@ -117,8 +117,6 @@ public class CollectionsController extends BaseController implements Initializab
 
     // region Private methods
 
-
-
     private void collectionContentListener(
         ObservableValue<? extends ObservableList<String>> observableValue,
         ObservableList<String> oldValue, ObservableList<String> newValue) {
@@ -323,28 +321,6 @@ public class CollectionsController extends BaseController implements Initializab
                         R.Translate.NOTIFY_COLLECTION_RECORD_IS_DELETED), itemName,
                         collectionName)));
             });
-
-//        final ItemCollectionContentDao content = this.collectionContent.get();
-//
-//        if (content == null) {
-//            return;
-//        }
-//
-//        final String itemName = selectedCollectionItem.get().getName();
-//        final String collectionName = selectedCollection.get().getName();
-
-//        content.deleteRemoteAsync(selectedCollectionItem.get().getItemBase(), true, (error, ref) -> {
-//                if (error != null) {
-//                    showNotification(new Notification(String.format(translator.translate(
-//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_DELETED), itemName,
-//                        collectionName)));
-//                    LOGGER.error("Položku se nepodařilo odebrat z kolekce");
-//                } else {
-//                    showNotification(new Notification(String.format(translator.translate(
-//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_DELETED), itemName,
-//                        collectionName)));
-//                }
-//            });
     }
 
     // endregion
