@@ -8,6 +8,7 @@ import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
+import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,58 +105,6 @@ public class CollectionsController extends BaseController implements Initializab
 
     // endregion
 
-    // region Private methods
-
-//    private void collectionContentListener(
-//        ObservableValue<? extends ObservableList<String>> observableValue,
-//        ObservableList<String> oldValue, ObservableList<String> newValue) {
-//        collectionItems.clear();
-//        if (oldValue != null) {
-//            oldValue.removeListener(this.itemCollectionContentListener);
-//        }
-//        if (newValue == null) {
-//            return;
-//        }
-//
-//        collectionItems.setAll(collectionContent.get().parallelStream()
-//            .map(this::stringToItemMap)
-//            // TODO nezahazovat neznámý předmět, raději informovat uživatele o nevalidním záznamu
-//            .filter(itemBase -> itemBase != null)
-//            .map(ItemEntry::new)
-//            .collect(Collectors.toList()));
-//        newValue.addListener(this.itemCollectionContentListener);
-//    }
-
-
-//    private ItemBase stringToItemMap(String s) {
-//        final Optional<ItemBase> optionalItem = OnlineItemRegistry.getINSTANCE().getItemById(s);
-//        if (optionalItem.isPresent()) {
-//            return optionalItem.get();
-//        }
-//
-//        return null;
-//    }
-
-    // region Method handlers
-
-//    private ListChangeListener<? super String> itemCollectionContentListener = c -> {
-//        while (c.next()) {
-//            collectionItems.addAll(c.getAddedSubList().stream()
-//                .map(this::stringToItemMap)
-//                .map(ItemEntry::new)
-//                .collect(Collectors.toList()));
-//            c.getRemoved()
-//                .forEach(o -> collectionItems.stream()
-//                    .filter(itemEntry -> o.equals(itemEntry.getId()))
-//                    .findFirst()
-//                    .ifPresent(collectionItems::remove));
-//        }
-//    };
-
-    // endregion
-
-    // endregion
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.title = resources.getString(R.Translate.COLLECTIONS_TITLE);
@@ -192,27 +141,15 @@ public class CollectionsController extends BaseController implements Initializab
         btnCollectionDownload.disableProperty().bind(loggedBinding.not().or(noSelectedCollection));
         btnCollectionRemove.disableProperty().bind(authorBinding.not().or(noSelectedCollection));
 
-//        selectedCollectionItem
-//            .bind(tableCollectionItems.getSelectionModel().selectedItemProperty());
-//
         btnCollectionItemAdd.disableProperty().bind(authorBinding.not().or(noSelectedCollection));
         btnCollectionItemRemove.disableProperty().bind(authorBinding.not().or(noSelectedCollection).or(selectedEntry.isNull()));
 
-//        collectionContent.addListener(this::collectionContentListener);
         selectedCollection.bind(lvCollections.getSelectionModel().selectedItemProperty());
-//        collectionContent.bind(Bindings.createObjectBinding(() -> {
-//            final ItemCollection collection = selectedCollection.get();
-//            if (collection == null) {
-//                return null;
-//            }
-//
-//            return collection.getRecords();
-//        }, selectedCollection));
-//
 
         for (CollectionsControllerChild controller : controllers) {
             controller.setSelectedCollection(lvCollections.getSelectionModel().selectedItemProperty());
             controller.setSelectedEntryProperty(selectedEntry);
+            controller.setNotificationProvider(this::showNotification);
         }
 
         ObservableMergers.mergeList(collections, collectionService.getCollections());
@@ -232,51 +169,44 @@ public class CollectionsController extends BaseController implements Initializab
             .name(txtCollectionName.getText())
             .author(user != null ? user.getName() : "")
             .build();
-//        collectionService.uploadAsync(collection)
-//            .exceptionally(throwable -> {
-//                showNotification(new Notification(String.format(translator.translate(
-//                    R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), collection.getName())));
-//                LOGGER.error("Položku {} se nepodařilo nahrát do online databáze",
-//                    collection.getName());
-//                throw new RuntimeException(throwable);
-//            }).thenAccept(ignored -> {
-//                showNotification(new Notification(String.format(translator.translate(
-//                    R.Translate.NOTIFY_RECORD_IS_UPLOADED), collection.getName())));
-//                txtCollectionName.clear();
-//            });
+        collectionService.uploadAsync(collection)
+            .exceptionally(throwable -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), collection.getName())));
+                LOGGER.error("Položku {} se nepodařilo nahrát do online databáze",
+                    collection.getName());
+                throw new RuntimeException(throwable);
+            }).thenAccept(ignored -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_UPLOADED), collection.getName())));
+                txtCollectionName.clear();
+            });
     }
 
     @FXML
     private void handleCollectionRemove(ActionEvent actionEvent) {
         final ItemCollection collection = selectedCollection.get();
-//        collectionService.deleteRemoteAsync(collection)
-//            .exceptionally(throwable -> {
-//                showNotification(new Notification(String.format(translator.translate(
-//                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
-//                    collection.getName())));
-//                LOGGER.error("Položku {} se nepodařilo odstranit z online databáze",
-//                    collection.getName());
-//                throw new RuntimeException(throwable);
-//            }).thenAccept(ignored -> {
-//                showNotification(new Notification(String.format(translator.translate(
-//                    R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
-//                    collection.getName())));
-//            lvCollections.getSelectionModel().clearSelection();
-//            });
+        collectionService.deleteRemoteAsync(collection)
+            .exceptionally(throwable -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
+                    collection.getName())));
+                LOGGER.error("Položku {} se nepodařilo odstranit z online databáze",
+                    collection.getName());
+                throw new RuntimeException(throwable);
+            }).thenAccept(ignored -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+                    collection.getName())));
+            lvCollections.getSelectionModel().clearSelection();
+            });
     }
 
     @FXML
     private void handleCollectionDownload(ActionEvent actionEvent) {
-//        itemResolver.merge(collectionItems)
-//            .exceptionally(throwable -> {
-//                showNotification(new Notification(translator.translate(
-//                    R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
-//                LOGGER.error("Položky se nepodařilo zmergovat");
-//                throw new RuntimeException(throwable);
-//            })
-//            .thenAccept(merged ->
-//                showNotification(new Notification(String.format(translator.translate(
-//                    R.Translate.NOTIFY_MERGED_ITEMS), merged))));
+        for (CollectionsControllerChild controller : controllers) {
+            controller.mergeEntries();
+        }
     }
 
     @FXML

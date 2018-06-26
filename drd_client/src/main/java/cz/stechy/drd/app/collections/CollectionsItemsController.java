@@ -1,6 +1,6 @@
 package cz.stechy.drd.app.collections;
 
-import cz.stechy.drd.app.InjectableChild;
+import cz.stechy.drd.R;
 import cz.stechy.drd.dao.ItemCollectionDao;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.ItemBase;
@@ -12,7 +12,7 @@ import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.Translator;
-import cz.stechy.screens.BaseController;
+import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Optional;
@@ -36,8 +36,7 @@ import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CollectionsItemsController implements Initializable, InjectableChild,
-    CollectionsControllerChild {
+public class CollectionsItemsController implements Initializable, CollectionsControllerChild {
 
     // region Constants
 
@@ -66,8 +65,8 @@ public class CollectionsItemsController implements Initializable, InjectableChil
     private final ItemResolver itemResolver;
     private final Translator translator;
 
-    private BaseController parent;
     private StringProperty selectedEntry;
+    private CollectionsNotificationProvider notificationProvider;
 
     // endregion
 
@@ -115,11 +114,6 @@ public class CollectionsItemsController implements Initializable, InjectableChil
     }
 
     @Override
-    public void injectParent(BaseController parent) {
-        this.parent = parent;
-    }
-
-    @Override
     public void setSelectedEntryProperty(StringProperty selectedEntry) {
         this.selectedEntry = selectedEntry;
     }
@@ -144,24 +138,29 @@ public class CollectionsItemsController implements Initializable, InjectableChil
     }
 
     @Override
+    public void setNotificationProvider(CollectionsNotificationProvider notificationProvider) {
+        this.notificationProvider = notificationProvider;
+    }
+
+    @Override
     public void requestAddEntryToCollection(ItemCollection collection) {
         final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(itemRegistry);
         entryOptional.ifPresent(choiceEntry -> {
             final String itemName = choiceEntry.getName();
             final String collectionName = collection.getName();
-            collectionService.addItemToCollection(collection, choiceEntry.getId());
-//                .exceptionally(throwable -> {
-//                    parent.showNotification(new Notification(String.format(translator.translate(
-//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
-//                        collectionName)));
-//                    LOGGER.error("Položku se nepodařilo přidat do kolekce");
-//                    throw new RuntimeException(throwable);
-//                })
-//                .thenAccept(ignored -> {
-//                    parent.showNotification(new Notification(String.format(translator.translate(
-//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
-//                        collectionName)));
-//                });
+            collectionService.addItemToCollection(collection, choiceEntry.getId())
+                .exceptionally(throwable -> {
+                    notificationProvider.showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
+                        collectionName)));
+                    LOGGER.error("Položku se nepodařilo přidat do kolekce");
+                    throw new RuntimeException(throwable);
+                })
+                .thenAccept(ignored -> {
+                    notificationProvider.showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
+                        collectionName)));
+                });
         });
     }
 
@@ -173,16 +172,16 @@ public class CollectionsItemsController implements Initializable, InjectableChil
 
     @Override
     public void mergeEntries() {
-//        itemResolver.merge(collectionItems)
-//            .exceptionally(throwable -> {
-//                showNotification(new Notification(translator.translate(
-//                    R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
-//                LOGGER.error("Položky se nepodařilo zmergovat");
-//                throw new RuntimeException(throwable);
-//            })
-//            .thenAccept(merged ->
-//                showNotification(new Notification(String.format(translator.translate(
-//                    R.Translate.NOTIFY_MERGED_ITEMS), merged))));
+        itemResolver.merge(collectionItems)
+            .exceptionally(throwable -> {
+                notificationProvider.showNotification(new Notification(translator.translate(
+                    R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
+                LOGGER.error("Položky se nepodařilo zmergovat");
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(merged ->
+                notificationProvider.showNotification(new Notification(String.format(
+                    translator.translate(R.Translate.NOTIFY_MERGED_ITEMS), merged))));
     }
 
     public static final class ItemEntry implements WithItemBase {

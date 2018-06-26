@@ -24,6 +24,13 @@ public interface CollectionsControllerChild {
     void setSelectedCollection(ReadOnlyObjectProperty<ItemCollection> selectedCollection);
 
     /**
+     * Nastaví poskytovatele notifikací
+     *
+     * @param notificationProvider {@link CollectionsNotificationProvider}
+     */
+    void setNotificationProvider(CollectionsNotificationProvider notificationProvider);
+
+    /**
      * Požadavek na přidání nového záznamu do kolekce
      *  @param collection Kolekce, do které se má záznam vložit
      *
