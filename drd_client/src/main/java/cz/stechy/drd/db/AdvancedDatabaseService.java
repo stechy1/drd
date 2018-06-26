@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Semaphore;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -43,15 +42,13 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(AdvancedDatabaseService.class);
 
-    private static final ForkJoinPool ONLINE_POOL = new ForkJoinPool(1);
-
     // endregion
 
     // region Variables
 
     protected final ObservableList<T> onlineDatabase = FXCollections.observableArrayList();
     private final ObservableList<T> usedItems = FXCollections.observableArrayList();
-    private final Semaphore onlineSemaphore = new Semaphore(0);
+    private final Semaphore semaphore = new Semaphore(0);
 
     private boolean success = false;
     private boolean showOnline = false;
@@ -131,6 +128,12 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     @SuppressWarnings("unchecked")
     private final OnDataReceivedListener databaseListener = message -> {
+        this.success = message.isSuccess();
+        if (!success) {
+            semaphore.release();
+            return;
+        }
+
         final DatabaseMessage databaseMessage = (DatabaseMessage) message;
         final IDatabaseMessageData databaseMessageData = (IDatabaseMessageData) databaseMessage
             .getData();
@@ -176,7 +179,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
         if (item.getId().equals(workingItemId)) {
             workingItemId = null;
-            onlineSemaphore.release();
+            semaphore.release();
         }
     };
 
@@ -239,7 +242,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             workingItemId = item.getId();
 
             try {
-                onlineSemaphore.acquire();
+                semaphore.acquire();
             } catch (InterruptedException ignored) {}
 
             if (!success) {
@@ -248,12 +251,12 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
             LOGGER.info("Nahrání proběhlo v pořádku.");
             return item;
-        }, ONLINE_POOL)
-            .thenComposeAsync(t -> {
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenCompose(t -> {
                 final T itemCopy = t.duplicate();
                 itemCopy.setUploaded(true);
                 return updateAsync(itemCopy);
-            }, ThreadPool.COMMON_EXECUTOR)
+            })
             .thenApplyAsync(ignored -> {
                 return null;
             }, ThreadPool.JAVAFX_EXECUTOR);
@@ -271,7 +274,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             workingItemId = item.getId();
 
             try {
-                onlineSemaphore.acquire();
+                semaphore.acquire();
             } catch (InterruptedException ignored) {}
 
             if (!success) {
@@ -280,12 +283,12 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
             LOGGER.info("Smazání proběhlo v pořádku.");
             return item;
-        }, ONLINE_POOL)
-            .thenComposeAsync(t -> {
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenCompose(t -> {
                 final T itemCopy = t.duplicate();
                 itemCopy.setUploaded(false);
                 return updateAsync(itemCopy);
-            }, ThreadPool.COMMON_EXECUTOR)
+            })
             .thenApplyAsync(ignored -> {
                 return null;
             }, ThreadPool.JAVAFX_EXECUTOR);

@@ -248,44 +248,30 @@ public class CollectionsController extends BaseController implements Initializab
                 LOGGER.error("Položku {} se nepodařilo nahrát do online databáze",
                     collection.getName());
                 throw new RuntimeException(throwable);
-            })
-            .thenAccept(ignored -> {
+            }).thenAccept(ignored -> {
                 showNotification(new Notification(String.format(translator.translate(
                     R.Translate.NOTIFY_RECORD_IS_UPLOADED), collection.getName())));
                 txtCollectionName.clear();
             });
-//        collectionService.uploadAsync(collection, (error, ref) -> {
-//            if (error != null) {
-//                showNotification(new Notification(String.format(translator.translate(
-//                    R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), collection.getName())));
-//                LOGGER.error("Položku {} se nepodařilo nahrát do online databáze",
-//                    collection.getName());
-//            } else {
-//                showNotification(new Notification(String.format(translator.translate(
-//                    R.Translate.NOTIFY_RECORD_IS_UPLOADED), collection.getName())));
-//            }
-//
-//            txtCollectionName.clear();
-//        });
     }
 
     @FXML
     private void handleCollectionRemove(ActionEvent actionEvent) {
         final ItemCollection collection = selectedCollection.get();
-//        collectionService.deleteRemoteAsync(collection, true, (error, ref) -> {
-//            if (error != null) {
-//                showNotification(new Notification(String.format(translator.translate(
-//                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
-//                    collection.getName())));
-//                LOGGER.error("Položku {} se nepodařilo odstranit z online databáze",
-//                    collection.getName());
-//            } else {
-//                showNotification(new Notification(String.format(translator.translate(
-//                    R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
-//                    collection.getName())));
-//            }
-//        });
-//        lvCollections.getSelectionModel().clearSelection();
+        collectionService.deleteRemoteAsync(collection)
+            .exceptionally(throwable -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
+                    collection.getName())));
+                LOGGER.error("Položku {} se nepodařilo odstranit z online databáze",
+                    collection.getName());
+                throw new RuntimeException(throwable);
+            }).thenAccept(ignored -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+                    collection.getName())));
+            lvCollections.getSelectionModel().clearSelection();
+            });
     }
 
     @FXML

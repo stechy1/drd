@@ -3,6 +3,7 @@ package cz.stechy.drd.model.item;
 import cz.stechy.drd.util.HashGenerator;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -115,6 +116,26 @@ public class ItemCollection {
         public ItemCollection build() {
             return new ItemCollection(id, name, author, records);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ItemCollection that = (ItemCollection) o;
+        return Objects.equals(getId(), that.getId()) &&
+            Objects.equals(getName(), that.getName()) &&
+            Objects.equals(getAuthor(), that.getAuthor());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getId(), getName(), getAuthor());
     }
 
     @Override

@@ -186,10 +186,13 @@ final class FirebaseConvertors {
         map.put(Collectionsitems.COLUMN_ID, snapshot.getKey());
         map.put(Collectionsitems.COLUMN_NAME, snapshot.child(Collectionsitems.COLUMN_NAME).getValue(String.class));
         map.put(Collectionsitems.COLUMN_AUTHOR, snapshot.child(Collectionsitems.COLUMN_AUTHOR).getValue(String.class));
-        map.put(Collectionsitems.COLUMN_RECORDS,
-            new ArrayList<>(snapshot.child("collections_items_records")
-                .getValue(genericTypeIndicator)
-                .values()));
+        final HashMap<String, String> records = snapshot.child(Collectionsitems.COLUMN_RECORDS)
+            .getValue(genericTypeIndicator);
+        if (records == null) {
+            map.put(Collectionsitems.COLUMN_RECORDS, new ArrayList<>());
+        } else {
+            map.put(Collectionsitems.COLUMN_RECORDS, new ArrayList<>(records.values()));
+        }
         return map;
     };
 

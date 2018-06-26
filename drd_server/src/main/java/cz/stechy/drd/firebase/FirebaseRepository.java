@@ -197,6 +197,10 @@ public final class FirebaseRepository implements ServerDatabase {
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
             final Map<String, Object> item = convertor.convert(snapshot);
+
+            final List<Map<String, Object>> list = items.get(tableName);
+            list.remove(item);
+
             final ItemEvent event = FirebaseItemEvents.forChildRemoved(item, tableName);
             notifyListeners(event);
         }

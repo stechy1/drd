@@ -17,6 +17,7 @@ import cz.stechy.drd.net.OnDataReceivedListener;
 import cz.stechy.drd.net.message.DatabaseMessage;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD.DatabaseAction;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageDataType;
 import cz.stechy.drd.net.message.DatabaseMessage.IDatabaseMessageData;
 import cz.stechy.drd.net.message.IMessage;
@@ -144,7 +145,7 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
             communicator.sendMessage(new DatabaseMessage(
                 MessageSource.CLIENT, new DatabaseMessageCRUD(
                 toStringItemMap(item), getFirebaseChildName(),
-                DatabaseMessageCRUD.DatabaseAction.CREATE,
+                DatabaseAction.CREATE,
                 item.getId()
             )));
 
@@ -165,7 +166,28 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
     @Override
     public CompletableFuture<Void> deleteRemoteAsync(ItemCollection item) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            workingId = item.getId();
+
+            communicator.sendMessage(new DatabaseMessage(
+                MessageSource.CLIENT, new DatabaseMessageCRUD(
+                    toStringItemMap(item), getFirebaseChildName(),
+                DatabaseAction.DELETE,
+                item.getId())));
+
+            try {
+                semaphore.acquire();
+            } catch (InterruptedException ignored) {}
+
+            if (!success) {
+                throw new RuntimeException("Smazání záznamu se nezdařilo.");
+            }
+
+            LOGGER.info("Smazání proběhlo v pořádku.");
+            return item;
+
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
     }
 
 //    @Override
@@ -209,6 +231,12 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
     // endregion
 
     private final OnDataReceivedListener databaseListener = message -> {
+        this.success = message.isSuccess();
+        if (!success) {
+            semaphore.release();
+            return;
+        }
+
         final DatabaseMessage databaseMessage = (DatabaseMessage) message;
         IDatabaseMessageData databaseMessageData = (IDatabaseMessageData) databaseMessage.getData();
 
@@ -242,6 +270,11 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
                 break;
             default:
                 throw new IllegalArgumentException("Neplatny argument");
+        }
+
+        if (itemCollection.getId().equals(workingId)) {
+            workingId = null;
+            semaphore.release();
         }
     };
 
