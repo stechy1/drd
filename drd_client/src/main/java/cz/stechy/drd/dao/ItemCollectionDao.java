@@ -1,7 +1,13 @@
 package cz.stechy.drd.dao;
 
-import static cz.stechy.drd.R.Database.Collectionsitems.*;
+import static cz.stechy.drd.R.Database.Collectionsitems.COLUMN_AUTHOR;
+import static cz.stechy.drd.R.Database.Collectionsitems.COLUMN_ID;
+import static cz.stechy.drd.R.Database.Collectionsitems.COLUMN_NAME;
+import static cz.stechy.drd.R.Database.Collectionsitems.COLUMN_RECORDS;
+import static cz.stechy.drd.R.Database.Collectionsitems.FIREBASE_CHILD;
+import static cz.stechy.drd.R.Database.Collectionsitems.TABLE_NAME;
 
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.db.base.OnlineDatabase;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.item.ItemCollection;
@@ -10,18 +16,18 @@ import cz.stechy.drd.net.ConnectionState;
 import cz.stechy.drd.net.OnDataReceivedListener;
 import cz.stechy.drd.net.message.DatabaseMessage;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration;
-import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration.DatabaseAction;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageDataType;
 import cz.stechy.drd.net.message.DatabaseMessage.IDatabaseMessageData;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
 import cz.stechy.drd.net.message.MessageType;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Semaphore;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
@@ -41,7 +47,10 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
     private final ObservableList<ItemCollection> collections = FXCollections.observableArrayList();
     private final Map<String, ItemCollectionContentDao> contentMap = new HashMap<>();
+    private final Semaphore semaphore = new Semaphore(0);
     private final ClientCommunicator communicator;
+    private String workingId;
+    private boolean success;
 
     // endregion
 
@@ -59,7 +68,7 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
                     .registerMessageObserver(MessageType.DATABASE, this.databaseListener);
                 LOGGER.info("Posílám registrační požadavek pro tabulku: " + TABLE_NAME);
                 this.communicator.sendMessage(getRegistrationMessage());
-        });
+            });
 //        wrapper.firebaseProperty().addListener((observable, oldValue, newValue) -> {
 //            if (newValue != null) {
 //                collections.clear();
@@ -74,8 +83,10 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
     // region Private methods
 
     private IMessage getRegistrationMessage() {
-        return new DatabaseMessage(MessageSource.CLIENT, new DatabaseMessageAdministration(
-            FIREBASE_CHILD, DatabaseAction.REGISTER));
+        return new DatabaseMessage(
+            MessageSource.CLIENT, new DatabaseMessageAdministration(
+            FIREBASE_CHILD,
+            DatabaseMessageAdministration.DatabaseAction.REGISTER));
     }
 
     // endregion
@@ -102,7 +113,7 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
     @Override
     public String getFirebaseChildName() {
-        return TABLE_NAME;
+        return FIREBASE_CHILD;
     }
 
     @Override
@@ -121,13 +132,35 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
         map.put(COLUMN_ID, item.getId());
         map.put(COLUMN_NAME, item.getName());
         map.put(COLUMN_AUTHOR, item.getAuthor());
-        map.put(COLUMN_RECORDS, item.getRecords().stream().map(s -> new SimpleEntry<>(s, s)));
+        map.put(COLUMN_RECORDS, item.getRecords().stream().collect(Collectors.toMap(o -> o, o -> o)));
         return map;
     }
 
     @Override
     public CompletableFuture<Void> uploadAsync(ItemCollection item) {
-        return null;
+        return CompletableFuture.supplyAsync(() -> {
+            workingId = item.getId();
+
+            communicator.sendMessage(new DatabaseMessage(
+                MessageSource.CLIENT, new DatabaseMessageCRUD(
+                toStringItemMap(item), getFirebaseChildName(),
+                DatabaseMessageCRUD.DatabaseAction.CREATE,
+                item.getId()
+            )));
+
+            try {
+                semaphore.acquire();
+            } catch (InterruptedException ignored) {}
+
+            if (!success) {
+                throw new RuntimeException("Nahrání se nezdařilo.");
+            }
+
+            LOGGER.info("Nahrání proběhlo v pořádku.");
+            return item;
+
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     @Override
@@ -200,11 +233,12 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
             case UPDATE:
                 break;
             case DELETE:
-            LOGGER.trace("Kolekce předmětů {} byla smazána z online databáze", itemCollection.toString());
-            collections.stream()
-                .filter(itemCollection::equals)
-                .findFirst()
-                .ifPresent(collections::remove);
+                LOGGER.trace("Kolekce předmětů {} byla smazána z online databáze",
+                    itemCollection.toString());
+                collections.stream()
+                    .filter(itemCollection::equals)
+                    .findFirst()
+                    .ifPresent(collections::remove);
                 break;
             default:
                 throw new IllegalArgumentException("Neplatny argument");

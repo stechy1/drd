@@ -223,15 +223,7 @@ public class CollectionsController extends BaseController implements Initializab
 
             return collection.getRecords();
         }, selectedCollection));
-//        collectionContent.bind(Bindings.createObjectBinding(() -> {
-//                final ItemCollection collection = selectedCollection.get();
-//                if (collection == null) {
-//                    return null;
-//                }
-//                return collectionService.getContent(collection);
-//            },
-//            selectedCollection));
-//
+
         ObservableMergers.mergeList(collections, collectionService.getCollections());
     }
 
@@ -249,6 +241,19 @@ public class CollectionsController extends BaseController implements Initializab
             .name(txtCollectionName.getText())
             .author(user != null ? user.getName() : "")
             .build();
+        collectionService.uploadAsync(collection)
+            .exceptionally(throwable -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), collection.getName())));
+                LOGGER.error("Položku {} se nepodařilo nahrát do online databáze",
+                    collection.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(ignored -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_RECORD_IS_UPLOADED), collection.getName())));
+                txtCollectionName.clear();
+            });
 //        collectionService.uploadAsync(collection, (error, ref) -> {
 //            if (error != null) {
 //                showNotification(new Notification(String.format(translator.translate(
