@@ -123,14 +123,14 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
         selectedCollection.addListener((observableValue, oldValue, newValue) -> {
             collectionItems.clear();
             if (oldValue != null) {
-                oldValue.getRecords().removeListener(this.itemCollectionContentListener);
+                oldValue.getItems().removeListener(this.itemCollectionContentListener);
             }
             if (newValue == null) {
                 return;
             }
 
-            newValue.getRecords().addListener(this.itemCollectionContentListener);
-            collectionItems.setAll(newValue.getRecords()
+            newValue.getItems().addListener(this.itemCollectionContentListener);
+            collectionItems.setAll(newValue.getItems()
                 .parallelStream()
                 .map(ItemEntry::new)
                 .collect(Collectors.toList()));

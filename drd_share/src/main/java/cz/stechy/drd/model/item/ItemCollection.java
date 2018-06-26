@@ -1,8 +1,8 @@
 package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.util.HashGenerator;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,18 +23,25 @@ public class ItemCollection {
     private final StringProperty name = new SimpleStringProperty(this, "name");
     // Autor kolekce
     private final StringProperty author = new SimpleStringProperty(this, "author");
-    // Kolekce záznamů
-    private final ObservableList<String> records = FXCollections.observableArrayList();
+    // Kolekce záznamů předmětů
+    private final ObservableList<String> items = FXCollections.observableArrayList();
+    // Kolekce záznamů nestvůr
+    private final ObservableList<String> bestiary = FXCollections.observableArrayList();
+    // Kolekce záznamů kouzel
+    private final ObservableList<String> spells = FXCollections.observableArrayList();
 
     // endregion
 
     // region Constructors
 
-    private ItemCollection(String id, String name, String author, Collection<String> records) {
+    private ItemCollection(String id, String name, String author,
+        Collection<String> items, Collection<String> bestiary, Collection<String> spells) {
         setId(id);
         setName(name);
         setAuthor(author);
-        this.records.setAll(records);
+        this.items.setAll(items);
+        this.bestiary.setAll(bestiary);
+        this.spells.setAll(spells);
     }
 
     // endregion
@@ -80,8 +87,16 @@ public class ItemCollection {
         this.author.set(author);
     }
 
-    public ObservableList<String> getRecords() {
-        return records;
+    public ObservableList<String> getItems() {
+        return items;
+    }
+
+    public ObservableList<String> getBestiary() {
+        return bestiary;
+    }
+
+    public ObservableList<String> getSpells() {
+        return spells;
     }
 
     // endregion
@@ -91,7 +106,9 @@ public class ItemCollection {
         private String id = HashGenerator.createHash();
         private String name;
         private String author;
-        private Collection<String> records = Arrays.asList();
+        private Collection<String> items = Collections.EMPTY_LIST;
+        private Collection<String> bestiary = Collections.EMPTY_LIST;
+        private Collection<String> spells = Collections.EMPTY_LIST;
 
         public Builder id(String id) {
             this.id = id;
@@ -108,13 +125,23 @@ public class ItemCollection {
             return this;
         }
 
-        public Builder records(Collection<String> records) {
-            this.records = records;
+        public Builder items(Collection<String> items) {
+            this.items = items;
+            return this;
+        }
+
+        public Builder bestiary(Collection<String> bestiary) {
+            this.bestiary = bestiary;
+            return this;
+        }
+
+        public Builder spells(Collection<String> spells) {
+            this.spells = spells;
             return this;
         }
 
         public ItemCollection build() {
-            return new ItemCollection(id, name, author, records);
+            return new ItemCollection(id, name, author, items, bestiary, spells);
         }
     }
 
