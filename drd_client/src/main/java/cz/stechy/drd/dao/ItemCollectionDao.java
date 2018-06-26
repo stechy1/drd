@@ -70,13 +70,6 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
                 LOGGER.info("Posílám registrační požadavek pro tabulku: " + TABLE_NAME);
                 this.communicator.sendMessage(getRegistrationMessage());
             });
-//        wrapper.firebaseProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null) {
-//                collections.clear();
-//                firebaseReference = newValue.getReference(FIREBASE_CHILD_NAME);
-//                firebaseReference.addChildEventListener(childEventListener);
-//            }
-//        });
     }
 
     // endregion
@@ -94,20 +87,6 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
     // region Public methods
 
-    @Deprecated
-    public ItemCollectionContentDao getContent(ItemCollection collection) {
-        final String id = collection.getId();
-        ItemCollectionContentDao collectionContent = null;
-        if (!contentMap.containsKey(id)) {
-//            collectionContent = new ItemCollectionContentDao(firebaseReference.child(collection.getId()).child(COLUMN_RECORDS));
-//            contentMap.put(id, collectionContent);
-        } else {
-            collectionContent = contentMap.get(id);
-        }
-
-        return collectionContent;
-    }
-
     public CompletableFuture<Void> addItemToCollection(ItemCollection collection, String id) {
         return CompletableFuture.supplyAsync(() -> {
             workingId = collection.getId();
@@ -120,13 +99,38 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
             try {
                 semaphore.acquire();
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
 
             if (!success) {
                 collection.getRecords().remove(id);
                 throw new RuntimeException("Item se nepodařilo přidat do kolekce.");
             }
 
+            return null;
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
+    }
+
+    public CompletableFuture<Void> removeItemFromCollection(ItemCollection collection, String id) {
+        return CompletableFuture.supplyAsync(() -> {
+            workingId = collection.getId();
+            collection.getRecords().remove(id);
+            communicator.sendMessage(new DatabaseMessage(MessageSource.CLIENT,
+                new DatabaseMessageCRUD(toStringItemMap(collection),
+                    getFirebaseChildName(),
+                    DatabaseAction.UPDATE, collection.getId())));
+
+            try {
+                semaphore.acquire();
+            } catch (InterruptedException ignored) {}
+
+            if (!success) {
+                collection.getRecords().add(id);
+                throw new RuntimeException("Item se nepodařilo smazat z kolekce.");
+            }
+
+            LOGGER.info("Item se podařilo smazat z kolekce.");
             return null;
         }, ThreadPool.COMMON_EXECUTOR)
             .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
@@ -175,7 +179,8 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
             try {
                 semaphore.acquire();
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
 
             if (!success) {
                 throw new RuntimeException("Nahrání se nezdařilo.");
@@ -195,13 +200,14 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
             communicator.sendMessage(new DatabaseMessage(
                 MessageSource.CLIENT, new DatabaseMessageCRUD(
-                    toStringItemMap(item), getFirebaseChildName(),
+                toStringItemMap(item), getFirebaseChildName(),
                 DatabaseAction.DELETE,
                 item.getId())));
 
             try {
                 semaphore.acquire();
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
 
             if (!success) {
                 throw new RuntimeException("Smazání záznamu se nezdařilo.");
@@ -272,37 +278,4 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
         }
     };
 
-//    private final ChildEventListener childEventListener = new ChildEventListener() {
-//        @Override
-//        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//            final ItemCollection user = parseDataSnapshot(dataSnapshot);
-//            LOGGER.trace("Přidávám kolekci předmětů {} z online databáze", user.toString());
-//            collections.add(user);
-//        }
-//
-//        @Override
-//        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//            LOGGER.trace("Data v kolekci předmětů byla změněna v online databázi");
-//        }
-//
-//        @Override
-//        public void onChildRemoved(DataSnapshot dataSnapshot) {
-//            final ItemCollection u = parseDataSnapshot(dataSnapshot);
-//            LOGGER.trace("Kolekce předmětů byla smazána z online databáze", u.toString());
-//            collections.stream()
-//                .filter(u::equals)
-//                .findFirst()
-//                .ifPresent(collections::remove);
-//        }
-//
-//        @Override
-//        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//        }
-//
-//        @Override
-//        public void onCancelled(DatabaseError databaseError) {
-//
-//        }
-//    };
 }

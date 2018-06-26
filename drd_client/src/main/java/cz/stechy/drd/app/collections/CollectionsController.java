@@ -296,25 +296,34 @@ public class CollectionsController extends BaseController implements Initializab
                         collectionName)));
                 });
         });
-//        entryOptional.ifPresent(choiceEntry ->
-//            collectionContent.get().uploadAsync(choiceEntry.getItemBase(), (error, ref) -> {
-//                final String itemName = choiceEntry.getName();
-//                final String collectionName = selectedCollection.get().getName();
-//                if (error != null) {
-//                    showNotification(new Notification(String.format(translator.translate(
-//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
-//                        collectionName)));
-//                    LOGGER.error("Položku se nepodařilo přidat do kolekce");
-//                } else {
-//                    showNotification(new Notification(String.format(translator.translate(
-//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
-//                        collectionName)));
-//                }
-//            }));
     }
 
     @FXML
     private void handleCollectionItemRemove(ActionEvent actionEvent) {
+        final ItemCollection collection = selectedCollection.get();
+        final ItemEntry itemEntry = selectedCollectionItem.get();
+
+        if (collection == null || itemEntry == null) {
+            return;
+        }
+
+        final String itemName = itemEntry.getName();
+        final String collectionName = collection.getName();
+
+        collectionService.removeItemFromCollection(collection, itemEntry.getId())
+            .exceptionally(throwable -> {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_DELETED), itemName,
+                        collectionName)));
+                    LOGGER.error("Položku se nepodařilo odebrat z kolekce");
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(ignored -> {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_DELETED), itemName,
+                        collectionName)));
+            });
+
 //        final ItemCollectionContentDao content = this.collectionContent.get();
 //
 //        if (content == null) {
