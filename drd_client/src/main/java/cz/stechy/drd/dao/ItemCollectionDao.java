@@ -108,6 +108,30 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
         return collectionContent;
     }
 
+    public CompletableFuture<Void> addItemToCollection(ItemCollection collection, String id) {
+        return CompletableFuture.supplyAsync(() -> {
+            workingId = collection.getId();
+
+            collection.getRecords().add(id);
+            communicator.sendMessage(new DatabaseMessage(MessageSource.CLIENT,
+                new DatabaseMessageCRUD(toStringItemMap(collection),
+                    getFirebaseChildName(),
+                    DatabaseAction.UPDATE, collection.getId())));
+
+            try {
+                semaphore.acquire();
+            } catch (InterruptedException ignored) {}
+
+            if (!success) {
+                collection.getRecords().remove(id);
+                throw new RuntimeException("Item se nepodařilo přidat do kolekce.");
+            }
+
+            return null;
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
+    }
+
     // endregion
 
     // region Private methods
@@ -189,36 +213,6 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
         }, ThreadPool.COMMON_EXECUTOR)
             .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
     }
-
-//    @Override
-//    public ItemCollection parseDataSnapshot(DataSnapshot snapshot) {
-//        final Builder builder = new Builder()
-//            .id(snapshot.child(COLUMN_ID).getValue(String.class))
-//            .name(snapshot.child(COLUMN_NAME).getValue(String.class))
-//            .author(snapshot.child(COLUMN_AUTHOR).getValue(String.class));
-//        return builder.build();
-//    }
-
-//    @Override
-//    public Map<String, Object> toFirebaseMap(ItemCollection item) {
-//        final Map<String, Object> map = new HashMap<>();
-//        map.put(COLUMN_ID, item.getId());
-//        map.put(COLUMN_NAME, item.getName());
-//        map.put(COLUMN_AUTHOR, item.getAuthor());
-//        return map;
-//    }
-
-//    @Override
-//    public void uploadAsync(ItemCollection item, DatabaseReference.CompletionListener listener) {
-//        final DatabaseReference child = firebaseReference.child(item.getId());
-//        child.setValue(toFirebaseMap(item), listener);
-//    }
-
-//    @Override
-//    public void deleteRemoteAsync(ItemCollection item, boolean remote,
-//        CompletionListener listener) {
-//        firebaseReference.child(item.getId()).removeValue(listener);
-//    }
 
     // endregion
 

@@ -164,18 +164,6 @@ public class CollectionsController extends BaseController implements Initializab
         }
     };
 
-//    private ListChangeListener<? super ItemBase> itemCollectionContentListener = (ListChangeListener<String>) c -> {
-//        while (c.next()) {
-//            collectionItems.addAll(c.getAddedSubList().stream().map(ItemEntry::new).collect(
-//                Collectors.toList()));
-//            c.getRemoved()
-//                .forEach(o -> collectionItems.stream()
-//                    .filter(itemEntry -> o.getId().equals(itemEntry.getId()))
-//                    .findFirst()
-//                    .ifPresent(collectionItems::remove));
-//        }
-//    };
-
     // endregion
 
     // endregion
@@ -291,6 +279,23 @@ public class CollectionsController extends BaseController implements Initializab
     @FXML
     private void handleCollectionItemAdd(ActionEvent actionEvent) {
         final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(itemRegistry);
+        entryOptional.ifPresent(choiceEntry -> {
+                final String itemName = choiceEntry.getName();
+                final String collectionName = selectedCollection.get().getName();
+            collectionService.addItemToCollection(selectedCollection.get(), choiceEntry.getId())
+                .exceptionally(throwable -> {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
+                        collectionName)));
+                    LOGGER.error("Položku se nepodařilo přidat do kolekce");
+                    throw new RuntimeException(throwable);
+                })
+                .thenAccept(ignored -> {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
+                        collectionName)));
+                });
+        });
 //        entryOptional.ifPresent(choiceEntry ->
 //            collectionContent.get().uploadAsync(choiceEntry.getItemBase(), (error, ref) -> {
 //                final String itemName = choiceEntry.getName();
