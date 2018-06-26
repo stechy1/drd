@@ -130,8 +130,10 @@ public class CollectionsController extends BaseController implements Initializab
             return;
         }
 
-        collectionItems.setAll(collectionContent.get().stream()
+        collectionItems.setAll(collectionContent.get().parallelStream()
             .map(this::stringToItemMap)
+            // TODO nezahazovat neznámý předmět, raději informovat uživatele o nevalidním záznamu
+            .filter(itemBase -> itemBase != null)
             .map(ItemEntry::new)
             .collect(Collectors.toList()));
         newValue.addListener(this.itemCollectionContentListener);
