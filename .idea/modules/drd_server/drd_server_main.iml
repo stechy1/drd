@@ -10,7 +10,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="drd_share_main" />
-    <orderEntry type="library" name="Gradle: com.google.firebase:firebase-admin:5.11.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.firebase:firebase-admin:6.2.0" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-simple:1.7.25" level="project" />
     <orderEntry type="library" name="Gradle: org.xerial:sqlite-jdbc:3.21.0" level="project" />
