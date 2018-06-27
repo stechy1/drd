@@ -3,6 +3,7 @@ package cz.stechy.drd.util;
 import cz.stechy.drd.model.WithImage;
 import cz.stechy.drd.model.WithSameProperties;
 import cz.stechy.drd.model.entity.mob.Mob;
+import cz.stechy.drd.model.spell.Spell;
 import cz.stechy.drd.service.ItemRegistry;
 import java.io.File;
 import java.io.IOException;
@@ -95,6 +96,12 @@ public final class DialogUtils {
     public static List<ChoiceEntry> getMobsChoices(List<Mob> mobs) {
         return mobs.stream()
             .map(mob -> new ChoiceEntry(mob))
+            .collect(Collectors.toList());
+    }
+
+    public static List<ChoiceEntry> getSpellChoices(List<Spell> spells) {
+        return spells.stream()
+            .map(spell -> new ChoiceEntry(spell))
             .collect(Collectors.toList());
     }
 

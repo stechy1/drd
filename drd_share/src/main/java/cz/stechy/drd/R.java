@@ -25,6 +25,7 @@ public final class R {
         public static final String COLLECTIONS = "collections";
         public static final String COLLECTIONS_BESTIARY = "collections_bestiary";
         public static final String COLLECTIONS_ITEMS = "collections_items";
+        public static final String COLLECTIONS_SPELLS = "collections_spells";
         public static final String FIGHT = "fight";
         public static final String FIGHT_COMMENT = "fight_comment";
         public static final String FIGHT_HERO = "fight_hero";

@@ -57,11 +57,15 @@ public class CollectionsController extends BaseController implements Initializab
     private CollectionsItemsController tableCollectionsItemsController;
     @FXML
     private CollectionsBestiaryController tableCollectionsBestiaryController;
+    @FXML
+    private CollectionsSpellsController tableCollectionsSpellsController;
 
     @FXML
     private TableView tableCollectionsItems;
     @FXML
     private TableView tableCollectionsBestiary;
+    @FXML
+    private TableView tableCollectionsSpells;
 
     @FXML
     private ListView<ItemCollection> lvCollections;
@@ -115,7 +119,8 @@ public class CollectionsController extends BaseController implements Initializab
 
         this.controllers = new CollectionsControllerChild[]{
             tableCollectionsItemsController,
-            tableCollectionsBestiaryController
+            tableCollectionsBestiaryController,
+            tableCollectionsSpellsController
         };
 
         accordionCollectionsContentType.expandedPaneProperty()

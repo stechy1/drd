@@ -1,12 +1,12 @@
 package cz.stechy.drd.app.collections;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.dao.BestiaryDao;
 import cz.stechy.drd.dao.ItemCollectionDao;
-import cz.stechy.drd.model.Rule;
-import cz.stechy.drd.model.entity.mob.Mob;
+import cz.stechy.drd.dao.SpellBookDao;
 import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.model.item.ItemCollection.CollectionType;
+import cz.stechy.drd.model.spell.Spell;
+import cz.stechy.drd.model.spell.Spell.SpellProfessionType;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
@@ -14,7 +14,6 @@ import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -34,12 +33,12 @@ import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CollectionsBestiaryController implements Initializable, CollectionsControllerChild {
+public class CollectionsSpellsController implements Initializable, CollectionsControllerChild {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(CollectionsBestiaryController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CollectionsSpellsController.class);
 
     // endregion
 
@@ -48,38 +47,40 @@ public class CollectionsBestiaryController implements Initializable, Collections
     // region FXML
 
     @FXML
-    private TableView<BestiaryEntry> tableCollectionsBestiary;
+    private TableView<SpellEntry> tableCollectionsSpells;
     @FXML
-    private TableColumn<BestiaryEntry, Image> columnImage;
+    private TableColumn<SpellEntry, Image> columnImage;
     @FXML
-    private TableColumn<BestiaryEntry, String> columnName;
+    private TableColumn<SpellEntry, String> columnName;
     @FXML
-    private TableColumn<BestiaryEntry, Rule> columnRulesType;
+    private TableColumn<SpellEntry, SpellProfessionType> columnType;
+
 
     // endregion
+    private final ObservableList<SpellEntry> collectionItems = FXCollections.observableArrayList();
+    private final ObservableList<ChoiceEntry> spellRegistry = FXCollections.observableArrayList();
 
-    private final ObservableList<BestiaryEntry> collectionItems = FXCollections.observableArrayList();
-    private final ObservableList<ChoiceEntry> mobRegistry = FXCollections.observableArrayList();
-
-    private final ItemCollectionDao collectionService;
+    private final SpellBookDao spellService;
     private final Translator translator;
+
     // Nemůžu dát "final", protože by mi to brečelo v bestiaryCollectionContentListener
-    private BestiaryDao bestiaryService;
+    private ItemCollectionDao collectionService;
     private StringProperty selectedEntry;
     private CollectionsNotificationProvider notificationProvider;
+
 
     // endregion
 
     // region Constructors
 
-    public CollectionsBestiaryController(ItemCollectionDao collectionService,
-        Translator translator, BestiaryDao bestiaryService) {
-        this.collectionService = collectionService;
+    public CollectionsSpellsController(SpellBookDao spellService,
+        Translator translator, ItemCollectionDao collectionService) {
+        this.spellService = spellService;
         this.translator = translator;
-        this.bestiaryService = bestiaryService;
+        this.collectionService = collectionService;
 
-        bestiaryService.selectAllAsync()
-            .thenAccept(mobs -> this.mobRegistry.setAll(DialogUtils.getMobsChoices(mobs)));
+        spellService.selectAllAsync()
+            .thenAccept(spells -> this.spellRegistry.setAll(DialogUtils.getSpellChoices(spells)));
     }
 
     // endregion
@@ -89,7 +90,7 @@ public class CollectionsBestiaryController implements Initializable, Collections
     private ListChangeListener<? super String> bestiaryCollectionContentListener = c -> {
         while (c.next()) {
             collectionItems.addAll(c.getAddedSubList().stream()
-                .map(BestiaryEntry::new)
+                .map(SpellEntry::new)
                 .collect(Collectors.toList()));
             c.getRemoved()
                 .forEach(o -> collectionItems.stream()
@@ -103,11 +104,11 @@ public class CollectionsBestiaryController implements Initializable, Collections
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        tableCollectionsBestiary.setFixedCellSize(40);
-        tableCollectionsBestiary.setItems(collectionItems);
+        tableCollectionsSpells.setFixedCellSize(40);
+        tableCollectionsSpells.setItems(collectionItems);
         columnImage.setCellFactory(param -> CellUtils.forImage());
 
-        tableCollectionsBestiary.getSelectionModel().selectedItemProperty()
+        tableCollectionsSpells.getSelectionModel().selectedItemProperty()
             .addListener((observableValue, oldValue, newValue) -> {
                 selectedEntry.setValue(newValue == null ? null : newValue.getId());
             });
@@ -123,16 +124,16 @@ public class CollectionsBestiaryController implements Initializable, Collections
         selectedCollection.addListener((observableValue, oldValue, newValue) -> {
             collectionItems.clear();
             if (oldValue != null) {
-                oldValue.getCollection(CollectionType.BESTIARY).removeListener(this.bestiaryCollectionContentListener);
+                oldValue.getCollection(CollectionType.SPELLS).removeListener(this.bestiaryCollectionContentListener);
             }
             if (newValue == null) {
                 return;
             }
 
-            newValue.getCollection(CollectionType.BESTIARY).addListener(this.bestiaryCollectionContentListener);
-            collectionItems.setAll(newValue.getCollection(CollectionType.BESTIARY)
+            newValue.getCollection(CollectionType.SPELLS).addListener(this.bestiaryCollectionContentListener);
+            collectionItems.setAll(newValue.getCollection(CollectionType.SPELLS)
                 .parallelStream()
-                .map(BestiaryEntry::new)
+                .map(SpellEntry::new)
                 .collect(Collectors.toList()));
         });
     }
@@ -144,11 +145,11 @@ public class CollectionsBestiaryController implements Initializable, Collections
 
     @Override
     public void requestAddEntryToCollection(ItemCollection collection) {
-        final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(mobRegistry);
+        final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(spellRegistry);
         entryOptional.ifPresent(choiceEntry -> {
             final String itemName = choiceEntry.getName();
             final String collectionName = collection.getName();
-            collectionService.addItemToCollection(collection, CollectionType.BESTIARY, choiceEntry.getId())
+            collectionService.addItemToCollection(collection, CollectionType.SPELLS, choiceEntry.getId())
                 .exceptionally(throwable -> {
                     notificationProvider.showNotification(new Notification(String.format(translator.translate(
                         R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
@@ -167,7 +168,7 @@ public class CollectionsBestiaryController implements Initializable, Collections
     @Override
     public void requestRemoveSelectedEntryFromCollection(ItemCollection collection) {
         final String id = selectedEntry.get();
-        collectionService.removeItemFromCollection(collection, CollectionType.BESTIARY, id);
+        collectionService.removeItemFromCollection(collection, CollectionType.SPELLS, id);
     }
 
     @Override
@@ -175,19 +176,20 @@ public class CollectionsBestiaryController implements Initializable, Collections
 
     }
 
-    public final class BestiaryEntry {
+    public final class SpellEntry {
         private final String id;
         public final StringProperty name = new SimpleStringProperty(this, "name");
-        public final ObjectProperty<Rule> ruleType = new SimpleObjectProperty<>(this, "ruleType");
+        public final ObjectProperty<SpellProfessionType> type = new SimpleObjectProperty<>(this, "type");
         public final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
 
-        public BestiaryEntry(String id) {
+        public SpellEntry(String id) {
             this.id = id;
-            final Optional<Mob> optionalMob = bestiaryService.selectOnline(mob -> mob.getId().equals(id));
-            optionalMob.ifPresent(mob -> {
-                setName(mob.getName());
-                setRuleType(mob.getRulesType());
-                ByteArrayInputStream bais = new ByteArrayInputStream(mob.getImage());
+            final Optional<Spell> optionalSpell = spellService
+                .selectOnline(spell -> spell.getId().equals(id));
+            optionalSpell.ifPresent(spell -> {
+                setName(spell.getName());
+                setType(spell.getType());
+                ByteArrayInputStream bais = new ByteArrayInputStream(spell.getImage());
                 setImage(new Image(bais));
             });
         }
@@ -208,16 +210,16 @@ public class CollectionsBestiaryController implements Initializable, Collections
             this.name.set(name);
         }
 
-        public Rule getRuleType() {
-            return ruleType.get();
+        public SpellProfessionType getType() {
+            return type.get();
         }
 
-        public ObjectProperty<Rule> ruleTypeProperty() {
-            return ruleType;
+        public ObjectProperty<SpellProfessionType> typeProperty() {
+            return type;
         }
 
-        public void setRuleType(Rule ruleType) {
-            this.ruleType.set(ruleType);
+        public void setType(SpellProfessionType type) {
+            this.type.set(type);
         }
 
         public Image getImage() {
@@ -230,26 +232,6 @@ public class CollectionsBestiaryController implements Initializable, Collections
 
         public void setImage(Image image) {
             this.image.set(image);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            BestiaryEntry that = (BestiaryEntry) o;
-            return Objects.equals(getName(), that.getName()) &&
-                Objects.equals(getRuleType(), that.getRuleType()) &&
-                Objects.equals(getImage(), that.getImage());
-        }
-
-        @Override
-        public int hashCode() {
-
-            return Objects.hash(getName(), getRuleType(), getImage());
         }
     }
 }
