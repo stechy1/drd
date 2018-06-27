@@ -66,10 +66,10 @@ public final class MeleWeaponDao extends AdvancedDatabaseService<MeleWeapon> {
      *
      * @param db {@link Database} Databáze, která obsahuje data o hrdinech
      */
-    public MeleWeaponDao(Database db) {
+    public MeleWeaponDao(Database db, ItemRegistry itemRegistry) {
         super(db);
 
-        ItemRegistry.getINSTANCE().addColection(items);
+        itemRegistry.addColection(items);
         OnlineItemRegistry.getINSTANCE().addColection(onlineDatabase);
     }
 

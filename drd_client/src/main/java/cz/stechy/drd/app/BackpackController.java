@@ -12,6 +12,7 @@ import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.service.HeroService;
+import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -59,6 +60,7 @@ public class BackpackController extends BaseController implements TooltipTransla
 
     private final HeroService heroService;
     private final Translator translator;
+    private final ItemRegistry itemRegistry;
     private ItemContainer itemContainer;
     // Velikost inventáře = počet slotů v inventáři
     private int backpackSize;
@@ -68,9 +70,11 @@ public class BackpackController extends BaseController implements TooltipTransla
 
     // region Constructors
 
-    public BackpackController(HeroService heroService, Translator translator) {
+    public BackpackController(HeroService heroService, Translator translator,
+        ItemRegistry itemRegistry) {
         this.heroService = heroService;
         this.translator = translator;
+        this.itemRegistry = itemRegistry;
     }
 
     // endregion
@@ -134,7 +138,7 @@ public class BackpackController extends BaseController implements TooltipTransla
         backpackSize = bundle.getInt(BACKPACK_SIZE);
         inventoryId = bundle.getString(INVENTORY_ID);
         setTitle(bundle.getString(ITEM_NAME));
-        itemContainer = new FlowItemContainer(this, backpackSize);
+        itemContainer = new FlowItemContainer(itemRegistry, this, backpackSize);
         container.setContent(itemContainer.getGraphics());
         itemContainer.setItemClickListener(this::itemClickHandler);
         itemContainer.setInventoryFilter(this::backpackFilter);

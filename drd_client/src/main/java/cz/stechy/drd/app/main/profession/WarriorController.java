@@ -6,7 +6,6 @@ import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.profession.Warior;
 import cz.stechy.drd.model.entity.mob.Mob;
-import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.model.item.WeaponBase;
 import cz.stechy.drd.service.ItemRegistry;
@@ -54,6 +53,7 @@ public class WarriorController implements IProfessionController, Initializable {
     private final ObservableList<Mob> mobs = FXCollections.observableArrayList();
     private final ObservableList<WeaponBase> items = FXCollections.observableArrayList();
     private final BestiaryDao bestiary;
+    private final ItemRegistry itemRegistry;
 
     private String successText;
     private String failText;
@@ -64,8 +64,9 @@ public class WarriorController implements IProfessionController, Initializable {
 
     // region Constructors
 
-    public WarriorController(BestiaryDao bestiaryDao) {
+    public WarriorController(BestiaryDao bestiaryDao, ItemRegistry itemRegistry) {
         this.bestiary = bestiaryDao;
+        this.itemRegistry = itemRegistry;
     }
 
     // endregion
@@ -92,8 +93,8 @@ public class WarriorController implements IProfessionController, Initializable {
             new MaxActValue(1, Integer.MAX_VALUE, 1));
 
         bestiary.selectAllAsync().thenAccept(mobList -> ObservableMergers.mergeList(mobs, mobList));
-        final List<WeaponBase> list = ItemRegistry.getINSTANCE().getRegistry().values().stream()
-            .filter(databaseItem -> ItemType.isSword(((ItemBase) databaseItem).getItemType()))
+        final List<WeaponBase> list = itemRegistry.getRegistry().values().stream()
+            .filter(databaseItem -> ItemType.isSword(databaseItem.getItemType()))
             .map(databaseItem -> (WeaponBase) databaseItem).collect(
                 Collectors.toList());
         items.setAll(list);

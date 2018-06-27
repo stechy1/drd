@@ -5,6 +5,7 @@ import cz.stechy.drd.app.fight.Battlefield.BattlefieldAction;
 import cz.stechy.drd.dao.InventoryDao;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.service.HeroService;
+import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -69,6 +70,7 @@ public class FightController extends BaseController implements Initializable {
     // endregion
 
     private final HeroService heroService;
+    private final ItemRegistry itemRegistry;
     private final Hero hero;
 
     private final BooleanProperty isFighting = new SimpleBooleanProperty();
@@ -82,8 +84,9 @@ public class FightController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public FightController(HeroService heroService) {
+    public FightController(HeroService heroService, ItemRegistry itemRegistry) {
         this.heroService = heroService;
+        this.itemRegistry = itemRegistry;
         if (heroService.getHero() == null) {
             this.hero = null;
         } else {
@@ -181,7 +184,7 @@ public class FightController extends BaseController implements Initializable {
                 inventoryService.selectAsync(InventoryDao.EQUIP_INVENTORY_FILTER)
                     .thenCompose(inventoryService::getInventoryContentAsync))
             .thenAccept(equipContent -> {
-                battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent),
+                battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent, itemRegistry),
                     fightOpponentController.getMob());
                 battlefield.setFightFinishListener(this::fightFinishHandler);
                 battlefield.setOnActionVisualizeListener(this::fightVisualizeHandler);

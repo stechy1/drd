@@ -7,6 +7,7 @@ import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.inventory.ItemSlotHelper;
 import cz.stechy.drd.model.inventory.TooltipTranslator;
+import cz.stechy.drd.service.ItemRegistry;
 import java.util.function.Predicate;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -63,10 +64,11 @@ public class EquipItemContainer extends ItemContainer {
     /**
      * Inicializuje kontainer pro výbavu postavy.
      *
+     * @param itemRegistry
      * @param tooltipTranslator {@link TooltipTranslator}
      */
-    public EquipItemContainer(TooltipTranslator tooltipTranslator) {
-        super(tooltipTranslator, CAPACITY);
+    public EquipItemContainer(ItemRegistry itemRegistry, TooltipTranslator tooltipTranslator) {
+        super(itemRegistry, tooltipTranslator, CAPACITY);
 
         init();
     }

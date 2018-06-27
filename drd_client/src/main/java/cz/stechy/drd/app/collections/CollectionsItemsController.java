@@ -4,6 +4,7 @@ import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.model.item.ItemCollection.CollectionType;
+import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.drd.service.ItemResolver;
 import cz.stechy.drd.service.ItemResolver.WithItemBase;
 import cz.stechy.drd.service.OnlineItemRegistry;
@@ -69,10 +70,11 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
 
     // region Constructors
 
-    public CollectionsItemsController(ItemResolver itemResolver, Translator translator) {
+    public CollectionsItemsController(ItemResolver itemResolver, ItemRegistry itemRegistry,
+        Translator translator) {
         this.itemResolver = itemResolver;
         this.translator = translator;
-        this.itemRegistry.setAll(DialogUtils.getItemRegistryChoices());
+        this.itemRegistry.setAll(DialogUtils.getItemChoices(itemRegistry.getRegistry().values()));
     }
 
     // endregion

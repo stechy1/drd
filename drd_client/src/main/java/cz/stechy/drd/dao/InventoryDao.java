@@ -8,6 +8,7 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord;
 import cz.stechy.drd.model.inventory.InventoryType;
+import cz.stechy.drd.service.ItemRegistry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public final class InventoryDao extends BaseDatabaseService<Inventory> {
     private static boolean tableInitialized = false;
     // Hrdina
     private final Hero hero;
+    private final ItemRegistry itemRegistry;
     // Mapa referencí na správce obsahů jednotlivých inventářů
     private final Map<Inventory, InventoryContentDao> inventoryContentMap = new HashMap<>();
 
@@ -63,14 +65,15 @@ public final class InventoryDao extends BaseDatabaseService<Inventory> {
 
     /**
      * Inicializuje správce inventářů pro vybraného hrdinu
-     *
-     * @param db {@link Database}
+     *  @param db {@link Database}
      * @param hero {@link Hero} Hrdina, pro kterého se má vybrat inventář
+     * @param itemRegistry
      */
-    public InventoryDao(Database db, Hero hero) {
+    public InventoryDao(Database db, Hero hero, ItemRegistry itemRegistry) {
         super(db);
 
         this.hero = hero;
+        this.itemRegistry = itemRegistry;
 
         createTableAsync().join();
 //        try {
@@ -230,7 +233,7 @@ public final class InventoryDao extends BaseDatabaseService<Inventory> {
         return selectAsync(filter)
             .thenCompose(inventoryResult -> {
                 final InventoryContentDao inventoryContentDao = new InventoryContentDao(db,
-                    inventoryResult);
+                    inventoryResult, itemRegistry);
                 inventoryContentMap.put(inventoryResult, inventoryContentDao);
                 return inventoryContentDao.selectAllAsync()
                     .thenApply(inventoryRecords -> inventoryContentDao);

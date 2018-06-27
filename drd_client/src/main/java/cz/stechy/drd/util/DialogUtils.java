@@ -3,10 +3,11 @@ package cz.stechy.drd.util;
 import cz.stechy.drd.model.WithImage;
 import cz.stechy.drd.model.WithSameProperties;
 import cz.stechy.drd.model.entity.mob.Mob;
+import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.spell.Spell;
-import cz.stechy.drd.service.ItemRegistry;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -86,22 +87,27 @@ public final class DialogUtils {
         return ImageUtils.resizeImageRaw(image, width, height);
     }
 
-    public static List<ChoiceEntry> getItemRegistryChoices() {
-        return ItemRegistry.getINSTANCE().getRegistry().entrySet()
-            .stream()
-            .map(entry -> new ChoiceEntry((WithSameProperties) entry.getValue()))
+//    public static List<ChoiceEntry> getItemRegistryChoices() {
+//        return ItemRegistry.getINSTANCE().getRegistry().entrySet()
+//            .stream()
+//            .map(entry -> new ChoiceEntry((WithSameProperties) entry.getValue()))
+//            .collect(Collectors.toList());
+//    }
+    public static List<ChoiceEntry> getItemChoices(Collection<ItemBase> items) {
+        return items.stream()
+            .map(ChoiceEntry::new)
             .collect(Collectors.toList());
     }
 
-    public static List<ChoiceEntry> getMobsChoices(List<Mob> mobs) {
+    public static List<ChoiceEntry> getMobsChoices(Collection<Mob> mobs) {
         return mobs.stream()
-            .map(mob -> new ChoiceEntry(mob))
+            .map(ChoiceEntry::new)
             .collect(Collectors.toList());
     }
 
-    public static List<ChoiceEntry> getSpellChoices(List<Spell> spells) {
+    public static List<ChoiceEntry> getSpellChoices(Collection<Spell> spells) {
         return spells.stream()
-            .map(spell -> new ChoiceEntry(spell))
+            .map(ChoiceEntry::new)
             .collect(Collectors.toList());
     }
 

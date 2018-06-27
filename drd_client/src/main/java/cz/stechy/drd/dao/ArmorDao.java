@@ -69,10 +69,10 @@ public final class ArmorDao extends AdvancedDatabaseService<Armor> {
      *
      * @param db {@link Database}
      */
-    public ArmorDao(Database db) {
+    public ArmorDao(Database db, ItemRegistry itemRegistry) {
         super(db);
 
-        ItemRegistry.getINSTANCE().addColection(items);
+        itemRegistry.addColection(items);
         OnlineItemRegistry.getINSTANCE().addColection(onlineDatabase);
     }
 

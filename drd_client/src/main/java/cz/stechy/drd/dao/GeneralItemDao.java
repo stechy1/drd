@@ -58,10 +58,10 @@ public final class GeneralItemDao extends AdvancedDatabaseService<GeneralItem> {
      *
      * @param db {@link Database}
      */
-    public GeneralItemDao(Database db) {
+    public GeneralItemDao(Database db, ItemRegistry itemRegistry) {
         super(db);
 
-        ItemRegistry.getINSTANCE().addColection(items);
+        itemRegistry.addColection(items);
         OnlineItemRegistry.getINSTANCE().addColection(onlineDatabase);
     }
 

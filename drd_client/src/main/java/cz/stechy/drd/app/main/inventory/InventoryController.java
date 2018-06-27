@@ -19,6 +19,7 @@ import cz.stechy.drd.model.inventory.container.GridItemContainer;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.service.HeroService;
+import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -50,9 +51,9 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
     // endregion
 
     // Základní inventář
-    private final ItemContainer mainItemContainer = new GridItemContainer(this, 20, 5, 4);
+    private final ItemContainer mainItemContainer;
     // Inventář s výbavou hrdiny
-    private final ItemContainer equipItemContainer = new EquipItemContainer(this);
+    private final ItemContainer equipItemContainer;
     private final Translator translator;
 
     private HeroService heroService;
@@ -63,9 +64,13 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
 
     // region Constructors
 
-    public InventoryController(Translator translator, HeroService heroService) {
+    public InventoryController(Translator translator, ItemRegistry itemRegistry,
+        HeroService heroService) {
         this.translator = translator;
         this.heroService = heroService;
+
+        this.mainItemContainer = new GridItemContainer(itemRegistry, this, 20, 5, 4);
+        this.equipItemContainer = new EquipItemContainer(itemRegistry, this);
 
         mainItemContainer.setItemClickListener(this::itemClickHandler);
         equipItemContainer.setItemClickListener(this::itemClickHandler);

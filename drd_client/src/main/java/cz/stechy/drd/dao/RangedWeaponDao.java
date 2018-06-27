@@ -68,10 +68,10 @@ public final class RangedWeaponDao extends AdvancedDatabaseService<RangedWeapon>
      *
      * @param db {@link Database} Databáze, která obsahuje data o hrdinech
      */
-    public RangedWeaponDao(Database db) {
+    public RangedWeaponDao(Database db, ItemRegistry itemRegistry) {
         super(db);
 
-        ItemRegistry.getINSTANCE().addColection(items);
+        itemRegistry.addColection(items);
         OnlineItemRegistry.getINSTANCE().addColection(onlineDatabase);
     }
 

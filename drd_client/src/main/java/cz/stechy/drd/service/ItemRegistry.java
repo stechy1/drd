@@ -1,6 +1,7 @@
 package cz.stechy.drd.service;
 
 import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.item.ItemBase;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,13 +13,12 @@ import javafx.collections.ObservableMap;
 /**
  * Registr všech offline itemů
  */
+@Singleton
 public final class ItemRegistry {
 
     // region Variables
 
-    private static ItemRegistry INSTANCE;
-
-    private final ObservableMap<String, DatabaseItem> registry = FXCollections.observableHashMap();
+    private final ObservableMap<String, ItemBase> registry = FXCollections.observableHashMap();
 
     // endregion
 
@@ -27,19 +27,7 @@ public final class ItemRegistry {
     /**
      * Privátní konstruktor k zabránění vytvoření instance
      */
-    private ItemRegistry() {
-    }
-
-    // endregion
-
-    // region Public static methods
-
-    public static synchronized ItemRegistry getINSTANCE() {
-        if (INSTANCE == null) {
-            INSTANCE = new ItemRegistry();
-        }
-
-        return INSTANCE;
+    public ItemRegistry() {
     }
 
     // endregion
@@ -57,6 +45,7 @@ public final class ItemRegistry {
                 this.registry.putAll(
                     c.getAddedSubList()
                         .stream()
+                        .map(o -> (ItemBase) o)
                         .collect(Collectors
                             .toMap(DatabaseItem::getId, databaseItem -> databaseItem)));
                 c.getRemoved().forEach(o -> this.registry.remove(o.getId()));
@@ -64,6 +53,7 @@ public final class ItemRegistry {
         });
         this.registry.putAll(
             items.stream()
+                .map(o -> (ItemBase) o)
                 .collect(Collectors
                     .toMap(DatabaseItem::getId, databaseItem -> databaseItem)));
     }
@@ -75,10 +65,10 @@ public final class ItemRegistry {
      * @return {@link ItemBase}
      */
     public Optional<ItemBase> getItemById(String id) {
-        return Optional.ofNullable((ItemBase) registry.get(id));
+        return Optional.ofNullable(registry.get(id));
     }
 
-    public ObservableMap<String, DatabaseItem> getRegistry() {
+    public ObservableMap<String, ItemBase> getRegistry() {
         return registry;
     }
 

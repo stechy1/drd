@@ -6,6 +6,7 @@ import cz.stechy.drd.db.BaseDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.entity.hero.Hero;
+import cz.stechy.drd.service.ItemRegistry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ public final class HeroDao extends BaseDatabaseService<Hero> {
 
     private static boolean tableInitialized = false;
 
+    private final ItemRegistry itemRegistry;
     // Správce inventáře pro hrdinu
     private InventoryDao inventoryDao;
 
@@ -79,9 +81,11 @@ public final class HeroDao extends BaseDatabaseService<Hero> {
      * Vytvoří nového správce hrdinů
      *
      * @param db {@link Database} Databáze, která obsahuje data o hrdinech
+     * @param itemRegistry
      */
-    public HeroDao(Database db) {
+    public HeroDao(Database db, ItemRegistry itemRegistry) {
         super(db);
+        this.itemRegistry = itemRegistry;
     }
 
     // endregion
@@ -204,7 +208,7 @@ public final class HeroDao extends BaseDatabaseService<Hero> {
      */
     public CompletableFuture<InventoryDao> getInventoryAsync(Hero hero) {
         if (inventoryDao == null) {
-            inventoryDao = new InventoryDao(db, hero);
+            inventoryDao = new InventoryDao(db, hero, itemRegistry);
         }
 
         return inventoryDao.selectAllAsync().thenApply(inventories -> inventoryDao);

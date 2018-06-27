@@ -71,6 +71,7 @@ public final class InventoryContentDao extends BaseDatabaseService<InventoryReco
     private static boolean tableInitialized = false;
     // Inventář
     private final Inventory inventory;
+    private final ItemRegistry itemRegistry;
     private int[] occupiedSlots;
 
     // endregion
@@ -83,9 +84,10 @@ public final class InventoryContentDao extends BaseDatabaseService<InventoryReco
      * @param db Databáze, do které se ukládají informace
      * @param inventory Inventář, ke kterému je přidružen obsah
      */
-    InventoryContentDao(Database db, Inventory inventory) {
+    InventoryContentDao(Database db, Inventory inventory, ItemRegistry itemRegistry) {
         super(db);
 
+        this.itemRegistry = itemRegistry;
         this.inventory = inventory;
         this.occupiedSlots = new int[inventory.getCapacity()];
         createTableAsync().join();
@@ -131,8 +133,7 @@ public final class InventoryContentDao extends BaseDatabaseService<InventoryReco
      * @return Cena předmětů v zadaném záznamu
      */
     private int mapper(InventoryRecord value) {
-        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
-            .getItemById(value.getItemId());
+        final Optional<ItemBase> itemOptional = itemRegistry.getItemById(value.getItemId());
         return itemOptional.map(itemBase -> value.getAmmount() * itemBase.getWeight()).orElse(0);
     }
 
@@ -222,8 +223,7 @@ public final class InventoryContentDao extends BaseDatabaseService<InventoryReco
             .filter(record -> Objects.equals(record, inventoryRecord))
             .findFirst();
 
-        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
-            .getItemById(inventoryRecord.getItemId());
+        final Optional<ItemBase> itemOptional = itemRegistry.getItemById(inventoryRecord.getItemId());
         if (!itemOptional.isPresent()) {
             return CompletableFuture.completedFuture(null)
                 .thenApply(o -> {

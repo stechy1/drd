@@ -56,10 +56,10 @@ public final class BackpackDao extends AdvancedDatabaseService<Backpack> {
 
     // region Constructors
 
-    public BackpackDao(Database db) {
+    public BackpackDao(Database db, ItemRegistry itemRegistry) {
         super(db);
 
-        ItemRegistry.getINSTANCE().addColection(items);
+        itemRegistry.addColection(items);
         OnlineItemRegistry.getINSTANCE().addColection(onlineDatabase);
     }
 
