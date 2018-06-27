@@ -1,8 +1,8 @@
 package cz.stechy.drd.util;
 
-import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.model.WithImage;
-import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.model.WithSameProperties;
+import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.service.ItemRegistry;
 import java.io.File;
 import java.io.IOException;
@@ -88,14 +88,20 @@ public final class DialogUtils {
     public static List<ChoiceEntry> getItemRegistryChoices() {
         return ItemRegistry.getINSTANCE().getRegistry().entrySet()
             .stream()
-            .map(entry -> new ChoiceEntry(entry.getValue()))
+            .map(entry -> new ChoiceEntry((WithSameProperties) entry.getValue()))
+            .collect(Collectors.toList());
+    }
+
+    public static List<ChoiceEntry> getMobsChoices(List<Mob> mobs) {
+        return mobs.stream()
+            .map(mob -> new ChoiceEntry(mob))
             .collect(Collectors.toList());
     }
 
     public static Optional<ChoiceEntry> selectItem(List<ChoiceEntry> items) {
         final ChoiceDialog<ChoiceEntry> dialog = new ChoiceDialog<>(null, items);
-        dialog.setTitle("Přidat item");
-        dialog.setHeaderText("Výběr itemu");
+        dialog.setTitle("Výběr záznamu");
+        dialog.setHeaderText("Vyberte ze seznamu");
         dialog.setContentText("Vyberte...");
         // Trocha čarování k získání reference na combobox abych ho mohl upravit
         @SuppressWarnings("unchecked") final ComboBox<ChoiceEntry> comboBox = (ComboBox) (((GridPane) dialog
@@ -117,14 +123,13 @@ public final class DialogUtils {
         final StringProperty id = new SimpleStringProperty();
         final StringProperty name = new SimpleStringProperty();
         final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
-        final ItemBase itemBase;
+        final WithSameProperties entry;
 
-        public ChoiceEntry(DatabaseItem databaseItem) {
-            assert databaseItem instanceof ItemBase;
-            itemBase = (ItemBase) databaseItem;
-            this.id.setValue(itemBase.getId());
-            this.name.setValue(itemBase.getName());
-            imageRaw.set(itemBase.getImage());
+        public ChoiceEntry(WithSameProperties entry) {
+            this.entry = entry;
+            this.id.setValue(entry.getId());
+            this.name.setValue(entry.getName());
+            imageRaw.set(entry.getImage());
         }
 
         @Override
@@ -173,8 +178,8 @@ public final class DialogUtils {
             this.imageRaw.set(imageRaw);
         }
 
-        public ItemBase getItemBase() {
-            return itemBase;
+        public WithSameProperties getBase() {
+            return entry;
         }
     }
 

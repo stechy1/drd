@@ -13,6 +13,7 @@ import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.db.base.OnlineDatabase;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.item.ItemCollection;
+import cz.stechy.drd.model.item.ItemCollection.CollectionType;
 import cz.stechy.drd.net.ClientCommunicator;
 import cz.stechy.drd.net.ConnectionState;
 import cz.stechy.drd.net.OnDataReceivedListener;
@@ -89,11 +90,12 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
     // region Public methods
 
-    public CompletableFuture<Void> addItemToCollection(ItemCollection collection, String id) {
+    public CompletableFuture<Void> addItemToCollection(ItemCollection collection,
+        CollectionType type, String id) {
         return CompletableFuture.supplyAsync(() -> {
             workingId = collection.getId();
 
-            collection.getItems().add(id);
+            collection.getCollection(type).add(id);
             communicator.sendMessage(new DatabaseMessage(MessageSource.CLIENT,
                 new DatabaseMessageCRUD(toStringItemMap(collection),
                     getFirebaseChildName(),
@@ -105,7 +107,7 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
             }
 
             if (!success) {
-                collection.getItems().remove(id);
+                collection.getCollection(type).remove(id);
                 throw new RuntimeException("Item se nepodařilo přidat do kolekce.");
             }
 
@@ -114,10 +116,11 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
             .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
     }
 
-    public CompletableFuture<Void> removeItemFromCollection(ItemCollection collection, String id) {
+    public CompletableFuture<Void> removeItemFromCollection(ItemCollection collection,
+        CollectionType type, String id) {
         return CompletableFuture.supplyAsync(() -> {
             workingId = collection.getId();
-            collection.getItems().remove(id);
+            collection.getCollection(type).remove(id);
             communicator.sendMessage(new DatabaseMessage(MessageSource.CLIENT,
                 new DatabaseMessageCRUD(toStringItemMap(collection),
                     getFirebaseChildName(),
@@ -128,7 +131,7 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
             } catch (InterruptedException ignored) {}
 
             if (!success) {
-                collection.getItems().add(id);
+                collection.getCollection(type).add(id);
                 throw new RuntimeException("Item se nepodařilo smazat z kolekce.");
             }
 
@@ -165,9 +168,9 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
         map.put(COLUMN_ID, item.getId());
         map.put(COLUMN_NAME, item.getName());
         map.put(COLUMN_AUTHOR, item.getAuthor());
-        map.put(COLUMN_ITEMS, item.getItems().stream().collect(Collectors.toMap(o -> o, o -> o)));
-        map.put(COLUMN_BESTIARY, item.getBestiary().stream().collect(Collectors.toMap(o -> o, o -> o)));
-        map.put(COLUMN_SPELLS, item.getSpells().stream().collect(Collectors.toMap(o -> o, o -> o)));
+        map.put(COLUMN_ITEMS, item.getCollection(CollectionType.ITEMS).stream().collect(Collectors.toMap(o -> o, o -> o)));
+        map.put(COLUMN_BESTIARY, item.getCollection(CollectionType.BESTIARY).stream().collect(Collectors.toMap(o -> o, o -> o)));
+        map.put(COLUMN_SPELLS, item.getCollection(CollectionType.SPELLS).stream().collect(Collectors.toMap(o -> o, o -> o)));
         return map;
     }
 

@@ -72,11 +72,12 @@
                  <fx:include source="collections_items.fxml" fx:id="tableCollectionsItems" />
                </content>
              </TitledPane>
-             <TitledPane animated="false" text="Kouzla">
+             <TitledPane animated="false" text="Nestvůry">
                <content>
+                 <fx:include source="collections_bestiary.fxml" fx:id="tableCollectionsBestiary"/>
                </content>
              </TitledPane>
-             <TitledPane animated="false" text="Nestvůry">
+             <TitledPane animated="false" text="Kouzla">
                <content>
                </content>
              </TitledPane>

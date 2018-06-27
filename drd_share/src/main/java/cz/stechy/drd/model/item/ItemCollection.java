@@ -87,19 +87,35 @@ public class ItemCollection {
         this.author.set(author);
     }
 
-    public ObservableList<String> getItems() {
-        return items;
-    }
-
-    public ObservableList<String> getBestiary() {
-        return bestiary;
-    }
-
-    public ObservableList<String> getSpells() {
-        return spells;
+//    public ObservableList<String> getItems() {
+//        return items;
+//    }
+//
+//    public ObservableList<String> getBestiary() {
+//        return bestiary;
+//    }
+//
+//    public ObservableList<String> getSpells() {
+//        return spells;
+//    }
+    public ObservableList<String> getCollection(CollectionType type) {
+        switch (type) {
+            case ITEMS:
+                return items;
+            case BESTIARY:
+                return bestiary;
+            case SPELLS:
+                return spells;
+            default:
+                throw new RuntimeException("Neplatný argument");
+        }
     }
 
     // endregion
+
+    public enum CollectionType {
+        ITEMS, BESTIARY, SPELLS
+    }
 
     public static final class Builder {
 

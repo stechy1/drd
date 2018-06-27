@@ -231,6 +231,10 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
         });
     }
 
+    public Optional<T> select(Predicate<? super T> filter) {
+        return items.stream().filter(filter).findFirst();
+    }
+
     @Override
     public CompletableFuture<ObservableList<T>> selectAllAsync() {
         if (items.isEmpty() && !selectAllCalled) {

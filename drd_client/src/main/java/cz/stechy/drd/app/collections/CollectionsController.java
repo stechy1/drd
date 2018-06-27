@@ -55,9 +55,13 @@ public class CollectionsController extends BaseController implements Initializab
 
     @FXML
     private CollectionsItemsController tableCollectionsItemsController;
+    @FXML
+    private CollectionsBestiaryController tableCollectionsBestiaryController;
 
     @FXML
     private TableView tableCollectionsItems;
+    @FXML
+    private TableView tableCollectionsBestiary;
 
     @FXML
     private ListView<ItemCollection> lvCollections;
@@ -77,7 +81,7 @@ public class CollectionsController extends BaseController implements Initializab
     // endregion
 
     private final ObservableList<ItemCollection> collections = FXCollections.observableArrayList();
-    private final List<String> translatedItemType = new ArrayList<>(Arrays.asList("Předměty", "Kouzla", "Nestvůry"));
+    private final List<String> translatedItemType = new ArrayList<>(Arrays.asList("Předměty", "Nestvůry", "Kouzla"));
 
     private final ObjectProperty<ItemCollection> selectedCollection = new SimpleObjectProperty<>(
         this, "selectedCollection", null);
@@ -110,7 +114,8 @@ public class CollectionsController extends BaseController implements Initializab
         this.title = resources.getString(R.Translate.COLLECTIONS_TITLE);
 
         this.controllers = new CollectionsControllerChild[]{
-            tableCollectionsItemsController
+            tableCollectionsItemsController,
+            tableCollectionsBestiaryController
         };
 
         accordionCollectionsContentType.expandedPaneProperty()

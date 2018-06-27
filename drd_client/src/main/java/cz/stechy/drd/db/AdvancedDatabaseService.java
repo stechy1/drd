@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
+import java.util.function.Predicate;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -186,6 +187,10 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     // endregion
 
     // region Public methods
+
+    public Optional<T> selectOnline(Predicate<T> filter) {
+        return onlineDatabase.stream().filter(filter).findFirst();
+    }
 
     @Override
     public CompletableFuture<ObservableList<T>> selectAllAsync() {

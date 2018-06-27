@@ -1,14 +1,12 @@
 package cz.stechy.drd.app.collections;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.dao.BestiaryDao;
 import cz.stechy.drd.dao.ItemCollectionDao;
-import cz.stechy.drd.model.Money;
-import cz.stechy.drd.model.item.ItemBase;
+import cz.stechy.drd.model.Rule;
+import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.model.item.ItemCollection.CollectionType;
-import cz.stechy.drd.service.ItemResolver;
-import cz.stechy.drd.service.ItemResolver.WithItemBase;
-import cz.stechy.drd.service.OnlineItemRegistry;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
@@ -16,13 +14,12 @@ import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -37,12 +34,12 @@ import javafx.scene.image.Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class CollectionsItemsController implements Initializable, CollectionsControllerChild {
+public class CollectionsBestiaryController implements Initializable, CollectionsControllerChild {
 
     // region Constants
 
     @SuppressWarnings("unused")
-    private static final Logger LOGGER = LoggerFactory.getLogger(CollectionsItemsController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CollectionsBestiaryController.class);
 
     // endregion
 
@@ -51,21 +48,23 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
     // region FXML
 
     @FXML
-    private TableView<ItemEntry> tableCollectionItems;
+    private TableView<BestiaryEntry> tableCollectionsBestiary;
     @FXML
-    private TableColumn<ItemEntry, Image> columnImage;
+    private TableColumn<BestiaryEntry, Image> columnImage;
     @FXML
-    private TableColumn<ItemEntry, Integer> columnWeight;
+    private TableColumn<BestiaryEntry, String> columnName;
     @FXML
-    private TableColumn<ItemEntry, Money> columnPrice;
+    private TableColumn<BestiaryEntry, Rule> columnRulesType;
 
     // endregion
-    private final ObservableList<ItemEntry> collectionItems = FXCollections.observableArrayList();
-    private final ObservableList<ChoiceEntry> itemRegistry = FXCollections.observableArrayList();
-    private final ItemCollectionDao collectionService;
-    private final ItemResolver itemResolver;
-    private final Translator translator;
 
+    private final ObservableList<BestiaryEntry> collectionItems = FXCollections.observableArrayList();
+    private final ObservableList<ChoiceEntry> mobRegistry = FXCollections.observableArrayList();
+
+    private final ItemCollectionDao collectionService;
+    private final Translator translator;
+    // Nemůžu dát "final", protože by mi to brečelo v bestiaryCollectionContentListener
+    private BestiaryDao bestiaryService;
     private StringProperty selectedEntry;
     private CollectionsNotificationProvider notificationProvider;
 
@@ -73,22 +72,24 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
 
     // region Constructors
 
-    public CollectionsItemsController(ItemCollectionDao collectionService,
-        ItemResolver itemResolver, Translator translator) {
+    public CollectionsBestiaryController(ItemCollectionDao collectionService,
+        Translator translator, BestiaryDao bestiaryService) {
         this.collectionService = collectionService;
-        this.itemResolver = itemResolver;
         this.translator = translator;
-        this.itemRegistry.setAll(DialogUtils.getItemRegistryChoices());
+        this.bestiaryService = bestiaryService;
+
+        bestiaryService.selectAllAsync()
+            .thenAccept(mobs -> this.mobRegistry.setAll(DialogUtils.getMobsChoices(mobs)));
     }
 
     // endregion
 
     // region Private methods
 
-    private ListChangeListener<? super String> itemCollectionContentListener = c -> {
+    private ListChangeListener<? super String> bestiaryCollectionContentListener = c -> {
         while (c.next()) {
             collectionItems.addAll(c.getAddedSubList().stream()
-                .map(ItemEntry::new)
+                .map(BestiaryEntry::new)
                 .collect(Collectors.toList()));
             c.getRemoved()
                 .forEach(o -> collectionItems.stream()
@@ -102,13 +103,11 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        tableCollectionItems.setFixedCellSize(40);
-        tableCollectionItems.setItems(collectionItems);
+        tableCollectionsBestiary.setFixedCellSize(40);
+        tableCollectionsBestiary.setItems(collectionItems);
         columnImage.setCellFactory(param -> CellUtils.forImage());
-        columnWeight.setCellFactory(param -> CellUtils.forWeight());
-        columnPrice.setCellFactory(param -> CellUtils.forMoney());
 
-        tableCollectionItems.getSelectionModel().selectedItemProperty()
+        tableCollectionsBestiary.getSelectionModel().selectedItemProperty()
             .addListener((observableValue, oldValue, newValue) -> {
                 selectedEntry.setValue(newValue == null ? null : newValue.getId());
             });
@@ -124,16 +123,16 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
         selectedCollection.addListener((observableValue, oldValue, newValue) -> {
             collectionItems.clear();
             if (oldValue != null) {
-                oldValue.getCollection(CollectionType.ITEMS).removeListener(this.itemCollectionContentListener);
+                oldValue.getCollection(CollectionType.BESTIARY).removeListener(this.bestiaryCollectionContentListener);
             }
             if (newValue == null) {
                 return;
             }
 
-            newValue.getCollection(CollectionType.ITEMS).addListener(this.itemCollectionContentListener);
-            collectionItems.setAll(newValue.getCollection(CollectionType.ITEMS)
+            newValue.getCollection(CollectionType.BESTIARY).addListener(this.bestiaryCollectionContentListener);
+            collectionItems.setAll(newValue.getCollection(CollectionType.BESTIARY)
                 .parallelStream()
-                .map(ItemEntry::new)
+                .map(BestiaryEntry::new)
                 .collect(Collectors.toList()));
         });
     }
@@ -145,11 +144,11 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
 
     @Override
     public void requestAddEntryToCollection(ItemCollection collection) {
-        final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(itemRegistry);
+        final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(mobRegistry);
         entryOptional.ifPresent(choiceEntry -> {
             final String itemName = choiceEntry.getName();
             final String collectionName = collection.getName();
-            collectionService.addItemToCollection(collection, CollectionType.ITEMS, choiceEntry.getId())
+            collectionService.addItemToCollection(collection, CollectionType.BESTIARY, choiceEntry.getId())
                 .exceptionally(throwable -> {
                     notificationProvider.showNotification(new Notification(String.format(translator.translate(
                         R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
@@ -168,44 +167,33 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
     @Override
     public void requestRemoveSelectedEntryFromCollection(ItemCollection collection) {
         final String id = selectedEntry.get();
-        collectionService.removeItemFromCollection(collection, CollectionType.ITEMS, id);
+        collectionService.removeItemFromCollection(collection, CollectionType.BESTIARY, id);
     }
 
     @Override
     public void mergeEntries() {
-        itemResolver.merge(collectionItems)
-            .exceptionally(throwable -> {
-                notificationProvider.showNotification(new Notification(translator.translate(
-                    R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
-                LOGGER.error("Položky se nepodařilo zmergovat");
-                throw new RuntimeException(throwable);
-            })
-            .thenAccept(merged ->
-                notificationProvider.showNotification(new Notification(String.format(
-                    translator.translate(R.Translate.NOTIFY_MERGED_ITEMS), merged))));
+
     }
 
-    public static final class ItemEntry implements WithItemBase {
-
+    public final class BestiaryEntry {
+        private String id;
         public final StringProperty name = new SimpleStringProperty(this, "name");
-        public final IntegerProperty weight = new SimpleIntegerProperty(this, "weight");
-        public final ObjectProperty<Money> price = new SimpleObjectProperty<>(this, "price");
+        public final ObjectProperty<Rule> ruleType = new SimpleObjectProperty<>(this, "ruleType");
         public final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
-        final ItemBase itemBase;
 
-        public ItemEntry(String id) {
-            final Optional<ItemBase> optionalItem = OnlineItemRegistry.getINSTANCE()
-                .getItemById(id);
-            this.itemBase = optionalItem.isPresent() ? optionalItem.get() : null;
-            setName(itemBase.getName());
-            setWeight(itemBase.getWeight());
-            setPrice(itemBase.getPrice());
-            ByteArrayInputStream bais = new ByteArrayInputStream(itemBase.getImage());
-            setImage(new Image(bais));
+        public BestiaryEntry(String id) {
+            final Optional<Mob> optionalMob = bestiaryService.selectOnline(mob -> mob.getId().equals(id));
+            optionalMob.ifPresent(mob -> {
+                this.id = mob.getId();
+                setName(mob.getName());
+                setRuleType(mob.getRulesType());
+                ByteArrayInputStream bais = new ByteArrayInputStream(mob.getImage());
+                setImage(new Image(bais));
+            });
         }
 
         public String getId() {
-            return itemBase.getId();
+            return id;
         }
 
         public String getName() {
@@ -220,28 +208,16 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
             this.name.set(name);
         }
 
-        public int getWeight() {
-            return weight.get();
+        public Rule getRuleType() {
+            return ruleType.get();
         }
 
-        public IntegerProperty weightProperty() {
-            return weight;
+        public ObjectProperty<Rule> ruleTypeProperty() {
+            return ruleType;
         }
 
-        public void setWeight(int weight) {
-            this.weight.set(weight);
-        }
-
-        public Money getPrice() {
-            return price.get();
-        }
-
-        public ObjectProperty<Money> priceProperty() {
-            return price;
-        }
-
-        public void setPrice(Money price) {
-            this.price.set(price);
+        public void setRuleType(Rule ruleType) {
+            this.ruleType.set(ruleType);
         }
 
         public Image getImage() {
@@ -256,10 +232,6 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
             this.image.set(image);
         }
 
-        public ItemBase getItemBase() {
-            return itemBase;
-        }
-
         @Override
         public boolean equals(Object o) {
             if (this == o) {
@@ -268,16 +240,16 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-
-            ItemEntry itemEntry = (ItemEntry) o;
-
-            return itemBase.equals(itemEntry.itemBase);
+            BestiaryEntry that = (BestiaryEntry) o;
+            return Objects.equals(getName(), that.getName()) &&
+                Objects.equals(getRuleType(), that.getRuleType()) &&
+                Objects.equals(getImage(), that.getImage());
         }
 
         @Override
         public int hashCode() {
-            return itemBase.hashCode();
+
+            return Objects.hash(getName(), getRuleType(), getImage());
         }
     }
-
 }
