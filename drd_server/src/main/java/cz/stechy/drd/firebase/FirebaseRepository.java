@@ -8,6 +8,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import cz.stechy.drd.ServerDatabase;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -94,6 +95,8 @@ public final class FirebaseRepository implements ServerDatabase {
             .child(tableName)
             .child(id)
             .removeValueAsync();
+        final List<Map<String, Object>> maps = items.get(tableName);
+
     }
 
     /**
@@ -190,6 +193,19 @@ public final class FirebaseRepository implements ServerDatabase {
         @Override
         public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
             final Map<String, Object> item = convertor.convert(snapshot);
+            final List<Map<String, Object>> list = items.get(tableName);
+            final String idKey = tableName + "_id";
+            final Object id = item.get(idKey);
+            for(Iterator<Map<String, Object>> it = list.iterator(); it.hasNext();) {
+                final Map<String, Object> map = it.next();
+                if (map.containsValue(id)) {
+                    map.clear();
+                    map.putAll(item);
+                    break;
+                }
+            }
+
+
             final ItemEvent event = FirebaseItemEvents.forChildChanged(item, tableName);
             notifyListeners(event);
         }
@@ -197,9 +213,21 @@ public final class FirebaseRepository implements ServerDatabase {
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
             final Map<String, Object> item = convertor.convert(snapshot);
-
             final List<Map<String, Object>> list = items.get(tableName);
-            list.remove(item);
+            final String idKey = tableName + "_id";
+//            item.keySet().parallelStream()
+//                .filter(s -> s.contains("id"))
+//                .findFirst()
+//                .ifPresent(s -> {
+            final Object id = item.get(idKey);
+            for(Iterator<Map<String, Object>> it = list.iterator(); it.hasNext();) {
+                final Map<String, Object> map = it.next();
+                if (map.containsValue(id)) {
+                    it.remove();
+                    break;
+                }
+            }
+//                });
 
             final ItemEvent event = FirebaseItemEvents.forChildRemoved(item, tableName);
             notifyListeners(event);

@@ -4,6 +4,7 @@ import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.db.base.OnlineItem;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.SpellParser;
+import cz.stechy.drd.model.WithSameProperties;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -18,7 +19,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Třída reprezentující kouzlo, které může vyvolat kouzelník, nebo hraničár
  */
-public final class Spell extends OnlineItem {
+public final class Spell extends OnlineItem implements WithSameProperties {
 
     // region Constants
 

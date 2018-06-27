@@ -23,7 +23,7 @@ public final class ItemEntry implements InventoryHelper.ItemRecord {
     private final MaxActValue itemCount = new MaxActValue();
 
     ItemEntry(ChoiceEntry entry) {
-        this.itemBase = entry.getItemBase();
+        this.itemBase = (ItemBase) entry.getBase();
         this.id.setValue(this.itemBase.getId());
         this.name.setValue(this.itemBase.getName());
         this.weight.setValue(this.itemBase.getWeight());

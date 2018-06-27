@@ -3,6 +3,7 @@ package cz.stechy.drd.app.hero.creator;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.hero.HeroHelper;
 import cz.stechy.drd.model.MaxActValue;
+import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
@@ -51,11 +52,21 @@ public class HeroCreatorController3 extends BaseController implements Initializa
     // endregion
 
     private final ObservableList<ItemEntry> items = FXCollections.observableArrayList();
-    private final ObservableList<ChoiceEntry> itemRegistry = FXCollections.observableArrayList();
+    private final ObservableList<ChoiceEntry> choiceEntries = FXCollections.observableArrayList();
     private final IntegerProperty selectedItem = new SimpleIntegerProperty();
+
+    private final ItemRegistry itemRegistry;
 
     private String title;
     private Bundle bundle;
+
+    // endregion
+
+    // region Constructors
+
+    public HeroCreatorController3(ItemRegistry itemRegistry) {
+        this.itemRegistry = itemRegistry;
+    }
 
     // endregion
 
@@ -68,7 +79,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
         columnImage.setCellFactory(param -> CellUtils.forImage());
         columnItemCount.setCellFactory(param -> CellUtils.forMaxActValue());
 
-        itemRegistry.setAll(DialogUtils.getItemRegistryChoices());
+        choiceEntries.setAll(DialogUtils.getItemChoices(itemRegistry.getRegistry().values()));
 
         btnRemoveItem.disableProperty().bind(selectedItem.lessThan(0));
     }
@@ -110,7 +121,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
 
     @FXML
     private void handleAddItem(ActionEvent actionEvent) {
-        final Optional<ChoiceEntry> result = DialogUtils.selectItem(itemRegistry);
+        final Optional<ChoiceEntry> result = DialogUtils.selectItem(choiceEntries);
         result.ifPresent(choiceEntry -> {
             final Optional<ItemEntry> entry = items.stream()
                 .filter(itemEntry -> itemEntry.getId().equals(choiceEntry.getId()))

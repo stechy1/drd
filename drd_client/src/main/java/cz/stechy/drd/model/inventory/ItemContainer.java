@@ -37,6 +37,7 @@ public abstract class ItemContainer {
 
     // region Variables
 
+    private final ItemRegistry itemRegistry;
     protected final int capacity;
     private final TooltipTranslator tooltipTranslator;
 
@@ -52,7 +53,9 @@ public abstract class ItemContainer {
 
     // region Constructors
 
-    protected ItemContainer(TooltipTranslator tooltipTranslator, int capacity) {
+    protected ItemContainer(ItemRegistry itemRegistry, TooltipTranslator tooltipTranslator,
+        int capacity) {
+        this.itemRegistry = itemRegistry;
         this.capacity = capacity;
         this.tooltipTranslator = tooltipTranslator;
 
@@ -75,8 +78,7 @@ public abstract class ItemContainer {
      * @param record {@link InventoryRecord}
      */
     private void insert(final InventoryRecord record) {
-        final Optional<ItemBase> itemOptional = ItemRegistry.getINSTANCE()
-            .getItemById(record.getItemId());
+        final Optional<ItemBase> itemOptional = itemRegistry.getItemById(record.getItemId());
         itemOptional.ifPresent(itemBase -> {
             final ItemBase item = itemBase;
             final int ammount = record.getAmmount();

@@ -13,6 +13,8 @@ class HeroAggresiveEntity extends AggresiveEntityDecorator {
 
     // region Variables
 
+    private final ItemRegistry itemRegistry;
+
     private int weaponStrength = 0;
     private int weaponDefence = 0;
     private int armorDefence = 0;
@@ -27,9 +29,10 @@ class HeroAggresiveEntity extends AggresiveEntityDecorator {
      * @param aggresiveEntity {@link Hero} Hrdina, který jde do boje
      * @param inventory {@link Inventory} Inventář hrdiny s jeho vybavením
      */
-    protected HeroAggresiveEntity(Hero aggresiveEntity, InventoryContentDao inventory) {
+    protected HeroAggresiveEntity(Hero aggresiveEntity, InventoryContentDao inventory, ItemRegistry itemRegistry) {
         super(aggresiveEntity);
 
+        this.itemRegistry = itemRegistry;
         initWeaponAddition(inventory);
         initArmorAddition(inventory);
     }
@@ -42,7 +45,7 @@ class HeroAggresiveEntity extends AggresiveEntityDecorator {
         inventory.selectAsync(EquipItemContainer.SLOT_SWORD)
             .thenAccept(inventoryRecord -> {
                 final String itemId = inventoryRecord.getItemId();
-                ItemRegistry.getINSTANCE().getItemById(itemId).ifPresent(itemBase -> {
+                itemRegistry.getItemById(itemId).ifPresent(itemBase -> {
                     assert itemBase instanceof WeaponBase;
                     WeaponBase weapon = (WeaponBase) itemBase;
                     weaponStrength = weapon.getStrength();
@@ -58,7 +61,7 @@ class HeroAggresiveEntity extends AggresiveEntityDecorator {
         inventory.selectAsync(EquipItemContainer.SLOT_BODY)
             .thenAccept(inventoryRecord -> {
                 final String itemId = inventoryRecord.getItemId();
-                ItemRegistry.getINSTANCE().getItemById(itemId).ifPresent(itemBase -> {
+                itemRegistry.getItemById(itemId).ifPresent(itemBase -> {
                     assert itemBase instanceof Armor;
                     Armor armor = (Armor) itemBase;
                     armorDefence = armor.getDefenceNumber();

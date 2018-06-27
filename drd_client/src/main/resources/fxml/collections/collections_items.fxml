@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<TableView fx:id="tableCollectionItems" xmlns="http://javafx.com/javafx/8.0.121"
+  xmlns:fx="http://javafx.com/fxml/1"
+  fx:controller="cz.stechy.drd.app.collections.CollectionsItemsController">
+  <columnResizePolicy>
+    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+  </columnResizePolicy>
+  <placeholder>
+    <Label text="%drd_notify_list_is_empty"/>
+  </placeholder>
+  <columns>
+    <TableColumn fx:id="columnImage" prefWidth="75.0" sortable="false" text="%drd_item_image">
+      <cellValueFactory>
+        <PropertyValueFactory property="image"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnName" prefWidth="75.0" text="%drd_item_name">
+      <cellValueFactory>
+        <PropertyValueFactory property="name"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnWeight" maxWidth="50.0" minWidth="50.0" prefWidth="50.0"
+      text="%drd_item_weight">
+      <cellValueFactory>
+        <PropertyValueFactory property="weight"/>
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnPrice" maxWidth="140.0" minWidth="140.0" prefWidth="140.0"
+      text="%drd_item_price">
+      <cellValueFactory>
+        <PropertyValueFactory property="price"/>
+      </cellValueFactory>
+    </TableColumn>
+  </columns>
+</TableView>

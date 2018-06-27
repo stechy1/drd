@@ -6,6 +6,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
+import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.drd.service.OnlineItemRegistry;
@@ -66,10 +67,10 @@ public final class MeleWeaponDao extends AdvancedDatabaseService<MeleWeapon> {
      *
      * @param db {@link Database} Databáze, která obsahuje data o hrdinech
      */
-    public MeleWeaponDao(Database db) {
+    public MeleWeaponDao(Database db, ItemRegistry itemRegistry) {
         super(db);
 
-        ItemRegistry.getINSTANCE().addColection(items);
+        itemRegistry.registerItemProvider(this, ItemType.WEAPON_MELE);
         OnlineItemRegistry.getINSTANCE().addColection(onlineDatabase);
     }
 

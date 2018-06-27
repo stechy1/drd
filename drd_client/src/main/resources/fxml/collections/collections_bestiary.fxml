@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<TableView fx:id="tableCollectionsBestiary" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.app.collections.CollectionsBestiaryController">
+  <columnResizePolicy>
+    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+  </columnResizePolicy>
+  <placeholder>
+    <Label text="%drd_notify_list_is_empty" />
+  </placeholder>
+  <columns>
+    <TableColumn fx:id="columnImage" editable="false" prefWidth="75.0" sortable="false" text="%drd_item_image">
+      <cellValueFactory>
+        <PropertyValueFactory property="image" />
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnName" editable="false" prefWidth="75.0" text="%drd_bestiary_name">
+      <cellValueFactory>
+        <PropertyValueFactory property="name" />
+      </cellValueFactory>
+    </TableColumn>
+    <TableColumn fx:id="columnRuleType" editable="false" prefWidth="75.0" text="%drd_bestiary_rules_type">
+      <cellValueFactory>
+        <PropertyValueFactory property="ruleType" />
+      </cellValueFactory>
+    </TableColumn>
+  </columns>
+</TableView>

@@ -1,16 +1,19 @@
 package cz.stechy.drd.dao;
 
-import static cz.stechy.drd.R.Database.Collectionsitems.COLUMN_AUTHOR;
-import static cz.stechy.drd.R.Database.Collectionsitems.COLUMN_ID;
-import static cz.stechy.drd.R.Database.Collectionsitems.COLUMN_NAME;
-import static cz.stechy.drd.R.Database.Collectionsitems.COLUMN_RECORDS;
-import static cz.stechy.drd.R.Database.Collectionsitems.FIREBASE_CHILD;
-import static cz.stechy.drd.R.Database.Collectionsitems.TABLE_NAME;
+import static cz.stechy.drd.R.Database.Collections.COLUMN_AUTHOR;
+import static cz.stechy.drd.R.Database.Collections.COLUMN_BESTIARY;
+import static cz.stechy.drd.R.Database.Collections.COLUMN_ID;
+import static cz.stechy.drd.R.Database.Collections.COLUMN_NAME;
+import static cz.stechy.drd.R.Database.Collections.COLUMN_ITEMS;
+import static cz.stechy.drd.R.Database.Collections.COLUMN_SPELLS;
+import static cz.stechy.drd.R.Database.Collections.FIREBASE_CHILD;
+import static cz.stechy.drd.R.Database.Collections.TABLE_NAME;
 
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.db.base.OnlineDatabase;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.item.ItemCollection;
+import cz.stechy.drd.model.item.ItemCollection.CollectionType;
 import cz.stechy.drd.net.ClientCommunicator;
 import cz.stechy.drd.net.ConnectionState;
 import cz.stechy.drd.net.OnDataReceivedListener;
@@ -29,6 +32,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.slf4j.Logger;
@@ -47,7 +51,6 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
     // region Variables
 
     private final ObservableList<ItemCollection> collections = FXCollections.observableArrayList();
-    private final Map<String, ItemCollectionContentDao> contentMap = new HashMap<>();
     private final Semaphore semaphore = new Semaphore(0);
     private final ClientCommunicator communicator;
     private String workingId;
@@ -87,11 +90,12 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
     // region Public methods
 
-    public CompletableFuture<Void> addItemToCollection(ItemCollection collection, String id) {
+    public CompletableFuture<Void> addItemToCollection(ItemCollection collection,
+        CollectionType type, String id) {
         return CompletableFuture.supplyAsync(() -> {
             workingId = collection.getId();
 
-            collection.getRecords().add(id);
+            collection.getCollection(type).add(id);
             communicator.sendMessage(new DatabaseMessage(MessageSource.CLIENT,
                 new DatabaseMessageCRUD(toStringItemMap(collection),
                     getFirebaseChildName(),
@@ -103,7 +107,7 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
             }
 
             if (!success) {
-                collection.getRecords().remove(id);
+                collection.getCollection(type).remove(id);
                 throw new RuntimeException("Item se nepodařilo přidat do kolekce.");
             }
 
@@ -112,10 +116,11 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
             .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
     }
 
-    public CompletableFuture<Void> removeItemFromCollection(ItemCollection collection, String id) {
+    public CompletableFuture<Void> removeItemFromCollection(ItemCollection collection,
+        CollectionType type, String id) {
         return CompletableFuture.supplyAsync(() -> {
             workingId = collection.getId();
-            collection.getRecords().remove(id);
+            collection.getCollection(type).remove(id);
             communicator.sendMessage(new DatabaseMessage(MessageSource.CLIENT,
                 new DatabaseMessageCRUD(toStringItemMap(collection),
                     getFirebaseChildName(),
@@ -126,7 +131,7 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
             } catch (InterruptedException ignored) {}
 
             if (!success) {
-                collection.getRecords().add(id);
+                collection.getCollection(type).add(id);
                 throw new RuntimeException("Item se nepodařilo smazat z kolekce.");
             }
 
@@ -151,7 +156,9 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
             .id((String) map.get(COLUMN_ID))
             .name((String) map.get(COLUMN_NAME))
             .author((String) map.get(COLUMN_AUTHOR))
-            .records((Collection<String>) map.get(COLUMN_RECORDS))
+            .items((Collection<String>) map.get(COLUMN_ITEMS))
+            .bestiary((Collection<String>) map.get(COLUMN_BESTIARY))
+            .spells((Collection<String>) map.get(COLUMN_SPELLS))
             .build();
     }
 
@@ -161,7 +168,9 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
         map.put(COLUMN_ID, item.getId());
         map.put(COLUMN_NAME, item.getName());
         map.put(COLUMN_AUTHOR, item.getAuthor());
-        map.put(COLUMN_RECORDS, item.getRecords().stream().collect(Collectors.toMap(o -> o, o -> o)));
+        map.put(COLUMN_ITEMS, item.getCollection(CollectionType.ITEMS).stream().collect(Collectors.toMap(o -> o, o -> o)));
+        map.put(COLUMN_BESTIARY, item.getCollection(CollectionType.BESTIARY).stream().collect(Collectors.toMap(o -> o, o -> o)));
+        map.put(COLUMN_SPELLS, item.getCollection(CollectionType.SPELLS).stream().collect(Collectors.toMap(o -> o, o -> o)));
         return map;
     }
 
@@ -256,17 +265,14 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
         switch (crudAction) {
             case CREATE:
                 LOGGER.info("Přidávám kolekci {} do svého povědomí.", itemCollection.toString());
-                collections.add(itemCollection);
+                Platform.runLater(() -> collections.add(itemCollection));
                 break;
             case UPDATE:
                 break;
             case DELETE:
                 LOGGER.trace("Kolekce předmětů {} byla smazána z online databáze",
                     itemCollection.toString());
-                collections.stream()
-                    .filter(itemCollection::equals)
-                    .findFirst()
-                    .ifPresent(collections::remove);
+                Platform.runLater(() -> collections.remove(itemCollection));
                 break;
             default:
                 throw new IllegalArgumentException("Neplatny argument");

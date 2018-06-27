@@ -25,6 +25,7 @@ public class ItemResolver {
     private final GeneralItemDao generalItemDao;
     private final MeleWeaponDao meleWeaponDao;
     private final RangedWeaponDao rangedWeaponDao;
+    private final ItemRegistry itemRegistry;
 
     // endregion
 
@@ -32,12 +33,13 @@ public class ItemResolver {
 
     public ItemResolver(ArmorDao armorDao, BackpackDao backpackDao,
         GeneralItemDao generalItemDao, MeleWeaponDao meleWeaponDao,
-        RangedWeaponDao rangedWeaponDao) {
+        RangedWeaponDao rangedWeaponDao, ItemRegistry itemRegistry) {
         this.armorDao = armorDao;
         this.backpackDao = backpackDao;
         this.generalItemDao = generalItemDao;
         this.meleWeaponDao = meleWeaponDao;
         this.rangedWeaponDao = rangedWeaponDao;
+        this.itemRegistry = itemRegistry;
     }
 
     // endregion
@@ -78,7 +80,6 @@ public class ItemResolver {
      */
     @SuppressWarnings("unchecked")
     public CompletableFuture<Integer> merge(List<? extends WithItemBase> items) {
-        final ItemRegistry itemRegistry = ItemRegistry.getINSTANCE();
         final int[] merged = {0};
         final Object lock = new Object();
 

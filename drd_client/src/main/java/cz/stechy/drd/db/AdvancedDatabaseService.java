@@ -18,12 +18,16 @@ import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
 import cz.stechy.drd.net.message.MessageType;
 import cz.stechy.drd.util.Base64Util;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
+import java.util.function.Predicate;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -187,6 +191,10 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     // region Public methods
 
+    public Optional<T> selectOnline(Predicate<T> filter) {
+        return onlineDatabase.stream().filter(filter).findFirst();
+    }
+
     @Override
     public CompletableFuture<ObservableList<T>> selectAllAsync() {
         return super.selectAllAsync().thenApply(resultItems -> usedItems);
@@ -199,6 +207,15 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
         }
         item.setDownloaded(true);
         return super.insertAsync(item);
+    }
+
+    @Override
+    public CompletableFuture<T> deleteAsync(T item) {
+        onlineDatabase.stream()
+            .filter(t -> t.equals(item))
+            .findFirst()
+            .ifPresent(t -> t.setDownloaded(false));
+        return super.deleteAsync(item);
     }
 
     public Map<String, Object> toStringItemMap(T item) {
@@ -347,6 +364,31 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 });
             return updated[0];
         });
+    }
+
+    /**
+     * Uloží všechny záznamy z předané kolekce, které ještě uloženy nejsou
+     *
+     * @param items Kolekce předmětů, která se má uložit
+     * @return {@link CompletableFuture} Počet uložených záznamů
+     */
+    public CompletableFuture<Integer> saveAll(Collection items) {
+        final List<T> workingList = new ArrayList<>(items);
+        workingList.removeAll(super.items);
+
+        if (workingList.isEmpty()) {
+            return CompletableFuture.completedFuture(0);
+        }
+
+        return CompletableFuture.supplyAsync(() -> {
+            for (T entry : workingList) {
+                entry.setDownloaded(true);
+                T duplicated = entry.duplicate();
+                insertAsync(duplicated).join();
+            }
+
+            return workingList.size();
+        }, ThreadPool.COMMON_EXECUTOR);
     }
 
     // endregion

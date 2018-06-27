@@ -23,6 +23,9 @@ public final class R {
         public static final String BESTIARY_EDIT_OTHER = "bestiary_edit_other";
         public static final String BESTIARY_EDIT_PROPERTIES = "bestiary_edit_properties";
         public static final String COLLECTIONS = "collections";
+        public static final String COLLECTIONS_BESTIARY = "collections_bestiary";
+        public static final String COLLECTIONS_ITEMS = "collections_items";
+        public static final String COLLECTIONS_SPELLS = "collections_spells";
         public static final String FIGHT = "fight";
         public static final String FIGHT_COMMENT = "fight_comment";
         public static final String FIGHT_HERO = "fight_hero";
@@ -707,14 +710,16 @@ public final class R {
             public static final String COLUMN_UPLOADED = "spells_uploaded";
         }
 
-        public static class Collectionsitems {
+        public static class Collections {
 
-            public static final String TABLE_NAME = "collections_items";
-            public static final String FIREBASE_CHILD = "collections/items";
-            public static final String COLUMN_ID = "collections_items_id";
-            public static final String COLUMN_NAME = "collections_items_name";
-            public static final String COLUMN_AUTHOR = "collections_items_author";
-            public static final String COLUMN_RECORDS = "collections_items_records";
+            public static final String TABLE_NAME = "collections";
+            public static final String FIREBASE_CHILD = "collections";
+            public static final String COLUMN_ID = "collections_id";
+            public static final String COLUMN_NAME = "collections_name";
+            public static final String COLUMN_AUTHOR = "collections_author";
+            public static final String COLUMN_ITEMS = "collections_items";
+            public static final String COLUMN_BESTIARY = "collections_bestiary";
+            public static final String COLUMN_SPELLS = "collections_spells";
         }
 
     }

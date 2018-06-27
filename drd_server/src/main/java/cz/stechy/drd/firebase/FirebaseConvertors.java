@@ -1,11 +1,12 @@
 package cz.stechy.drd.firebase;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.GenericTypeIndicator;
 import cz.stechy.drd.AuthService;
 import cz.stechy.drd.R;
-import cz.stechy.drd.R.Database.Collectionsitems;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,27 +149,27 @@ final class FirebaseConvertors {
         final Map<String, Object> map = new HashMap<>();
         map.put(R.Database.Bestiary.COLUMN_ID, snapshot.child(R.Database.Bestiary.COLUMN_ID).getValue(String.class));
         map.put(R.Database.Bestiary.COLUMN_NAME, snapshot.child(R.Database.Bestiary.COLUMN_NAME).getValue(String.class));
-        map.put(R.Database.Bestiary.COLUMN_DESCRIPTION,snapshot.child(R.Database.Bestiary.COLUMN_DESCRIPTION).getValue(String.class));
+        map.put(R.Database.Bestiary.COLUMN_DESCRIPTION, snapshot.child(R.Database.Bestiary.COLUMN_DESCRIPTION).getValue(String.class));
         map.put(R.Database.Bestiary.COLUMN_AUTHOR, snapshot.child(R.Database.Bestiary.COLUMN_AUTHOR).getValue(String.class));
-        map.put(R.Database.Bestiary.COLUMN_IMAGE,snapshot.child(R.Database.Bestiary.COLUMN_IMAGE).getValue(String.class));
-        map.put(R.Database.Bestiary.COLUMN_MOB_CLASS,snapshot.child(R.Database.Bestiary.COLUMN_MOB_CLASS).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_RULES_TYPE,snapshot.child(R.Database.Bestiary.COLUMN_RULES_TYPE).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_CONVICTION,snapshot.child(R.Database.Bestiary.COLUMN_CONVICTION).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_IMAGE, snapshot.child(R.Database.Bestiary.COLUMN_IMAGE).getValue(String.class));
+        map.put(R.Database.Bestiary.COLUMN_MOB_CLASS, snapshot.child(R.Database.Bestiary.COLUMN_MOB_CLASS).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_RULES_TYPE, snapshot.child(R.Database.Bestiary.COLUMN_RULES_TYPE).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_CONVICTION, snapshot.child(R.Database.Bestiary.COLUMN_CONVICTION).getValue(Integer.class));
         map.put(R.Database.Bestiary.COLUMN_HEIGHT, snapshot.child(R.Database.Bestiary.COLUMN_HEIGHT).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_ATTACK,snapshot.child(R.Database.Bestiary.COLUMN_ATTACK).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_DEFENCE,snapshot.child(R.Database.Bestiary.COLUMN_DEFENCE).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_VIABILITY,snapshot.child(R.Database.Bestiary.COLUMN_VIABILITY).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_IMMUNITY,snapshot.child(R.Database.Bestiary.COLUMN_IMMUNITY).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_ATTACK, snapshot.child(R.Database.Bestiary.COLUMN_ATTACK).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_DEFENCE, snapshot.child(R.Database.Bestiary.COLUMN_DEFENCE).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_VIABILITY, snapshot.child(R.Database.Bestiary.COLUMN_VIABILITY).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_IMMUNITY, snapshot.child(R.Database.Bestiary.COLUMN_IMMUNITY).getValue(Integer.class));
         map.put(R.Database.Bestiary.COLUMN_METTLE, snapshot.child(R.Database.Bestiary.COLUMN_METTLE).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_VULNERABILITY,snapshot.child(R.Database.Bestiary.COLUMN_VULNERABILITY).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_MOBILITY,snapshot.child(R.Database.Bestiary.COLUMN_MOBILITY).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_PERSERVANCE,snapshot.child(R.Database.Bestiary.COLUMN_PERSERVANCE).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_CONTROL_ABILITY,snapshot.child(R.Database.Bestiary.COLUMN_CONTROL_ABILITY).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_INTELLIGENCE,snapshot.child(R.Database.Bestiary.COLUMN_INTELLIGENCE).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_CHARISMA,snapshot.child(R.Database.Bestiary.COLUMN_CHARISMA).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_VULNERABILITY, snapshot.child(R.Database.Bestiary.COLUMN_VULNERABILITY).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_MOBILITY, snapshot.child(R.Database.Bestiary.COLUMN_MOBILITY).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_PERSERVANCE, snapshot.child(R.Database.Bestiary.COLUMN_PERSERVANCE).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_CONTROL_ABILITY, snapshot.child(R.Database.Bestiary.COLUMN_CONTROL_ABILITY).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_INTELLIGENCE, snapshot.child(R.Database.Bestiary.COLUMN_INTELLIGENCE).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_CHARISMA, snapshot.child(R.Database.Bestiary.COLUMN_CHARISMA).getValue(Integer.class));
         map.put(R.Database.Bestiary.COLUMN_BASIC_POWER_OF_MIND, snapshot.child(R.Database.Bestiary.COLUMN_BASIC_POWER_OF_MIND).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_EXPERIENCE,snapshot.child(R.Database.Bestiary.COLUMN_EXPERIENCE).getValue(Integer.class));
-        map.put(R.Database.Bestiary.COLUMN_DOMESTICATION,snapshot.child(R.Database.Bestiary.COLUMN_DOMESTICATION).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_EXPERIENCE, snapshot.child(R.Database.Bestiary.COLUMN_EXPERIENCE).getValue(Integer.class));
+        map.put(R.Database.Bestiary.COLUMN_DOMESTICATION, snapshot.child(R.Database.Bestiary.COLUMN_DOMESTICATION).getValue(Integer.class));
         return map;
     };
 
@@ -180,19 +181,25 @@ final class FirebaseConvertors {
         return map;
     };
 
-    private static final FirebaseConvertor ITEM_COLLECTIONS_CONVERTOR = snapshot -> {
+    private static List loadChilds(DataSnapshot snapshot, String childName) {
         final GenericTypeIndicator<HashMap<String, String>> genericTypeIndicator = new GenericTypeIndicator<HashMap<String, String>>() {};
-        final Map<String, Object> map = new HashMap<>();
-        map.put(Collectionsitems.COLUMN_ID, snapshot.getKey());
-        map.put(Collectionsitems.COLUMN_NAME, snapshot.child(Collectionsitems.COLUMN_NAME).getValue(String.class));
-        map.put(Collectionsitems.COLUMN_AUTHOR, snapshot.child(Collectionsitems.COLUMN_AUTHOR).getValue(String.class));
-        final HashMap<String, String> records = snapshot.child(Collectionsitems.COLUMN_RECORDS)
+        final HashMap<String, String> records = snapshot.child(childName)
             .getValue(genericTypeIndicator);
         if (records == null) {
-            map.put(Collectionsitems.COLUMN_RECORDS, new ArrayList<>());
+            return new ArrayList();
         } else {
-            map.put(Collectionsitems.COLUMN_RECORDS, new ArrayList<>(records.values()));
+            return new ArrayList<>(records.values());
         }
+    }
+
+    private static final FirebaseConvertor ITEM_COLLECTIONS_CONVERTOR = snapshot -> {
+        final Map<String, Object> map = new HashMap<>();
+        map.put(R.Database.Collections.COLUMN_ID, snapshot.getKey());
+        map.put(R.Database.Collections.COLUMN_NAME, snapshot.child(R.Database.Collections.COLUMN_NAME).getValue(String.class));
+        map.put(R.Database.Collections.COLUMN_AUTHOR, snapshot.child(R.Database.Collections.COLUMN_AUTHOR).getValue(String.class));
+        map.put(R.Database.Collections.COLUMN_ITEMS, loadChilds(snapshot, R.Database.Collections.COLUMN_ITEMS));
+        map.put(R.Database.Collections.COLUMN_BESTIARY, loadChilds(snapshot, R.Database.Collections.COLUMN_BESTIARY));
+        map.put(R.Database.Collections.COLUMN_SPELLS, loadChilds(snapshot, R.Database.Collections.COLUMN_SPELLS));
         return map;
     };
 
@@ -205,7 +212,7 @@ final class FirebaseConvertors {
         CONVERTORS.put(R.Database.Spells.FIREBASE_CHILD, SPELLS_CONVERTOR);
         CONVERTORS.put(R.Database.Bestiary.FIREBASE_CHILD, BESTIARY_CONVERTOR);
         CONVERTORS.put(AuthService.FIREBASE_CHILD, USER_CONVERTOR);
-        CONVERTORS.put(R.Database.Collectionsitems.FIREBASE_CHILD, ITEM_COLLECTIONS_CONVERTOR);
+        CONVERTORS.put(R.Database.Collections.FIREBASE_CHILD, ITEM_COLLECTIONS_CONVERTOR);
     }
 
 }
