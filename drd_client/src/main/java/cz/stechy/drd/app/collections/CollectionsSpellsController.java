@@ -12,6 +12,7 @@ import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.Translator;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -153,7 +154,18 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
 
     @Override
     public void mergeEntries() {
-
+        final List<Spell> spellList = collectionItems.stream()
+            .map(SpellEntry::getSpell)
+            .collect(Collectors.toList());
+        spellService.saveAll(spellList)
+            .exceptionally(throwable -> {
+                System.out.println("Něco se zvrtlo");
+                throwable.printStackTrace();
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(integer -> {
+                System.out.println("Bylo uloženo: " + integer + " kouzel.");
+            });
     }
 
     public final class SpellEntry {
@@ -161,12 +173,14 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
         public final StringProperty name = new SimpleStringProperty(this, "name");
         public final ObjectProperty<SpellProfessionType> type = new SimpleObjectProperty<>(this, "type");
         public final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
+        private Spell spell;
 
         public SpellEntry(String id) {
             this.id = id;
             final Optional<Spell> optionalSpell = spellService
                 .selectOnline(spell -> spell.getId().equals(id));
             optionalSpell.ifPresent(spell -> {
+                this.spell = spell;
                 setName(spell.getName());
                 setType(spell.getType());
                 ByteArrayInputStream bais = new ByteArrayInputStream(spell.getImage());
@@ -212,6 +226,10 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
 
         public void setImage(Image image) {
             this.image.set(image);
+        }
+
+        public Spell getSpell() {
+            return spell;
         }
     }
 }

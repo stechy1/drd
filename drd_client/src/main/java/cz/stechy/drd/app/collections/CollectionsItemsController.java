@@ -1,6 +1,5 @@
 package cz.stechy.drd.app.collections;
 
-import cz.stechy.drd.R;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemCollection;
@@ -12,7 +11,6 @@ import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.Translator;
-import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Optional;
@@ -151,16 +149,16 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
 
     @Override
     public void mergeEntries() {
-        itemResolver.merge(collectionItems)
-            .exceptionally(throwable -> {
-                notificationProvider.showNotification(new Notification(translator.translate(
-                    R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
-                LOGGER.error("Položky se nepodařilo zmergovat");
-                throw new RuntimeException(throwable);
-            })
-            .thenAccept(merged ->
-                notificationProvider.showNotification(new Notification(String.format(
-                    translator.translate(R.Translate.NOTIFY_MERGED_ITEMS), merged))));
+//        itemResolver.saveAll(collectionItems)
+//            .exceptionally(throwable -> {
+//                notificationProvider.showNotification(new Notification(translator.translate(
+//                    R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
+//                LOGGER.error("Položky se nepodařilo zmergovat");
+//                throw new RuntimeException(throwable);
+//            })
+//            .thenAccept(merged ->
+//                notificationProvider.showNotification(new Notification(String.format(
+//                    translator.translate(R.Translate.NOTIFY_MERGED_ITEMS), merged))));
     }
 
     public static final class ItemEntry implements WithItemBase {

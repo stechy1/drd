@@ -18,7 +18,9 @@ import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
 import cz.stechy.drd.net.message.MessageType;
 import cz.stechy.drd.util.Base64Util;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -206,6 +208,15 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
         return super.insertAsync(item);
     }
 
+    @Override
+    public CompletableFuture<T> deleteAsync(T item) {
+        onlineDatabase.stream()
+            .filter(t -> t.equals(item))
+            .findFirst()
+            .ifPresent(t -> t.setDownloaded(false));
+        return super.deleteAsync(item);
+    }
+
     public Map<String, Object> toStringItemMap(T item) {
         String[] columns = getColumnsKeys().split(",");
         Object[] values = itemToParams(item).toArray();
@@ -352,6 +363,33 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 });
             return updated[0];
         });
+    }
+
+    /**
+     * Uloží všechny záznamy z předané kolekce, které ještě uloženy nejsou
+     *
+     * @param items Kolekce předmětů, která se má uložit
+     * @return {@link CompletableFuture} Počet uložených záznamů
+     */
+    public CompletableFuture<Integer> saveAll(List<T> items) {
+        final List<T> workingList = new ArrayList<>(items);
+        workingList.removeAll(super.items);
+
+        if (workingList.isEmpty()) {
+            return CompletableFuture.completedFuture(0);
+        }
+
+        return CompletableFuture.supplyAsync(() -> {
+            for (T entry : workingList) {
+                entry.setDownloaded(true);
+                T duplicated = entry.duplicate();
+                insertAsync(duplicated).join();
+            }
+
+            return workingList.size();
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenApplyAsync(integer -> integer, ThreadPool.JAVAFX_EXECUTOR);
+
     }
 
     // endregion

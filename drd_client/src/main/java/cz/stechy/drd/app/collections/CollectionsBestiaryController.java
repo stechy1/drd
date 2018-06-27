@@ -11,6 +11,7 @@ import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.Translator;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -145,7 +146,18 @@ public class CollectionsBestiaryController implements Initializable, Collections
 
     @Override
     public void mergeEntries() {
-
+        final List<Mob> mobList = collectionItems.stream()
+            .map(BestiaryEntry::getMob)
+            .collect(Collectors.toList());
+        bestiaryService.saveAll(mobList)
+            .exceptionally(throwable -> {
+                System.out.println("Něco se zvrtlo");
+                throwable.printStackTrace();
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(integer -> {
+                System.out.println("Bylo uloženo: " + integer + " nestvůr.");
+            });
     }
 
     public final class BestiaryEntry {
@@ -153,11 +165,13 @@ public class CollectionsBestiaryController implements Initializable, Collections
         public final StringProperty name = new SimpleStringProperty(this, "name");
         public final ObjectProperty<Rule> ruleType = new SimpleObjectProperty<>(this, "ruleType");
         public final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
+        private Mob mob;
 
         public BestiaryEntry(String id) {
             this.id = id;
             final Optional<Mob> optionalMob = bestiaryService.selectOnline(mob -> mob.getId().equals(id));
             optionalMob.ifPresent(mob -> {
+                this.mob = mob;
                 setName(mob.getName());
                 setRuleType(mob.getRulesType());
                 ByteArrayInputStream bais = new ByteArrayInputStream(mob.getImage());
@@ -203,6 +217,10 @@ public class CollectionsBestiaryController implements Initializable, Collections
 
         public void setImage(Image image) {
             this.image.set(image);
+        }
+
+        Mob getMob() {
+            return mob;
         }
 
         @Override
