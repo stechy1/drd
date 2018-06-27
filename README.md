@@ -8,14 +8,6 @@
 Aplikace vyžaduje Javu verze 8.
 Pro sestavení projektu je vyžadován Gradle.
 
-#### Firebase
-K provozování vlastní online databáze je třeba inicializovat Firebase
-databázi. Inicializace databáze se provádí v nastavení aplikace.
-V nastavení přepnete přepínač pro zpřístupnění online databáze.
-Tím se aktivuje tlačítko pro výběr souboru s přístupovými údaji k Firebase.
-Po výběru správného souboru se zobrazí notifikace o (ne)úspěšném navázání spojené.
-Pokud bylo spojení úspěšné, lze začít využívat veškeré výhody online databáze.
-
 K sestavení projektu je potřeba otevřít příkazovou řádku v adresáři s projektem.
 Pomocí příkazu `./gradlew jfxJar` pro Linux, případně `gradlew.bat jfxJar` pro Windows
 se vytvoří spustitelný Jar soubor.
@@ -24,8 +16,17 @@ se vytvoří spustitelný Jar soubor.
 Aplikaci lze spustit dvojitým poklepáním na Jar soubor. Z příkazové řádky
 je lze aplikaci spustit příkazem `java -jar drd.jar`.
 
-S aplikací se dodává složka lib, která obsahuje veškeré knihovny, na ktefých je aplikace závislá. 
-Změnou obsahu složky může dojít k nestabilitě aplikaci či nemožnosti spustit ji.
+S aplikací se dodává složka lib, která obsahuje veškeré knihovny, na kterých je aplikace závislá. 
+Změnou obsahu složky může dojít k nestabilitě aplikace či nemožnosti spustit ji.
+
+## Server
+Pro hru více hráčů je třeba spustit server. Server využívá Firebase jako perzistentní úložiště.
+Tím je zajištěno, že více serverů může sdílet stejné uživatele, předměty, kouzla a nestvůry.
+### Parametry pro server
+ - clients - maximální počet klientů, kteří můžou v jednu chvíli být připojeni k serveru
+ - credentials - cesta k přístupovým údajům pro Firebase
+ - max_waiting_queue - maximální počet klientů, kteří můžou čekat ve frontě, než se jim uvolní místo na serveru
+ - port - číslo portu, na kterém bude server dostupný
 
 ## Ovládání aplikace
 Celé ovládání je popsané v sekci [Wiki](https://github.com/stechy1/drd/wiki).
