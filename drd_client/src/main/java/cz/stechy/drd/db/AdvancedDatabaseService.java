@@ -23,11 +23,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -317,53 +317,10 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
      * @param author Autor předmětů, které chci stáhnout
      */
     public CompletableFuture<Integer> synchronize(final String author) {
-        final Object lock = new Object();
-        final int[] updated = new int[]{0};
-        return CompletableFuture.supplyAsync(() -> {
-            onlineDatabase
-                .stream()
-                .filter(onlineItem -> Objects.equals(onlineItem.getAuthor(), author))
-                .forEach(onlineItem -> {
-                    LOGGER.info(
-                        "Pokus o synchronizaci předmětu: " + onlineItem.toString() + " ve vlákně: "
-                            + Thread.currentThread());
-                    final Optional<T> optional = items.stream()
-                        .filter(item -> Objects.equals(item.getId(), onlineItem.getId()))
-                        .findFirst();
-                    onlineItem.setDownloaded(true);
-                    // Mám-li offline záznam o souboru
-                    if (optional.isPresent()) {
-                        final T offlineItem = optional.get();
-                        // Pokud nemá offline item záznam že je nahraný,
-                        // tak vložím záznam do databáze
-                        if (!offlineItem.isUploaded()) {
-                            final T offlineDuplicate = offlineItem.duplicate();
-                            offlineDuplicate.setUploaded(true);
-                            updateAsync(offlineDuplicate)
-                                .thenAccept(t -> {
-                                    synchronized (lock) {
-                                        updated[0]++;
-                                    }
-                                })
-                                .join();
-                        }
-                        // Nemám-li offline záznam o souboru, tak ho vytvořím
-                    } else {
-                        final T offlineItem = onlineItem;
-                        final T offlineDuplicate = offlineItem.duplicate();
-                        offlineDuplicate.setDownloaded(true);
-                        offlineDuplicate.setUploaded(true);
-                        insertAsync(offlineDuplicate)
-                            .thenAccept(t -> {
-                                synchronized (lock) {
-                                    updated[0]++;
-                                }
-                            })
-                            .join();
-                    }
-                });
-            return updated[0];
-        });
+        final List<T> filteredList = onlineDatabase.parallelStream()
+            .filter(item -> item.getAuthor().equals(author))
+            .collect(Collectors.toList());
+        return saveAll(filteredList);
     }
 
     /**
