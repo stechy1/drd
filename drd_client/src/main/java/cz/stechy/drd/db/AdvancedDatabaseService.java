@@ -19,6 +19,7 @@ import cz.stechy.drd.net.message.MessageSource;
 import cz.stechy.drd.net.message.MessageType;
 import cz.stechy.drd.util.Base64Util;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -371,7 +372,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
      * @param items Kolekce předmětů, která se má uložit
      * @return {@link CompletableFuture} Počet uložených záznamů
      */
-    public CompletableFuture<Integer> saveAll(List<T> items) {
+    public CompletableFuture<Integer> saveAll(Collection items) {
         final List<T> workingList = new ArrayList<>(items);
         workingList.removeAll(super.items);
 
@@ -387,9 +388,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
             }
 
             return workingList.size();
-        }, ThreadPool.COMMON_EXECUTOR)
-            .thenApplyAsync(integer -> integer, ThreadPool.JAVAFX_EXECUTOR);
-
+        }, ThreadPool.COMMON_EXECUTOR);
     }
 
     // endregion

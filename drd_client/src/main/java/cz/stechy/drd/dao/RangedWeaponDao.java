@@ -6,6 +6,7 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
+import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.drd.service.OnlineItemRegistry;
@@ -71,7 +72,7 @@ public final class RangedWeaponDao extends AdvancedDatabaseService<RangedWeapon>
     public RangedWeaponDao(Database db, ItemRegistry itemRegistry) {
         super(db);
 
-        itemRegistry.addColection(items);
+        itemRegistry.registerItemProvider(this, ItemType.WEAPON_RANGED);
         OnlineItemRegistry.getINSTANCE().addColection(onlineDatabase);
     }
 

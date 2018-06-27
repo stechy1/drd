@@ -7,6 +7,7 @@ import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.item.GeneralItem;
+import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.drd.service.OnlineItemRegistry;
 import java.sql.ResultSet;
@@ -61,7 +62,7 @@ public final class GeneralItemDao extends AdvancedDatabaseService<GeneralItem> {
     public GeneralItemDao(Database db, ItemRegistry itemRegistry) {
         super(db);
 
-        itemRegistry.addColection(items);
+        itemRegistry.registerItemProvider(this, ItemType.GENERAL);
         OnlineItemRegistry.getINSTANCE().addColection(onlineDatabase);
     }
 

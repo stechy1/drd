@@ -1,19 +1,20 @@
 package cz.stechy.drd.app.collections;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.model.item.ItemCollection.CollectionType;
 import cz.stechy.drd.service.ItemRegistry;
-import cz.stechy.drd.service.ItemResolver;
-import cz.stechy.drd.service.ItemResolver.WithItemBase;
 import cz.stechy.drd.service.OnlineItemRegistry;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -59,8 +60,8 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
 
     // endregion
     private final ObservableList<ItemEntry> collectionItems = FXCollections.observableArrayList();
-    private final ObservableList<ChoiceEntry> itemRegistry = FXCollections.observableArrayList();
-    private final ItemResolver itemResolver;
+    private final ObservableList<ChoiceEntry> choiceEntries = FXCollections.observableArrayList();
+    private final ItemRegistry itemRegistry;
     private final Translator translator;
 
     private StringProperty selectedEntry;
@@ -70,11 +71,11 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
 
     // region Constructors
 
-    public CollectionsItemsController(ItemResolver itemResolver, ItemRegistry itemRegistry,
-        Translator translator) {
-        this.itemResolver = itemResolver;
+    public CollectionsItemsController(ItemRegistry itemRegistry, Translator translator) {
+        this.itemRegistry = itemRegistry;
         this.translator = translator;
-        this.itemRegistry.setAll(DialogUtils.getItemChoices(itemRegistry.getRegistry().values()));
+
+        this.choiceEntries.setAll(DialogUtils.getItemChoices(itemRegistry.getRegistry().values()));
     }
 
     // endregion
@@ -146,24 +147,27 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
 
     @Override
     public Optional<ChoiceEntry> getSelectedEntry() {
-        return DialogUtils.selectItem(itemRegistry);
+        return DialogUtils.selectItem(choiceEntries);
     }
 
     @Override
     public void mergeEntries() {
-//        itemResolver.saveAll(collectionItems)
-//            .exceptionally(throwable -> {
-//                notificationProvider.showNotification(new Notification(translator.translate(
-//                    R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
-//                LOGGER.error("Položky se nepodařilo zmergovat");
-//                throw new RuntimeException(throwable);
-//            })
-//            .thenAccept(merged ->
-//                notificationProvider.showNotification(new Notification(String.format(
-//                    translator.translate(R.Translate.NOTIFY_MERGED_ITEMS), merged))));
+        final List<ItemBase> itemBaseList = collectionItems.parallelStream()
+            .map(itemEntry -> itemEntry.getItemBase())
+            .collect(Collectors.toList());
+        itemRegistry.merge(itemBaseList)
+            .exceptionally(throwable -> {
+                notificationProvider.showNotification(new Notification(translator.translate(
+                    R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
+                LOGGER.error("Položky se nepodařilo zmergovat");
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(merged ->
+                notificationProvider.showNotification(new Notification(String.format(
+                    translator.translate(R.Translate.NOTIFY_MERGED_ITEMS), merged))));
     }
 
-    public static final class ItemEntry implements WithItemBase {
+    public static final class ItemEntry {
 
         public final StringProperty name = new SimpleStringProperty(this, "name");
         public final IntegerProperty weight = new SimpleIntegerProperty(this, "weight");
