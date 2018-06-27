@@ -1,8 +1,6 @@
 package cz.stechy.drd.app.collections;
 
-import cz.stechy.drd.R;
 import cz.stechy.drd.dao.BestiaryDao;
-import cz.stechy.drd.dao.ItemCollectionDao;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.item.ItemCollection;
@@ -11,7 +9,6 @@ import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.Translator;
-import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Objects;
@@ -61,20 +58,16 @@ public class CollectionsBestiaryController implements Initializable, Collections
     private final ObservableList<BestiaryEntry> collectionItems = FXCollections.observableArrayList();
     private final ObservableList<ChoiceEntry> mobRegistry = FXCollections.observableArrayList();
 
-    private final ItemCollectionDao collectionService;
     private final Translator translator;
     // Nemůžu dát "final", protože by mi to brečelo v bestiaryCollectionContentListener
     private BestiaryDao bestiaryService;
     private StringProperty selectedEntry;
-    private CollectionsNotificationProvider notificationProvider;
 
     // endregion
 
     // region Constructors
 
-    public CollectionsBestiaryController(ItemCollectionDao collectionService,
-        Translator translator, BestiaryDao bestiaryService) {
-        this.collectionService = collectionService;
+    public CollectionsBestiaryController(Translator translator, BestiaryDao bestiaryService) {
         this.translator = translator;
         this.bestiaryService = bestiaryService;
 
@@ -138,36 +131,16 @@ public class CollectionsBestiaryController implements Initializable, Collections
     }
 
     @Override
-    public void setNotificationProvider(CollectionsNotificationProvider notificationProvider) {
-        this.notificationProvider = notificationProvider;
+    public void setNotificationProvider(CollectionsNotificationProvider notificationProvider) {}
+
+    @Override
+    public CollectionType getCollectionType() {
+        return CollectionType.BESTIARY;
     }
 
     @Override
-    public void requestAddEntryToCollection(ItemCollection collection) {
-        final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(mobRegistry);
-        entryOptional.ifPresent(choiceEntry -> {
-            final String itemName = choiceEntry.getName();
-            final String collectionName = collection.getName();
-            collectionService.addItemToCollection(collection, CollectionType.BESTIARY, choiceEntry.getId())
-                .exceptionally(throwable -> {
-                    notificationProvider.showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
-                        collectionName)));
-                    LOGGER.error("Položku se nepodařilo přidat do kolekce");
-                    throw new RuntimeException(throwable);
-                })
-                .thenAccept(ignored -> {
-                    notificationProvider.showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
-                        collectionName)));
-                });
-        });
-    }
-
-    @Override
-    public void requestRemoveSelectedEntryFromCollection(ItemCollection collection) {
-        final String id = selectedEntry.get();
-        collectionService.removeItemFromCollection(collection, CollectionType.BESTIARY, id);
+    public Optional<ChoiceEntry> getSelectedEntry() {
+        return DialogUtils.selectItem(mobRegistry);
     }
 
     @Override

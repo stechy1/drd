@@ -1,6 +1,5 @@
 package cz.stechy.drd.app.collections;
 
-import cz.stechy.drd.R;
 import cz.stechy.drd.dao.ItemCollectionDao;
 import cz.stechy.drd.dao.SpellBookDao;
 import cz.stechy.drd.model.item.ItemCollection;
@@ -11,7 +10,6 @@ import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.Translator;
-import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.Optional;
@@ -144,31 +142,13 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
     }
 
     @Override
-    public void requestAddEntryToCollection(ItemCollection collection) {
-        final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(spellRegistry);
-        entryOptional.ifPresent(choiceEntry -> {
-            final String itemName = choiceEntry.getName();
-            final String collectionName = collection.getName();
-            collectionService.addItemToCollection(collection, CollectionType.SPELLS, choiceEntry.getId())
-                .exceptionally(throwable -> {
-                    notificationProvider.showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
-                        collectionName)));
-                    LOGGER.error("Položku se nepodařilo přidat do kolekce");
-                    throw new RuntimeException(throwable);
-                })
-                .thenAccept(ignored -> {
-                    notificationProvider.showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
-                        collectionName)));
-                });
-        });
+    public CollectionType getCollectionType() {
+        return CollectionType.SPELLS;
     }
 
     @Override
-    public void requestRemoveSelectedEntryFromCollection(ItemCollection collection) {
-        final String id = selectedEntry.get();
-        collectionService.removeItemFromCollection(collection, CollectionType.SPELLS, id);
+    public Optional<ChoiceEntry> getSelectedEntry() {
+        return DialogUtils.selectItem(spellRegistry);
     }
 
     @Override

@@ -5,6 +5,7 @@ import cz.stechy.drd.dao.ItemCollectionDao;
 import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.service.UserService;
+import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
@@ -13,6 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -85,7 +87,8 @@ public class CollectionsController extends BaseController implements Initializab
     // endregion
 
     private final ObservableList<ItemCollection> collections = FXCollections.observableArrayList();
-    private final List<String> translatedItemType = new ArrayList<>(Arrays.asList("Předměty", "Nestvůry", "Kouzla"));
+    private final List<String> translatedItemType = new ArrayList<>(
+        Arrays.asList("Předměty", "Nestvůry", "Kouzla"));
 
     private final ObjectProperty<ItemCollection> selectedCollection = new SimpleObjectProperty<>(
         this, "selectedCollection", null);
@@ -138,7 +141,8 @@ public class CollectionsController extends BaseController implements Initializab
         lvCollections.setItems(collections);
         lvCollections.setCellFactory(param -> new ItemCollectionCell());
         final BooleanBinding loggedBinding = Bindings.createBooleanBinding(() -> user != null);
-        btnCollectionAdd.disableProperty().bind(loggedBinding.not().or(txtCollectionName.textProperty().isEmpty()));
+        btnCollectionAdd.disableProperty()
+            .bind(loggedBinding.not().or(txtCollectionName.textProperty().isEmpty()));
         final BooleanBinding noSelectedCollection = selectedCollection.isNull();
         final BooleanBinding authorBinding = Bindings.createBooleanBinding(() -> {
             final ItemCollection collection = selectedCollection.get();
@@ -148,16 +152,23 @@ public class CollectionsController extends BaseController implements Initializab
 
             return collection.getAuthor().equals(user.getName());
         }, selectedCollection);
-        btnCollectionDownload.disableProperty().bind(loggedBinding.not().or(noSelectedCollection));
-        btnCollectionRemove.disableProperty().bind(authorBinding.not().or(noSelectedCollection));
+        btnCollectionDownload.disableProperty().bind(loggedBinding.not()
+            .or(noSelectedCollection));
+        btnCollectionRemove.disableProperty().bind(authorBinding.not()
+            .or(noSelectedCollection));
 
-        btnCollectionItemAdd.disableProperty().bind(authorBinding.not().or(noSelectedCollection));
-        btnCollectionItemRemove.disableProperty().bind(authorBinding.not().or(noSelectedCollection).or(selectedEntry.isNull()));
+        btnCollectionItemAdd.disableProperty().bind(authorBinding.not()
+                .or(noSelectedCollection)
+                .or(selectedAccordionPaneIndex.isEqualTo(NO_SELECTED_INDEX)));
+        btnCollectionItemRemove.disableProperty().bind(authorBinding.not()
+                .or(noSelectedCollection)
+            .or(selectedEntry.isNull()));
 
         selectedCollection.bind(lvCollections.getSelectionModel().selectedItemProperty());
 
         for (CollectionsControllerChild controller : controllers) {
-            controller.setSelectedCollection(lvCollections.getSelectionModel().selectedItemProperty());
+            controller
+                .setSelectedCollection(lvCollections.getSelectionModel().selectedItemProperty());
             controller.setSelectedEntryProperty(selectedEntry);
             controller.setNotificationProvider(this::showNotification);
         }
@@ -187,10 +198,10 @@ public class CollectionsController extends BaseController implements Initializab
                     collection.getName());
                 throw new RuntimeException(throwable);
             }).thenAccept(ignored -> {
-                showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_UPLOADED), collection.getName())));
-                txtCollectionName.clear();
-            });
+            showNotification(new Notification(String.format(translator.translate(
+                R.Translate.NOTIFY_RECORD_IS_UPLOADED), collection.getName())));
+            txtCollectionName.clear();
+        });
     }
 
     @FXML
@@ -205,11 +216,11 @@ public class CollectionsController extends BaseController implements Initializab
                     collection.getName());
                 throw new RuntimeException(throwable);
             }).thenAccept(ignored -> {
-                showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
-                    collection.getName())));
+            showNotification(new Notification(String.format(translator.translate(
+                R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+                collection.getName())));
             lvCollections.getSelectionModel().clearSelection();
-            });
+        });
     }
 
     @FXML
@@ -221,53 +232,49 @@ public class CollectionsController extends BaseController implements Initializab
 
     @FXML
     private void handleCollectionItemAdd(ActionEvent actionEvent) {
-        controllers[selectedAccordionPaneIndex.get()].requestAddEntryToCollection(selectedCollection.get());
-//        final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(itemRegistry);
-//        entryOptional.ifPresent(choiceEntry -> {
-//                final String itemName = choiceEntry.getName();
-//                final String collectionName = selectedCollection.get().getName();
-//            collectionService.addItemToCollection(selectedCollection.get(), choiceEntry.getId())
-//                .exceptionally(throwable -> {
-//                    showNotification(new Notification(String.format(translator.translate(
-//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
-//                        collectionName)));
-//                    LOGGER.error("Položku se nepodařilo přidat do kolekce");
-//                    throw new RuntimeException(throwable);
-//                })
-//                .thenAccept(ignored -> {
-//                    showNotification(new Notification(String.format(translator.translate(
-//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
-//                        collectionName)));
-//                });
-//        });
+        final CollectionsControllerChild controller = controllers[selectedAccordionPaneIndex.get()];
+        final Optional<ChoiceEntry> entryOptional = controller.getSelectedEntry();
+        final ItemCollection collection = selectedCollection.get();
+        entryOptional.ifPresent(choiceEntry -> {
+            final String itemName = choiceEntry.getName();
+            final String collectionName = collection.getName();
+            collectionService.addItemToCollection(collection, controller.getCollectionType(),
+                choiceEntry.getId())
+                .exceptionally(throwable -> {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
+                        collectionName)));
+                    LOGGER.error("Položku se nepodařilo přidat do kolekce");
+                    throw new RuntimeException(throwable);
+                })
+                .thenAccept(ignored -> {
+                    showNotification(new Notification(String.format(translator.translate(
+                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
+                        collectionName)));
+                });
+        });
     }
 
     @FXML
     private void handleCollectionItemRemove(ActionEvent actionEvent) {
-        controllers[selectedAccordionPaneIndex.get()].requestRemoveSelectedEntryFromCollection(selectedCollection.get());
-//        final ItemCollection collection = selectedCollection.get();
-//        final ItemEntry itemEntry = selectedCollectionItem.get();
-//
-//        if (collection == null || itemEntry == null) {
-//            return;
-//        }
-//
-//        final String itemName = itemEntry.getName();
-//        final String collectionName = collection.getName();
-//
-//        collectionService.removeItemFromCollection(collection, itemEntry.getId())
-//            .exceptionally(throwable -> {
-//                    showNotification(new Notification(String.format(translator.translate(
-//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_DELETED), itemName,
-//                        collectionName)));
-//                    LOGGER.error("Položku se nepodařilo odebrat z kolekce");
-//                throw new RuntimeException(throwable);
-//            })
-//            .thenAccept(ignored -> {
-//                    showNotification(new Notification(String.format(translator.translate(
-//                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_DELETED), itemName,
-//                        collectionName)));
-//            });
+        final CollectionsControllerChild controller = controllers[selectedAccordionPaneIndex.get()];
+        final ItemCollection collection = selectedCollection.get();
+        final String id = selectedEntry.get();
+        final String collectionName = collection.getName();
+
+        collectionService
+            .removeItemFromCollection(collection, controller.getCollectionType(), id)
+            .exceptionally(throwable -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_DELETED), collectionName)));
+                LOGGER.error("Položku se nepodařilo odebrat z kolekce");
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(ignored -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_COLLECTION_RECORD_IS_DELETED), collectionName)));
+            });
+
     }
 
     // endregion

@@ -1,6 +1,9 @@
 package cz.stechy.drd.app.collections;
 
 import cz.stechy.drd.model.item.ItemCollection;
+import cz.stechy.drd.model.item.ItemCollection.CollectionType;
+import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
+import java.util.Optional;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.StringProperty;
 
@@ -31,18 +34,18 @@ public interface CollectionsControllerChild {
     void setNotificationProvider(CollectionsNotificationProvider notificationProvider);
 
     /**
-     * Požadavek na přidání nového záznamu do kolekce
-     *  @param collection Kolekce, do které se má záznam vložit
+     * Vrátí typ kolekce, který daný potomek reprezentuje
      *
+     * @return {@link CollectionType} Typ kolekce
      */
-    void requestAddEntryToCollection(ItemCollection collection);
+    CollectionType getCollectionType();
 
     /**
-     * Požadavek na odstranění vybraného záznamu z kolekce
+     * Vrátí vybraný záznam
      *
-     * @param collection Kolekce, ze které se má záznam odstranit
+     * @return {@link ChoiceEntry}
      */
-    void requestRemoveSelectedEntryFromCollection(ItemCollection collection);
+    Optional<ChoiceEntry> getSelectedEntry();
 
     /**
      * Uloži ty záznamy, které nejsou dostupné offline

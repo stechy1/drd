@@ -1,7 +1,6 @@
 package cz.stechy.drd.app.collections;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.dao.ItemCollectionDao;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemCollection;
@@ -62,7 +61,6 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
     // endregion
     private final ObservableList<ItemEntry> collectionItems = FXCollections.observableArrayList();
     private final ObservableList<ChoiceEntry> itemRegistry = FXCollections.observableArrayList();
-    private final ItemCollectionDao collectionService;
     private final ItemResolver itemResolver;
     private final Translator translator;
 
@@ -73,9 +71,7 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
 
     // region Constructors
 
-    public CollectionsItemsController(ItemCollectionDao collectionService,
-        ItemResolver itemResolver, Translator translator) {
-        this.collectionService = collectionService;
+    public CollectionsItemsController(ItemResolver itemResolver, Translator translator) {
         this.itemResolver = itemResolver;
         this.translator = translator;
         this.itemRegistry.setAll(DialogUtils.getItemRegistryChoices());
@@ -144,31 +140,13 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
     }
 
     @Override
-    public void requestAddEntryToCollection(ItemCollection collection) {
-        final Optional<ChoiceEntry> entryOptional = DialogUtils.selectItem(itemRegistry);
-        entryOptional.ifPresent(choiceEntry -> {
-            final String itemName = choiceEntry.getName();
-            final String collectionName = collection.getName();
-            collectionService.addItemToCollection(collection, CollectionType.ITEMS, choiceEntry.getId())
-                .exceptionally(throwable -> {
-                    notificationProvider.showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_INSERTED), itemName,
-                        collectionName)));
-                    LOGGER.error("Položku se nepodařilo přidat do kolekce");
-                    throw new RuntimeException(throwable);
-                })
-                .thenAccept(ignored -> {
-                    notificationProvider.showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
-                        collectionName)));
-                });
-        });
+    public CollectionType getCollectionType() {
+        return CollectionType.ITEMS;
     }
 
     @Override
-    public void requestRemoveSelectedEntryFromCollection(ItemCollection collection) {
-        final String id = selectedEntry.get();
-        collectionService.removeItemFromCollection(collection, CollectionType.ITEMS, id);
+    public Optional<ChoiceEntry> getSelectedEntry() {
+        return DialogUtils.selectItem(itemRegistry);
     }
 
     @Override
