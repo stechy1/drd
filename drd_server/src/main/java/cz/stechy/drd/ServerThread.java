@@ -1,18 +1,11 @@
 package cz.stechy.drd;
 
-import cz.stechy.drd.firebase.FirebaseRepository;
-import cz.stechy.drd.net.message.AuthMessage;
-import cz.stechy.drd.net.message.AuthMessage.AuthAction;
-import cz.stechy.drd.net.message.AuthMessage.AuthMessageData;
+import cz.stechy.drd.module.IModule;
 import cz.stechy.drd.net.message.ClientStatusMessage;
 import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatus;
 import cz.stechy.drd.net.message.ClientStatusMessage.ClientStatusData;
-import cz.stechy.drd.net.message.DatabaseMessage;
-import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration;
-import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
-import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageDataType;
-import cz.stechy.drd.net.message.DatabaseMessage.IDatabaseMessageData;
 import cz.stechy.drd.net.message.IMessage;
+import cz.stechy.drd.net.message.MessageType;
 import cz.stechy.drd.net.message.ServerStatusMessage;
 import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatus;
 import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatusData;
@@ -21,6 +14,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -29,7 +23,7 @@ import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServerThread extends Thread implements ServerInfoProvider {
+public class ServerThread extends Thread implements ServerInfoProvider, IModuleRegistry {
 
     // region Constants
 
@@ -41,11 +35,10 @@ public class ServerThread extends Thread implements ServerInfoProvider {
     // region Variables
 
     private final List<Client> clients = new ArrayList<>();
+    private final Map<MessageType, List<IModule>> modules = new HashMap<>();
     private final ClientDispatcher clientDispatcher;
     private final WriterThread writerThread;
     private final MulticastSender multicastSender;
-    private final FirebaseRepository firebaseRepository;
-    private final AuthService authService;
     private final int port;
     private final int maxClients;
     private final ExecutorService pool;
@@ -63,8 +56,6 @@ public class ServerThread extends Thread implements ServerInfoProvider {
         this.clientDispatcher = new ClientDispatcher(waitingQueueSize, this);
         this.writerThread = new WriterThread();
         this.multicastSender = new MulticastSender(this);
-        this.firebaseRepository = new FirebaseRepository();
-        this.authService = new AuthService(this.firebaseRepository);
         pool = Executors.newFixedThreadPool(maxClients);
     }
 
@@ -72,72 +63,12 @@ public class ServerThread extends Thread implements ServerInfoProvider {
 
     // region Private methods
 
-    // region Message processing
-
-    private void processAuthMessage(AuthMessage message, Client client) {
-        final AuthMessageData data = (AuthMessageData) message.getData();
-        final AuthAction action = message.getAction();
-        switch (action) {
-            case REGISTER:
-                authService.register(data.name, data.password, client);
-                break;
-            case LOGIN:
-                authService.login(data.name, data.password, client);
-                break;
-            case LOGOUT:
-                break;
-            default:
-                throw new RuntimeException("Neplatný parametr");
-        }
+    /**
+     * Inicializuje všechny moduly
+     */
+    private void initModules() {
+        modules.values().forEach(modules -> modules.forEach(IModule::init));
     }
-
-    private void processDatabaseMessage(DatabaseMessage message, Client client) {
-        final IDatabaseMessageData data = (IDatabaseMessageData) message.getData();
-        final DatabaseMessageDataType messageDataType = data.getDataType();
-        String tableName;
-        switch (messageDataType) {
-            case DATA_ADMINISTRATION:
-                final DatabaseMessageAdministration databaseMessageAdministration = (DatabaseMessageAdministration) data;
-                final DatabaseMessageAdministration.DatabaseAction action = databaseMessageAdministration.getAction();
-                tableName = (String) databaseMessageAdministration.getData();
-                switch (action) {
-                    case REGISTER:
-                        firebaseRepository.registerListener(tableName, client.databaseRegisterListener);
-                        break;
-                    case UNGERISTER:
-                        firebaseRepository.unregisterListener(tableName, client.databaseRegisterListener);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Neplatný parametr");
-                }
-                break;
-            case DATA_MANIPULATION:
-                final DatabaseMessageCRUD databaseMessageCRUD = (DatabaseMessageCRUD) data;
-                final DatabaseMessageCRUD.DatabaseAction crudAction = databaseMessageCRUD.getAction();
-                final String itemId = databaseMessageCRUD.getItemId();
-                tableName = databaseMessageCRUD.getTableName();
-                switch (crudAction) {
-                    case CREATE:
-                        firebaseRepository.performInsert(tableName,
-                            (Map<String, Object>) databaseMessageCRUD.getData(), itemId);
-                        break;
-                    case UPDATE:
-                        firebaseRepository.performUpdate(tableName,
-                            (Map<String, Object>) databaseMessageCRUD.getData(), itemId);
-                        break;
-                    case DELETE:
-                        firebaseRepository.performDelete(tableName, itemId);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Neplatný parametr");
-                }
-                break;
-            default:
-                throw new IllegalArgumentException("Neplatný parametr");
-        }
-    }
-
-    // endregion
 
     /**
      * Pošle zprávu všem připojeným klientům
@@ -170,8 +101,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
             client.setConnectionClosedListener(() -> {
                 LOGGER.info("Odebírám klienta ze seznamu na serveru.");
                 clients.remove(client);
-                unregisterClientFromFirebase(client);
-                LOGGER.info("Počet připojených klientů: " + clients.size());
+                LOGGER.info("Počet připojených klientů: {}.", clients.size());
                 if (clientDispatcher.hasClientInQueue()) {
                     LOGGER.info("V čekací listině se našel klient, který by rád komunikoval.");
                     this.insertClientToListOrQueue(clientDispatcher.getClientFromQueue());
@@ -205,17 +135,21 @@ public class ServerThread extends Thread implements ServerInfoProvider {
                     new ClientStatusData(client.getId(), ClientStatus.CONNECTED));
                 broadcast(clientStatusMessage, client1 -> !client1.getId().equals(client.getId()));
                 break;
-            case DATABASE:
-                processDatabaseMessage((DatabaseMessage) message, client);
-                break;
-            case AUTH:
-                processAuthMessage((AuthMessage) message, client);
-                break;
+            default:
+                final List<IModule> messageHandlers = modules.get(message.getType());
+                if (messageHandlers == null) {
+                    return;
+                }
+                for (IModule handler : messageHandlers) {
+                    handler.handleMessage(message, client);
+                }
+//            case DATABASE:
+//                processDatabaseMessage((DatabaseMessage) message, client);
+//                break;
+//            case AUTH:
+//                processAuthMessage((AuthMessage) message, client);
+//                break;
         }
-    }
-
-    private void unregisterClientFromFirebase(Client client) {
-        firebaseRepository.unregisterFromAllListeners(client.databaseRegisterListener);
     }
 
     // endregion
@@ -240,6 +174,17 @@ public class ServerThread extends Thread implements ServerInfoProvider {
     }
 
     @Override
+    public void registerModule(MessageType messageType, IModule module) {
+        List<IModule> messageHandlers = modules.get(messageType);
+        if (messageHandlers == null) {
+            messageHandlers = new ArrayList<>();
+            modules.put(messageType, messageHandlers);
+        }
+
+        messageHandlers.add(module);
+    }
+
+    @Override
     public synchronized void start() {
         clientDispatcher.start();
         writerThread.start();
@@ -250,8 +195,7 @@ public class ServerThread extends Thread implements ServerInfoProvider {
 
     @Override
     public void run() {
-        firebaseRepository.init();
-        authService.init();
+        initModules();
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             serverSocket.setSoTimeout(5000);
             LOGGER.info(String.format("Server naslouchá na portu: %d.", serverSocket.getLocalPort()));

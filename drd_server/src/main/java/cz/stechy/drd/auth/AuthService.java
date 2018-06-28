@@ -1,5 +1,7 @@
-package cz.stechy.drd;
+package cz.stechy.drd.auth;
 
+import cz.stechy.drd.Client;
+import cz.stechy.drd.ServerDatabase;
 import cz.stechy.drd.firebase.ItemEventListener;
 import cz.stechy.drd.net.message.AuthMessage;
 import cz.stechy.drd.net.message.AuthMessage.AuthAction;

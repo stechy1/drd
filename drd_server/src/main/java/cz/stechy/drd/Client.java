@@ -1,9 +1,5 @@
 package cz.stechy.drd;
 
-import cz.stechy.drd.firebase.ItemEvent;
-import cz.stechy.drd.firebase.ItemEventListener;
-import cz.stechy.drd.net.message.DatabaseMessage;
-import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
 import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
@@ -93,14 +89,6 @@ public class Client implements Runnable {
     public UUID getId() {
         return id;
     }
-
-    public final ItemEventListener databaseRegisterListener = (ItemEvent event) -> {
-        final IMessage databaseMessage = new DatabaseMessage(
-            MessageSource.SERVER,
-            new DatabaseMessageCRUD(event.getItem(), event.getTableName(), event.getAction())
-        );
-        sendMessage(databaseMessage);
-    };
 
     @FunctionalInterface
     public interface OnConnectionClosedListener {

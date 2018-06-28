@@ -2,7 +2,7 @@ package cz.stechy.drd.firebase;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.GenericTypeIndicator;
-import cz.stechy.drd.AuthService;
+import cz.stechy.drd.auth.AuthService;
 import cz.stechy.drd.R;
 import java.util.ArrayList;
 import java.util.HashMap;

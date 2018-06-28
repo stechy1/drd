@@ -3,6 +3,12 @@ package cz.stechy.drd;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import cz.stechy.drd.auth.AuthService;
+import cz.stechy.drd.firebase.FirebaseRepository;
+import cz.stechy.drd.module.AuthModule;
+import cz.stechy.drd.module.FirebaseDatabaseModule;
+import cz.stechy.drd.module.IModule;
+import cz.stechy.drd.net.message.MessageType;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -117,11 +123,29 @@ public class Server {
     }
 
     /**
+     * Inicializace jednotlivých modulů
+     */
+    private void initModules() {
+        LOGGER.info("Registruji moduly.");
+        final FirebaseRepository serverDatabase = new FirebaseRepository();
+        final IModule firebaseDatabaseModule = new FirebaseDatabaseModule(serverDatabase);
+        final AuthService authService = new AuthService(serverDatabase);
+        final IModule authModule = new AuthModule(authService);
+
+        // Pozor, záleží na pořadí!!!
+        // Firebase se musí registrovat jako první aby se závisející moduly mohly v klidu registrovat
+        serverThread.registerModule(MessageType.DATABASE, firebaseDatabaseModule);
+        serverThread.registerModule(MessageType.AUTH, authModule);
+        LOGGER.info("Registrace modulů dokončena.");
+    }
+
+    /**
      * Inicializace serveru
      */
     private void init() {
         LOGGER.info("Inicializuji server.");
         initFirebase();
+        initModules();
 
         LOGGER.info("Inicializace dokončena.");
     }
@@ -142,5 +166,6 @@ public class Server {
         } catch (InterruptedException e) {}
 
         LOGGER.info("Server byl ukončen.");
+        scanner.close();
     }
 }
