@@ -48,7 +48,7 @@ javadoc {
 
 dependencies {
 
-    implementation project(':drd_share')
+    compile project(':drd_share')
 
     implementation group: 'com.github.stechy1', name: 'screens', version: 'v2.3'
     implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'

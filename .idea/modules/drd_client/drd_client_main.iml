@@ -14,8 +14,8 @@
     <orderEntry type="library" name="Gradle: org.xerial:sqlite-jdbc:3.21.0" level="project" />
     <orderEntry type="library" name="Gradle: net.java.dev.jna:jna-platform:4.3.0" level="project" />
     <orderEntry type="library" name="Gradle: com.github.harawata:appdirs:1.0.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-simple:1.7.25" level="project" />
+    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" name="Gradle: com.jfoenix:jfoenix:8.0.3" level="project" />
     <orderEntry type="library" name="Gradle: net.java.dev.jna:jna:4.3.0" level="project" />
   </component>
