@@ -9,7 +9,6 @@ import javax.lang.model.type.MirroredTypeException;
  */
 final class TableAnnotatedClass {
 
-    private final TypeElement annotatedClassElement;
     private final String qualifiedSuperClassName;
     private final String simpleTypeName;
     private final String tableName;
@@ -20,7 +19,7 @@ final class TableAnnotatedClass {
     private String firebaseChildName;
 
     public TableAnnotatedClass(TypeElement classElement) {
-        this.annotatedClassElement = classElement;
+        TypeElement annotatedClassElement = classElement;
 
         // Zpracování annotace Table
         Table annotation = classElement.getAnnotation(Table.class);

@@ -163,7 +163,7 @@ public class Server {
         serverThread.shutdown();
         try {
             serverThread.join();
-        } catch (InterruptedException e) {}
+        } catch (InterruptedException ignored) {}
 
         LOGGER.info("Server byl ukončen.");
         scanner.close();

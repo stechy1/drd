@@ -27,8 +27,6 @@ public class LanServerFinder implements Runnable {
 
     // Kolekce nalezených serverů
     private final ObservableMap<UUID, ServerStatusModel> serverMap = FXCollections.observableHashMap();
-    // Broadcast adresa
-    private final InetAddress broadcastAddress;
     // Socket, na kterém se naslouchá
     private final MulticastSocket socket;
 
@@ -41,10 +39,11 @@ public class LanServerFinder implements Runnable {
     // region Constructors
 
     public LanServerFinder() throws IOException {
-        this.broadcastAddress = InetAddress.getByName(NetConfig.BROADCAST_ADDRESS);
+        // Broadcast adresa
+        InetAddress broadcastAddress = InetAddress.getByName(NetConfig.BROADCAST_ADDRESS);
         this.socket = new MulticastSocket(NetConfig.BROADCAST_PORT);
         this.socket.setSoTimeout(5000);
-        this.socket.joinGroup(this.broadcastAddress);
+        this.socket.joinGroup(broadcastAddress);
         this.watchdog = new LanServerWatchdog(serverMap);
     }
 
@@ -91,9 +90,7 @@ public class LanServerFinder implements Runnable {
                         watchdog.startWatchdog();
                     }
                 });
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
         }

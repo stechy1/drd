@@ -5,6 +5,8 @@ package cz.stechy.drd.model.inventory;
  */
 public class InventoryException extends Exception {
 
+    private static final long serialVersionUID = -3718290047346851959L;
+
     public InventoryException() {
     }
 

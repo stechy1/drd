@@ -59,7 +59,6 @@ public class CollectionsBestiaryController implements Initializable, Collections
     private final ObservableList<BestiaryEntry> collectionItems = FXCollections.observableArrayList();
     private final ObservableList<ChoiceEntry> mobRegistry = FXCollections.observableArrayList();
 
-    private final Translator translator;
     // Nemůžu dát "final", protože by mi to brečelo v bestiaryCollectionContentListener
     private BestiaryDao bestiaryService;
     private StringProperty selectedEntry;
@@ -69,7 +68,7 @@ public class CollectionsBestiaryController implements Initializable, Collections
     // region Constructors
 
     public CollectionsBestiaryController(Translator translator, BestiaryDao bestiaryService) {
-        this.translator = translator;
+        Translator translator1 = translator;
         this.bestiaryService = bestiaryService;
 
         bestiaryService.selectAllAsync()
@@ -102,9 +101,7 @@ public class CollectionsBestiaryController implements Initializable, Collections
         columnImage.setCellFactory(param -> CellUtils.forImage());
 
         tableCollectionsBestiary.getSelectionModel().selectedItemProperty()
-            .addListener((observableValue, oldValue, newValue) -> {
-                selectedEntry.setValue(newValue == null ? null : newValue.getId());
-            });
+            .addListener((observableValue, oldValue, newValue) -> selectedEntry.setValue(newValue == null ? null : newValue.getId()));
     }
 
     @Override
@@ -155,9 +152,7 @@ public class CollectionsBestiaryController implements Initializable, Collections
                 throwable.printStackTrace();
                 throw new RuntimeException(throwable);
             })
-            .thenAccept(integer -> {
-                System.out.println("Bylo uloženo: " + integer + " nestvůr.");
-            });
+            .thenAccept(integer -> System.out.println("Bylo uloženo: " + integer + " nestvůr."));
     }
 
     public final class BestiaryEntry {

@@ -57,9 +57,8 @@ public interface DatabaseService<T> {
      * Metoda se zavolá, pokud je potřeba upgradovat databázi
      *
      * @param newVersion Nová verze databáze
-     * @throws DatabaseException Pokud se upgrade nezdaří
      */
-    void onUpgrade(int newVersion) throws DatabaseException;
+    void onUpgrade(int newVersion);
 
     CompletableFuture<Void> onUpgradeAsync(int newVersion);
 }

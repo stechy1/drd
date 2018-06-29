@@ -21,31 +21,30 @@ class LoginModel {
     private final IntegerProperty flags = new SimpleIntegerProperty(LOGIN_FLAG + PASSWORD_FLAG);
 
     LoginModel() {
+        ChangeListener<String> loginChangeListener = (observable, oldValue, newValue) -> {
+            final int oldFlags = flags.get();
+            final boolean isLoginValid = User.isNameValid(newValue);
+            final int result = BitUtils.setBit(oldFlags, LOGIN_FLAG, !isLoginValid);
+            if (oldFlags == result) {
+                return;
+            }
+
+            flags.setValue(result);
+        };
         login.addListener(loginChangeListener);
+        ChangeListener<String> passwordChangeListener = (observable, oldValue, newValue) -> {
+            final int oldFlags = flags.get();
+            final boolean isPasswordValid = !newValue.isEmpty();
+            final int result = BitUtils.setBit(oldFlags, PASSWORD_FLAG, !isPasswordValid);
+            if (oldFlags == result) {
+                return;
+            }
+
+            flags.setValue(result);
+        };
         password.addListener(passwordChangeListener);
         flags.addListener(
             (observable, oldValue, newValue) -> valid.setValue(newValue.intValue() == 0));
     }
 
-    private final ChangeListener<String> loginChangeListener = (observable, oldValue, newValue) -> {
-        final int oldFlags = flags.get();
-        final boolean isLoginValid = User.isNameValid(newValue);
-        final int result = BitUtils.setBit(oldFlags, LOGIN_FLAG, !isLoginValid);
-        if (oldFlags == result) {
-            return;
-        }
-
-        flags.setValue(result);
-    };
-
-    private final ChangeListener<String> passwordChangeListener = (observable, oldValue, newValue) -> {
-        final int oldFlags = flags.get();
-        final boolean isPasswordValid = !newValue.isEmpty();
-        final int result = BitUtils.setBit(oldFlags, PASSWORD_FLAG, !isPasswordValid);
-        if (oldFlags == result) {
-            return;
-        }
-
-        flags.setValue(result);
-    };
 }

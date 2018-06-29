@@ -67,11 +67,7 @@ public final class AppSettings {
 
     public void addListener(String propertyName, PropertyChangeListener listener) {
         List<PropertyChangeListener> changeListeners = propertyListeners
-            .get(propertyName);
-        if (changeListeners == null) {
-            changeListeners = new ArrayList<>();
-            propertyListeners.put(propertyName, changeListeners);
-        }
+            .computeIfAbsent(propertyName, k -> new ArrayList<>());
 
         changeListeners.add(listener);
     }

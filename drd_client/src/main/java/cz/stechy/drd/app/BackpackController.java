@@ -62,8 +62,6 @@ public class BackpackController extends BaseController implements TooltipTransla
     private final Translator translator;
     private final ItemRegistry itemRegistry;
     private ItemContainer itemContainer;
-    // Velikost inventáře = počet slotů v inventáři
-    private int backpackSize;
     private String inventoryId;
 
     // endregion
@@ -135,7 +133,8 @@ public class BackpackController extends BaseController implements TooltipTransla
 
     @Override
     protected void onCreate(Bundle bundle) {
-        backpackSize = bundle.getInt(BACKPACK_SIZE);
+        // Velikost inventáře = počet slotů v inventáři
+        int backpackSize = bundle.getInt(BACKPACK_SIZE);
         inventoryId = bundle.getString(INVENTORY_ID);
         setTitle(bundle.getString(ITEM_NAME));
         itemContainer = new FlowItemContainer(itemRegistry, this, backpackSize);

@@ -30,6 +30,8 @@ public class ClientStatusMessage implements IMessage {
 
     public static final class ClientStatusData implements Serializable {
 
+        private static final long serialVersionUID = -8775817684472782497L;
+
         public final UUID clientID;
         public final ClientStatus status;
 

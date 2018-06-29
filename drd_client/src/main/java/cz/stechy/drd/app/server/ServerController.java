@@ -157,9 +157,7 @@ public class ServerController extends BaseController implements Initializable {
                     showNotification(new Notification("Spojení se nezdařilo."));
                 }
             })
-            .whenComplete((aVoid, throwable) -> {
-            ((Parent)(actionEvent.getSource())).getScene().setCursor(Cursor.DEFAULT);
-        });
+            .whenComplete((aVoid, throwable) -> ((Parent)(actionEvent.getSource())).getScene().setCursor(Cursor.DEFAULT));
     }
 
     @FXML

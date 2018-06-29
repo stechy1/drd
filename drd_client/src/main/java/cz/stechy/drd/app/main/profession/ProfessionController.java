@@ -26,7 +26,6 @@ public class ProfessionController implements MainScreen, Initializable, Injectab
     // endregion
 
     private IProfessionController professionController;
-    private ResourceBundle resources;
     private BaseController parent;
 
     // endregion
@@ -82,7 +81,7 @@ public class ProfessionController implements MainScreen, Initializable, Injectab
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        this.resources = resources;
+        ResourceBundle resources1 = resources;
     }
 
     @Override

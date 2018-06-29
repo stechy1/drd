@@ -95,6 +95,18 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
      */
     protected BaseDatabaseService(Database db) {
         this.db = db;
+        TransactionHandler transactionHandler = new TransactionHandler() {
+            @Override
+            public void onCommit() {
+                operations.forEach(operation -> operation.commit(items));
+                operations.clear();
+            }
+
+            @Override
+            public void onRollback() {
+                operations.clear();
+            }
+        };
         db.addCommitHandler(transactionHandler);
     }
 
@@ -318,7 +330,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     }
 
     @Override
-    public void onUpgrade(int newVersion) throws DatabaseException {
+    public void onUpgrade(int newVersion) {
         LOGGER.info("Aktualizuji tabulku: {} na verzi: {}", getTable(), newVersion);
     }
 
@@ -331,18 +343,5 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
     }
 
     // endregion
-
-    private final TransactionHandler transactionHandler = new TransactionHandler() {
-        @Override
-        public void onCommit() {
-            operations.forEach(operation -> operation.commit(items));
-            operations.clear();
-        }
-
-        @Override
-        public void onRollback() {
-            operations.clear();
-        }
-    };
 
 }

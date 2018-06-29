@@ -22,7 +22,6 @@ public final class MobEntry {
 
     // region Variables
 
-    private final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "imageRaw");
     private final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
     private final StringProperty name = new SimpleStringProperty(this, "name");
     private final StringProperty author = new SimpleStringProperty(this, "author");
@@ -41,7 +40,8 @@ public final class MobEntry {
     public MobEntry(Mob mobBase) {
         this.mobBase = mobBase;
 
-        this.imageRaw.bind(mobBase.imageProperty());
+        ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "imageRaw");
+        imageRaw.bind(mobBase.imageProperty());
         this.name.bind(mobBase.nameProperty());
         this.author.bind(mobBase.authorProperty());
         this.mobClass.bind(mobBase.mobClassProperty());

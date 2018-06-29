@@ -27,7 +27,6 @@ public class Client implements Runnable {
     private final IMessageReceiveListener messageReceiveListener;
 
     private OnConnectionClosedListener connectionClosedListener;
-    private boolean interrupt = false;
 
     public Client(Socket client, WriterThread writerThread,
         IMessageReceiveListener messageReceiveListener) throws IOException {
@@ -46,6 +45,7 @@ public class Client implements Runnable {
             LOGGER.info("ObjectInputStream byl úspěšně vytvořen.");
             sendMessage(new HelloMessage(MessageSource.SERVER));
             IMessage received;
+            boolean interrupt = false;
             while ((received = (IMessage) reader.readObject()) != null && !interrupt) {
                 LOGGER.info(String.format("Bylo přijato: '%s'", received));
                 messageReceiveListener.onMessageReceive(received, this);

@@ -60,13 +60,8 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
     private final ObservableList<ChoiceEntry> spellRegistry = FXCollections.observableArrayList();
 
     private final SpellBookDao spellService;
-    private final Translator translator;
 
-    // Nemůžu dát "final", protože by mi to brečelo v bestiaryCollectionContentListener
-    private ItemCollectionDao collectionService;
     private StringProperty selectedEntry;
-    private CollectionsNotificationProvider notificationProvider;
-
 
     // endregion
 
@@ -75,8 +70,9 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
     public CollectionsSpellsController(SpellBookDao spellService,
         Translator translator, ItemCollectionDao collectionService) {
         this.spellService = spellService;
-        this.translator = translator;
-        this.collectionService = collectionService;
+        Translator translator1 = translator;
+        // Nemůžu dát "final", protože by mi to brečelo v bestiaryCollectionContentListener
+        ItemCollectionDao collectionService1 = collectionService;
 
         spellService.selectAllAsync()
             .thenAccept(spells -> this.spellRegistry.setAll(DialogUtils.getSpellChoices(spells)));
@@ -108,9 +104,7 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
         columnImage.setCellFactory(param -> CellUtils.forImage());
 
         tableCollectionsSpells.getSelectionModel().selectedItemProperty()
-            .addListener((observableValue, oldValue, newValue) -> {
-                selectedEntry.setValue(newValue == null ? null : newValue.getId());
-            });
+            .addListener((observableValue, oldValue, newValue) -> selectedEntry.setValue(newValue == null ? null : newValue.getId()));
     }
 
     @Override
@@ -139,7 +133,7 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
 
     @Override
     public void setNotificationProvider(CollectionsNotificationProvider notificationProvider) {
-        this.notificationProvider = notificationProvider;
+        CollectionsNotificationProvider notificationProvider1 = notificationProvider;
     }
 
     @Override
@@ -163,9 +157,7 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
                 throwable.printStackTrace();
                 throw new RuntimeException(throwable);
             })
-            .thenAccept(integer -> {
-                System.out.println("Bylo uloženo: " + integer + " kouzel.");
-            });
+            .thenAccept(integer -> System.out.println("Bylo uloženo: " + integer + " kouzel."));
     }
 
     public final class SpellEntry {

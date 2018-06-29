@@ -31,18 +31,15 @@ import javax.tools.JavaFileObject;
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class ManagerProcessor extends AbstractProcessor {
 
-    private Types typeUtils;
-    private Elements elementUtils;
-    private Filer filer;
     private Messager messager;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
 
-        typeUtils = processingEnv.getTypeUtils();
-        elementUtils = processingEnv.getElementUtils();
-        filer = processingEnv.getFiler();
+        Types typeUtils = processingEnv.getTypeUtils();
+        Elements elementUtils = processingEnv.getElementUtils();
+        Filer filer = processingEnv.getFiler();
         messager = processingEnv.getMessager();
     }
 

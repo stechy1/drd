@@ -31,7 +31,6 @@ public class LabeledProgressBar extends VBox {
     private final Label label = new Label();
     private final ProgressBar progressBar = new ProgressBar();
     private final Label progressLabel = new Label();
-    private final StackPane container = new StackPane(progressBar, progressLabel);
     private DisplayMode displayMode;
     private int actValue = 1;
     private int maxValue = 1;
@@ -48,6 +47,7 @@ public class LabeledProgressBar extends VBox {
         label.setFont(Font.font(10));
 
         progressBar.setPrefWidth(Double.MAX_VALUE);
+        StackPane container = new StackPane(progressBar, progressLabel);
         getChildren().setAll(label, container);
 
         sync(DEFAULT_PROGRESS, DEFAULT_MAX_PROGRESS);

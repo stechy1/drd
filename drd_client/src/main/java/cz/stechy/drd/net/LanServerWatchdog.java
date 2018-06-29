@@ -1,7 +1,6 @@
 package cz.stechy.drd.net;
 
 import cz.stechy.drd.app.server.ServerStatusModel;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Semaphore;
@@ -20,7 +19,7 @@ public final class LanServerWatchdog implements Runnable {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(LanServerWatchdog.class);
 
-    private static final long SLEEP_TIME = 3000l;
+    private static final long SLEEP_TIME = 3000L;
 
     // endregion
 
@@ -79,8 +78,7 @@ public final class LanServerWatchdog implements Runnable {
             LOGGER.info("Jdu pracovat.");
             while(!mapEmpty.get() && !interupt) {
 
-                for (Iterator<ServerStatusModel> iterator = serverMap.values().iterator(); iterator.hasNext();) {
-                    final ServerStatusModel model = iterator.next();
+                for (final ServerStatusModel model : serverMap.values()) {
                     if (model.hasOldData()) {
                         Platform.runLater(() -> serverMap.remove(model.getServerID()));
                     }

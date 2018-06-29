@@ -43,7 +43,7 @@ public class ClientDispatcher extends Thread {
                 try {
                     LOGGER.info("Jdu spát na semaforu.");
                     semaphore.acquire();
-                } catch (InterruptedException e) {}
+                } catch (InterruptedException ignored) {}
             }
 
             final ServerStatusMessage statusMessage = serverInfoProvider.getServerStatusMessage();
@@ -65,7 +65,7 @@ public class ClientDispatcher extends Thread {
 
             try {
                 Thread.sleep(SLEEP_TIME);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException ignored) {}
         }
 
         LOGGER.info("Client dispatcher končí.");

@@ -108,8 +108,6 @@ public class MainController extends BaseController implements Initializable {
     @FXML
     private Tab tabProfession;
 
-    private ImageView serverIndicator;
-
     // endregion
 
     private final BooleanProperty serverConnected = new SimpleBooleanProperty(this, "serverConnected",
@@ -121,7 +119,6 @@ public class MainController extends BaseController implements Initializable {
     private final Translator translator;
     private final ClientCommunicator communicator;
 
-    private MainScreen[] controllers;
     private String title;
     private String loginText;
     private String logoutText;
@@ -174,10 +171,10 @@ public class MainController extends BaseController implements Initializable {
     }
 
     private void initServerIndicator() {
-        this.serverIndicator = new ImageView();
-        this.serverIndicator.setFitWidth(24);
-        this.serverIndicator.setFitHeight(24);
-        this.serverIndicator.imageProperty().bind(Bindings.createObjectBinding(() -> {
+        ImageView serverIndicator = new ImageView();
+        serverIndicator.setFitWidth(24);
+        serverIndicator.setFitHeight(24);
+        serverIndicator.imageProperty().bind(Bindings.createObjectBinding(() -> {
             final ConnectionState state = communicator.getConnectionState();
             switch (state) {
                 case CONNECTING:
@@ -189,8 +186,8 @@ public class MainController extends BaseController implements Initializable {
             }
         }, communicator.connectionStateProperty()));
         final AnchorPane root = (AnchorPane) getRoot().getParent();
-        AnchorPane.setBottomAnchor(this.serverIndicator, 4.0);
-        AnchorPane.setRightAnchor(this.serverIndicator, 4.0);
+        AnchorPane.setBottomAnchor(serverIndicator, 4.0);
+        AnchorPane.setRightAnchor(serverIndicator, 4.0);
         Tooltip.install(serverIndicator, new Tooltip(translator.translate(R.Translate.SERVER_STATUS)));
         root.getChildren().add(serverIndicator);
     }
@@ -248,7 +245,7 @@ public class MainController extends BaseController implements Initializable {
         this.loginText = resources.getString(R.Translate.MAIN_MENU_FILE_LOGIN);
         this.logoutText = resources.getString(R.Translate.MAIN_MENU_FILE_LOGOUT);
 
-        this.controllers = new MainScreen[]{
+        MainScreen[] controllers = new MainScreen[]{
             defaultStaffController,
             inventoryController,
             professionController

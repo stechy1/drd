@@ -182,7 +182,7 @@ public final class ClientCommunicator {
                 readerThread.shutdown();
                 try {
                     readerThread.join();
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
                 LOGGER.info("Čtecí vlákno bylo úspěšně ukončeno.");
 
@@ -190,7 +190,7 @@ public final class ClientCommunicator {
                 writerThread.shutdown();
                 try {
                     writerThread.join();
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 }
                 LOGGER.info("Zapisovací vlákno bylo úspěšně ukončeno.");
 

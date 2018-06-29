@@ -33,11 +33,8 @@ public class FirebaseDatabaseModule implements IModule {
     // region Private methods
 
     private ItemEventListener addDatabaseListener(Client client, String tableName) {
-        Map<String, ItemEventListener> clientListeners = databaseListeners.get(client);
-        if (clientListeners == null) {
-            clientListeners = new HashMap<>();
-            databaseListeners.put(client, clientListeners);
-        }
+        Map<String, ItemEventListener> clientListeners = databaseListeners
+            .computeIfAbsent(client, k -> new HashMap<>());
 
         final ItemEventListener listener = buildListenerForClient(client);
         clientListeners.put(tableName, listener);

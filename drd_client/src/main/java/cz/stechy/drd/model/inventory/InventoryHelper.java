@@ -65,7 +65,7 @@ public class InventoryHelper {
                                                     .thenCompose(inventoryContent::insertAsync))
                                             .toArray(CompletableFuture[]::new)))));
                     return CompletableFuture.allOf(
-                        futureItemList.toArray(new CompletableFuture[futureItemList.size()]));
+                        futureItemList.toArray(new CompletableFuture[0]));
                 }));
     }
 

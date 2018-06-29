@@ -49,7 +49,6 @@ public class ThiefController implements IProfessionController, Initializable {
     private final Translator translator;
     private String successText;
     private String failText;
-    private Hero hero;
     private Thief thief;
 
     // endregion
@@ -86,7 +85,7 @@ public class ThiefController implements IProfessionController, Initializable {
 
     @Override
     public void setHero(Hero hero) {
-        this.hero = hero;
+        Hero hero1 = hero;
         this.thief = new Thief(hero);
     }
 

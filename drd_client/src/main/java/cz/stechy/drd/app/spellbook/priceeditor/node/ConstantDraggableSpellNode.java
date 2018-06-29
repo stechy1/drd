@@ -16,8 +16,6 @@ public class ConstantDraggableSpellNode extends DraggableSpellNode {
 
     // region Variables
 
-    private JFXTextField inputValue;
-    private JFXTextField inputExtention;
     private MaxActValue value;
     private MaxActValue valueExtention;
 
@@ -35,8 +33,8 @@ public class ConstantDraggableSpellNode extends DraggableSpellNode {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
-        inputValue = new JFXTextField();
-        inputExtention = new JFXTextField();
+        JFXTextField inputValue = new JFXTextField();
+        JFXTextField inputExtention = new JFXTextField();
         value = new MaxActValue(Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
         valueExtention = new MaxActValue(0, Integer.MAX_VALUE, 0);
         inputValue.setLabelFloat(true);

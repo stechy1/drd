@@ -22,7 +22,7 @@ import javafx.beans.property.SimpleObjectProperty;
  * Měsíc = 30 dní = 5bitů =  0b000011111000000000
  * Rok = 12 měsíců = 4bity = 0b111100000000000000
  */
-public final class DrDTime implements Comparable<Money> {
+public final class DrDTime implements Comparable<DrDTime> {
 
     // region Constants
 
@@ -395,7 +395,7 @@ public final class DrDTime implements Comparable<Money> {
     // endregion
 
     @Override
-    public int compareTo(Money o) {
+    public int compareTo(DrDTime o) {
         return Integer.compare(this.getRaw(), o.getRaw());
     }
 

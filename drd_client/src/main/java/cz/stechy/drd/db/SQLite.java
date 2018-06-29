@@ -32,7 +32,6 @@ public class SQLite implements Database {
 
     // region Variables
 
-    private final SQLiteConnectionPoolDataSource dataSource = new SQLiteConnectionPoolDataSource();
     private final MiniConnectionPoolManager pool;
     private final List<TransactionHandler> transactionHandlers = new ArrayList<>();
     // Lokální verze databáze
@@ -51,6 +50,7 @@ public class SQLite implements Database {
      * @param localVersion Aktuální verze databáze
      */
     public SQLite(String path, int localVersion) {
+        SQLiteConnectionPoolDataSource dataSource = new SQLiteConnectionPoolDataSource();
         dataSource.setUrl(CONNECTION_PREFIX + path);
         pool = new MiniConnectionPoolManager(dataSource, MAX_CONNECTIONS);
         this.localVersion = localVersion;

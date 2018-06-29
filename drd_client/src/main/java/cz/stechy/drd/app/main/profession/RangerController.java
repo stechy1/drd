@@ -74,7 +74,6 @@ public class RangerController implements IProfessionController, Initializable {
         "pyroInicialized", false);
     private final Translator translator;
 
-    private Hero hero;
     private Ranger ranger;
 
     // endregion
@@ -124,7 +123,7 @@ public class RangerController implements IProfessionController, Initializable {
 
     @Override
     public void setHero(Hero hero) {
-        this.hero = hero;
+        Hero hero1 = hero;
         this.ranger = new Ranger(hero);
     }
 

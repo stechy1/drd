@@ -31,7 +31,10 @@ public final class Vulnerabilities {
 
     // Všechny třídy zranitelnosti v jednom poli
     public static final Map<String, Integer> VALUES = Collections
-        .unmodifiableMap(new HashMap<String, Integer>() {{
+        .unmodifiableMap(new HashMap<String, Integer>() {
+            private static final long serialVersionUID = -3483495439782675894L;
+
+            {
             put("A", A);
             put("B", B);
             put("C", C);

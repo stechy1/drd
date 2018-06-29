@@ -53,8 +53,6 @@ public class HeroCreatorController2 extends BaseController implements Initializa
 
     private String title;
     private Bundle bundle;
-    private Hero.Race race;
-    private Hero.Profession profession;
     private HeroGenerator generator;
     // endregion
 
@@ -77,8 +75,8 @@ public class HeroCreatorController2 extends BaseController implements Initializa
     protected void onCreate(Bundle bundle) {
         this.bundle = bundle;
 
-        race = Hero.Race.valueOf(bundle.getInt(HeroHelper.RACE));
-        profession = Hero.Profession.valueOf(bundle.getInt(HeroHelper.PROFESSION));
+        Hero.Race race = Hero.Race.valueOf(bundle.getInt(HeroHelper.RACE));
+        Hero.Profession profession = Hero.Profession.valueOf(bundle.getInt(HeroHelper.PROFESSION));
         generator = new HeroGenerator(race, profession);
 
         bundle.putInt(HeroHelper.HEIGHT, generator.height().ordinal());

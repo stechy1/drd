@@ -92,15 +92,12 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
 
         heroService.getInventoryAsync()
             .thenCompose(inventoryService ->
-            {
-                return inventoryService.selectAsync(InventoryDao.MAIN_INVENTORY_FILTER)
+                inventoryService.selectAsync(InventoryDao.MAIN_INVENTORY_FILTER)
                     .thenCompose(mainInventory ->
-                    {
-                        return mainItemContainer
+                        mainItemContainer
                             .setInventoryManager(inventoryService, mainInventory)
                             .thenCompose(ignore ->
-                            {
-                                return inventoryService
+                                inventoryService
                                     .selectAsync(InventoryDao.EQUIP_INVENTORY_FILTER)
                                     .handle((equipInventory, throwable) -> {
                                         if (throwable != null) {
@@ -118,10 +115,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
                                             futureEquipInventory.thenCompose(inventory ->
                                                 equipItemContainer
                                                     .setInventoryManager(inventoryService, inventory)),
-                                        ThreadPool.JAVAFX_EXECUTOR);
-                            });
-                    });
-            })
+                                        ThreadPool.JAVAFX_EXECUTOR))))
             .exceptionally(throwable -> {
                 throwable.printStackTrace();
                 throw new RuntimeException(throwable);

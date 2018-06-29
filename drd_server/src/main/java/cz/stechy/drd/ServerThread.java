@@ -42,7 +42,6 @@ public class ServerThread extends Thread implements ServerInfoProvider, IModuleR
     private final int port;
     private final int maxClients;
     private final ExecutorService pool;
-    private final String serverName ="Default DrD server";
     private boolean running = false;
 
     // endregion
@@ -169,17 +168,15 @@ public class ServerThread extends Thread implements ServerInfoProvider, IModuleR
             status = ServerStatus.HAVE_SPACE;
         }
 
+        String serverName = "Default DrD server";
         return new ServerStatusMessage(new ServerStatusData(
             Server.ID, status, connectedClients, maxClients, serverName, port));
     }
 
     @Override
     public void registerModule(MessageType messageType, IModule module) {
-        List<IModule> messageHandlers = modules.get(messageType);
-        if (messageHandlers == null) {
-            messageHandlers = new ArrayList<>();
-            modules.put(messageType, messageHandlers);
-        }
+        List<IModule> messageHandlers = modules
+            .computeIfAbsent(messageType, k -> new ArrayList<>());
 
         messageHandlers.add(module);
     }

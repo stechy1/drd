@@ -2,7 +2,6 @@ package cz.stechy.drd.dao;
 
 import com.google.firebase.database.DataSnapshot;
 import cz.stechy.drd.db.AdvancedDatabaseService;
-import cz.stechy.drd.db.DatabaseException;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.drd.model.item.{generic_class};

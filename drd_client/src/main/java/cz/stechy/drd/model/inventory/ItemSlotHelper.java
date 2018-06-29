@@ -15,10 +15,8 @@ public final class ItemSlotHelper {
     // region Constants
 
     // Filtr pro přilbu
-    private static final Predicate<ItemBase> HELM_FILTER = itemBase -> {
-        return itemBase.getItemType() == ItemType.ARMOR &&
-            ((Armor) itemBase).getType() == ArmorType.HELM;
-    };
+    private static final Predicate<ItemBase> HELM_FILTER = itemBase -> itemBase.getItemType() == ItemType.ARMOR &&
+        ((Armor) itemBase).getType() == ArmorType.HELM;
 
     // Filtr pro hrudní brnění
     private static final Predicate<ItemBase> BODY_FILTER = itemBase ->

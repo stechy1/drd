@@ -69,9 +69,7 @@ public class TestApplication extends Application {
     private void load(ActionEvent actionEvent) {
         try {
             db.selectAsync(
-                resultSet -> {
-                    return resultSet.getString("name");
-                },
+                resultSet -> resultSet.getString("name"),
                 "SELECT name FROM test")
                 .exceptionally(throwable -> {
                     throwable.printStackTrace();

@@ -37,7 +37,7 @@ public class AboutController extends BaseController implements Initializable {
         final String link = ((Hyperlink) actionEvent.getSource()).getTooltip().getText();
         try {
             new ProcessBuilder("x-www-browser", link).start();
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
     }
 

@@ -220,9 +220,9 @@ public class ItemSlot {
             new ColumnConstraints(50)
         );
         final int[] rowIndex = {0};
-        tooltipMap.entrySet().forEach(entry -> {
-            final Text key = new Text(entry.getKey());
-            final Text value = new Text(entry.getValue());
+        tooltipMap.forEach((key1, value1) -> {
+            final Text key = new Text(key1);
+            final Text value = new Text(value1);
             key.setFill(Color.WHITE);
             value.setFill(Color.WHITE);
             tooltipContainer.add(key, 0, rowIndex[0]);

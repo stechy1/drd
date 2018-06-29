@@ -76,11 +76,6 @@ public final class InventoryDao extends BaseDatabaseService<Inventory> {
         this.itemRegistry = itemRegistry;
 
         createTableAsync().join();
-//        try {
-//            createTable();
-//        } catch (DatabaseException e) {
-//            e.printStackTrace();
-//        }
     }
 
     // endregion
@@ -194,7 +189,7 @@ public final class InventoryDao extends BaseDatabaseService<Inventory> {
                     inventoryRecords.forEach(inventoryRecord ->
                         futureList.add(inventoryContent.deleteAsync(inventoryRecord)));
                     return CompletableFuture
-                        .allOf(futureList.toArray(new CompletableFuture[futureList.size()]))
+                        .allOf(futureList.toArray(new CompletableFuture[0]))
                         .thenCompose(aVoid -> super.deleteAsync(item));
                 }));
     }

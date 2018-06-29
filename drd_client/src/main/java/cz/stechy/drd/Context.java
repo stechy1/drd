@@ -10,7 +10,6 @@ import cz.stechy.drd.dao.ItemCollectionDao;
 import cz.stechy.drd.dao.MeleWeaponDao;
 import cz.stechy.drd.dao.RangedWeaponDao;
 import cz.stechy.drd.dao.SpellBookDao;
-import cz.stechy.drd.dao.UserDao;
 import cz.stechy.drd.db.DatabaseService;
 import cz.stechy.drd.db.SQLite;
 import cz.stechy.drd.db.base.Database;
@@ -138,20 +137,9 @@ public class Context {
                 .thenCompose(ignore -> instance.selectAllAsync()))
             .toArray(CompletableFuture[]::new))
             .thenAccept(ignore -> {
-                // Inicializace UserDao
-                container.getInstance(UserDao.class);
                 // Inicializace ItemCollectionDao
                 container.getInstance(ItemCollectionDao.class);
             });
-    }
-
-    /**
-     * Zjistí, zda-li má aplikace inicializovat firebase databázi
-     *
-     * @return True, pokud se má firebase inicializovat, jinak False
-     */
-    private boolean useOnlineDatabase() {
-        return Boolean.parseBoolean(settings.getProperty(R.Config.USE_ONLINE_DATABASE, "false"));
     }
 
     // endregion

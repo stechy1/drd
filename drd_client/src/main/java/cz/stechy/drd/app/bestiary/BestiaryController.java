@@ -308,43 +308,35 @@ public class BestiaryController extends BaseController implements Initializable 
 
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(mob -> {
-            service.uploadAsync(mob)
-                .exceptionally(throwable -> {
-                    LOGGER.error("Příšeru {} se nepodařilo nahrát", mob);
-                    throw new RuntimeException(throwable);
-                })
-                .thenAccept(ignored -> showNotification(new Notification(String
-                    .format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPLOADED),
-                        mob.getName()))));
-        });
+        getSelectedEntry().ifPresent(mob -> service.uploadAsync(mob)
+            .exceptionally(throwable -> {
+                LOGGER.error("Příšeru {} se nepodařilo nahrát", mob);
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(ignored -> showNotification(new Notification(String
+                .format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPLOADED),
+                    mob.getName())))));
     }
 
     @FXML
     private void handleDownloadItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(item -> {
-            service.insertAsync(item)
-                .exceptionally(throwable -> {
-                    LOGGER.error(throwable.getMessage(), throwable);
-                    throw new RuntimeException(throwable);
-                });
-        });
+        getSelectedEntry().ifPresent(item -> service.insertAsync(item)
+            .exceptionally(throwable -> {
+                LOGGER.error(throwable.getMessage(), throwable);
+                throw new RuntimeException(throwable);
+            }));
     }
 
     @FXML
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(mob -> {
-            service.deleteRemoteAsync(mob)
-                .exceptionally(throwable -> {
-                    LOGGER.error("Příšeru {} se nepodařilo odstranit z online databáze", mob);
-                    throw new RuntimeException(throwable);
-                })
-                .thenAccept(ignored-> {
-                    showNotification(new Notification(String.format(
-                        translator.translate(R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
-                        mob.getName())));
-                });
-        });
+        getSelectedEntry().ifPresent(mob -> service.deleteRemoteAsync(mob)
+            .exceptionally(throwable -> {
+                LOGGER.error("Příšeru {} se nepodařilo odstranit z online databáze", mob);
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(ignored-> showNotification(new Notification(String.format(
+                    translator.translate(R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+                    mob.getName())))));
     }
 
     @FXML

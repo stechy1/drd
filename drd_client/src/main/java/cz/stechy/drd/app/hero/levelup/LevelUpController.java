@@ -78,7 +78,6 @@ public class LevelUpController extends BaseController implements Initializable {
     private final Money money = new Money();
     private final Model model = new Model();
 
-    private Hero hero;
     private HeroGenerator heroGenerator;
     private String title;
 
@@ -141,10 +140,10 @@ public class LevelUpController extends BaseController implements Initializable {
 
     @Override
     protected void onCreate(Bundle bundle) {
-        this.hero = bundle.get(HERO);
-        this.heroGenerator = new HeroGenerator(this.hero.getRace(), this.hero.getProfession());
+        Hero hero = bundle.get(HERO);
+        this.heroGenerator = new HeroGenerator(hero.getRace(), hero.getProfession());
         this.money.setGold(
-            HeroGenerator.priceForLevelUp(this.hero.getProfession(), this.hero.getLevel()));
+            HeroGenerator.priceForLevelUp(hero.getProfession(), hero.getLevel()));
         this.widgetMoney.bind(this.money);
 
         model.live.setValue(hero.getLive().getMaxValue());

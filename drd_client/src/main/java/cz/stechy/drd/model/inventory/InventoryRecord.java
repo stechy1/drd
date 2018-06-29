@@ -224,6 +224,8 @@ public final class InventoryRecord extends DatabaseItem {
 
     public static class Metadata extends HashMap<String, Object> {
 
+        private static final long serialVersionUID = 7495086797970202444L;
+
         public Metadata() {
             super();
         }

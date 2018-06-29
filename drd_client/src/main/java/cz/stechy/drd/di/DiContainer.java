@@ -42,11 +42,7 @@ public final class DiContainer implements IDependencyManager {
         T instance = null;
         try {
             instance = constructor.newInstance(params);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
@@ -97,6 +93,7 @@ public final class DiContainer implements IDependencyManager {
         instances.put(klass, instance);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getInstance(Class klass) {
         if (!instances.containsKey(klass)) {

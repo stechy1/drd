@@ -17,13 +17,6 @@ public class NodeLink extends CubicCurve {
 
     // region Variables
 
-    private final DoubleProperty mControlOffsetX = new SimpleDoubleProperty();
-    private final DoubleProperty mControlOffsetY = new SimpleDoubleProperty();
-    private final DoubleProperty mControlDirectionX1 = new SimpleDoubleProperty();
-    private final DoubleProperty mControlDirectionY1 = new SimpleDoubleProperty();
-    private final DoubleProperty mControlDirectionX2 = new SimpleDoubleProperty();
-    private final DoubleProperty mControlDirectionY2 = new SimpleDoubleProperty();
-
     // endregion
 
     // region Constructors
@@ -32,17 +25,21 @@ public class NodeLink extends CubicCurve {
      * Vytvoří nový spoj mezi budoucími dvěma body
      */
     public NodeLink() {
+        DoubleProperty mControlOffsetX = new SimpleDoubleProperty();
         mControlOffsetX.set(100.0);
+        DoubleProperty mControlOffsetY = new SimpleDoubleProperty();
         mControlOffsetY.set(50.0);
         setStroke(Color.BLACK);
         setFill(null);
         setId(UUID.randomUUID().toString());
 
+        DoubleProperty mControlDirectionX1 = new SimpleDoubleProperty();
         mControlDirectionX1.bind(Bindings
             .when(startXProperty().greaterThan(endXProperty()))
             .then(-1.0)
             .otherwise(1.0));
 
+        DoubleProperty mControlDirectionX2 = new SimpleDoubleProperty();
         mControlDirectionX2.bind(Bindings
             .when(startXProperty().greaterThan(endXProperty()))
             .then(1.0)
@@ -54,9 +51,11 @@ public class NodeLink extends CubicCurve {
         controlX2Property().bind(endXProperty()
             .add(mControlOffsetX.multiply(mControlDirectionX2)));
 
+        DoubleProperty mControlDirectionY1 = new SimpleDoubleProperty();
         controlY1Property().bind(startYProperty()
             .add(mControlOffsetY.multiply(mControlDirectionY1)));
 
+        DoubleProperty mControlDirectionY2 = new SimpleDoubleProperty();
         controlY2Property().bind(endYProperty()
             .add(mControlOffsetY.multiply(mControlDirectionY2)));
     }

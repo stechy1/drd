@@ -106,9 +106,7 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
         columnPrice.setCellFactory(param -> CellUtils.forMoney());
 
         tableCollectionItems.getSelectionModel().selectedItemProperty()
-            .addListener((observableValue, oldValue, newValue) -> {
-                selectedEntry.setValue(newValue == null ? null : newValue.getId());
-            });
+            .addListener((observableValue, oldValue, newValue) -> selectedEntry.setValue(newValue == null ? null : newValue.getId()));
     }
 
     @Override
@@ -153,7 +151,7 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
     @Override
     public void mergeEntries() {
         final List<ItemBase> itemBaseList = collectionItems.parallelStream()
-            .map(itemEntry -> itemEntry.getItemBase())
+            .map(ItemEntry::getItemBase)
             .collect(Collectors.toList());
         itemRegistry.merge(itemBaseList)
             .exceptionally(throwable -> {

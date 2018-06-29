@@ -19,9 +19,6 @@ public class WizardController implements IProfessionController, Initializable {
 
     // endregion
 
-    private Hero hero;
-    private Wizard wizard;
-
     // endregion
 
     @Override
@@ -31,8 +28,8 @@ public class WizardController implements IProfessionController, Initializable {
 
     @Override
     public void setHero(Hero hero) {
-        this.hero = hero;
-        this.wizard = new Wizard(hero);
+        Hero hero1 = hero;
+        Wizard wizard = new Wizard(hero);
 
         lblProbabilityOfSuccess.textProperty()
             .bind(wizard.probabilityOfSuccessProperty().asString().concat(" %"));

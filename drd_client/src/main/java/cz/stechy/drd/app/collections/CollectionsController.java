@@ -247,11 +247,9 @@ public class CollectionsController extends BaseController implements Initializab
                     LOGGER.error("Položku se nepodařilo přidat do kolekce");
                     throw new RuntimeException(throwable);
                 })
-                .thenAccept(ignored -> {
-                    showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
-                        collectionName)));
-                });
+                .thenAccept(ignored -> showNotification(new Notification(String.format(translator.translate(
+                    R.Translate.NOTIFY_COLLECTION_RECORD_IS_INSERTED), itemName,
+                    collectionName))));
         });
     }
 
@@ -270,10 +268,8 @@ public class CollectionsController extends BaseController implements Initializab
                 LOGGER.error("Položku se nepodařilo odebrat z kolekce");
                 throw new RuntimeException(throwable);
             })
-            .thenAccept(ignored -> {
-                showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_COLLECTION_RECORD_IS_DELETED), collectionName)));
-            });
+            .thenAccept(ignored -> showNotification(new Notification(String.format(translator.translate(
+                R.Translate.NOTIFY_COLLECTION_RECORD_IS_DELETED), collectionName))));
 
     }
 

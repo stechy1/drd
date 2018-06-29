@@ -18,7 +18,7 @@ public class MulticastSender extends Thread {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(MulticastSender.class);
 
-    private static final long SLEEP_TIME = 2000l;
+    private static final long SLEEP_TIME = 2000L;
 
     // endregion
 
@@ -64,7 +64,7 @@ public class MulticastSender extends Thread {
 
             try {
                 Thread.sleep(SLEEP_TIME);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException ignored) {}
         }
     }
 }

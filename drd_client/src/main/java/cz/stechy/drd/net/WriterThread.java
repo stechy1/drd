@@ -80,7 +80,6 @@ public class WriterThread extends Thread {
                     LOGGER.info("Jdu spát na semaforu.");
                     semaphore.acquire();
                 } catch (InterruptedException ignored) {
-                    LOGGER.error("Interupt", ignored);
                 }
             }
 
@@ -88,6 +87,7 @@ public class WriterThread extends Thread {
             working.set(true);
             while (!messageQueue.isEmpty()) {
                 final IMessage msg = messageQueue.poll();
+                assert msg != null;
                 LOGGER.info(String.format("Odesílám zprávu: '%s'.", msg.toString()));
                 try {
                     writer.writeObject(msg);

@@ -19,9 +19,6 @@ public class AlchemistController implements IProfessionController, Initializable
 
     // endregion
 
-    private Hero hero;
-    private Alchemist alchemist;
-
     // endregion
 
     @Override
@@ -31,8 +28,8 @@ public class AlchemistController implements IProfessionController, Initializable
 
     @Override
     public void setHero(Hero hero) {
-        this.hero = hero;
-        this.alchemist = new Alchemist(hero);
+        Hero hero1 = hero;
+        Alchemist alchemist = new Alchemist(hero);
 
         lblProbabilityOfSuccess.textProperty()
             .bind(alchemist.probabilityOfSuccessProperty().asString().concat(" %"));

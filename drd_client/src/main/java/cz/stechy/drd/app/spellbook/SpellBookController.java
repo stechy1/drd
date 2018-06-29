@@ -314,18 +314,16 @@ public class SpellBookController extends BaseController implements Initializable
 
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(spell -> {
-            spellBook.uploadAsync(spell)
-                .exceptionally(throwable -> {
-                    showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), spell.getName())));
-                    LOGGER.warn("Položku {} se nepodařilo nahrát", spell.toString());
-                    throw new RuntimeException(throwable);
-                })
-                .thenAccept(ignored ->
-                    showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_RECORD_IS_UPLOADED), spell.getName()))));
-        });
+        getSelectedEntry().ifPresent(spell -> spellBook.uploadAsync(spell)
+            .exceptionally(throwable -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), spell.getName())));
+                LOGGER.warn("Položku {} se nepodařilo nahrát", spell.toString());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(ignored ->
+                showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_UPLOADED), spell.getName())))));
     }
 
     @FXML
@@ -335,21 +333,19 @@ public class SpellBookController extends BaseController implements Initializable
 
     @FXML
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(spell -> {
-            spellBook.deleteRemoteAsync(spell)
-                .exceptionally(throwable -> {
-                    showNotification(new Notification(String.format(translator.translate(
-                        R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
-                        spell.getName())));
-                    LOGGER.error("Položku {} se nepodařilo odebrat z online databáze",
-                        spell.getName());
-                    throw new RuntimeException(throwable);
-                })
-                .thenAccept(ignored ->
-                    showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
-                    spell.getName()))));
-        });
+        getSelectedEntry().ifPresent(spell -> spellBook.deleteRemoteAsync(spell)
+            .exceptionally(throwable -> {
+                showNotification(new Notification(String.format(translator.translate(
+                    Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
+                    spell.getName())));
+                LOGGER.error("Položku {} se nepodařilo odebrat z online databáze",
+                    spell.getName());
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(ignored ->
+                showNotification(new Notification(String.format(translator.translate(
+                Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
+                spell.getName())))));
     }
 
     @FXML

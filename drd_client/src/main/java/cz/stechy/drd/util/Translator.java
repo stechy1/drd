@@ -260,15 +260,20 @@ public final class Translator {
      * @return Přeloženou kolekci
      */
     public List<String> getTranslationFor(Key key) {
-        final List<String> stringList;
-        if (!translateMap.containsKey(key)) {
-            stringList = Arrays.stream(key.values).map(resources::getString)
-                .collect(Collectors.toList());
-        } else {
-            stringList = translateMap.get(key);
-        }
+        return translateMap.computeIfAbsent(key, k -> Arrays
+                .stream(key.values)
+                .map(resources::getString)
+                .collect(Collectors.toList()));
 
-        return stringList;
+//        if (!translateMap.containsKey(key)) {
+//            stringList = Arrays.stream(key.values).map(resources::getString)
+//                .collect(Collectors.toList());
+//            translateMap.put(key, stringList);
+//        } else {
+//            stringList = translateMap.get(key);
+//        }
+
+//        return stringList;
     }
 
     public String getSingleTranslationFor(Key key, Enum e) {
@@ -285,11 +290,8 @@ public final class Translator {
      */
     public void translateTooltipKeys(Map<String, String> tooltipMap) {
         final Map<String, String> dummy = new LinkedHashMap<>(tooltipMap.size());
-        tooltipMap.entrySet().forEach(entry -> {
-            String value = entry.getValue();
-            dummy.put(resources.getString(entry.getKey()),
-                resources.containsKey(value) ? resources.getString(value) : value);
-        });
+        tooltipMap.forEach((key, value) -> dummy.put(resources.getString(key),
+            resources.containsKey(value) ? resources.getString(value) : value));
         tooltipMap.clear();
         tooltipMap.putAll(dummy);
     }

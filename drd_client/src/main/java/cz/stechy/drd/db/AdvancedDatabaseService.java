@@ -274,9 +274,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 itemCopy.setUploaded(true);
                 return updateAsync(itemCopy);
             })
-            .thenApplyAsync(ignored -> {
-                return null;
-            }, ThreadPool.JAVAFX_EXECUTOR);
+            .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     @Override
@@ -306,9 +304,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 itemCopy.setUploaded(false);
                 return updateAsync(itemCopy);
             })
-            .thenApplyAsync(ignored -> {
-                return null;
-            }, ThreadPool.JAVAFX_EXECUTOR);
+            .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     /**

@@ -343,7 +343,7 @@ public final class InventoryContentDao extends BaseDatabaseService<InventoryReco
             .forEach(inventoryRecord -> occupiedSlots[inventoryRecord.getSlotId()] = SLOT_OCCUPIED);
         final Map<Integer, Integer> map = items.stream()
             .filter(inventoryRecord -> inventoryRecord.getItemId().equals(item.getId()))
-            .collect(Collectors.toMap(o -> o.getSlotId(), t -> stackSize - t.getAmmount()));
+            .collect(Collectors.toMap(InventoryRecord::getSlotId, t -> stackSize - t.getAmmount()));
 
         int remaining = ammount;
         for (Entry<Integer, Integer> entry : map.entrySet()) {

@@ -57,7 +57,6 @@ public class WarriorController implements IProfessionController, Initializable {
 
     private String successText;
     private String failText;
-    private Hero hero;
     private Warior warior;
 
     // endregion
@@ -102,7 +101,7 @@ public class WarriorController implements IProfessionController, Initializable {
 
     @Override
     public void setHero(Hero hero) {
-        this.hero = hero;
+        Hero hero1 = hero;
         this.warior = new Warior(hero);
     }
 

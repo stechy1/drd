@@ -196,8 +196,7 @@ public final class FirebaseRepository implements ServerDatabase {
             final List<Map<String, Object>> list = items.get(tableName);
             final String idKey = tableName + "_id";
             final Object id = item.get(idKey);
-            for(Iterator<Map<String, Object>> it = list.iterator(); it.hasNext();) {
-                final Map<String, Object> map = it.next();
+            for (final Map<String, Object> map : list) {
                 if (map.containsValue(id)) {
                     map.clear();
                     map.putAll(item);
