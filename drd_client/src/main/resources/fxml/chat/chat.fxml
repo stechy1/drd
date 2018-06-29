@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTreeView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox prefHeight="350" prefWidth="600" xmlns="http://javafx.com/javafx/8.0.121"
+  xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.app.chat.ChatController">
+  <VBox alignment="TOP_CENTER" spacing="8.0">
+    <Accordion BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
+      <panes>
+        <TitledPane animated="false" text="Kontakty">
+          <JFXListView fx:id="listContacts" prefHeight="200.0" prefWidth="200.0"/>
+        </TitledPane>
+        <TitledPane animated="false" text="Místnosti">
+          <JFXTreeView fx:id="treeRooms" prefHeight="200.0" prefWidth="200.0"/>
+        </TitledPane>
+      </panes>
+    </Accordion>
+    <JFXButton mnemonicParsing="false" onAction="#handleNewRoom" prefHeight="35.0"
+      styleClass="btn, btn-success" text="Nová místnost" VBox.vgrow="NEVER">
+      <graphic>
+        <ImageView>
+          <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/add.png"/>
+        </ImageView>
+      </graphic>
+      <VBox.margin>
+        <Insets bottom="8.0"/>
+      </VBox.margin>
+    </JFXButton>
+  </VBox>
+
+  <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
+    <TabPane fx:id="tabConversations" BorderPane.alignment="CENTER" HBox.hgrow="ALWAYS"
+      VBox.vgrow="ALWAYS">
+    </TabPane>
+    <HBox alignment="CENTER_LEFT" prefHeight="50.0" spacing="8.0" VBox.vgrow="NEVER">
+      <TextField fx:id="txtMessage" prefHeight="35.0" HBox.hgrow="ALWAYS">
+        <padding>
+          <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
+        </padding>
+      </TextField>
+      <Region HBox.hgrow="SOMETIMES"/>
+      <JFXButton mnemonicParsing="false" onAction="#handleSendMessage" prefHeight="35.0"
+        styleClass="btn, btn-primary, btn-raised, btn-small" text="Odeslat" HBox.hgrow="NEVER">
+        <graphic>
+          <ImageView>
+            <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/confirm.png"/>
+          </ImageView>
+        </graphic>
+      </JFXButton>
+      <padding>
+        <Insets left="8.0" right="8.0"/>
+      </padding>
+    </HBox>
+  </VBox>
+</HBox>

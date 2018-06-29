@@ -66,6 +66,14 @@
   -fx-background-image: url("../images/icon/shop.png");
 }
 
+.icon-chat {
+  -fx-background-image: url("../images/icon/chat.png");
+}
+
+.icon-chat-room {
+  -fx-background-image: url("../images/icon/chat_room.png");
+}
+
 .icon-close-hero {
   -fx-background-image: url("../images/icon/close_hero.png");
 }

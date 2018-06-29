@@ -471,6 +471,10 @@ public class MainController extends BaseController implements Initializable {
         startNewDialog(R.Fxml.FIGHT);
     }
 
+    public void handleChat(ActionEvent actionEvent) {
+        startNewDialog(R.Fxml.CHAT);
+    }
+
     @FXML
     private void handleMenuSettings(ActionEvent actionEvent) {
         startNewDialog(R.Fxml.SETTINGS);

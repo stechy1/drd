@@ -22,6 +22,7 @@ public final class R {
         public static final String BESTIARY_EDIT_IMAGE = "bestiary_edit_image";
         public static final String BESTIARY_EDIT_OTHER = "bestiary_edit_other";
         public static final String BESTIARY_EDIT_PROPERTIES = "bestiary_edit_properties";
+        public static final String CHAT = "chat";
         public static final String COLLECTIONS = "collections";
         public static final String COLLECTIONS_BESTIARY = "collections_bestiary";
         public static final String COLLECTIONS_ITEMS = "collections_items";
@@ -302,6 +303,7 @@ public final class R {
         public static final String BESTIARY_CONTROL_ABILITY = "drd_bestiary_control_ability";
         public static final String BESTIARY_BASIC_POWER_OF_MIND = "drd_bestiary_basic_power_of_mind";
         public static final String BESTIARY_DOMESTICATION = "drd_bestiary_domestication";
+        public static final String CHAT_TITLE = "drd_chat_title";
         public static final String VULNERABILITY_ANIMAL = "drd_vulnerability_animal";
         public static final String VULNERABILITY_HUMANOID = "drd_vulnerability_humanoid";
         public static final String VULNERABILITY_DRAGON = "drd_vulnerability_dragon";
@@ -461,6 +463,8 @@ public final class R {
             public static final String BESTIARY = "/images/icon/bestiary.png";
             public static final String BOOK = "/images/icon/book.png";
             public static final String CHANGELOG = "/images/icon/changelog.png";
+            public static final String CHAT = "/images/icon/chat.png";
+            public static final String CHAT_ROOM = "/images/icon/chat_room.png";
             public static final String CLOSE = "/images/icon/close.png";
             public static final String CLOSE_HERO = "/images/icon/close_hero.png";
             public static final String COLLECTIONS = "/images/icon/collections.png";
