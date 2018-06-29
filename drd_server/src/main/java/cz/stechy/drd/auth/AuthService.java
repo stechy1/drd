@@ -2,6 +2,7 @@ package cz.stechy.drd.auth;
 
 import cz.stechy.drd.Client;
 import cz.stechy.drd.ServerDatabase;
+import cz.stechy.drd.crypto.CryptoService;
 import cz.stechy.drd.firebase.ItemEventListener;
 import cz.stechy.drd.net.message.AuthMessage;
 import cz.stechy.drd.net.message.AuthMessage.AuthAction;
@@ -9,6 +10,7 @@ import cz.stechy.drd.net.message.AuthMessage.AuthMessageData;
 import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD.DatabaseAction;
 import cz.stechy.drd.net.message.MessageSource;
 import cz.stechy.drd.util.HashGenerator;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,13 +42,15 @@ public final class AuthService {
 
     private final List<User> users = new ArrayList<>();
     private final ServerDatabase repository;
+    private final CryptoService cryptoService;
 
     // endregion
 
     // region Constructors
 
-    public AuthService(ServerDatabase repository) {
+    public AuthService(ServerDatabase repository, CryptoService cryptoService) {
         this.repository = repository;
+        this.cryptoService = cryptoService;
     }
 
     // endregion
@@ -89,11 +93,13 @@ public final class AuthService {
         this.repository.registerListener(FIREBASE_CHILD, this.userListener);
     }
 
-    public void register(String username, String password, Client client) {
+    public void register(byte[] usernameRaw, byte[] passwordRaw, Client client) {
+        final String username = new String(cryptoService.decrypt(usernameRaw), StandardCharsets.UTF_8);
+        final String password = new String(cryptoService.decrypt(passwordRaw), StandardCharsets.UTF_8);
         final Optional<User> result = users.stream().filter(user -> user.name.equals(username)).findFirst();
         if (result.isPresent()) {
             client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.REGISTER,
-                false, new AuthMessageData(username, password)));
+                false, new AuthMessageData()));
             return;
         }
 
@@ -101,24 +107,23 @@ public final class AuthService {
         final Map<String, Object> map = userToMap(user);
         this.repository.performInsert(FIREBASE_CHILD, map, user.id);
         client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.REGISTER,
-            true, new AuthMessageData(user.id, user.name, user.password)));
+            true, new AuthMessageData(user.id, usernameRaw, passwordRaw)));
     }
 
-    public void login(String username, String password, Client client) {
+    public void login(byte[] usernameRaw, byte[] passwordRaw, Client client) {
+        final String username = new String(cryptoService.decrypt(usernameRaw), StandardCharsets.UTF_8);
+        final String password = new String(cryptoService.decrypt(passwordRaw), StandardCharsets.UTF_8);
         final Optional<User> result = users.stream().filter(user ->
             user.name.equals(username) && HashGenerator.checkSame(user.password, password))
             .findFirst();
 
         if (!result.isPresent()) {
             client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.LOGIN,
-                false, new AuthMessageData(username, password)));
+                false, new AuthMessageData()));
             return;
         }
         client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.LOGIN,
-            true, new AuthMessageData(result.get().id, result.get().name, result.get().password)));
-
-
-
+            true, new AuthMessageData(result.get().id, usernameRaw, passwordRaw)));
     }
 
     // endregion

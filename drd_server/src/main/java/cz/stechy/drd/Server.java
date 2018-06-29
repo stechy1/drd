@@ -130,13 +130,12 @@ public class Server {
     private void initModules() {
         LOGGER.info("Registruji moduly.");
         final FirebaseRepository serverDatabase = new FirebaseRepository();
+        final CryptoService cryptoService = new CryptoService();
         final IModule firebaseDatabaseModule = new FirebaseDatabaseModule(serverDatabase);
-        final AuthService authService = new AuthService(serverDatabase);
+        final AuthService authService = new AuthService(serverDatabase, cryptoService);
         final IModule authModule = new AuthModule(authService);
-        final IModule cryptoModule = new CryptoModule(new CryptoService());
+        final IModule cryptoModule = new CryptoModule(cryptoService);
 
-        // Pozor, záleží na pořadí!!!
-        // Firebase se musí registrovat jako první aby se závisející moduly mohly v klidu registrovat
         serverThread.registerModule(MessageType.DATABASE, firebaseDatabaseModule);
         serverThread.registerModule(MessageType.AUTH, authModule);
         serverThread.registerModule(MessageType.CRYPTO, cryptoModule);

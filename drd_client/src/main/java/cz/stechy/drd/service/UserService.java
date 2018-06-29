@@ -12,6 +12,7 @@ import cz.stechy.drd.net.message.AuthMessage.AuthMessageData;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
 import cz.stechy.drd.net.message.MessageType;
+import cz.stechy.drd.util.BitUtils;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
 import javafx.beans.property.ObjectProperty;
@@ -28,6 +29,7 @@ public class UserService {
 
     private final ObjectProperty<User> user = new SimpleObjectProperty<>(this, "user", null);
     private final Semaphore semaphore = new Semaphore(0);
+    private final CryptoService cryptoService;
     private ClientCommunicator communicator;
     private String tmpId;
     private boolean success;
@@ -36,8 +38,8 @@ public class UserService {
 
     // region Constructors
 
-    public UserService() {
-
+    public UserService(CryptoService cryptoService) {
+        this.cryptoService = cryptoService;
     }
 
     // endregion
@@ -69,8 +71,10 @@ public class UserService {
      */
     public CompletableFuture<User> loginAsync(String username, String password) {
         return CompletableFuture.supplyAsync(() -> {
+            final byte[] usernameRaw = cryptoService.encrypt(username.getBytes());
+            final byte[] passwordRaw = cryptoService.encrypt(password.getBytes());
             final IMessage loginMessage = new AuthMessage(MessageSource.CLIENT, AuthAction.LOGIN,
-                new AuthMessageData(username, password));
+                new AuthMessageData(usernameRaw, passwordRaw));
             this.communicator.sendMessage(loginMessage);
 
             try {
@@ -111,8 +115,10 @@ public class UserService {
      */
     public CompletableFuture<Void> registerAsync(String username, String password) {
         return CompletableFuture.supplyAsync(() -> {
+            final byte[] usernameRaw = cryptoService.encrypt(username.getBytes());
+            final byte[] passwordRaw = cryptoService.encrypt(password.getBytes());
             final IMessage message = new AuthMessage(MessageSource.CLIENT, AuthAction.REGISTER,
-                new AuthMessageData(username, password));
+                new AuthMessageData(usernameRaw, passwordRaw));
             this.communicator.sendMessage(message);
 
             try {
