@@ -4,8 +4,10 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import cz.stechy.drd.auth.AuthService;
+import cz.stechy.drd.crypto.CryptoService;
 import cz.stechy.drd.firebase.FirebaseRepository;
 import cz.stechy.drd.module.AuthModule;
+import cz.stechy.drd.module.CryptoModule;
 import cz.stechy.drd.module.FirebaseDatabaseModule;
 import cz.stechy.drd.module.IModule;
 import cz.stechy.drd.net.message.MessageType;
@@ -131,11 +133,13 @@ public class Server {
         final IModule firebaseDatabaseModule = new FirebaseDatabaseModule(serverDatabase);
         final AuthService authService = new AuthService(serverDatabase);
         final IModule authModule = new AuthModule(authService);
+        final IModule cryptoModule = new CryptoModule(new CryptoService());
 
         // Pozor, záleží na pořadí!!!
         // Firebase se musí registrovat jako první aby se závisející moduly mohly v klidu registrovat
         serverThread.registerModule(MessageType.DATABASE, firebaseDatabaseModule);
         serverThread.registerModule(MessageType.AUTH, authModule);
+        serverThread.registerModule(MessageType.CRYPTO, cryptoModule);
         LOGGER.info("Registrace modulů dokončena.");
     }
 

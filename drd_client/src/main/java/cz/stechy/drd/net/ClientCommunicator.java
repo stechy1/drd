@@ -1,7 +1,9 @@
 package cz.stechy.drd.net;
 
 import cz.stechy.drd.ThreadPool;
+import cz.stechy.drd.crypto.RSA.CypherKey;
 import cz.stechy.drd.di.Singleton;
+import cz.stechy.drd.net.message.CryptoMessage;
 import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
@@ -9,6 +11,7 @@ import cz.stechy.drd.net.message.MessageType;
 import cz.stechy.drd.net.message.ServerStatusMessage;
 import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatus;
 import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatusData;
+import cz.stechy.drd.service.CryptoService;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -52,6 +55,8 @@ public final class ClientCommunicator {
     private final StringProperty connectedServer = new SimpleStringProperty(this, "connectedServer",
         null);
     private final ObjectProperty<ServerStatus> serverStatus = new SimpleObjectProperty<>(this, "serverStatus", ServerStatus.EMPTY);
+
+    private CryptoService cryptoService;
     private ReaderThread readerThread;
     private WriterThread writerThread;
 
@@ -59,7 +64,8 @@ public final class ClientCommunicator {
 
     // region Constructors
 
-    public ClientCommunicator() {
+    public ClientCommunicator(CryptoService cryptoService) {
+        this.cryptoService = cryptoService;
         socket.addListener(this::socketListener);
         connectedServer.bind(Bindings.createStringBinding(
             () -> String.format("%s:%d", host.get(), port.get()),
@@ -76,6 +82,7 @@ public final class ClientCommunicator {
             writerThread = null;
             unregisterMessageObserver(MessageType.SERVER_STATUS, this.serverStatusListener);
             unregisterMessageObserver(MessageType.HELLO, this.helloListener);
+            unregisterMessageObserver(MessageType.CRYPTO, this.cryptoListener);
             return;
         }
 
@@ -88,6 +95,7 @@ public final class ClientCommunicator {
             writerThread.start();
             registerMessageObserver(MessageType.SERVER_STATUS, this.serverStatusListener);
             registerMessageObserver(MessageType.HELLO, this.helloListener);
+            registerMessageObserver(MessageType.CRYPTO, this.cryptoListener);
         } catch (IOException e) {
             LOGGER.error("Vyskytl se problém při vytváření komunikace se serverem.");
         }
@@ -121,7 +129,14 @@ public final class ClientCommunicator {
 
     private final OnDataReceivedListener helloListener = message -> {
        sendMessage(new HelloMessage(MessageSource.CLIENT));
+       sendMessage(new CryptoMessage(MessageSource.CLIENT, cryptoService.getClientPublicKey()));
        Platform.runLater(() -> changeState(ConnectionState.CONNECTED));
+    };
+
+    private final OnDataReceivedListener cryptoListener = message -> {
+        final CypherKey serverKey = (CypherKey) message.getData();
+        cryptoService.setServerPublicCey(serverKey);
+        LOGGER.info("Ukládám veřejný klíč serveru.");
     };
 
     // endregion

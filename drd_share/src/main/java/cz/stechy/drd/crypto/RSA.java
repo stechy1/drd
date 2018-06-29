@@ -13,9 +13,9 @@ public class RSA implements ICypher {
 
     // region Variables
 
-    public final BigInteger n;
-    public final BigInteger e;
-    public final BigInteger d;
+    private final BigInteger n;
+    private final BigInteger e;
+    private final BigInteger d;
 
     // endregion
 
@@ -39,10 +39,6 @@ public class RSA implements ICypher {
             e.add(BigInteger.ONE);
         }
         d = e.modInverse(phi);
-
-        System.out.println("E: " + e.toString());
-        System.out.println("D: " + d.toString());
-        System.out.println("N: " + n.toString());
     }
 
     /**
@@ -130,10 +126,12 @@ public class RSA implements ICypher {
 
     public static class CypherKey implements Serializable {
 
-        public final BigInteger val1;
-        public final BigInteger val2;
+        private static final long serialVersionUID = -8201912914817438690L;
 
-        public CypherKey(BigInteger val1, BigInteger val2) {
+        final BigInteger val1;
+        final BigInteger val2;
+
+        CypherKey(BigInteger val1, BigInteger val2) {
             this.val1 = val1;
             this.val2 = val2;
         }
