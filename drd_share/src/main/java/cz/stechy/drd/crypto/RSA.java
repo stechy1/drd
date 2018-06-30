@@ -34,10 +34,12 @@ public class RSA implements ICypher {
         final BigInteger q = BigInteger.probablePrime(bitLength, r);
         n = p.multiply(q);
         final BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
-        e = BigInteger.probablePrime(bitLength / 2, r);
-        while (phi.gcd(e).compareTo(BigInteger.ONE) > 0 && e.compareTo(phi) < 0) {
-            e.add(BigInteger.ONE);
+        BigInteger tmpE = BigInteger.probablePrime(bitLength / 2, r);
+        while (phi.gcd(tmpE).compareTo(BigInteger.ONE) > 0 && tmpE.compareTo(phi) < 0) {
+            tmpE = tmpE.add(BigInteger.ONE);
+            System.out.println("Přičteno");
         }
+        this.e = tmpE;
         d = e.modInverse(phi);
     }
 
@@ -52,6 +54,20 @@ public class RSA implements ICypher {
         n = cypherKey.val1;
         e = cypherKey.val2;
         d = null;
+    }
+
+    /**
+     * Vytvoří novou instanci šifry na základě veřejného a privátního klíče
+     * Tato instance umí dešifrovat zprávy
+     *
+     * @param publicKey {@link CypherKey} Veřejný klíč
+     * @param privateKey {@link CypherKey} Privátní klíč
+     */
+    public RSA(CypherKey publicKey, CypherKey privateKey) {
+        assert publicKey.val1.equals(privateKey.val1);
+        this.n = publicKey.val1;
+        this.e = publicKey.val2;
+        this.d = privateKey.val2;
     }
 
     // endregion
@@ -114,7 +130,7 @@ public class RSA implements ICypher {
     }
 
     /**
-     * Vrátí privátní klíř
+     * Vrátí privátní klíč
      *
      * @return {@link CypherKey} Privátní klíč aktuální instance šifry
      */
@@ -127,6 +143,8 @@ public class RSA implements ICypher {
     public static class CypherKey implements Serializable {
 
         private static final long serialVersionUID = -8201912914817438690L;
+
+        public static final CypherKey EMPTY = new CypherKey(BigInteger.ZERO, BigInteger.ZERO);
 
         final BigInteger val1;
         final BigInteger val2;
