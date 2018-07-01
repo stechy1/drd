@@ -3,6 +3,9 @@ package cz.stechy.drd.net;
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.crypto.RSA.CypherKey;
 import cz.stechy.drd.di.Singleton;
+import cz.stechy.drd.net.message.ChatMessage;
+import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData;
+import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRequestConnect;
 import cz.stechy.drd.net.message.CryptoMessage;
 import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
@@ -137,6 +140,10 @@ public final class ClientCommunicator {
         final CypherKey serverKey = (CypherKey) message.getData();
         cryptoService.setServerPublicCey(serverKey);
         LOGGER.info("Ukládám veřejný klíč serveru.");
+        // Odeslání požadavku na připojení se k chatovací službě
+        sendMessage(new ChatMessage(MessageSource.CLIENT,
+            new ChatMessageAdministrationData(
+                new ChatMessageAdministrationClientRequestConnect("username"))));
     };
 
     // endregion

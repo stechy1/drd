@@ -21,7 +21,7 @@ public final class CryptoService {
     // region Variables
 
     private final RSA rsa = new RSA(RSA_BIT_LENGTH);
-    private final Map<Client, ICypher> cyphers = new HashMap<>();
+    private final Map<Client, RSA> cyphers = new HashMap<>();
 
     // endregion
 
@@ -77,6 +77,16 @@ public final class CryptoService {
 
     public CypherKey getServerPublicKey() {
         return rsa.getPublicKey();
+    }
+
+    /**
+     * Vrátí veřejný klíč klienta
+     *
+     * @param client {@link Client} Klient
+     * @return {@link CypherKey} Veřejný klíč klienta
+     */
+    public CypherKey getClientPublicKey(Client client) {
+        return cyphers.get(client).getPublicKey();
     }
 
     // endregion

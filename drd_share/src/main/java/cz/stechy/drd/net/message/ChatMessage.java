@@ -64,6 +64,7 @@ public class ChatMessage implements IMessage {
         }
 
         public enum ChatAction {
+            CLIENT_REQUEST_CONNECT, // Požadavek na připojení k chatovací službě
             CLIENT_CONNECTED, CLIENT_DISCONNECTED, // Akce klientů
             CLIENT_TYPING, CLIENT_NOT_TYPING, // Informace o tom, zda-li někdo píše
             ROOM_CREATED, ROOM_DELETED, // Akce místnosti
@@ -74,6 +75,26 @@ public class ChatMessage implements IMessage {
 
             ChatAction getAction();
 
+        }
+
+        public static final class ChatMessageAdministrationClientRequestConnect implements IChatMessageAdministrationData {
+
+            private static final long serialVersionUID = 642524654412490721L;
+
+            private final String name;
+
+            public ChatMessageAdministrationClientRequestConnect(String name) {
+                this.name = name;
+            }
+
+            public String getName() {
+                return name;
+            }
+
+            @Override
+            public ChatAction getAction() {
+                return ChatAction.CLIENT_REQUEST_CONNECT;
+            }
         }
 
         public static final class ChatMessageAdministrationClient implements IChatMessageAdministrationData {

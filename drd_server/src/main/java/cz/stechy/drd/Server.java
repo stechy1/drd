@@ -4,9 +4,11 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import cz.stechy.drd.auth.AuthService;
+import cz.stechy.drd.chat.ChatService;
 import cz.stechy.drd.crypto.CryptoService;
 import cz.stechy.drd.firebase.FirebaseRepository;
 import cz.stechy.drd.module.AuthModule;
+import cz.stechy.drd.module.ChatModule;
 import cz.stechy.drd.module.CryptoModule;
 import cz.stechy.drd.module.FirebaseDatabaseModule;
 import cz.stechy.drd.module.IModule;
@@ -129,17 +131,20 @@ public class Server {
      */
     private void initModules() {
         LOGGER.info("Registruji moduly.");
+        // TODO až bude modulů hodně, bude potřeba implementovat DI pro snažší instancování
         final FirebaseRepository serverDatabase = new FirebaseRepository();
-        final IModule firebaseDatabaseModule = new FirebaseDatabaseModule(serverDatabase);
         final AuthService authService = new AuthService(serverDatabase);
+        final CryptoService cryptoService = new CryptoService();
+        final ChatService chatService = new ChatService(cryptoService);
+        final IModule firebaseDatabaseModule = new FirebaseDatabaseModule(serverDatabase);
         final IModule authModule = new AuthModule(authService);
-        final IModule cryptoModule = new CryptoModule(new CryptoService());
+        final IModule cryptoModule = new CryptoModule(cryptoService);
+        final IModule chatModule = new ChatModule(chatService);
 
-        // Pozor, záleží na pořadí!!!
-        // Firebase se musí registrovat jako první aby se závisející moduly mohly v klidu registrovat
         serverThread.registerModule(MessageType.DATABASE, firebaseDatabaseModule);
         serverThread.registerModule(MessageType.AUTH, authModule);
         serverThread.registerModule(MessageType.CRYPTO, cryptoModule);
+        serverThread.registerModule(MessageType.CHAT, chatModule);
         LOGGER.info("Registrace modulů dokončena.");
     }
 
