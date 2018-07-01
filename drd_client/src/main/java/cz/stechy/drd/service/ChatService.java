@@ -10,6 +10,7 @@ import cz.stechy.drd.net.message.ChatMessage;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClient;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRoom;
+import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientTyping;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationRoom;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.IChatMessageAdministrationData;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageCommunicationData;
@@ -175,6 +176,14 @@ public final class ChatService {
                         final UUID leavedRoomClientID = messageAdministrationClientLeavedRoom.getClient();
                         final String leavedRoomName = messageAdministrationClientLeavedRoom.getRoom();
                         rooms.get(leavedRoomName).remove(leavedRoomClientID);
+                        break;
+                    case CLIENT_TYPING:
+                        final ChatMessageAdministrationClientTyping messageAdministrationClientTyping = (ChatMessageAdministrationClientTyping) data;
+                        final UUID typingClientId = messageAdministrationClientTyping.getClientID();
+                        break;
+                    case CLIENT_NOT_TYPING:
+                        final ChatMessageAdministrationClientTyping messageAdministrationClientNoTyping = (ChatMessageAdministrationClientTyping) data;
+                        final UUID noTypingClientId = messageAdministrationClientNoTyping.getClientID();
                         break;
                     default:
                         throw new IllegalArgumentException("Neplatny argument.");

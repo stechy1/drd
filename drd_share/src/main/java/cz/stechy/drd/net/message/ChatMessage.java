@@ -65,6 +65,7 @@ public class ChatMessage implements IMessage {
 
         public enum ChatAction {
             CLIENT_CONNECTED, CLIENT_DISCONNECTED, // Akce klientů
+            CLIENT_TYPING, CLIENT_NOT_TYPING, // Informace o tom, zda-li někdo píše
             ROOM_CREATED, ROOM_DELETED, // Akce místnosti
             CLIENT_JOINED_ROOM, CLIENT_LEAVE_ROOM // Akce klientů v místnostech
         }
@@ -107,6 +108,29 @@ public class ChatMessage implements IMessage {
 
             public CypherKey getKey() {
                 return key;
+            }
+
+            @Override
+            public ChatAction getAction() {
+                return action;
+            }
+        }
+
+        public static final class ChatMessageAdministrationClientTyping implements IChatMessageAdministrationData {
+
+            private static final long serialVersionUID = 630432882631419944L;
+
+            private final ChatAction action;
+            private final UUID clientID;
+
+            public ChatMessageAdministrationClientTyping(ChatAction action, UUID clientID) {
+                assert action == ChatAction.CLIENT_TYPING || action == ChatAction.CLIENT_NOT_TYPING;
+                this.action = action;
+                this.clientID = clientID;
+            }
+
+            public UUID getClientID() {
+                return clientID;
             }
 
             @Override
