@@ -9,6 +9,7 @@ import cz.stechy.drd.net.OnDataReceivedListener;
 import cz.stechy.drd.net.message.ChatMessage;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClient;
+import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRequestConnect;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRoom;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientTyping;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationRoom;
@@ -48,9 +49,9 @@ public final class ChatService {
     private final ObservableMap<String, ObservableList<UUID>> rooms = FXCollections.observableHashMap();
     // Register posluchačů na příjem zprávy
     private final List<OnChatMessageReceived> messageListeners = new ArrayList<>();
-    // Komunikátor se serverem
-    private final ClientCommunicator communicator;
 
+    // Komunikátor se serverem
+    private ClientCommunicator communicator;
     private CryptoService cryptoService;
 
     // endregion
@@ -62,22 +63,34 @@ public final class ChatService {
      *
      * @param communicator {@link ClientCommunicator} Služba poskytující komunikaci se serverem
      * @param cryptoService {@link CryptoService} Služba poskytující šifrovací funkce
+     * @param userService  {@link UserService} Služba poskytující informace o uživateli
      */
-    public ChatService(ClientCommunicator communicator, CryptoService cryptoService) {
+    public ChatService(ClientCommunicator communicator, CryptoService cryptoService,
+        UserService userService) {
         this.communicator = communicator;
         this.cryptoService = cryptoService;
         this.communicator.connectionStateProperty().addListener((observable, oldValue, newValue) -> {
             switch (newValue) {
                 case CONNECTED:
-                    this.communicator.registerMessageObserver(MessageType.AUTH, this.chatMessageListener);
+                    this.communicator.registerMessageObserver(MessageType.CHAT, this.chatMessageListener);
                     break;
                 case CONNECTING:
                     break;
                 case DISCONNECTED:
-                    this.communicator.unregisterMessageObserver(MessageType.AUTH, this.chatMessageListener);
+                    this.communicator.unregisterMessageObserver(MessageType.CHAT, this.chatMessageListener);
                     break;
             }
 
+        });
+        userService.userProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                return;
+            }
+
+            // Odeslání požadavku na připojení se k chatovací službě
+            communicator.sendMessage(new ChatMessage(MessageSource.CLIENT,
+                new ChatMessageAdministrationData(
+                    new ChatMessageAdministrationClientRequestConnect(userService.getUser().getName()))));
         });
     }
 

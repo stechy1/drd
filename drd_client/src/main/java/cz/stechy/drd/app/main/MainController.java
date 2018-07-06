@@ -16,6 +16,7 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.net.ClientCommunicator;
 import cz.stechy.drd.net.ConnectionState;
+import cz.stechy.drd.service.ChatService;
 import cz.stechy.drd.service.HeroService;
 import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.Translator;
@@ -128,7 +129,7 @@ public class MainController extends BaseController implements Initializable {
     // region Constructors
 
     public MainController(HeroService heroService, UserService userService, AppSettings settings,
-        Translator translator, ClientCommunicator communicator) {
+        Translator translator, ClientCommunicator communicator, ChatService chatService) {
         this.heroService = heroService;
         this.userService = userService;
         this.translator = translator;

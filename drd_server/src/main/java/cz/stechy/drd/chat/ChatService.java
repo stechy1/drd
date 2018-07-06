@@ -62,6 +62,7 @@ public final class ChatService {
      * @param name Jméno uživatele
      */
     public void addClient(Client client, String name) {
+        LOGGER.info("Přidávám nového klienta {} na seznam v chatu.", name);
         final ChatClient chatClient = new ChatClient(client, name);
         synchronized (lock) {
             // Přidám záznam o klientovi na seznam
@@ -77,7 +78,13 @@ public final class ChatService {
         }
     }
 
+    /**
+     * Odstraní klienta ze seznamu
+     *
+     * @param client {@link Client} Klient, který se právě odpjil
+     */
     public void removeClient(Client client) {
+        LOGGER.info("Odebírám klienta ze seznamu chatu.");
         synchronized (lock) {
             // Rozešlu broadcast všem připojeným klientům, že se klient odpojuje
             broadcastMessage(new ChatMessage(MessageSource.SERVER,
