@@ -223,16 +223,10 @@ public class ChatMessage implements IMessage {
 
         private static final long serialVersionUID = -2426630119019364058L;
 
-        private final String destination;
-        private final byte[] data;
+        private final ChatMessageCommunicationDataContent data;
 
-        public ChatMessageCommunicationData(String destination, byte[] data) {
-            this.destination = destination;
-            this.data = data;
-        }
-
-        public String getDestination() {
-            return destination;
+        public ChatMessageCommunicationData(String id, byte[] data) {
+            this.data = new ChatMessageCommunicationDataContent(id, data);
         }
 
         @Override
@@ -243,6 +237,27 @@ public class ChatMessage implements IMessage {
         @Override
         public Object getData() {
             return data;
+        }
+
+        public static final class ChatMessageCommunicationDataContent implements Serializable {
+
+            private static final long serialVersionUID = -905319575968060192L;
+
+            private final String destination;
+            private final byte[] data;
+
+            ChatMessageCommunicationDataContent(String destination, byte[] data) {
+                this.destination = destination;
+                this.data = data;
+            }
+
+            public String getDestination() {
+                return destination;
+            }
+
+            public byte[] getData() {
+                return data;
+            }
         }
     }
 }

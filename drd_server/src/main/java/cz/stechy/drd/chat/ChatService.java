@@ -6,6 +6,7 @@ import cz.stechy.drd.net.message.ChatMessage;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatAction;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClient;
+import cz.stechy.drd.net.message.ChatMessage.ChatMessageCommunicationData;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
 import java.util.HashMap;
@@ -103,6 +104,19 @@ public final class ChatService {
                     new ChatMessageAdministrationClient(
                         ChatAction.CLIENT_DISCONNECTED,id))));
         }
+    }
+
+    /**
+     * Odešle zprávu vybranému příjemci
+     *
+     * @param destinationClientId Id cílového klienta
+     * @param sourceClientId Id klienta, který zprávu poslal
+     * @param rawMessage Zpráva, která se má odeslat
+     */
+    public void sendMessage(String destinationClientId, String sourceClientId, byte[] rawMessage) {
+        clients.get(destinationClientId)
+            .getClient()
+            .sendMessage(new ChatMessage(MessageSource.SERVER, new ChatMessageCommunicationData(sourceClientId, rawMessage)));
     }
 
     /**

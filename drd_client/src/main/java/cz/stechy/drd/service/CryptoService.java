@@ -31,12 +31,12 @@ public class CryptoService implements ICypher {
 
     @Override
     public byte[] encrypt(byte[] src) {
-        return rsa.encrypt(src);
+        return serverCypher.encrypt(src);
     }
 
     @Override
     public byte[] decrypt(byte[] src) {
-        return serverCypher.decrypt(src);
+        return rsa.decrypt(src);
     }
 
     public ICypher makeCypher(CypherKey cypherKey) {

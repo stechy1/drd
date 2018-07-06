@@ -6,6 +6,7 @@ import cz.stechy.drd.net.message.ChatMessage;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClient;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRequestConnect;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.IChatMessageAdministrationData;
+import cz.stechy.drd.net.message.ChatMessage.ChatMessageCommunicationData.ChatMessageCommunicationDataContent;
 import cz.stechy.drd.net.message.ChatMessage.IChatMessageData;
 import cz.stechy.drd.net.message.IMessage;
 import org.slf4j.Logger;
@@ -58,6 +59,11 @@ public class ChatModule implements IModule {
                 }
                 break;
             case DATA_COMMUNICATION:
+                final ChatMessageCommunicationDataContent communicationDataContent = (ChatMessageCommunicationDataContent) chatMessageData.getData();
+                final String destinationClientId = communicationDataContent.getDestination();
+                final String sourceClientId = chatService.findIdByClient(client).orElse("");
+                final byte[] rawMessage = communicationDataContent.getData();
+                chatService.sendMessage(destinationClientId, sourceClientId, rawMessage);
                 break;
             default:
                 throw new IllegalArgumentException("Neplatný argument." + chatMessageData.getDataType());

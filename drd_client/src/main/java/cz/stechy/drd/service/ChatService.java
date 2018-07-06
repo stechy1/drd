@@ -16,6 +16,7 @@ import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatM
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationRoom;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.IChatMessageAdministrationData;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageCommunicationData;
+import cz.stechy.drd.net.message.ChatMessage.ChatMessageCommunicationData.ChatMessageCommunicationDataContent;
 import cz.stechy.drd.net.message.ChatMessage.IChatMessageData;
 import cz.stechy.drd.net.message.MessageSource;
 import cz.stechy.drd.net.message.MessageType;
@@ -113,18 +114,18 @@ public final class ChatService {
     /**
      * Odešle zprávu
      *
+     * @param id ID cílového klienta
      * @param message Obsah zprávy
-     * @param destination ID cílového klienta
      */
-    public void sendMessage(String message, String destination) {
-        final ChatContact chatContact = clients.get(destination);
+    public void sendMessage(String id, String message) {
+        final ChatContact chatContact = clients.get(id);
         if (chatContact == null) {
             throw new RuntimeException("Klient nebyl nalezen.");
         }
 
-        byte[] messageData = chatContact.encrypt(message.getBytes());
+        byte[] messageData = chatContact.encrypt((message + " ").getBytes());
         communicator.sendMessage(new ChatMessage(MessageSource.CLIENT,
-            new ChatMessageCommunicationData(destination, messageData)));
+            new ChatMessageCommunicationData(id, messageData)));
 
     }
 
@@ -158,6 +159,16 @@ public final class ChatService {
         return FXCollections.unmodifiableObservableMap(rooms);
     }
 
+    /**
+     * Vrátí kontakt na základě Id
+     *
+     * @param id Id kontaktu
+     * @return {@link ChatContact}
+     */
+    public ChatContact getContactById(String id) {
+        return clients.get(id);
+    }
+
     // endregion
 
     private final OnDataReceivedListener chatMessageListener = message -> {
@@ -173,7 +184,8 @@ public final class ChatService {
                         final String connectedClientID = messageAdministrationClientConnected.getClientID();
                         final String connectedClientName = messageAdministrationClientConnected.getName();
                         final CypherKey connectedClientKey = messageAdministrationClientConnected.getKey();
-                        Platform.runLater(() -> clients.putIfAbsent(connectedClientID, new ChatContact(connectedClientName, cryptoService.makeCypher(connectedClientKey))));
+                        Platform.runLater(() -> clients.putIfAbsent(connectedClientID, new ChatContact(
+                            connectedClientID, connectedClientName, cryptoService.makeCypher(connectedClientKey))));
                         break;
                     case CLIENT_DISCONNECTED:
                         final ChatMessageAdministrationClient messageAdministrationClientDiconnected = (ChatMessageAdministrationClient) data;
@@ -216,8 +228,9 @@ public final class ChatService {
                 break;
             case DATA_COMMUNICATION:
                 final ChatMessageCommunicationData communicationData = (ChatMessageCommunicationData) messageData;
-                final String destination = communicationData.getDestination();
-                final byte[] messageRaw = (byte[]) communicationData.getData();
+                final ChatMessageCommunicationDataContent communicationDataContent = (ChatMessageCommunicationDataContent) communicationData.getData();
+                final String destination = communicationDataContent.getDestination();
+                final byte[] messageRaw = communicationDataContent.getData();
                 final String messageContent = new String(cryptoService.decrypt(messageRaw),
                     StandardCharsets.UTF_8);
                 messageListeners.forEach(
