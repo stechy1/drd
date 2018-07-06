@@ -100,6 +100,7 @@ public class ServerThread extends Thread implements ServerInfoProvider, IModuleR
             client.setConnectionClosedListener(() -> {
                 LOGGER.info("Odebírám klienta ze seznamu na serveru.");
                 clients.remove(client);
+                modules.values().forEach(modules -> modules.forEach(module -> module.onClientDisconnect(client)));
                 LOGGER.info("Počet připojených klientů: {}.", clients.size());
                 if (clientDispatcher.hasClientInQueue()) {
                     LOGGER.info("V čekací listině se našel klient, který by rád komunikoval.");

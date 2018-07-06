@@ -3,6 +3,7 @@ package cz.stechy.drd.module;
 import cz.stechy.drd.Client;
 import cz.stechy.drd.chat.ChatService;
 import cz.stechy.drd.net.message.ChatMessage;
+import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClient;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRequestConnect;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.IChatMessageAdministrationData;
 import cz.stechy.drd.net.message.ChatMessage.IChatMessageData;
@@ -43,22 +44,28 @@ public class ChatModule implements IModule {
                 switch (administrationData.getAction()) {
                     case CLIENT_REQUEST_CONNECT:
                         final ChatMessageAdministrationClientRequestConnect clientRequestConnect = (ChatMessageAdministrationClientRequestConnect) administrationData;
+                        final String clientId = clientRequestConnect.getId();
                         final String clientName = clientRequestConnect.getName();
-                        chatService.addClient(client, clientName);
+                        chatService.addClient(client, clientId, clientName);
+                        break;
+                    case CLIENT_DISCONNECTED:
+                        final ChatMessageAdministrationClient clientDisconnected = (ChatMessageAdministrationClient) administrationData;
+                        final String disconnectedClientId = clientDisconnected.getClientID();
+                        chatService.removeClient(disconnectedClientId);
                         break;
                     default:
-                        throw new IllegalArgumentException("Neplatný argument.");
+                        throw new IllegalArgumentException("Neplatný argument. " + administrationData.getAction());
                 }
                 break;
             case DATA_COMMUNICATION:
                 break;
             default:
-                throw new IllegalArgumentException("Neplatný argument.");
+                throw new IllegalArgumentException("Neplatný argument." + chatMessageData.getDataType());
         }
     }
 
     @Override
     public void onClientDisconnect(Client client) {
-        chatService.removeClient(client);
+        chatService.findIdByClient(client).ifPresent(chatService::removeClient);
     }
 }

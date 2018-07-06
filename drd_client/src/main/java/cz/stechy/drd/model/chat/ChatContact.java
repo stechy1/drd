@@ -2,6 +2,9 @@ package cz.stechy.drd.model.chat;
 
 import cz.stechy.drd.crypto.ICypher;
 
+/**
+ * Třída reprezentující jeden kontakt v seznamu kontaktů v chatu
+ */
 public class ChatContact {
 
     private final String name;
@@ -18,5 +21,10 @@ public class ChatContact {
 
     public byte[] encrypt(byte[] src) {
         return cypher.encrypt(src);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

@@ -2,7 +2,6 @@ package cz.stechy.drd.net.message;
 
 import cz.stechy.drd.crypto.RSA.CypherKey;
 import java.io.Serializable;
-import java.util.UUID;
 
 public class ChatMessage implements IMessage {
 
@@ -81,10 +80,16 @@ public class ChatMessage implements IMessage {
 
             private static final long serialVersionUID = 642524654412490721L;
 
+            private final String id;
             private final String name;
 
-            public ChatMessageAdministrationClientRequestConnect(String name) {
+            public ChatMessageAdministrationClientRequestConnect(String id, String name) {
+                this.id = id;
                 this.name = name;
+            }
+
+            public String getId() {
+                return id;
             }
 
             public String getName() {
@@ -102,15 +107,15 @@ public class ChatMessage implements IMessage {
             private static final long serialVersionUID = -6101992378764622660L;
 
             private final ChatAction action;
-            private final UUID clientID;
+            private final String clientID;
             private final String name;
             private final CypherKey key;
 
-            public ChatMessageAdministrationClient(ChatAction action, UUID clientID) {
+            public ChatMessageAdministrationClient(ChatAction action, String clientID) {
                 this(action, clientID, "", CypherKey.EMPTY);
             }
 
-            public ChatMessageAdministrationClient(ChatAction action, UUID clientID,
+            public ChatMessageAdministrationClient(ChatAction action, String clientID,
                 String name, CypherKey key) {
                 this.clientID = clientID;
                 this.name = name;
@@ -119,7 +124,7 @@ public class ChatMessage implements IMessage {
                 this.action = action;
             }
 
-            public UUID getClientID() {
+            public String getClientID() {
                 return clientID;
             }
 
@@ -142,15 +147,15 @@ public class ChatMessage implements IMessage {
             private static final long serialVersionUID = 630432882631419944L;
 
             private final ChatAction action;
-            private final UUID clientID;
+            private final String clientID;
 
-            public ChatMessageAdministrationClientTyping(ChatAction action, UUID clientID) {
+            public ChatMessageAdministrationClientTyping(ChatAction action, String clientID) {
                 assert action == ChatAction.CLIENT_TYPING || action == ChatAction.CLIENT_NOT_TYPING;
                 this.action = action;
                 this.clientID = clientID;
             }
 
-            public UUID getClientID() {
+            public String getClientID() {
                 return clientID;
             }
 
@@ -188,10 +193,10 @@ public class ChatMessage implements IMessage {
             private static final long serialVersionUID = -5297448492415747259L;
 
             private final ChatAction action;
-            private final UUID client;
+            private final String client;
             private final String room;
 
-            public ChatMessageAdministrationClientRoom(ChatAction action, UUID client,
+            public ChatMessageAdministrationClientRoom(ChatAction action, String client,
                 String room) {
                 this.client = client;
                 this.room = room;
@@ -199,7 +204,7 @@ public class ChatMessage implements IMessage {
                 this.action = action;
             }
 
-            public UUID getClient() {
+            public String getClient() {
                 return client;
             }
 
@@ -218,15 +223,15 @@ public class ChatMessage implements IMessage {
 
         private static final long serialVersionUID = -2426630119019364058L;
 
-        private final UUID destination;
+        private final String destination;
         private final byte[] data;
 
-        public ChatMessageCommunicationData(UUID destination, byte[] data) {
+        public ChatMessageCommunicationData(String destination, byte[] data) {
             this.destination = destination;
             this.data = data;
         }
 
-        public UUID getDestination() {
+        public String getDestination() {
             return destination;
         }
 

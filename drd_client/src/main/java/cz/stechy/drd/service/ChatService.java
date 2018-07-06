@@ -8,6 +8,7 @@ import cz.stechy.drd.net.ClientCommunicator;
 import cz.stechy.drd.net.OnDataReceivedListener;
 import cz.stechy.drd.net.message.ChatMessage;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData;
+import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatAction;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClient;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRequestConnect;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRoom;
@@ -21,7 +22,7 @@ import cz.stechy.drd.net.message.MessageType;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -44,9 +45,9 @@ public final class ChatService {
     // region Variables
 
     // Kolekce připojených klientů
-    private final ObservableMap<UUID, ChatContact> clients = FXCollections.observableHashMap();
+    private final ObservableMap<String, ChatContact> clients = FXCollections.observableHashMap();
     // Kolekce vytvořených místností
-    private final ObservableMap<String, ObservableList<UUID>> rooms = FXCollections.observableHashMap();
+    private final ObservableMap<String, ObservableList<String>> rooms = FXCollections.observableHashMap();
     // Register posluchačů na příjem zprávy
     private final List<OnChatMessageReceived> messageListeners = new ArrayList<>();
 
@@ -83,14 +84,25 @@ public final class ChatService {
 
         });
         userService.userProperty().addListener((observable, oldValue, newValue) -> {
+            // Odhlásím starého uživatele
+            if (oldValue != null) {
+                communicator.sendMessage(new ChatMessage(MessageSource.CLIENT,
+                    new ChatMessageAdministrationData(
+                        new ChatMessageAdministrationClient(ChatAction.CLIENT_DISCONNECTED, oldValue.getId())
+                    )));
+            }
+
             if (newValue == null) {
+                clients.clear();
+                rooms.clear();
                 return;
             }
 
-            // Odeslání požadavku na připojení se k chatovací službě
+            // Přihlásím nového uživatele
             communicator.sendMessage(new ChatMessage(MessageSource.CLIENT,
                 new ChatMessageAdministrationData(
-                    new ChatMessageAdministrationClientRequestConnect(userService.getUser().getName()))));
+                    new ChatMessageAdministrationClientRequestConnect(newValue.getId(),
+                        userService.getUser().getName()))));
         });
     }
 
@@ -104,7 +116,7 @@ public final class ChatService {
      * @param message Obsah zprávy
      * @param destination ID cílového klienta
      */
-    public void sendMessage(String message, UUID destination) {
+    public void sendMessage(String message, String destination) {
         final ChatContact chatContact = clients.get(destination);
         if (chatContact == null) {
             throw new RuntimeException("Klient nebyl nalezen.");
@@ -133,7 +145,7 @@ public final class ChatService {
      *
      * @return {@link ObservableList}
      */
-    public ObservableMap<UUID, ChatContact> getClients() {
+    public ObservableMap<String, ChatContact> getClients() {
         return FXCollections.unmodifiableObservableMap(clients);
     }
 
@@ -142,7 +154,7 @@ public final class ChatService {
      *
      * @return {@link ObservableMap}
      */
-    public ObservableMap<String, ObservableList<UUID>> getRooms() {
+    public ObservableMap<String, ObservableList<String>> getRooms() {
         return FXCollections.unmodifiableObservableMap(rooms);
     }
 
@@ -158,45 +170,45 @@ public final class ChatService {
                 switch (data.getAction()) {
                     case CLIENT_CONNECTED:
                         final ChatMessageAdministrationClient messageAdministrationClientConnected = (ChatMessageAdministrationClient) data;
-                        final UUID connectedClientID = messageAdministrationClientConnected.getClientID();
+                        final String connectedClientID = messageAdministrationClientConnected.getClientID();
                         final String connectedClientName = messageAdministrationClientConnected.getName();
                         final CypherKey connectedClientKey = messageAdministrationClientConnected.getKey();
-                        clients.putIfAbsent(connectedClientID, new ChatContact(connectedClientName, cryptoService.makeCypher(connectedClientKey)));
+                        Platform.runLater(() -> clients.putIfAbsent(connectedClientID, new ChatContact(connectedClientName, cryptoService.makeCypher(connectedClientKey))));
                         break;
                     case CLIENT_DISCONNECTED:
                         final ChatMessageAdministrationClient messageAdministrationClientDiconnected = (ChatMessageAdministrationClient) data;
-                        final UUID disconnectedClientID = messageAdministrationClientDiconnected.getClientID();
-                        clients.remove(disconnectedClientID);
+                        final String disconnectedClientID = messageAdministrationClientDiconnected.getClientID();
+                        Platform.runLater(() -> clients.remove(disconnectedClientID));
                         break;
                     case ROOM_CREATED:
                         final ChatMessageAdministrationRoom messageAdministrationRoomCreated = (ChatMessageAdministrationRoom) data;
                         final String createdRoomName = messageAdministrationRoomCreated.roomName();
-                        rooms.put(createdRoomName, FXCollections.observableArrayList());
+                        Platform.runLater(() -> rooms.put(createdRoomName, FXCollections.observableArrayList()));
                         break;
                     case ROOM_DELETED:
                         final ChatMessageAdministrationRoom messageAdministrationRoomDeleted = (ChatMessageAdministrationRoom) data;
                         final String deletedRoomName = messageAdministrationRoomDeleted.roomName();
-                        rooms.remove(deletedRoomName);
+                        Platform.runLater(() -> rooms.remove(deletedRoomName));
                         break;
                     case CLIENT_JOINED_ROOM:
                         final ChatMessageAdministrationClientRoom messageAdministrationClientJoinedRoom = (ChatMessageAdministrationClientRoom) data;
-                        final UUID joinedRoomClientID = messageAdministrationClientJoinedRoom.getClient();
+                        final String joinedRoomClientID = messageAdministrationClientJoinedRoom.getClient();
                         final String joinedRoomName = messageAdministrationClientJoinedRoom.getRoom();
-                        rooms.get(joinedRoomName).add(joinedRoomClientID);
+                        Platform.runLater(() -> rooms.get(joinedRoomName).add(joinedRoomClientID));
                         break;
                     case CLIENT_LEAVE_ROOM:
                         final ChatMessageAdministrationClientRoom messageAdministrationClientLeavedRoom = (ChatMessageAdministrationClientRoom) data;
-                        final UUID leavedRoomClientID = messageAdministrationClientLeavedRoom.getClient();
+                        final String leavedRoomClientID = messageAdministrationClientLeavedRoom.getClient();
                         final String leavedRoomName = messageAdministrationClientLeavedRoom.getRoom();
-                        rooms.get(leavedRoomName).remove(leavedRoomClientID);
+                        Platform.runLater(() -> rooms.get(leavedRoomName).remove(leavedRoomClientID));
                         break;
                     case CLIENT_TYPING:
                         final ChatMessageAdministrationClientTyping messageAdministrationClientTyping = (ChatMessageAdministrationClientTyping) data;
-                        final UUID typingClientId = messageAdministrationClientTyping.getClientID();
+                        final String typingClientId = messageAdministrationClientTyping.getClientID();
                         break;
                     case CLIENT_NOT_TYPING:
                         final ChatMessageAdministrationClientTyping messageAdministrationClientNoTyping = (ChatMessageAdministrationClientTyping) data;
-                        final UUID noTypingClientId = messageAdministrationClientNoTyping.getClientID();
+                        final String noTypingClientId = messageAdministrationClientNoTyping.getClientID();
                         break;
                     default:
                         throw new IllegalArgumentException("Neplatny argument.");
@@ -204,7 +216,7 @@ public final class ChatService {
                 break;
             case DATA_COMMUNICATION:
                 final ChatMessageCommunicationData communicationData = (ChatMessageCommunicationData) messageData;
-                final UUID destination = communicationData.getDestination();
+                final String destination = communicationData.getDestination();
                 final byte[] messageRaw = (byte[]) communicationData.getData();
                 final String messageContent = new String(cryptoService.decrypt(messageRaw),
                     StandardCharsets.UTF_8);

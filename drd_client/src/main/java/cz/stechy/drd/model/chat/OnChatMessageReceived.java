@@ -1,7 +1,5 @@
 package cz.stechy.drd.model.chat;
 
-import java.util.UUID;
-
 /**
  * Rozhraní definující metodu pro příjem zprávy
  */
@@ -14,5 +12,5 @@ public interface OnChatMessageReceived {
      * @param message Obsah zprávy
      * @param source ID klienta, který zprávu odeslal
      */
-    void onChatMessageReceived(String message, UUID source);
+    void onChatMessageReceived(String message, String source);
 }
