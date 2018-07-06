@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,7 @@ public final class FirebaseRepository implements ServerDatabase {
     // region Variables
 
     private final Map<String, List<ItemEventListener>> listeners = new HashMap<>();
+    private final Map<String, List<ItemEventListener>> laterListenerInit = new HashMap<>();
     private final Map<String, List<Map<String, Object>>> items = new HashMap<>();
     private DatabaseReference itemsReference;
 
@@ -49,6 +51,15 @@ public final class FirebaseRepository implements ServerDatabase {
      */
     public void init() {
         this.itemsReference = FirebaseDatabase.getInstance().getReference();
+
+        for (Entry<String, List<ItemEventListener>> entry : laterListenerInit
+            .entrySet()) {
+            final String key = entry.getKey();
+            final List<ItemEventListener> listeners = entry.getValue();
+            for (ItemEventListener listener : listeners) {
+                registerListener(key, listener);
+            }
+        }
     }
 
     /**
@@ -107,6 +118,13 @@ public final class FirebaseRepository implements ServerDatabase {
      */
     @Override
     public synchronized void registerListener(final String tableName, ItemEventListener listener) {
+        if (itemsReference == null) {
+            List<ItemEventListener> listeners = laterListenerInit
+                .computeIfAbsent(tableName, k -> new ArrayList<>());
+            listeners.add(listener);
+            return;
+        }
+
         List<ItemEventListener> observables = listeners.get(tableName);
         // Pokud jsem ještě neprovedl žádnou registraci pro daný typ předmětu
         if (observables == null) {
