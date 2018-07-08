@@ -12,5 +12,5 @@ public interface OnChatMessageReceived {
      * @param message Obsah zprávy
      * @param source ID klienta, který zprávu odeslal
      */
-    void onChatMessageReceived(String message, String source);
+    void onChatMessageReceived(String message, ChatContact source);
 }

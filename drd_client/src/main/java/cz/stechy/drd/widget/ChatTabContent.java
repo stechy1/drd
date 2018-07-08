@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.ImageView;
 
 public class ChatTabContent {
 
@@ -18,6 +19,8 @@ public class ChatTabContent {
     Label lblFrom;
     @FXML
     TextArea areaMessage;
+    @FXML
+    private ImageView imgLoading;
 
     // endregion
 
@@ -43,19 +46,20 @@ public class ChatTabContent {
             // Čekám, protože musím mít jistotu, že se vložený text již nastavil a vypočítaly
             // se veškeré vlastnosti
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (InterruptedException ignored) { }
         }, ThreadPool.COMMON_EXECUTOR)
             .thenAcceptAsync(aVoid -> {
                 // Nyní můžu najít jiř přiřazený text
                 final Node text = areaMessage.lookup(".text");
                 if (text == null) {
-                    System.out.println("Node nebyl nalezen.");
                     return;
                 }
                 // A nabindovat správnou výšku textArea
                 areaMessage.prefHeightProperty().bind(Bindings.createDoubleBinding(
                     () -> text.getBoundsInLocal().getHeight(), text.boundsInLocalProperty()).add(20));
+                imgLoading.setVisible(false);
+                areaMessage.setDisable(false);
             }, ThreadPool.JAVAFX_EXECUTOR);
     }
 

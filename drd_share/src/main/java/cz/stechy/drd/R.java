@@ -306,6 +306,11 @@ public final class R {
         public static final String BESTIARY_BASIC_POWER_OF_MIND = "drd_bestiary_basic_power_of_mind";
         public static final String BESTIARY_DOMESTICATION = "drd_bestiary_domestication";
         public static final String CHAT_TITLE = "drd_chat_title";
+        public static final String CHAT_CONTACTS = "drd_chat_contacts";
+        public static final String CHAT_ROOMS = "drd_chat_rooms";
+        public static final String CHAT_NEW_ROOM = "drd_chat_new_room";
+        public static final String CHAT_MESSAGE_PROMPT = "drd_chat_message_prompt";
+        public static final String CHAT_MESSAGE_SEND = "drd_chat_message_send";
         public static final String VULNERABILITY_ANIMAL = "drd_vulnerability_animal";
         public static final String VULNERABILITY_HUMANOID = "drd_vulnerability_humanoid";
         public static final String VULNERABILITY_DRAGON = "drd_vulnerability_dragon";

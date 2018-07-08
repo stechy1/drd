@@ -233,10 +233,18 @@ public final class ChatService {
                 final byte[] messageRaw = communicationDataContent.getData();
                 final String messageContent = new String(cryptoService.decrypt(messageRaw),
                     StandardCharsets.UTF_8);
-                Platform.runLater(() ->
-                    messageListeners.forEach(
-                        listener -> listener.onChatMessageReceived(messageContent, destination))
-                );
+                Platform.runLater(() -> {
+                    if (clients.containsKey(destination)) {
+                        final ChatContact chatContact = clients.get(destination);
+                        chatContact.addMessage(chatContact, messageContent);
+                    }
+//                    if (rooms.containsKey(destination)) {
+//                        // TODO implementovat místnosti
+//                    }
+                });
+//                    messageListeners.forEach(
+//                        listener -> listener.onChatMessageReceived(messageContent, destination))
+//                );
                 break;
             default:
                 throw new IllegalArgumentException("Neplatny parametr.");
