@@ -10,59 +10,48 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<HBox prefHeight="350" prefWidth="600" xmlns="http://javafx.com/javafx/8.0.121"
-  xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.app.chat.ChatController">
-  <VBox alignment="TOP_CENTER" spacing="8.0">
-    <Accordion BorderPane.alignment="CENTER" VBox.vgrow="ALWAYS">
+<VBox prefHeight="350" prefWidth="600" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.app.chat.ChatController">
+  <AnchorPane VBox.vgrow="ALWAYS">
+    <Accordion prefHeight="299.0" prefWidth="202.0" style="-fx-border-color: transparent transparent black transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
       <panes>
         <TitledPane animated="false" text="Kontakty">
-          <JFXListView fx:id="listContacts" prefHeight="200.0" prefWidth="200.0"/>
+          <JFXListView fx:id="listContacts" prefHeight="200.0" prefWidth="200.0" />
         </TitledPane>
         <TitledPane animated="false" text="Místnosti">
-          <JFXTreeView fx:id="treeRooms" prefHeight="200.0" prefWidth="200.0"/>
+          <JFXTreeView fx:id="treeRooms" prefHeight="200.0" prefWidth="200.0" />
         </TitledPane>
       </panes>
     </Accordion>
-    <JFXButton mnemonicParsing="false" onAction="#handleNewRoom" prefHeight="35.0"
-      styleClass="btn, btn-success" text="Nová místnost" VBox.vgrow="NEVER">
-      <graphic>
-        <ImageView>
-          <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/add.png"/>
-        </ImageView>
-      </graphic>
-      <VBox.margin>
-        <Insets bottom="8.0"/>
-      </VBox.margin>
-    </JFXButton>
-  </VBox>
-
-  <VBox alignment="CENTER" HBox.hgrow="ALWAYS">
-    <TabPane fx:id="tabConversations" BorderPane.alignment="CENTER" HBox.hgrow="ALWAYS"
-      VBox.vgrow="ALWAYS">
+    <TabPane fx:id="tabConversations" layoutX="202.0" prefHeight="299.0" prefWidth="398.0" style="-fx-border-color: transparent transparent black transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="202.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
     </TabPane>
-    <HBox alignment="CENTER_LEFT" prefHeight="50.0" spacing="8.0" VBox.vgrow="NEVER">
-      <TextField fx:id="txtMessage" prefHeight="35.0" HBox.hgrow="ALWAYS">
-        <padding>
-          <Insets bottom="8.0" left="8.0" right="8.0" top="8.0"/>
-        </padding>
-      </TextField>
-      <Region HBox.hgrow="SOMETIMES"/>
-      <JFXButton mnemonicParsing="false" onAction="#handleSendMessage" prefHeight="35.0"
-        styleClass="btn, btn-primary, btn-raised, btn-small" text="Odeslat" HBox.hgrow="NEVER">
+  </AnchorPane>
+
+
+    <AnchorPane VBox.vgrow="NEVER">
+
+      <JFXButton layoutX="41.0" layoutY="301.0" mnemonicParsing="false" onAction="#handleNewRoom" prefHeight="35.0" prefWidth="186.0" styleClass="btn, btn-success, btn-small" text="Nová místnost" AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0">
         <graphic>
           <ImageView>
-            <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/confirm.png"/>
+            <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/add.png" />
           </ImageView>
         </graphic>
       </JFXButton>
-      <padding>
-        <Insets left="8.0" right="8.0"/>
-      </padding>
-    </HBox>
-  </VBox>
-</HBox>
+      <TextField fx:id="txtMessage" layoutX="208.0" prefHeight="35.0" prefWidth="294.0" promptText="sem napište zprávu..." AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="210.0" AnchorPane.rightAnchor="98.0" AnchorPane.topAnchor="8.0">
+        <padding>
+          <Insets bottom="8.0" left="8.0" right="8.0" top="8.0" />
+        </padding>
+      </TextField>
+      <JFXButton fx:id="btnSend" mnemonicParsing="false" onAction="#handleSendMessage" styleClass="btn, btn-primary, btn-raised, btn-small" text="Odeslat" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="8.0">
+        <graphic>
+          <ImageView>
+            <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/confirm.png" />
+          </ImageView>
+        </graphic>
+      </JFXButton>
+    </AnchorPane>
+</VBox>

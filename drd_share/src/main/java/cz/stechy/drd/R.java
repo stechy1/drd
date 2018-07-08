@@ -23,6 +23,8 @@ public final class R {
         public static final String BESTIARY_EDIT_OTHER = "bestiary_edit_other";
         public static final String BESTIARY_EDIT_PROPERTIES = "bestiary_edit_properties";
         public static final String CHAT = "chat";
+        public static final String CHAT_TAB_CONTENT_INCOMING = "chat_tab_content_incoming";
+        public static final String CHAT_TAB_CONTENT_OUTCOMING = "chat_tab_content_outcoming";
         public static final String COLLECTIONS = "collections";
         public static final String COLLECTIONS_BESTIARY = "collections_bestiary";
         public static final String COLLECTIONS_ITEMS = "collections_items";

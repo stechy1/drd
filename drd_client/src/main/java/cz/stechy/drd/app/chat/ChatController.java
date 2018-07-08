@@ -3,9 +3,11 @@ package cz.stechy.drd.app.chat;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTreeView;
 import cz.stechy.drd.R;
+import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.chat.ChatContact;
 import cz.stechy.drd.model.chat.OnChatMessageReceived;
 import cz.stechy.drd.service.ChatService;
+import cz.stechy.drd.service.UserService;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.BaseController;
 import java.net.URL;
@@ -15,6 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
@@ -34,18 +37,23 @@ public class ChatController extends BaseController implements Initializable {
     private TabPane tabConversations;
     @FXML
     private TextField txtMessage;
+    @FXML
+    private Button btnSend;
 
     // endregion
 
     private final ChatService chatService;
+
+    private User user;
     private String title;
 
     // endregion
 
     // region Constructors
 
-    public ChatController(ChatService chatService) {
+    public ChatController(ChatService chatService, UserService userService) {
         this.chatService = chatService;
+        user = userService.getUser();
     }
 
     // endregion
@@ -95,17 +103,17 @@ public class ChatController extends BaseController implements Initializable {
     private void showConversationWithText(String id, String message) {
         final ChatContact contact = chatService.getContactById(id);
         final ChatTab chatTab = showConversation(contact);
-        appendText(chatTab, message);
+        appendText(chatTab, message, false, contact.getName());
     }
 
     /**
      * Vloží zprávu do vybraného tabu
-     *
-     * @param chatTab {@link ChatTab} Okno s komunikaci s klientem
+     *  @param chatTab {@link ChatTab} Okno s komunikaci s klientem
      * @param message Obsah zprávy, který se má připojit
+     * @param fromMe True, pokud jsem zprávu odeslal já. False, pokud jsem zprávu přijal
      */
-    private void appendText(ChatTab chatTab, String message) {
-        chatTab.appendText(message);
+    private void appendText(ChatTab chatTab, String message, boolean fromMe, String userName) {
+        chatTab.appendText(message, fromMe, userName);
     }
 
     // endregion
@@ -117,6 +125,7 @@ public class ChatController extends BaseController implements Initializable {
         chatService.addChatMessageReceivedListener(this.chatMessageReceived);
 
         listContacts.setOnMouseClicked(this.listContactsClick);
+        btnSend.disableProperty().bind(tabConversations.getSelectionModel().selectedItemProperty().isNull());
 
         ObservableMergers.listObserveMap(chatService.getClients(), listContacts.getItems());
     }
@@ -141,9 +150,11 @@ public class ChatController extends BaseController implements Initializable {
 
     @FXML
     private void handleSendMessage(ActionEvent actionEvent) {
-        final String id = (String) tabConversations.getSelectionModel().getSelectedItem().getUserData();
+        final ChatTab tab = (ChatTab) tabConversations.getSelectionModel().getSelectedItem();
+        final String id = (String) tab.getUserData();
         final String message = txtMessage.getText();
         chatService.sendMessage(id, message);
+        appendText(tab, message, true, user.getName());
     }
 
     // endregion
@@ -158,7 +169,7 @@ public class ChatController extends BaseController implements Initializable {
             .map(tab -> (ChatTab) tab)
             .findFirst();
         if (chatTabOptional.isPresent()) {
-            appendText(chatTabOptional.get(), message);
+            appendText(chatTabOptional.get(), message, false, chatTabOptional.get().getText());
         } else {
             showConversationWithText(source, message);
         }

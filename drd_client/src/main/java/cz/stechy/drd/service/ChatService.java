@@ -233,8 +233,10 @@ public final class ChatService {
                 final byte[] messageRaw = communicationDataContent.getData();
                 final String messageContent = new String(cryptoService.decrypt(messageRaw),
                     StandardCharsets.UTF_8);
-                messageListeners.forEach(
-                    listener -> listener.onChatMessageReceived(messageContent, destination));
+                Platform.runLater(() ->
+                    messageListeners.forEach(
+                        listener -> listener.onChatMessageReceived(messageContent, destination))
+                );
                 break;
             default:
                 throw new IllegalArgumentException("Neplatny parametr.");
