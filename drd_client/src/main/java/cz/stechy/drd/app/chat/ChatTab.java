@@ -55,6 +55,9 @@ class ChatTab extends Tab {
         container.setHbarPolicy(ScrollBarPolicy.NEVER);
         container.setFitToWidth(true);
         setContent(container);
+        messagesContiainer.heightProperty().addListener((observable, oldValue, newValue) -> {
+            container.setVvalue(newValue.doubleValue());
+        });
     }
 
     // endregion

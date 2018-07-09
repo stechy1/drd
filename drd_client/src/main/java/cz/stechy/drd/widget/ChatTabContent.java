@@ -57,7 +57,7 @@ public class ChatTabContent {
      * Pokusí se změnit velikost oblasti se zprávou tak, aby se vešla celá do okna
      */
     public void askForResizeTextArea() {
-        if (areaMessage.getLength() < 50) {
+        if (areaMessage.getLength() <= 58) {
             enableArea();
             return;
         }
