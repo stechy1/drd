@@ -25,6 +25,7 @@ public final class R {
         public static final String CHAT = "chat";
         public static final String CHAT_TAB_CONTENT_INCOMING = "chat_tab_content_incoming";
         public static final String CHAT_TAB_CONTENT_OUTCOMING = "chat_tab_content_outcoming";
+        public static final String TEMP = "temp";
         public static final String COLLECTIONS = "collections";
         public static final String COLLECTIONS_BESTIARY = "collections_bestiary";
         public static final String COLLECTIONS_ITEMS = "collections_items";

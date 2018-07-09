@@ -1,10 +1,17 @@
 package cz.stechy.drd.model.chat;
 
 import cz.stechy.drd.crypto.ICypher;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.paint.Color;
 
 /**
  * Třída reprezentující jeden kontakt v seznamu kontaktů v chatu
@@ -16,6 +23,8 @@ public class ChatContact {
     private final ObservableList<ChatMessageEntry> messages = FXCollections.observableArrayList();
     private final StringProperty name = new SimpleStringProperty(this, "name", null);
     private final String id;
+    private final ObjectProperty<Color> contactColor = new SimpleObjectProperty<>(this, "contactColor", null);
+    private final IntegerProperty unreadedMessages = new SimpleIntegerProperty(this, "unreadedMessages", 0);
     private final ICypher cypher;
 
     // endregion
@@ -26,6 +35,7 @@ public class ChatContact {
         this.id = id;
         this.name.set(name);
         this.cypher = cypher;
+        contactColor.set(Color.color(Math.random(), Math.random(), Math.random()));
     }
 
     // endregion
@@ -50,6 +60,7 @@ public class ChatContact {
      */
     public void addMessage(ChatContact chatContact, String message) {
         messages.add(new ChatMessageEntry(chatContact, message));
+        unreadedMessages.set(unreadedMessages.get() + 1);
     }
 
     // endregion
@@ -66,6 +77,18 @@ public class ChatContact {
 
     public StringProperty nameProperty() {
         return name;
+    }
+
+    public Color getColor() {
+        return contactColor.get();
+    }
+
+    public ReadOnlyObjectProperty<Color> contactColorProperty() {
+        return contactColor;
+    }
+
+    public ReadOnlyIntegerProperty unreadedMessagesProperty() {
+        return unreadedMessages;
     }
 
     public ObservableList<ChatMessageEntry> getMessages() {

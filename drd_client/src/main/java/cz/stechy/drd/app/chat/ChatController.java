@@ -95,6 +95,7 @@ public class ChatController extends BaseController implements Initializable {
 
         chatService.addChatMessageReceivedListener(this.chatMessageReceived);
 
+        listContacts.setCellFactory(param -> new ChatListViewEntry());
         listContacts.setOnMouseClicked(this.listContactsClick);
         btnSend.disableProperty().bind(tabConversations.getSelectionModel().selectedItemProperty().isNull());
 

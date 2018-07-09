@@ -84,6 +84,7 @@ class ChatTab extends Tab {
         try {
             final Parent parent = loader.load();
             controller = loader.getController();
+            controller.setColor(contact.getColor());
             controller.setContactName(contact.getName());
             controller.setMessage(message);
             parent.setUserData(controller);

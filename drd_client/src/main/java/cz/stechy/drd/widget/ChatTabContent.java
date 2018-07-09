@@ -8,6 +8,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 public class ChatTabContent {
 
@@ -16,9 +18,11 @@ public class ChatTabContent {
     // region FXML
 
     @FXML
-    Label lblFrom;
+    private Circle circle;
     @FXML
-    TextArea areaMessage;
+    private Label lblFrom;
+    @FXML
+    private TextArea areaMessage;
     @FXML
     private ImageView imgLoading;
 
@@ -26,7 +30,20 @@ public class ChatTabContent {
 
     // endregion
 
+    // region Private methods
+
+    private void enableArea() {
+        imgLoading.setVisible(false);
+        areaMessage.setDisable(false);
+    }
+
+    // endregion
+
     // region Getters & Setters
+
+    public void setColor(Color color) {
+        circle.setFill(color);
+    }
 
     public void setContactName(String name) {
         lblFrom.setText(name);
@@ -40,6 +57,10 @@ public class ChatTabContent {
      * Pokusí se změnit velikost oblasti se zprávou tak, aby se vešla celá do okna
      */
     public void askForResizeTextArea() {
+        if (areaMessage.getLength() < 50) {
+            enableArea();
+            return;
+        }
         // Toto je trošku čuňárna
         CompletableFuture.runAsync(() -> {
             // Nejdříve chvíli počkám v jiném vlákně
@@ -58,8 +79,7 @@ public class ChatTabContent {
                 // A nabindovat správnou výšku textArea
                 areaMessage.prefHeightProperty().bind(Bindings.createDoubleBinding(
                     () -> text.getBoundsInLocal().getHeight(), text.boundsInLocalProperty()).add(20));
-                imgLoading.setVisible(false);
-                areaMessage.setDisable(false);
+                enableArea();
             }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
