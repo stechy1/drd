@@ -58,6 +58,10 @@ class ChatTab extends Tab {
         messagesContiainer.heightProperty().addListener((observable, oldValue, newValue) -> {
             container.setVvalue(newValue.doubleValue());
         });
+        this.container.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            chatContact.resetUnreadedMessages();
+        });
+        chatContact.resetUnreadedMessages();
     }
 
     // endregion

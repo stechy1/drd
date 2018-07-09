@@ -63,6 +63,13 @@ public class ChatContact {
         unreadedMessages.set(unreadedMessages.get() + 1);
     }
 
+    /**
+     * Vyresetuje číselník nepřečtených zpráv
+     */
+    public void resetUnreadedMessages() {
+        unreadedMessages.set(0);
+    }
+
     // endregion
 
     // region Getters & Setters
