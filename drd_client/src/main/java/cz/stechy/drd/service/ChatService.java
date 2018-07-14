@@ -51,6 +51,7 @@ public final class ChatService {
     private final ObservableMap<String, ObservableList<String>> rooms = FXCollections.observableHashMap();
     // Register posluchačů na příjem zprávy
     private final List<OnChatMessageReceived> messageListeners = new ArrayList<>();
+    private final List<String> typingInformations = new ArrayList<>();
 
     // Komunikátor se serverem
     private ClientCommunicator communicator;
@@ -151,6 +152,26 @@ public final class ChatService {
         messageListeners.remove(listener);
     }
 
+    public void notifyTyping(String id, boolean typing) {
+        // Nebudu neustále posílat informaci, že klient píše
+        if (typing && typingInformations.contains(id)) {
+            return;
+        }
+
+        communicator.sendMessage(new ChatMessage(MessageSource.CLIENT,
+            new ChatMessageAdministrationData(
+                new ChatMessageAdministrationClientTyping(
+                    typing ? ChatAction.CLIENT_TYPING : ChatAction.CLIENT_NOT_TYPING, id))));
+
+        if (typing) {
+            // Pokud klient začal psát, uložím si tuto informaci, abych příště již klienta neinformoval
+            typingInformations.add(id);
+        } else {
+            // Pokud klient přestal psát, tak odeberu informaci, abych příště mohl klienta informovat
+            typingInformations.remove(id);
+        }
+    }
+
     // endregion
 
     // region Getters & Setters
@@ -222,13 +243,13 @@ public final class ChatService {
                         final ChatMessageAdministrationClientTyping messageAdministrationClientTyping = (ChatMessageAdministrationClientTyping) data;
                         final String typingClientId = messageAdministrationClientTyping.getClientID();
                         final ChatContact typingClient = getContactById(typingClientId);
-                        typingClient.setTyping();
+                        Platform.runLater(typingClient::setTyping);
                         break;
                     case CLIENT_NOT_TYPING:
                         final ChatMessageAdministrationClientTyping messageAdministrationClientNoTyping = (ChatMessageAdministrationClientTyping) data;
                         final String noTypingClientId = messageAdministrationClientNoTyping.getClientID();
                         final ChatContact noTypingClient = getContactById(noTypingClientId);
-                        noTypingClient.resetTyping();
+                        Platform.runLater(noTypingClient::resetTyping);
                         break;
                     default:
                         throw new IllegalArgumentException("Neplatny argument.");

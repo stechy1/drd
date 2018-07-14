@@ -5,6 +5,7 @@ import cz.stechy.drd.chat.ChatService;
 import cz.stechy.drd.net.message.ChatMessage;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClient;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRequestConnect;
+import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientTyping;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.IChatMessageAdministrationData;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageCommunicationData.ChatMessageCommunicationDataContent;
 import cz.stechy.drd.net.message.ChatMessage.IChatMessageData;
@@ -53,6 +54,16 @@ public class ChatModule implements IModule {
                         final ChatMessageAdministrationClient clientDisconnected = (ChatMessageAdministrationClient) administrationData;
                         final String disconnectedClientId = clientDisconnected.getClientID();
                         chatService.removeClient(disconnectedClientId);
+                        break;
+                    case CLIENT_TYPING:
+                        final ChatMessageAdministrationClientTyping clientIsTyping = (ChatMessageAdministrationClientTyping) administrationData;
+                        final String typingClientId = clientIsTyping.getClientID();
+                        chatService.informClientIsTyping(typingClientId, chatService.findIdByClient(client).orElse(""), true);
+                        break;
+                    case CLIENT_NOT_TYPING:
+                        final ChatMessageAdministrationClientTyping clientIsNotTyping = (ChatMessageAdministrationClientTyping) administrationData;
+                        final String notTypingClientId = clientIsNotTyping.getClientID();
+                        chatService.informClientIsTyping(notTypingClientId, chatService.findIdByClient(client).orElse(""), false);
                         break;
                     default:
                         throw new IllegalArgumentException("Neplatný argument. " + administrationData.getAction());

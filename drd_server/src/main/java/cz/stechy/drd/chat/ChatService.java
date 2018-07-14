@@ -6,6 +6,7 @@ import cz.stechy.drd.net.message.ChatMessage;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatAction;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClient;
+import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientTyping;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageCommunicationData;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
@@ -132,6 +133,20 @@ public final class ChatService {
             .findFirst();
 
         return entryOptional.map(Entry::getKey);
+    }
+
+    public void informClientIsTyping(String destinationClientId, String sourceClientId,
+        boolean typing) {
+        final ChatClient chatClient = clients.get(destinationClientId);
+        if (chatClient == null) {
+            return;
+        }
+
+        chatClient.getClient().sendMessage(new ChatMessage(MessageSource.SERVER,
+            new ChatMessageAdministrationData(
+                new ChatMessageAdministrationClientTyping(
+                    typing ? ChatAction.CLIENT_TYPING : ChatAction.CLIENT_NOT_TYPING, sourceClientId
+                ))));
     }
 
     // endregion

@@ -11,6 +11,8 @@ import cz.stechy.screens.BaseController;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -40,8 +42,7 @@ public class ChatController extends BaseController implements Initializable {
 
     // endregion
 
-    private final ChatService chatService;
-
+    private ChatService chatService;
     private String title;
 
     // endregion
@@ -97,7 +98,11 @@ public class ChatController extends BaseController implements Initializable {
 
         listContacts.setCellFactory(param -> new ChatListViewEntry());
         listContacts.setOnMouseClicked(this.listContactsClick);
-        btnSend.disableProperty().bind(tabConversations.getSelectionModel().selectedItemProperty().isNull());
+        final BooleanBinding canSendMessage = tabConversations.getSelectionModel()
+            .selectedItemProperty().isNull();
+        btnSend.disableProperty().bind(canSendMessage);
+        txtMessage.disableProperty().bind(canSendMessage);
+        txtMessage.textProperty().addListener(this.messageContentListener);
 
         ObservableMergers.listObserveMap(chatService.getClients(), listContacts.getItems());
     }
@@ -126,6 +131,7 @@ public class ChatController extends BaseController implements Initializable {
         final String id = (String) tab.getUserData();
         final String message = txtMessage.getText();
         chatService.sendMessage(id, message);
+        txtMessage.clear();
     }
 
     // endregion
@@ -150,5 +156,11 @@ public class ChatController extends BaseController implements Initializable {
         }
 
         showConversation(contact);
+    };
+
+    private ChangeListener<? super String> messageContentListener = (observable, oldValue, newValue) -> {
+        final ChatTab tab = (ChatTab) tabConversations.getSelectionModel().getSelectedItem();
+        final String id = (String) tab.getUserData();
+        chatService.notifyTyping(id, !newValue.isEmpty());
     };
 }
