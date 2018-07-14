@@ -487,6 +487,7 @@ public final class R {
             public static final String HAND_CLICK = "/images/icon/hand_click.png";
             public static final String HELP = "/images/icon/help.png";
             public static final String IMPORT = "/images/icon/import.png";
+            public static final String LOADING = "/images/icon/loading.gif";
             public static final String LOGIN = "/images/icon/login.png";
             public static final String MANA = "/images/icon/mana.png";
             public static final String NEW = "/images/icon/new.png";
@@ -509,6 +510,7 @@ public final class R {
             public static final String STOP = "/images/icon/stop.png";
             public static final String SUBTRACT = "/images/icon/subtract.png";
             public static final String SYNCHRONIZE = "/images/icon/synchronize.png";
+            public static final String TYPING = "/images/icon/typing.gif";
             public static final String UPLOAD = "/images/icon/upload.png";
             public static final String WIP = "/images/icon/wip.png";
             public static final String ZIVOTY = "/images/icon/zivoty.png";

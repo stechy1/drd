@@ -11,13 +11,19 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 
 /**
  * Třída reprezentující jedenu konverzaci
@@ -37,6 +43,9 @@ class ChatTab extends Tab {
 
     private final ScrollPane container = new ScrollPane();
     private final VBox messagesContiainer = new VBox();
+    private final ImageView imgTyping = new ImageView(new Image(getClass().getResourceAsStream(R.Images.Icon.TYPING)));
+    private final StackPane imageContainer = new StackPane();
+    private final Circle circle = new Circle();
     private final ChatContact chatContact;
 
     // endregion
@@ -44,7 +53,7 @@ class ChatTab extends Tab {
     // region Constructors
 
     ChatTab(ChatContact chatContact) {
-        super(chatContact.getName());
+        super();
         this.chatContact = chatContact;
         this.chatContact.getMessages().addListener(this.messagesListener);
         loadMessagesAsync();
@@ -55,6 +64,7 @@ class ChatTab extends Tab {
         container.setHbarPolicy(ScrollBarPolicy.NEVER);
         container.setFitToWidth(true);
         setContent(container);
+
         messagesContiainer.heightProperty().addListener((observable, oldValue, newValue) -> {
             container.setVvalue(newValue.doubleValue());
         });
@@ -62,11 +72,41 @@ class ChatTab extends Tab {
             chatContact.resetUnreadedMessages();
         });
         chatContact.resetUnreadedMessages();
+
+        circle.setFill(chatContact.getColor());
+        setGraphic(buildTabGraphic(chatContact.getName()));
+        chatContact.typingProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                imageContainer.getChildren().setAll(imgTyping);
+            } else {
+                imageContainer.getChildren().setAll(circle);
+            }
+        });
     }
 
     // endregion
 
     // region Private methods
+
+    /**
+     * Vytvoří grafiku uvnitř tabu
+     *
+     * @param contactName Jméno kontaktu
+     * @return Grafiku uvnitř tabu
+     */
+    private HBox buildTabGraphic(String contactName) {
+        final Label lblName = new Label(contactName);
+        imageContainer.getChildren().setAll(circle);
+        imageContainer.setPrefWidth(16);
+        imageContainer.setPrefHeight(16);
+        final HBox graphicContainer = new HBox(imageContainer, lblName);
+        graphicContainer.setAlignment(Pos.CENTER_LEFT);
+        graphicContainer.setSpacing(8);
+        graphicContainer.setPrefHeight(32);
+        HBox.setHgrow(lblName, Priority.ALWAYS);
+        circle.setRadius(8);
+        return graphicContainer;
+    }
 
     /**
      * Vrátí URL adresu FXML souboru podle kontaktu

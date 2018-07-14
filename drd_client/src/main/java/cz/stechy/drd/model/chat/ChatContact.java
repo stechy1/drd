@@ -1,10 +1,12 @@
 package cz.stechy.drd.model.chat;
 
 import cz.stechy.drd.crypto.ICypher;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -25,6 +27,7 @@ public class ChatContact {
     private final String id;
     private final ObjectProperty<Color> contactColor = new SimpleObjectProperty<>(this, "contactColor", null);
     private final IntegerProperty unreadedMessages = new SimpleIntegerProperty(this, "unreadedMessages", 0);
+    private final BooleanProperty typing = new SimpleBooleanProperty(this, "typing", false);
     private final ICypher cypher;
 
     // endregion
@@ -70,6 +73,20 @@ public class ChatContact {
         unreadedMessages.set(0);
     }
 
+    /**
+     * Nastaví kontaktu příznak, že něco píše
+     */
+    public void setTyping() {
+        typing.set(true);
+    }
+
+    /**
+     * Vyresetuje kontaktu příznak, že něco píše
+     */
+    public void resetTyping() {
+        typing.set(false);
+    }
+
     // endregion
 
     // region Getters & Setters
@@ -96,6 +113,14 @@ public class ChatContact {
 
     public ReadOnlyIntegerProperty unreadedMessagesProperty() {
         return unreadedMessages;
+    }
+
+    public boolean isTyping() {
+        return typing.get();
+    }
+
+    public BooleanProperty typingProperty() {
+        return typing;
     }
 
     public ObservableList<ChatMessageEntry> getMessages() {

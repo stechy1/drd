@@ -109,6 +109,20 @@ public final class ChatService {
 
     // endregion
 
+    // region Private methods
+
+    /**
+     * Vrátí kontakt na základě Id
+     *
+     * @param id Id kontaktu
+     * @return {@link ChatContact}
+     */
+    private ChatContact getContactById(String id) {
+        return clients.get(id);
+    }
+
+    // endregion
+
     // region Public methods
 
     /**
@@ -159,16 +173,6 @@ public final class ChatService {
         return FXCollections.unmodifiableObservableMap(rooms);
     }
 
-    /**
-     * Vrátí kontakt na základě Id
-     *
-     * @param id Id kontaktu
-     * @return {@link ChatContact}
-     */
-    public ChatContact getContactById(String id) {
-        return clients.get(id);
-    }
-
     // endregion
 
     private final OnDataReceivedListener chatMessageListener = message -> {
@@ -217,10 +221,14 @@ public final class ChatService {
                     case CLIENT_TYPING:
                         final ChatMessageAdministrationClientTyping messageAdministrationClientTyping = (ChatMessageAdministrationClientTyping) data;
                         final String typingClientId = messageAdministrationClientTyping.getClientID();
+                        final ChatContact typingClient = getContactById(typingClientId);
+                        typingClient.setTyping();
                         break;
                     case CLIENT_NOT_TYPING:
                         final ChatMessageAdministrationClientTyping messageAdministrationClientNoTyping = (ChatMessageAdministrationClientTyping) data;
                         final String noTypingClientId = messageAdministrationClientNoTyping.getClientID();
+                        final ChatContact noTypingClient = getContactById(noTypingClientId);
+                        noTypingClient.resetTyping();
                         break;
                     default:
                         throw new IllegalArgumentException("Neplatny argument.");
