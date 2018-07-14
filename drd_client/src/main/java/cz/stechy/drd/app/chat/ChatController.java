@@ -65,7 +65,7 @@ public class ChatController extends BaseController implements Initializable {
      */
     private ChatTab makeNewTab(ChatContact chatContact) {
         final ChatTab chatTab = new ChatTab(chatContact);
-        chatTab.setUserData(chatContact.getId());
+        chatTab.setUserData(chatContact);
         return chatTab;
     }
 
@@ -77,7 +77,8 @@ public class ChatController extends BaseController implements Initializable {
     private void showConversation(ChatContact contact) {
         final Optional<ChatTab> optionalTab = tabConversations.getTabs()
             .stream()
-            .filter(tab -> tab.getText().equals(contact.getName()))
+            //.filter(tab -> tab.getText().equals(contact.getName()))
+            .filter(tab -> tab.getUserData() == contact)
             .map(tab -> (ChatTab) tab)
             .findFirst();
 
@@ -103,6 +104,7 @@ public class ChatController extends BaseController implements Initializable {
         btnSend.disableProperty().bind(canSendMessage);
         txtMessage.disableProperty().bind(canSendMessage);
         txtMessage.textProperty().addListener(this.messageContentListener);
+        tabConversations.getSelectionModel().selectedItemProperty().addListener(this.tabChangeListener);
 
         ObservableMergers.listObserveMap(chatService.getClients(), listContacts.getItems());
     }
@@ -132,7 +134,7 @@ public class ChatController extends BaseController implements Initializable {
             return;
         }
 
-        final String id = (String) tab.getUserData();
+        final String id = ((ChatContact) tab.getUserData()).getId();
         final String message = txtMessage.getText();
         chatService.sendMessage(id, message);
         txtMessage.clear();
@@ -165,7 +167,34 @@ public class ChatController extends BaseController implements Initializable {
 
     private ChangeListener<? super String> messageContentListener = (observable, oldValue, newValue) -> {
         final ChatTab tab = (ChatTab) tabConversations.getSelectionModel().getSelectedItem();
-        final String id = (String) tab.getUserData();
+        if (tab == null) {
+            return;
+        }
+
+        final String id = ((ChatContact) tab.getUserData()).getId();
         chatService.notifyTyping(id, !newValue.isEmpty());
+    };
+
+    // Při přechodu mezi taby
+    private ChangeListener<? super Tab> tabChangeListener = (observable, oldValue, newValue) -> {
+        // Pokud opouštím starý tab, tak s klientem si zřejmě již psát nechci, tak mu to řeknu
+        if (oldValue != null) {
+            final ChatTab oldTab = (ChatTab) oldValue;
+            final String id = ((ChatContact) oldTab.getUserData()).getId();
+            chatService.notifyTyping(id, false);
+        }
+
+        // Přecházím na nový tab
+        // Pokud mám rozepsanou nějakou zprávu, zřejmě ji pošlu tomuto klientovi, tak mu to řeknu
+        if (newValue != null) {
+            if (!txtMessage.getText().isEmpty()) {
+                final ChatTab newTab = (ChatTab) newValue;
+                final String id = ((ChatContact) newTab.getUserData()).getId();
+                chatService.notifyTyping(id, true);
+            }
+        } else {
+            // Zavřel jsem i poslední tab
+            txtMessage.clear();
+        }
     };
 }
