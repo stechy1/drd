@@ -128,10 +128,15 @@ public class ChatController extends BaseController implements Initializable {
     @FXML
     private void handleSendMessage(ActionEvent actionEvent) {
         final ChatTab tab = (ChatTab) tabConversations.getSelectionModel().getSelectedItem();
+        if (tab == null) {
+            return;
+        }
+
         final String id = (String) tab.getUserData();
         final String message = txtMessage.getText();
         chatService.sendMessage(id, message);
         txtMessage.clear();
+        txtMessage.requestFocus();
     }
 
     // endregion
