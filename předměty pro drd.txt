@@ -72,15 +72,14 @@ koruny, žezla
 
 
 Zbraně pro boj tváří v tvář:
-dlouhý meč
-
-sudlice
-halapartna
-obouručí meč
-těžký kyj
-trojzubec
 
 vypracováno: {
+	halapartna
+	obouručí meč
+	těžký kyj
+	trojzubec
+	sudlice
+	dlouhý meč
 	hůl okovaná
 	cep
 	dýka
