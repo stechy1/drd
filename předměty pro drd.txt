@@ -115,8 +115,10 @@ rytířská
 štít - dřěvěný (z klády; pravý), železný (ne)kvalitní
 
 vypracováno: {
-	vycpávaná - obecná
-	kožená - člověk
+	vycpávaná
+	kožená
+	šupinová
+	kroužkovaná
 }
 
 Zbraně pro střelecký souboj:
