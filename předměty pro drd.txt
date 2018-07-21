@@ -119,6 +119,8 @@ vypracováno: {
 	kožená
 	šupinová
 	kroužkovaná
+	plátová
+	rytířská
 }
 
 Zbraně pro střelecký souboj:
