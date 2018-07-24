@@ -119,17 +119,17 @@ vypracováno: {
 Zbraně pro střelecký souboj:
 
 
-prak
 
-kámen
-oštěp
+
 
 vypracováno: {
 	lehká kuše
 	těžká kuše
 	krátký luk
 	dlouhý luk
-	
+	prak
+	kámen
+	oštěp
 }
 
 
