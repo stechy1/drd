@@ -39,6 +39,10 @@ public class CryptoService implements ICypher {
         return rsa.decrypt(src);
     }
 
+    public ICypher makeCypher(CypherKey cypherKey) {
+        return new RSA(cypherKey);
+    }
+
     // endregion
 
     // region Getters & Setters

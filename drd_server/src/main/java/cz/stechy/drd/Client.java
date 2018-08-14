@@ -57,6 +57,8 @@ public class Client implements Runnable {
         } catch (ClassNotFoundException e) {
             // Nikdy by nemělo nastat
             LOGGER.error("Nebyla nalezena třída.", e);
+        } catch (Exception e) {
+            LOGGER.error("Neznámá chyba.", e);
         } finally {
             LOGGER.info("Volám connectionClosedListener.");
             if (connectionClosedListener != null) {

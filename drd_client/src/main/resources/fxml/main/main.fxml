@@ -186,6 +186,11 @@
         <Tooltip text="%drd_main_menu_tools_shop" />
       </tooltip>
     </JFXButton>
+    <JFXButton fx:id="btnChat" onAction="#handleChat" styleClass="toolbar-button, icon-chat">
+      <tooltip>
+        <Tooltip text="%drd_chat_title" />
+      </tooltip>
+    </JFXButton>
     <Separator />
     <Region HBox.hgrow="ALWAYS" />
     <JFXButton fx:id="btnLevelUp" onAction="#handleMenuLevelUp" styleClass="toolbar-button, icon-add" visible="false">

@@ -29,6 +29,7 @@ public final class FirebaseRepository implements ServerDatabase {
     // region Variables
 
     private final Map<String, List<ItemEventListener>> listeners = new HashMap<>();
+    private final Map<String, List<ItemEventListener>> laterListenerInit = new HashMap<>();
     private final Map<String, List<Map<String, Object>>> items = new HashMap<>();
     private DatabaseReference itemsReference;
     private final Map<String, ItemEventListener> toRegisterLater = new HashMap<>();
@@ -60,9 +61,13 @@ public final class FirebaseRepository implements ServerDatabase {
     public void init() {
         this.itemsReference = FirebaseDatabase.getInstance().getReference();
 
-        for (Entry<String, ItemEventListener> entry : toRegisterLater
+        for (Entry<String, List<ItemEventListener>> entry : laterListenerInit
             .entrySet()) {
-            registerListener(entry.getKey(), entry.getValue());
+            final String key = entry.getKey();
+            final List<ItemEventListener> listeners = entry.getValue();
+            for (ItemEventListener listener : listeners) {
+                registerListener(key, listener);
+            }
         }
     }
 
@@ -123,7 +128,9 @@ public final class FirebaseRepository implements ServerDatabase {
     @Override
     public synchronized void registerListener(final String tableName, ItemEventListener listener) {
         if (itemsReference == null) {
-            registerLater(tableName, listener);
+            List<ItemEventListener> listeners = laterListenerInit
+                .computeIfAbsent(tableName, k -> new ArrayList<>());
+            listeners.add(listener);
             return;
         }
 

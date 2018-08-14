@@ -231,7 +231,9 @@ public final class ClientCommunicator {
      * Pošle zprávu na server
      */
     public synchronized void sendMessage(IMessage message) {
-        writerThread.addMessageToQueue(message);
+        if (writerThread != null) {
+            writerThread.addMessageToQueue(message);
+        }
     }
 
     /**

@@ -65,14 +65,17 @@ public class ReaderThread extends Thread {
             }
         } catch (EOFException e) {
             LOGGER.warn("Spojení bylo nečekaně ukončeno.");
-            if (lostConnectionHandler != null) {
-                lostConnectionHandler.onLostConnection();
-            }
         } catch (IOException e) {
             LOGGER.warn("Spojení bylo ukončeno.");
         } catch (ClassNotFoundException e) {
             // Nikdy by nemělo nastat
             LOGGER.error("Nebyla nalezena třída.", e);
+        } catch (Exception e) {
+            LOGGER.error("Neznámá chyba.", e);
+        } finally {
+            if (lostConnectionHandler != null) {
+                lostConnectionHandler.onLostConnection();
+            }
         }
 
         LOGGER.warn("Čtecí vlákno bylo ukončeno.");

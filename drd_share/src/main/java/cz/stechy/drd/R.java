@@ -22,6 +22,10 @@ public final class R {
         public static final String BESTIARY_EDIT_IMAGE = "bestiary_edit_image";
         public static final String BESTIARY_EDIT_OTHER = "bestiary_edit_other";
         public static final String BESTIARY_EDIT_PROPERTIES = "bestiary_edit_properties";
+        public static final String CHAT = "chat";
+        public static final String CHAT_TAB_CONTENT_INCOMING = "chat_tab_content_incoming";
+        public static final String CHAT_TAB_CONTENT_OUTCOMING = "chat_tab_content_outcoming";
+        public static final String TEMP = "temp";
         public static final String COLLECTIONS = "collections";
         public static final String COLLECTIONS_BESTIARY = "collections_bestiary";
         public static final String COLLECTIONS_ITEMS = "collections_items";
@@ -302,6 +306,12 @@ public final class R {
         public static final String BESTIARY_CONTROL_ABILITY = "drd_bestiary_control_ability";
         public static final String BESTIARY_BASIC_POWER_OF_MIND = "drd_bestiary_basic_power_of_mind";
         public static final String BESTIARY_DOMESTICATION = "drd_bestiary_domestication";
+        public static final String CHAT_TITLE = "drd_chat_title";
+        public static final String CHAT_CONTACTS = "drd_chat_contacts";
+        public static final String CHAT_ROOMS = "drd_chat_rooms";
+        public static final String CHAT_NEW_ROOM = "drd_chat_new_room";
+        public static final String CHAT_MESSAGE_PROMPT = "drd_chat_message_prompt";
+        public static final String CHAT_MESSAGE_SEND = "drd_chat_message_send";
         public static final String VULNERABILITY_ANIMAL = "drd_vulnerability_animal";
         public static final String VULNERABILITY_HUMANOID = "drd_vulnerability_humanoid";
         public static final String VULNERABILITY_DRAGON = "drd_vulnerability_dragon";
@@ -461,6 +471,8 @@ public final class R {
             public static final String BESTIARY = "/images/icon/bestiary.png";
             public static final String BOOK = "/images/icon/book.png";
             public static final String CHANGELOG = "/images/icon/changelog.png";
+            public static final String CHAT = "/images/icon/chat.png";
+            public static final String CHAT_ROOM = "/images/icon/chat_room.png";
             public static final String CLOSE = "/images/icon/close.png";
             public static final String CLOSE_HERO = "/images/icon/close_hero.png";
             public static final String COLLECTIONS = "/images/icon/collections.png";
@@ -475,6 +487,7 @@ public final class R {
             public static final String HAND_CLICK = "/images/icon/hand_click.png";
             public static final String HELP = "/images/icon/help.png";
             public static final String IMPORT = "/images/icon/import.png";
+            public static final String LOADING = "/images/icon/loading.gif";
             public static final String LOGIN = "/images/icon/login.png";
             public static final String MANA = "/images/icon/mana.png";
             public static final String NEW = "/images/icon/new.png";
@@ -497,6 +510,7 @@ public final class R {
             public static final String STOP = "/images/icon/stop.png";
             public static final String SUBTRACT = "/images/icon/subtract.png";
             public static final String SYNCHRONIZE = "/images/icon/synchronize.png";
+            public static final String TYPING = "/images/icon/typing.gif";
             public static final String UPLOAD = "/images/icon/upload.png";
             public static final String WIP = "/images/icon/wip.png";
             public static final String ZIVOTY = "/images/icon/zivoty.png";

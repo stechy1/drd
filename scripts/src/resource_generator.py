@@ -6,6 +6,7 @@ folder = './drd_client//src/main/resources/'
 string = 'public static final String {} = "{}";\n'
 constant_builder = 'public static final {} {} = {};\n'
 output_path = './drd_share/src/main/java/cz/stechy/drd/R.java'
+supported_images = [".png", ".gif"]
 
 constants = [
 	{'name': 'DATABASE_VERSION', 'type': 'int', 'value': '1'}
@@ -76,12 +77,11 @@ def generate_image_paths(root_folder, subfolder, spaces, builded_path, output_fi
       generate_image_paths(current_path, entry, spaces + 4, os.path.join(builded_path, entry), output_file)
       continue
 
-    if ".png" not in entry:
-      continue
+    if any(image in entry for image in supported_images):
+      dot_index = entry.index(".")
+      entry_name = entry[:dot_index]
+      write_entry(spaces + 4, entry_name.upper(), os.path.join(builded_path, entry), output_file)
 
-    dot_index = entry.index(".")
-    entry_name = entry[:dot_index]
-    write_entry(spaces + 4, entry_name.upper(), os.path.join(builded_path, entry), output_file)
   close_class(spaces, output_file)
 
 def generate_table_columns(output_file):
