@@ -1,5 +1,6 @@
 package cz.stechy.drd.net.message;
 
+import cz.stechy.drd.util.BitUtils;
 import java.io.Serializable;
 
 public class AuthMessage implements IMessage {
@@ -56,17 +57,21 @@ public class AuthMessage implements IMessage {
         private static final long serialVersionUID = -9036266648628886210L;
 
         public final String id;
-        public final String name;
-        public final String password;
+        public final byte[] name;
+        public final byte[] password;
 
-        public AuthMessageData(String name, String password) {
+        public AuthMessageData() {
+            this("", new byte[0], new byte[0]);
+        }
+
+        public AuthMessageData(byte[] name, byte[] password) {
             this("", name, password);
         }
 
-        public AuthMessageData(String id, String name, String password) {
+        public AuthMessageData(String id, byte[] name, byte[] password) {
             this.id = id;
-            this.name = name;
-            this.password = password;
+            this.name = BitUtils.xor(name, BitUtils.BUFFER_64);
+            this.password = BitUtils.xor(password, BitUtils.BUFFER_64);
         }
     }
 }

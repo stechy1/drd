@@ -32,6 +32,7 @@ public final class FirebaseRepository implements ServerDatabase {
     private final Map<String, List<ItemEventListener>> laterListenerInit = new HashMap<>();
     private final Map<String, List<Map<String, Object>>> items = new HashMap<>();
     private DatabaseReference itemsReference;
+    private final Map<String, ItemEventListener> toRegisterLater = new HashMap<>();
 
     // endregion
 
@@ -39,6 +40,14 @@ public final class FirebaseRepository implements ServerDatabase {
 
     public FirebaseRepository() {
 
+    }
+
+    // endregion
+
+    // region Private methods
+
+    private void registerLater(final String tableName, ItemEventListener listener) {
+        toRegisterLater.put(tableName, listener);
     }
 
     // endregion
