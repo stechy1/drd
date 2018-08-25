@@ -6,9 +6,9 @@ import cz.stechy.drd.net.message.IMessage;
 public class MessageReceivedEvent implements IEvent {
 
     private final IMessage receivedMessage;
-    private final Client client;
+    private final IClient client;
 
-    MessageReceivedEvent(IMessage receivedMessage, Client client) {
+    MessageReceivedEvent(IMessage receivedMessage, IClient client) {
         this.receivedMessage = receivedMessage;
         this.client = client;
     }
@@ -22,7 +22,7 @@ public class MessageReceivedEvent implements IEvent {
         return receivedMessage;
     }
 
-    public Client getClient() {
+    public IClient getClient() {
         return client;
     }
 }
