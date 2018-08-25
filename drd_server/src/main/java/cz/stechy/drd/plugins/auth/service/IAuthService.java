@@ -2,7 +2,6 @@ package cz.stechy.drd.plugins.auth.service;
 
 import com.google.inject.ImplementedBy;
 import cz.stechy.drd.plugins.auth.User;
-import cz.stechy.drd.plugins.auth.service.AuthService.User;
 import java.util.Optional;
 
 @ImplementedBy(AuthService.class)
