@@ -1,5 +1,6 @@
 package cz.stechy.drd.plugins.crypto.service;
 
+import com.google.inject.Singleton;
 import cz.stechy.drd.core.connection.IClient;
 import cz.stechy.drd.crypto.ICypher;
 import cz.stechy.drd.crypto.RSA;
@@ -9,6 +10,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 class CryptoService implements ICryptoService {
 
     // region Constants

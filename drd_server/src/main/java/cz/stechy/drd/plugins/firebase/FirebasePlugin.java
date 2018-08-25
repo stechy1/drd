@@ -4,14 +4,14 @@ import com.google.inject.Inject;
 import cz.stechy.drd.core.event.IEvent;
 import cz.stechy.drd.core.event.IEventBus;
 import cz.stechy.drd.plugins.IPlugin;
-import cz.stechy.drd.plugins.PluginPriority;
+import cz.stechy.drd.plugins.PluginConfiguration;
 import cz.stechy.drd.plugins.firebase.FirebaseEvent.FirebaseAdministrationEventData;
 import cz.stechy.drd.plugins.firebase.FirebaseEvent.FirebaseDataManipulationEvent;
 import cz.stechy.drd.plugins.firebase.FirebaseEvent.IFirebaseEventData;
 import cz.stechy.drd.plugins.firebase.service.IFirebaseService;
 import java.util.Map;
 
-@PluginPriority(priority = 10)
+@PluginConfiguration(priority = 10)
 public class FirebasePlugin implements IPlugin {
 
     // region Constants

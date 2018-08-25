@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * Rozhraní definující plugin
  */
-public interface IPlugin {
+public interface IPlugin extends Comparable<IPlugin> {
 
     /**
      * Vrátí název pluginu
@@ -35,4 +35,18 @@ public interface IPlugin {
      */
     default void setupDependencies(Map<String, IPlugin> otherPlugins) {}
 
+    @Override
+    default int compareTo(IPlugin o) {
+        final PluginConfiguration thisConfiguration = getClass().getAnnotation(PluginConfiguration.class);
+        final PluginConfiguration thatConfiguration = o.getClass().getAnnotation(PluginConfiguration.class);
+
+        if (thisConfiguration == null && thatConfiguration == null) {
+            return 0;
+        }
+
+        final int thisPriority = thisConfiguration == null ? PluginConfiguration.DEFAULT_PRIORITY : thisConfiguration.priority();
+        final int thatPriority = thatConfiguration == null ? PluginConfiguration.DEFAULT_PRIORITY : thatConfiguration.priority();
+
+        return Integer.compare(thisPriority, thatPriority);
+    }
 }

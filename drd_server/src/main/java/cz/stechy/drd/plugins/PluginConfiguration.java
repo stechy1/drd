@@ -9,8 +9,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-public @interface PluginPriority {
+public @interface PluginConfiguration {
 
-    int priority() default  0;
+    int DEFAULT_PRIORITY = 0;
+
+    int priority() default DEFAULT_PRIORITY;
 
 }

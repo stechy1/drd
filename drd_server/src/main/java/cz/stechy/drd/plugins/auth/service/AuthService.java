@@ -1,6 +1,7 @@
 package cz.stechy.drd.plugins.auth.service;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import cz.stechy.drd.plugins.auth.User;
 import cz.stechy.drd.plugins.crypto.service.ICryptoService;
 import cz.stechy.drd.plugins.firebase.FirebaseEntryEventListener;
@@ -15,6 +16,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 class AuthService implements IAuthService {
 
     // region Constants

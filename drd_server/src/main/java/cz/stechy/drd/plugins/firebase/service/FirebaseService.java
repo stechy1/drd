@@ -9,6 +9,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import cz.stechy.drd.cmd.CmdParser;
 import cz.stechy.drd.cmd.IParameterFactory;
 import cz.stechy.drd.plugins.firebase.FirebaseEntryEvent;
@@ -28,6 +29,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 class FirebaseService implements IFirebaseService {
 
     // region Constants
@@ -125,6 +127,7 @@ class FirebaseService implements IFirebaseService {
                 .build();
             FirebaseApp.initializeApp(options);
             this.entriesReference = FirebaseDatabase.getInstance().getReference();
+            assert entriesReference != null;
             initialized = true;
             LOGGER.info("Inicializace Firebase se zdařila.");
         } catch (IOException e) {
