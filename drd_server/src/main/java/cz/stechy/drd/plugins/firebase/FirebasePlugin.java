@@ -2,14 +2,20 @@ package cz.stechy.drd.plugins.firebase;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import cz.stechy.drd.core.connection.IClient;
+import cz.stechy.drd.core.connection.MessageReceivedEvent;
 import cz.stechy.drd.core.event.IEvent;
 import cz.stechy.drd.core.event.IEventBus;
+import cz.stechy.drd.net.message.DatabaseMessage;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageAdministration;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD;
+import cz.stechy.drd.net.message.DatabaseMessage.IDatabaseMessageData;
+import cz.stechy.drd.net.message.IMessage;
+import cz.stechy.drd.net.message.MessageSource;
 import cz.stechy.drd.plugins.IPlugin;
 import cz.stechy.drd.plugins.PluginConfiguration;
-import cz.stechy.drd.plugins.firebase.FirebaseEvent.FirebaseAdministrationEventData;
-import cz.stechy.drd.plugins.firebase.FirebaseEvent.FirebaseDataManipulationEvent;
-import cz.stechy.drd.plugins.firebase.FirebaseEvent.IFirebaseEventData;
 import cz.stechy.drd.plugins.firebase.service.IFirebaseService;
+import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
@@ -24,6 +30,7 @@ public class FirebasePlugin implements IPlugin {
 
     // region Variables
 
+    private final Map<IClient, Map<String, FirebaseEntryEventListener>> databaseListeners = new HashMap<>();
     private final IFirebaseService firebaseService;
 
     // endregion
@@ -39,73 +46,123 @@ public class FirebasePlugin implements IPlugin {
 
     // region Private methods
 
-    private void callInsert(final String tableName, Map<String, Object> item, String id) {
-        firebaseService.performInsert(tableName, item, id);
+    private FirebaseEntryEventListener addDatabaseListener(IClient client, String tableName) {
+        Map<String, FirebaseEntryEventListener> clientListeners = databaseListeners
+            .computeIfAbsent(client, k -> new HashMap<>());
+
+        final FirebaseEntryEventListener listener = buildListenerForClient(client);
+        clientListeners.put(tableName, listener);
+        return listener;
     }
 
-    private void callUpdate(final String tableName, Map<String, Object> item, String id) {
-        firebaseService.performUpdate(tableName, item, id);
+    private FirebaseEntryEventListener removeDatabaseListener(IClient client, String tableName) {
+        Map<String, FirebaseEntryEventListener> clientListeners = databaseListeners.get(client);
+        if (clientListeners == null) {
+            return null;
+        }
+
+        final FirebaseEntryEventListener listener = clientListeners.get(tableName);
+        clientListeners.remove(tableName);
+        return listener;
     }
 
-    private void callDelete(final String tableName, String id) {
-        firebaseService.performDelete(tableName, id);
-    }
-
-    private void callRegisterListener(final String tableName, FirebaseEntryEventListener listener) {
-        firebaseService.registerListener(tableName, listener);
-    }
-
-    private void callUnregisterListener(final String tableName, FirebaseEntryEventListener listener) {
-        firebaseService.unregisterListener(tableName, listener);
-    }
-
-    private void callUnregisterFromAllListeners(FirebaseEntryEventListener listener) {
-        firebaseService.unregisterFromAllListeners(listener);
+    private FirebaseEntryEventListener buildListenerForClient(IClient client) {
+        return event -> {
+            final IMessage databaseMessage = new DatabaseMessage(
+                MessageSource.SERVER,
+                new DatabaseMessageCRUD(event.getEntry(), event.getTableName(), event.getAction())
+            );
+            client.sendMessageAsync(databaseMessage);
+        };
     }
 
     private void firebaseMessageHandler(IEvent event) {
-        assert event instanceof FirebaseEvent;
-        FirebaseEvent firebaseEvent = (FirebaseEvent) event;
-        final IFirebaseEventData eventData = firebaseEvent.getEventData();
-        switch (eventData.getEventDataType()) {
+        assert event instanceof MessageReceivedEvent;
+        final MessageReceivedEvent messageReceivedEvent = (MessageReceivedEvent) event;
+        final IClient client = messageReceivedEvent.getClient();
+        final DatabaseMessage databaseMessage = (DatabaseMessage) messageReceivedEvent.getReceivedMessage();
+        final IDatabaseMessageData databaseMessageData = (IDatabaseMessageData) databaseMessage.getData();
+        String tableName;
+        switch (databaseMessageData.getDataType()) {
             case DATA_ADMINISTRATION:
-                FirebaseAdministrationEventData firebaseAdministrationEventData = (FirebaseAdministrationEventData) eventData;
-                switch (firebaseAdministrationEventData.getAction()) {
+                final DatabaseMessageAdministration databaseMessageAdministration = (DatabaseMessageAdministration) databaseMessageData;
+                final DatabaseMessageAdministration.DatabaseAction action = databaseMessageAdministration.getAction();
+                tableName = (String) databaseMessageAdministration.getData();
+                switch (action) {
                     case REGISTER:
-                        callRegisterListener(firebaseAdministrationEventData.getTableName(), firebaseAdministrationEventData.getEventListener());
+                        firebaseService.registerListener(tableName, addDatabaseListener(client, tableName));
                         break;
-                    case UNREGISTER:
-                        callUnregisterListener(firebaseAdministrationEventData.getTableName(), firebaseAdministrationEventData.getEventListener());
-                        break;
-                    case REGISTER_ALL:
-                        callUnregisterFromAllListeners(firebaseAdministrationEventData.getEventListener());
+                    case UNGERISTER:
+                        firebaseService.unregisterListener(tableName, removeDatabaseListener(client, tableName));
                         break;
                     default:
-                        throw new IllegalArgumentException("Neplatná akce.");
+                        throw new IllegalArgumentException("Neplatný parametr.");
                 }
                 break;
             case DATA_MANIPULATION:
-                FirebaseDataManipulationEvent firebaseDataManipulationEvent = (FirebaseDataManipulationEvent) eventData;
-                final FirebaseEntryEvent entryEvent = firebaseDataManipulationEvent.getEntryEvent();
-                switch (entryEvent.getAction()) {
+                final DatabaseMessageCRUD databaseMessageCRUD = (DatabaseMessageCRUD) databaseMessageData;
+                final DatabaseMessageCRUD.DatabaseAction crudAction = databaseMessageCRUD.getAction();
+                final String itemId = databaseMessageCRUD.getItemId();
+                tableName = databaseMessageCRUD.getTableName();
+                switch (crudAction) {
                     case CREATE:
-                        callInsert(entryEvent.getTableName(), entryEvent.getEntry(), firebaseDataManipulationEvent
-                            .getEntryId());
+                        firebaseService.performInsert(tableName, (Map<String, Object>) databaseMessageCRUD.getData(), itemId);
                         break;
                     case UPDATE:
-                        callUpdate(entryEvent.getTableName(), entryEvent.getEntry(), firebaseDataManipulationEvent
-                            .getEntryId());
+                        firebaseService.performUpdate(tableName, (Map<String, Object>) databaseMessageCRUD.getData(), itemId);
                         break;
                     case DELETE:
-                        callDelete(entryEvent.getTableName(), firebaseDataManipulationEvent.getEntryId());
+                        firebaseService.performDelete(tableName, itemId);
                         break;
                     default:
-                        throw new IllegalArgumentException("Neplatná akce.");
+                        throw new IllegalArgumentException("Neplatný parametr.");
                 }
                 break;
             default:
-                throw new IllegalArgumentException("Neplatný typ události.");
+                throw new IllegalArgumentException("Neplatný parametr.");
         }
+//        assert event instanceof FirebaseEvent;
+//        FirebaseEvent firebaseEvent = (FirebaseEvent) event;
+//        final IFirebaseEventData eventData = firebaseEvent.getEventData();
+//        switch (eventData.getEventDataType()) {
+//            case DATA_ADMINISTRATION:
+//                FirebaseAdministrationEventData firebaseAdministrationEventData = (FirebaseAdministrationEventData) eventData;
+//                switch (firebaseAdministrationEventData.getAction()) {
+//                    case REGISTER:
+//                        callRegisterListener(firebaseAdministrationEventData.getTableName(), firebaseAdministrationEventData.getEventListener());
+//                        break;
+//                    case UNREGISTER:
+//                        callUnregisterListener(firebaseAdministrationEventData.getTableName(), firebaseAdministrationEventData.getEventListener());
+//                        break;
+//                    case REGISTER_ALL:
+//                        callUnregisterFromAllListeners(firebaseAdministrationEventData.getEventListener());
+//                        break;
+//                    default:
+//                        throw new IllegalArgumentException("Neplatná akce.");
+//                }
+//                break;
+//            case DATA_MANIPULATION:
+//                FirebaseDataManipulationEvent firebaseDataManipulationEvent = (FirebaseDataManipulationEvent) eventData;
+//                final FirebaseEntryEvent entryEvent = firebaseDataManipulationEvent.getEntryEvent();
+//                switch (entryEvent.getAction()) {
+//                    case CREATE:
+//                        callInsert(entryEvent.getTableName(), entryEvent.getEntry(), firebaseDataManipulationEvent
+//                            .getEntryId());
+//                        break;
+//                    case UPDATE:
+//                        callUpdate(entryEvent.getTableName(), entryEvent.getEntry(), firebaseDataManipulationEvent
+//                            .getEntryId());
+//                        break;
+//                    case DELETE:
+//                        callDelete(entryEvent.getTableName(), firebaseDataManipulationEvent.getEntryId());
+//                        break;
+//                    default:
+//                        throw new IllegalArgumentException("Neplatná akce.");
+//                }
+//                break;
+//            default:
+//                throw new IllegalArgumentException("Neplatný typ události.");
+//        }
     }
 
     // endregion

@@ -19,8 +19,14 @@ import org.slf4j.LoggerFactory;
  */
 public class Client implements IClient, Runnable {
 
+    // region Constants
+
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(Client.class);
+
+    // endregion
+
+    // region Variables
 
     private final Socket socket;
     private final IWriterThread writerThread;
@@ -29,13 +35,27 @@ public class Client implements IClient, Runnable {
 
     private ConnectionClosedListener connectionClosedListener;
 
-    Client(Socket socket, IWriterThread writerThread, IEventBus eventProcessor) throws IOException {
+    // endregion
+
+    // region Constructors
+
+    /**
+     * Vytvoří novou instanci klienta
+     *
+     * @param socket {@link Socket}
+     * @param writerThread {@link IWriterThread} Zapisovací vlákno
+     * @param eventBus {@link IEventBus} Event bus
+     * @throws IOException Pokud se nepodaří navázat spojení
+     */
+    Client(Socket socket, IWriterThread writerThread, IEventBus eventBus) throws IOException {
         this.socket = socket;
         this.writerThread = writerThread;
         writer = new ObjectOutputStream(socket.getOutputStream());
-        this.eventProcessor = eventProcessor;
+        this.eventProcessor = eventBus;
         LOGGER.info("Byl vytvořen nový klient.");
     }
+
+    // endregion
 
     /**
      * Uzavře spojení s klientem

@@ -106,18 +106,6 @@ class AuthService implements IAuthService {
         users.add(user);
 
         return Optional.of(user);
-//        if (result.isPresent()) {
-//            client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.REGISTER,
-//                false, new AuthMessageData()));
-//            return;
-//        }
-//
-//        final User user = new User(username, password);
-//        final Map<String, Object> map = userToMap(user);
-//        this.repository.performInsert(FIREBASE_CHILD, map, user.id);
-//        client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.REGISTER,
-//            true, new AuthMessageData(user.id, usernameRaw, passwordRaw)));
-//        return false;
     }
 
     @Override
@@ -127,15 +115,6 @@ class AuthService implements IAuthService {
         return users.stream().filter(user ->
             user.name.equals(username) && HashGenerator.checkSame(user.password, password))
             .findFirst();
-
-//        if (!result.isPresent()) {
-//            client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.LOGIN,
-//                false, new AuthMessageData()));
-//            return;
-//        }
-//        client.sendMessage(new AuthMessage(MessageSource.SERVER, AuthAction.LOGIN,
-//            true, new AuthMessageData(result.get().id, usernameRaw, passwordRaw)));
-//        return result;
     }
 
     private final FirebaseEntryEventListener userListener = event -> {
