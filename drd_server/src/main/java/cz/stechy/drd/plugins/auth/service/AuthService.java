@@ -2,6 +2,7 @@ package cz.stechy.drd.plugins.auth.service;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageCRUD.DatabaseAction;
 import cz.stechy.drd.plugins.auth.User;
 import cz.stechy.drd.plugins.crypto.service.ICryptoService;
 import cz.stechy.drd.plugins.firebase.FirebaseEntryEventListener;
@@ -138,8 +139,22 @@ class AuthService implements IAuthService {
     }
 
     private final FirebaseEntryEventListener userListener = event -> {
-
+        final DatabaseAction action = event.getAction();
+        final Map<String, Object> userMap = event.getEntry();
+        final User user = mapToUser(userMap);
+        switch (action) {
+            case CREATE:
+                LOGGER.info("Přidávám nového uživatele do svého povědomí." + user.name);
+                users.add(user);
+                break;
+            case UPDATE:
+                break;
+            case DELETE:
+                LOGGER.info("Odebírám uživatele z databáze." + user.name);
+                users.remove(user);
+                break;
+            default:
+                throw new RuntimeException("Neplatny parametr");
+        }
     };
-
-
 }

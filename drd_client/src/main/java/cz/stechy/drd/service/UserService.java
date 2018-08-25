@@ -11,8 +11,6 @@ import cz.stechy.drd.net.message.AuthMessage.AuthAction;
 import cz.stechy.drd.net.message.AuthMessage.AuthMessageData;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
-import cz.stechy.drd.net.message.MessageType;
-import cz.stechy.drd.util.BitUtils;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
 import javafx.beans.property.ObjectProperty;
@@ -156,12 +154,12 @@ public class UserService {
             .addListener((observable, oldValue, newValue) -> {
                 switch (newValue) {
                     case CONNECTED:
-                        this.communicator.registerMessageObserver(MessageType.AUTH, this.authListener);
+                        this.communicator.registerMessageObserver(AuthMessage.MESSAGE_TYPE, this.authListener);
                         break;
                     case CONNECTING:
                         break;
                     case DISCONNECTED:
-                        this.communicator.unregisterMessageObserver(MessageType.AUTH, this.authListener);
+                        this.communicator.unregisterMessageObserver(AuthMessage.MESSAGE_TYPE, this.authListener);
                         break;
                 }
             });

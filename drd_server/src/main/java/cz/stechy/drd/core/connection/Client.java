@@ -2,7 +2,9 @@ package cz.stechy.drd.core.connection;
 
 import cz.stechy.drd.core.event.IEventBus;
 import cz.stechy.drd.core.writer.IWriterThread;
+import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
+import cz.stechy.drd.net.message.MessageSource;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -63,6 +65,7 @@ public class Client implements IClient, Runnable {
         LOGGER.info("Spouštím nekonečnou smyčku pro komunikaci s klientem.");
         try (ObjectInputStream reader = new ObjectInputStream(socket.getInputStream())) {
             LOGGER.info("InputStream byl úspěšně vytvořen.");
+            sendMessage(new HelloMessage(MessageSource.SERVER));
             IMessage received;
             while ((received = (IMessage) reader.readObject()) != null) {
                 LOGGER.info(String.format("Bylo přijato: '%s'", received));

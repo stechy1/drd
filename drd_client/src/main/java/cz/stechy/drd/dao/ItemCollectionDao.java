@@ -25,7 +25,6 @@ import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageDataType;
 import cz.stechy.drd.net.message.DatabaseMessage.IDatabaseMessageData;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
-import cz.stechy.drd.net.message.MessageType;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,7 +68,7 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
                 }
 
                 this.communicator
-                    .registerMessageObserver(MessageType.DATABASE, this.databaseListener);
+                    .registerMessageObserver(DatabaseMessage.MESSAGE_TYPE, this.databaseListener);
                 LOGGER.info("Posílám registrační požadavek pro tabulku: " + TABLE_NAME);
                 this.communicator.sendMessage(getRegistrationMessage());
             });
