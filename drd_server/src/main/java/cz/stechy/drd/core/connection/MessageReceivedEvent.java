@@ -14,7 +14,7 @@ public class MessageReceivedEvent implements IEvent {
     }
 
     @Override
-    public String getEventType() {
+    public String getEventName() {
         return receivedMessage.getType();
     }
 

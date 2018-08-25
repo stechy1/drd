@@ -2,6 +2,6 @@ package cz.stechy.drd.core.event;
 
 public interface IEvent {
 
-    String getEventType();
+    String getEventName();
 
 }

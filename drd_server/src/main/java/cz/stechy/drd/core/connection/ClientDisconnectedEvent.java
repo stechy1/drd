@@ -4,7 +4,7 @@ import cz.stechy.drd.core.event.IEvent;
 
 public class ClientDisconnectedEvent implements IEvent {
 
-    public static final String EVENT_TYPE = "client-disonnected";
+    public static final String EVENT_NAME = "client-disonnected";
 
     private final Client client;
 
@@ -17,7 +17,7 @@ public class ClientDisconnectedEvent implements IEvent {
     }
 
     @Override
-    public String getEventType() {
-        return EVENT_TYPE;
+    public String getEventName() {
+        return EVENT_NAME;
     }
 }

@@ -33,7 +33,7 @@ public class EventBus implements IEventBus {
     @Override
     public void publishEvent(IEvent event) {
         final List<IEventHandler> handlers = listenerMap
-            .getOrDefault(event.getEventType(), Collections.emptyList());
+            .getOrDefault(event.getEventName(), Collections.emptyList());
 
         handlers.forEach(handler -> handler.handleEvent(event));
     }

@@ -68,7 +68,7 @@ public class Client implements IClient, Runnable {
                 LOGGER.info(String.format("Bylo přijato: '%s'", received));
                 eventProcessor.publishEvent(new MessageReceivedEvent(received, this));
             }
-        } catch (EOFException |SocketException e) {
+        } catch (EOFException | SocketException e) {
             LOGGER.info("Klient ukončil spojení.");
         } catch (IOException e) {
             LOGGER.warn("Nastala neočekávaná vyjímka.", e);

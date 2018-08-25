@@ -4,7 +4,7 @@ import cz.stechy.drd.core.event.IEvent;
 
 public class ClientConnectedEvent implements IEvent {
 
-    public static final String EVENT_TYPE = "client-connected";
+    public static final String EVENT_NAME = "client-connected";
 
     private final Client client;
 
@@ -17,7 +17,7 @@ public class ClientConnectedEvent implements IEvent {
     }
 
     @Override
-    public String getEventType() {
-        return EVENT_TYPE;
+    public String getEventName() {
+        return EVENT_NAME;
     }
 }
