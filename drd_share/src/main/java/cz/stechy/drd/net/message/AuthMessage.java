@@ -63,7 +63,11 @@ public class AuthMessage implements IMessage {
         public final byte[] password;
 
         public AuthMessageData() {
-            this("", new byte[0], new byte[0]);
+            this("");
+        }
+
+        public AuthMessageData(String id) {
+            this(id, new byte[0], new byte[0]);
         }
 
         public AuthMessageData(byte[] name, byte[] password) {
