@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 public interface IMessage extends Serializable {
 
-    MessageType getType();
+    String getType();
 
     MessageSource getSource();
 

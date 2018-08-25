@@ -4,6 +4,8 @@ public class SimpleResponce implements IMessage {
 
     private static final long serialVersionUID = -3193105978677156128L;
 
+    public static final String MESSAGE_TYPE = "simple-responce";
+
     private final String responce;
 
     public SimpleResponce(String responce) {
@@ -11,8 +13,8 @@ public class SimpleResponce implements IMessage {
     }
 
     @Override
-    public MessageType getType() {
-        return MessageType.SIMPLE_RESPONCE;
+    public String getType() {
+        return MESSAGE_TYPE;
     }
 
     @Override

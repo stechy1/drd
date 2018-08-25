@@ -7,6 +7,8 @@ public class ChatMessage implements IMessage {
 
     private static final long serialVersionUID = -7817515518938131863L;
 
+    public static final String MESSAGE_TYPE = "chat";
+
     private final MessageSource source;
     private final IChatMessageData data;
 
@@ -16,8 +18,8 @@ public class ChatMessage implements IMessage {
     }
 
     @Override
-    public MessageType getType() {
-        return MessageType.CHAT;
+    public String getType() {
+        return MESSAGE_TYPE;
     }
 
     @Override

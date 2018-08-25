@@ -7,7 +7,6 @@ import cz.stechy.drd.net.message.CryptoMessage;
 import cz.stechy.drd.net.message.HelloMessage;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
-import cz.stechy.drd.net.message.MessageType;
 import cz.stechy.drd.net.message.ServerStatusMessage;
 import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatus;
 import cz.stechy.drd.net.message.ServerStatusMessage.ServerStatusData;
@@ -49,7 +48,7 @@ public final class ClientCommunicator {
     private final ObjectProperty<Socket> socket = new SimpleObjectProperty<>(this, "socket", null);
     private final ObjectProperty<ConnectionState> connectionState = new SimpleObjectProperty<>(this,
         "connectionState", ConnectionState.DISCONNECTED);
-    private final HashMap<MessageType, List<OnDataReceivedListener>> listeners = new HashMap<>();
+    private final HashMap<String, List<OnDataReceivedListener>> listeners = new HashMap<>();
     private final StringProperty host = new SimpleStringProperty(this, "host", null);
     private final IntegerProperty port = new SimpleIntegerProperty(this, "port", -1);
     private final StringProperty connectedServer = new SimpleStringProperty(this, "connectedServer",
@@ -80,9 +79,9 @@ public final class ClientCommunicator {
         if (newSocket == null) {
             readerThread = null;
             writerThread = null;
-            unregisterMessageObserver(MessageType.SERVER_STATUS, this.serverStatusListener);
-            unregisterMessageObserver(MessageType.HELLO, this.helloListener);
-            unregisterMessageObserver(MessageType.CRYPTO, this.cryptoListener);
+            unregisterMessageObserver(ServerStatusMessage.MESSAGE_TYPE, this.serverStatusListener);
+            unregisterMessageObserver(HelloMessage.MESSAGE_TYPE, this.helloListener);
+            unregisterMessageObserver(CryptoMessage.MESSAGE_TYPE, this.cryptoListener);
             return;
         }
 
@@ -93,9 +92,9 @@ public final class ClientCommunicator {
 
             readerThread.start();
             writerThread.start();
-            registerMessageObserver(MessageType.SERVER_STATUS, this.serverStatusListener);
-            registerMessageObserver(MessageType.HELLO, this.helloListener);
-            registerMessageObserver(MessageType.CRYPTO, this.cryptoListener);
+            registerMessageObserver(ServerStatusMessage.MESSAGE_TYPE, this.serverStatusListener);
+            registerMessageObserver(HelloMessage.MESSAGE_TYPE, this.helloListener);
+            registerMessageObserver(CryptoMessage.MESSAGE_TYPE, this.cryptoListener);
         } catch (IOException e) {
             LOGGER.error("Vyskytl se problém při vytváření komunikace se serverem.");
         }
@@ -239,10 +238,10 @@ public final class ClientCommunicator {
     /**
      * Zaregistruje posluchače na určitý typ zprávy
      *
-     * @param messageType {@link MessageType} Typ zprávy
+     * @param messageType {@link String} Typ zprávy
      * @param listener {@link OnDataReceivedListener} Listener
      */
-    public synchronized void registerMessageObserver(MessageType messageType, OnDataReceivedListener listener) {
+    public synchronized void registerMessageObserver(String messageType, OnDataReceivedListener listener) {
         List<OnDataReceivedListener> listenerList = listeners
             .computeIfAbsent(messageType, k -> new ArrayList<>());
 
@@ -252,10 +251,10 @@ public final class ClientCommunicator {
     /**
      * Odhlásí odběr od určitého typu zpráv
      *
-     * @param messageType {@link MessageType} Typ zprávy
+     * @param messageType {@link String} Typ zprávy
      * @param listener {@link OnDataReceivedListener} Listener
      */
-    public synchronized void unregisterMessageObserver(MessageType messageType,
+    public synchronized void unregisterMessageObserver(String messageType,
         OnDataReceivedListener listener) {
         List<OnDataReceivedListener> listenerList = listeners.get(messageType);
         if (listenerList == null) {

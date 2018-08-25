@@ -57,7 +57,7 @@ public class User {
      * @param name Uživatelské jméno
      * @param password Hash hesla uživatele
      */
-    private User(String id, String name, String password) {
+    public User(String id, String name, String password) {
         this.id.set(id);
         this.name.set(name);
         this.password.set(password);

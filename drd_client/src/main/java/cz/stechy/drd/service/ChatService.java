@@ -19,7 +19,6 @@ import cz.stechy.drd.net.message.ChatMessage.ChatMessageCommunicationData;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageCommunicationData.ChatMessageCommunicationDataContent;
 import cz.stechy.drd.net.message.ChatMessage.IChatMessageData;
 import cz.stechy.drd.net.message.MessageSource;
-import cz.stechy.drd.net.message.MessageType;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,12 +74,12 @@ public final class ChatService {
         this.communicator.connectionStateProperty().addListener((observable, oldValue, newValue) -> {
             switch (newValue) {
                 case CONNECTED:
-                    this.communicator.registerMessageObserver(MessageType.CHAT, this.chatMessageListener);
+                    this.communicator.registerMessageObserver(ChatMessage.MESSAGE_TYPE, this.chatMessageListener);
                     break;
                 case CONNECTING:
                     break;
                 case DISCONNECTED:
-                    this.communicator.unregisterMessageObserver(MessageType.CHAT, this.chatMessageListener);
+                    this.communicator.unregisterMessageObserver(ChatMessage.MESSAGE_TYPE, this.chatMessageListener);
                     break;
             }
 

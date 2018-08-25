@@ -16,7 +16,6 @@ import cz.stechy.drd.net.message.DatabaseMessage.DatabaseMessageDataType;
 import cz.stechy.drd.net.message.DatabaseMessage.IDatabaseMessageData;
 import cz.stechy.drd.net.message.IMessage;
 import cz.stechy.drd.net.message.MessageSource;
-import cz.stechy.drd.net.message.MessageType;
 import cz.stechy.drd.util.Base64Util;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -359,9 +358,9 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 }
 
                 this.communicator
-                    .registerMessageObserver(MessageType.DATABASE, this.databaseListener);
+                    .registerMessageObserver(DatabaseMessage.MESSAGE_TYPE, this.databaseListener);
                 LOGGER.info("Posílám registrační požadavek pro tabulku: " + getFirebaseChildName());
-                //this.communicator.sendMessage(getRegistrationMessage());
+                this.communicator.sendMessage(getRegistrationMessage());
             });
     }
 

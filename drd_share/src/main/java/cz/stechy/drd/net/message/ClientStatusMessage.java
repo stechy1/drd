@@ -7,6 +7,8 @@ public class ClientStatusMessage implements IMessage {
 
     private static final long serialVersionUID = -7383579587998947723L;
 
+    public static final String MESSAGE_TYPE = "client-status";
+
     private final ClientStatusData data;
 
     public ClientStatusMessage(ClientStatusData data) {
@@ -14,8 +16,8 @@ public class ClientStatusMessage implements IMessage {
     }
 
     @Override
-    public MessageType getType() {
-        return MessageType.CLIENT_STATUS;
+    public String getType() {
+        return MESSAGE_TYPE;
     }
 
     @Override

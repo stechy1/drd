@@ -11,6 +11,8 @@ public class ServerStatusMessage implements IMessage {
 
     private static final long serialVersionUID = -1429760060957272567L;
 
+    public static final String MESSAGE_TYPE = "server-status";
+
     private final ServerStatusData statusData;
 
     public ServerStatusMessage(ServerStatusData statusData) {
@@ -18,8 +20,8 @@ public class ServerStatusMessage implements IMessage {
     }
 
     @Override
-    public MessageType getType() {
-        return MessageType.SERVER_STATUS;
+    public String getType() {
+        return MESSAGE_TYPE;
     }
 
     @Override
