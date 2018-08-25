@@ -225,7 +225,7 @@ class FirebaseService implements IFirebaseService {
         }
 
         private void notifyListeners(FirebaseEntryEvent event) {
-            listeners.forEach(FirebaseEntryEventListener -> FirebaseEntryEventListener.onEvent(event));
+            listeners.forEach(listener -> listener.onEvent(event));
         }
 
         @Override

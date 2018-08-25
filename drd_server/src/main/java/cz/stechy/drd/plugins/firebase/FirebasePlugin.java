@@ -17,12 +17,17 @@ import cz.stechy.drd.plugins.PluginConfiguration;
 import cz.stechy.drd.plugins.firebase.service.IFirebaseService;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 @PluginConfiguration(priority = 10)
 public class FirebasePlugin implements IPlugin {
 
     // region Constants
+
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger(FirebasePlugin.class);
 
     public static final String PLUGIN_NAME = "firebase";
 
@@ -47,6 +52,7 @@ public class FirebasePlugin implements IPlugin {
     // region Private methods
 
     private FirebaseEntryEventListener addDatabaseListener(IClient client, String tableName) {
+        LOGGER.debug("Vytvářím listener pro klienta: {} na tabulku: {}", client, tableName);
         Map<String, FirebaseEntryEventListener> clientListeners = databaseListeners
             .computeIfAbsent(client, k -> new HashMap<>());
 
@@ -121,48 +127,6 @@ public class FirebasePlugin implements IPlugin {
             default:
                 throw new IllegalArgumentException("Neplatný parametr.");
         }
-//        assert event instanceof FirebaseEvent;
-//        FirebaseEvent firebaseEvent = (FirebaseEvent) event;
-//        final IFirebaseEventData eventData = firebaseEvent.getEventData();
-//        switch (eventData.getEventDataType()) {
-//            case DATA_ADMINISTRATION:
-//                FirebaseAdministrationEventData firebaseAdministrationEventData = (FirebaseAdministrationEventData) eventData;
-//                switch (firebaseAdministrationEventData.getAction()) {
-//                    case REGISTER:
-//                        callRegisterListener(firebaseAdministrationEventData.getTableName(), firebaseAdministrationEventData.getEventListener());
-//                        break;
-//                    case UNREGISTER:
-//                        callUnregisterListener(firebaseAdministrationEventData.getTableName(), firebaseAdministrationEventData.getEventListener());
-//                        break;
-//                    case REGISTER_ALL:
-//                        callUnregisterFromAllListeners(firebaseAdministrationEventData.getEventListener());
-//                        break;
-//                    default:
-//                        throw new IllegalArgumentException("Neplatná akce.");
-//                }
-//                break;
-//            case DATA_MANIPULATION:
-//                FirebaseDataManipulationEvent firebaseDataManipulationEvent = (FirebaseDataManipulationEvent) eventData;
-//                final FirebaseEntryEvent entryEvent = firebaseDataManipulationEvent.getEntryEvent();
-//                switch (entryEvent.getAction()) {
-//                    case CREATE:
-//                        callInsert(entryEvent.getTableName(), entryEvent.getEntry(), firebaseDataManipulationEvent
-//                            .getEntryId());
-//                        break;
-//                    case UPDATE:
-//                        callUpdate(entryEvent.getTableName(), entryEvent.getEntry(), firebaseDataManipulationEvent
-//                            .getEntryId());
-//                        break;
-//                    case DELETE:
-//                        callDelete(entryEvent.getTableName(), firebaseDataManipulationEvent.getEntryId());
-//                        break;
-//                    default:
-//                        throw new IllegalArgumentException("Neplatná akce.");
-//                }
-//                break;
-//            default:
-//                throw new IllegalArgumentException("Neplatný typ události.");
-//        }
     }
 
     // endregion
@@ -179,6 +143,6 @@ public class FirebasePlugin implements IPlugin {
 
     @Override
     public void registerMessageHandlers(IEventBus eventBus) {
-        eventBus.registerEventHandler(PLUGIN_NAME, this::firebaseMessageHandler);
+        eventBus.registerEventHandler(DatabaseMessage.MESSAGE_TYPE, this::firebaseMessageHandler);
     }
 }

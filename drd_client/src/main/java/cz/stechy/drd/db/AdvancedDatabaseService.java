@@ -360,7 +360,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 this.communicator
                     .registerMessageObserver(DatabaseMessage.MESSAGE_TYPE, this.databaseListener);
                 LOGGER.info("Posílám registrační požadavek pro tabulku: " + getFirebaseChildName());
-                //this.communicator.sendMessage(getRegistrationMessage());
+                this.communicator.sendMessage(getRegistrationMessage());
             });
     }
 
