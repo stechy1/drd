@@ -11,6 +11,8 @@ public class CmdParser implements IParameterProvider {
     public static final String CLIENTS = "clients";
     // Konstanta parametru definujícího maximální počet klientů čekajících ve frontě na spojení
     public static final String MAX_WAITING_QUEUE = "max_waiting_queue";
+    // Konstanta parametru definujícího url adresu k firebase
+    public static final String FB_URL = "fb_url";
 
     private final Map<String, String> map = new HashMap<>();
 
