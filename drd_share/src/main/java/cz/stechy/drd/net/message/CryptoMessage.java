@@ -6,6 +6,8 @@ public class CryptoMessage implements IMessage {
 
     private static final long serialVersionUID = 7416273624613153526L;
 
+    public static final String MESSAGE_TYPE = "crypto";
+
     private final MessageSource source;
     private final CypherKey data;
 
@@ -15,8 +17,8 @@ public class CryptoMessage implements IMessage {
     }
 
     @Override
-    public MessageType getType() {
-        return MessageType.CRYPTO;
+    public String getType() {
+        return MESSAGE_TYPE;
     }
 
     @Override

@@ -7,6 +7,8 @@ public class DatabaseMessage implements IMessage {
 
     private static final long serialVersionUID = 524340027525212916L;
 
+    public static final String MESSAGE_TYPE = "database";
+
     private final MessageSource source;
     private final boolean success;
     private final IDatabaseMessageData data;
@@ -22,8 +24,8 @@ public class DatabaseMessage implements IMessage {
     }
 
     @Override
-    public MessageType getType() {
-        return MessageType.DATABASE;
+    public String getType() {
+        return MESSAGE_TYPE;
     }
 
     @Override

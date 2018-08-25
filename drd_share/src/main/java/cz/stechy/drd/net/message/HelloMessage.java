@@ -6,13 +6,15 @@ public class HelloMessage implements IMessage {
 
     private final MessageSource messageSource;
 
+    public static final String MESSAGE_TYPE = "hello";
+
     public HelloMessage(MessageSource messageSource) {
         this.messageSource = messageSource;
     }
 
     @Override
-    public MessageType getType() {
-        return MessageType.HELLO;
+    public String getType() {
+        return MESSAGE_TYPE;
     }
 
     @Override

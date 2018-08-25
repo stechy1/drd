@@ -1,29 +1,17 @@
 package cz.stechy.drd;
 
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.FirebaseOptions;
-import cz.stechy.drd.auth.AuthService;
-import cz.stechy.drd.chat.ChatService;
-import cz.stechy.drd.crypto.CryptoService;
-import cz.stechy.drd.firebase.FirebaseRepository;
-import cz.stechy.drd.module.AuthModule;
-import cz.stechy.drd.module.ChatModule;
-import cz.stechy.drd.module.CryptoModule;
-import cz.stechy.drd.module.FirebaseDatabaseModule;
-import cz.stechy.drd.module.IModule;
-import cz.stechy.drd.net.message.MessageType;
-import java.io.FileInputStream;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import cz.stechy.drd.cmd.IParameterFactory;
+import cz.stechy.drd.cmd.IParameterProvider;
+import cz.stechy.drd.core.event.IEventBus;
+import cz.stechy.drd.core.server.IServerThread;
+import cz.stechy.drd.core.server.IServerThreadFactory;
+import cz.stechy.drd.plugins.IPlugin;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.UUID;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,149 +20,67 @@ public class Server {
     @SuppressWarnings("unused")
     private static final Logger LOGGER = LoggerFactory.getLogger(Server.class);
 
-    private static final String FB_URL_TEMPLATE = "https://%s.firebaseio.com";
+    private final Scanner scanner = new Scanner(System.in);
+    private final IParameterFactory parameterFactory;
+    private final IServerThreadFactory serverThreadFactory;
+    private final IEventBus messageRegistrator;
+    private final Map<String, IPlugin> plugins;
 
-    public static final UUID ID = UUID.randomUUID();
-    // Výchozí port serveru = 0 --> automaticky se přiřadí
-    private static final int SERVER_PORT = 15378;
-    private static final int DEFAULT_MAX_CLIENTS = 3;
-    private static final int DEFAULT_WAITING_QUEUE_SIZE = 1;
-    // Scanner pro interakci s uživatelem
-    private static final Scanner scanner = new Scanner(System.in);
-
-    // Nastavení serveru
-    private final CmdParser settings;
-    private final ServerThread serverThread;
-
-    public static void main(String[] args) throws IOException {
-        final Server server = new Server(new CmdParser().parse(args));
-        server.run();
+    @Inject
+    public Server(IParameterFactory parameterFactory, IServerThreadFactory serverThreadFactory,
+        IEventBus messageRegistrator, Map<String, IPlugin> plugins) {
+        this.parameterFactory = parameterFactory;
+        this.serverThreadFactory = serverThreadFactory;
+        this.messageRegistrator = messageRegistrator;
+        this.plugins = plugins;
     }
 
-    private Server(final CmdParser parser) throws IOException {
-        LOGGER.info("Spouštím server.");
-        this.settings = parser;
-        final int port = settings.getInteger(CmdParser.PORT, SERVER_PORT);
-        final int maxClients = settings.getInteger(CmdParser.CLIENTS_COUNT, DEFAULT_MAX_CLIENTS);
-        final int waitingQueueSize = settings.getInteger(CmdParser.MAX_WAITING_QUEUE, DEFAULT_WAITING_QUEUE_SIZE);
-        this.serverThread = new ServerThread(port, maxClients, waitingQueueSize);
+    private void run(String[] args) throws IOException {
+        final IParameterProvider parameters = parameterFactory.getParameters(args);
+        final IServerThread serverThread = serverThreadFactory.getServerThread(parameters);
 
-        init();
-    }
+        LOGGER.info("Spouštím server...");
+        initPlugins();
 
-    /**
-     * Pomocná metoda pro převedení {@link InputStream} na {@link String}
-     *
-     * @param inputStream {@link InputStream} Vstupní proud dat
-     * @return Textový řetězec
-     * @throws IOException Pokud se to nepovede
-     */
-    private static String streamToString(InputStream inputStream) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-        Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-        char[] buffer = new char[256];
-
-        int length;
-        while ((length = reader.read(buffer)) != -1) {
-            stringBuilder.append(buffer, 0, length);
-        }
-
-        inputStream.close();
-        return stringBuilder.toString();
-    }
-
-    /**
-     * Přečte credentials soubor a vytáhne ID projektu databáze, který koresponduje s url adresou
-     * databáze
-     *
-     * @param inputStream {@link InputStream}
-     * @return ID projektu databáze
-     */
-    private String resolveFirebaseUrl(InputStream inputStream) {
-        String id = "";
-        try {
-            JSONObject json = new JSONObject(streamToString(inputStream));
-            id = json.getString("project_id");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return String.format(FB_URL_TEMPLATE, id);
-    }
-
-    /**
-     * Inicializuje spojení s firebase
-     */
-    private void initFirebase() {
-        LOGGER.info("Inicializuji firebase.");
-        final String credentialsPath = settings.getString(CmdParser.FB_CREDENTIALS_PATH);
-        LOGGER.info(String.format("Čtu přístupové údaje ze souboru: %s.", credentialsPath));
-        try (FileInputStream serviceAccount = new FileInputStream(credentialsPath)) {
-            final String fbURL = resolveFirebaseUrl(new FileInputStream(credentialsPath));
-            final Map<String, Object> auth = new HashMap<>();
-            auth.put("uid", "my_resources");
-            LOGGER.info(String.format("Připojuji se k firebase na adresu: %s.", fbURL));
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl(fbURL)
-                .setDatabaseAuthVariableOverride(auth)
-                .build();
-            FirebaseApp.initializeApp(options);
-            LOGGER.info("Inicializace firebase se zdařila.");
-        } catch (IOException e) {
-            LOGGER.error("Nepodařilo se inicializovat firebase.", e);
-        }
-    }
-
-    /**
-     * Inicializace jednotlivých modulů
-     */
-    private void initModules() {
-        LOGGER.info("Registruji moduly.");
-        // TODO až bude modulů hodně, bude potřeba implementovat DI pro snažší instancování
-        final FirebaseRepository serverDatabase = new FirebaseRepository();
-        final AuthService authService = new AuthService(serverDatabase);
-        final CryptoService cryptoService = new CryptoService();
-        final ChatService chatService = new ChatService(cryptoService);
-        final IModule firebaseDatabaseModule = new FirebaseDatabaseModule(serverDatabase);
-        final IModule authModule = new AuthModule(authService);
-        final IModule cryptoModule = new CryptoModule(cryptoService);
-        final IModule chatModule = new ChatModule(chatService);
-
-        serverThread.registerModule(MessageType.DATABASE, firebaseDatabaseModule);
-        serverThread.registerModule(MessageType.AUTH, authModule);
-        serverThread.registerModule(MessageType.CRYPTO, cryptoModule);
-        serverThread.registerModule(MessageType.CHAT, chatModule);
-        LOGGER.info("Registrace modulů dokončena.");
-    }
-
-    /**
-     * Inicializace serveru
-     */
-    private void init() {
-        LOGGER.info("Inicializuji server.");
-        initFirebase();
-        initModules();
-
-        LOGGER.info("Inicializace dokončena.");
-    }
-
-    private void run() {
+        // Spuštění vlákna serveru
         serverThread.start();
+
         while(true) {
-            final String line = scanner.nextLine();
-            if (line.equals("end")) {
-                LOGGER.info("Spouštím ukončovací sekvenci.");
+            final String input = scanner.nextLine();
+            if ("exit".equals(input)) {
                 break;
             }
         }
 
+        LOGGER.info("Ukončuji server.");
         serverThread.shutdown();
-        try {
-            serverThread.join();
-        } catch (InterruptedException ignored) {}
 
         LOGGER.info("Server byl ukončen.");
-        scanner.close();
+    }
+
+    private void initPlugins() {
+        LOGGER.info("Inicializuji pluginy.");
+        for (IPlugin plugin : plugins.values()) {
+            LOGGER.info("Inicializace pluginu: {}.", plugin.getName());
+            plugin.init();
+        }
+
+        LOGGER.info("Registruji handlery pluginů.");
+        for (IPlugin plugin : plugins.values()) {
+            plugin.registerMessageHandlers(messageRegistrator);
+        }
+
+        LOGGER.info("Nastavuji závislosti mezi pluginy.");
+        for (IPlugin plugin : plugins.values()) {
+            plugin.setupDependencies(plugins);
+        }
+
+        LOGGER.info("Inicializace pluginů dokončena.");
+    }
+
+    public static void main(String[] args) throws Exception {
+        final Injector injector = Guice.createInjector(new ServerModule(), new PluginModule());
+        final Server server = injector.getInstance(Server.class);
+        server.run(args);
     }
 }

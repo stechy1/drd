@@ -7,6 +7,8 @@ public class AuthMessage implements IMessage {
 
     private static final long serialVersionUID = 2410714674227462122L;
 
+    public static final String MESSAGE_TYPE = "auth";
+
     private final MessageSource source;
     private final AuthAction action;
     private final boolean success;
@@ -25,8 +27,8 @@ public class AuthMessage implements IMessage {
     }
 
     @Override
-    public MessageType getType() {
-        return MessageType.AUTH;
+    public String getType() {
+        return MESSAGE_TYPE;
     }
 
     public AuthAction getAction() {
