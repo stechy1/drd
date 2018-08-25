@@ -1,6 +1,7 @@
 package cz.stechy.drd.plugins.crypto;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import cz.stechy.drd.core.connection.ClientDisconnectedEvent;
 import cz.stechy.drd.core.connection.IClient;
 import cz.stechy.drd.core.connection.MessageReceivedEvent;
@@ -14,6 +15,7 @@ import cz.stechy.drd.plugins.crypto.service.ICryptoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Singleton
 public class CryptoPlugin implements IPlugin {
 
     // region Constants

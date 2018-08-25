@@ -1,6 +1,7 @@
 package cz.stechy.drd.plugins;
 
 import cz.stechy.drd.plugins.auth.AuthPlugin;
+import cz.stechy.drd.plugins.chat.ChatPlugin;
 import cz.stechy.drd.plugins.crypto.CryptoPlugin;
 import cz.stechy.drd.plugins.firebase.FirebasePlugin;
 
@@ -10,7 +11,8 @@ import cz.stechy.drd.plugins.firebase.FirebasePlugin;
 public enum Plugin {
     FIREBASE(FirebasePlugin.class),
     CRYPTO(CryptoPlugin.class),
-    AUTH(AuthPlugin.class)
+    AUTH(AuthPlugin.class),
+    CHAT(ChatPlugin.class)
     ;
 
     public final Class<? extends IPlugin> clazz;

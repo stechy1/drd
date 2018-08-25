@@ -1,6 +1,7 @@
 package cz.stechy.drd.plugins.firebase;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import cz.stechy.drd.core.event.IEvent;
 import cz.stechy.drd.core.event.IEventBus;
 import cz.stechy.drd.plugins.IPlugin;
@@ -11,6 +12,7 @@ import cz.stechy.drd.plugins.firebase.FirebaseEvent.IFirebaseEventData;
 import cz.stechy.drd.plugins.firebase.service.IFirebaseService;
 import java.util.Map;
 
+@Singleton
 @PluginConfiguration(priority = 10)
 public class FirebasePlugin implements IPlugin {
 

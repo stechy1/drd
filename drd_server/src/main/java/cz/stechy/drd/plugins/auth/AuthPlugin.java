@@ -1,6 +1,7 @@
 package cz.stechy.drd.plugins.auth;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import cz.stechy.drd.core.connection.IClient;
 import cz.stechy.drd.core.connection.MessageReceivedEvent;
 import cz.stechy.drd.core.event.IEvent;
@@ -13,6 +14,7 @@ import cz.stechy.drd.plugins.IPlugin;
 import cz.stechy.drd.plugins.auth.service.IAuthService;
 import java.util.Optional;
 
+@Singleton
 public class AuthPlugin implements IPlugin {
 
     // region Constants

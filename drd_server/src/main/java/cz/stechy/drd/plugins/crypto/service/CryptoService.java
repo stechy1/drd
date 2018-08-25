@@ -59,4 +59,9 @@ class CryptoService implements ICryptoService {
     public CypherKey getServerPublicKey() {
         return rsa.getPublicKey();
     }
+
+    @Override
+    public CypherKey getClientPublicKey(IClient client) {
+        return cyphers.get(client).getPublicKey();
+    }
 }

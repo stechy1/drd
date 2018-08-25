@@ -39,5 +39,18 @@ public interface ICryptoService {
      */
     byte[] decrypt(byte[] src);
 
+    /**
+     * Vrátí veřejný klíč serveru
+     *
+     * @return {@link CypherKey}
+     */
     CypherKey getServerPublicKey();
+
+    /**
+     * Vrátí veřejný klíč klienta
+     *
+     * @param client {@link IClient} Klient
+     * @return {@link CypherKey} Veřejný klíč klienta
+     */
+    CypherKey getClientPublicKey(IClient client);
 }
