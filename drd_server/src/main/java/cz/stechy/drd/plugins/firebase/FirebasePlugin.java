@@ -2,6 +2,8 @@ package cz.stechy.drd.plugins.firebase;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import cz.stechy.drd.core.connection.Client;
+import cz.stechy.drd.core.connection.ClientDisconnectedEvent;
 import cz.stechy.drd.core.connection.IClient;
 import cz.stechy.drd.core.connection.MessageReceivedEvent;
 import cz.stechy.drd.core.event.IEvent;
@@ -129,6 +131,19 @@ public class FirebasePlugin implements IPlugin {
         }
     }
 
+    private void clientDisconnectHandler(IEvent event) {
+        assert event instanceof ClientDisconnectedEvent;
+        final ClientDisconnectedEvent clientDisconnectedEvent = (ClientDisconnectedEvent) event;
+        final Client client = clientDisconnectedEvent.getClient();
+        final Map<String, FirebaseEntryEventListener> clientListeners = databaseListeners.get(client);
+
+        if (clientListeners == null) {
+            return;
+        }
+
+        clientListeners.values().forEach(firebaseService::unregisterFromAllListeners);
+    }
+
     // endregion
 
     @Override
@@ -144,5 +159,6 @@ public class FirebasePlugin implements IPlugin {
     @Override
     public void registerMessageHandlers(IEventBus eventBus) {
         eventBus.registerEventHandler(DatabaseMessage.MESSAGE_TYPE, this::firebaseMessageHandler);
+        eventBus.registerEventHandler(ClientDisconnectedEvent.EVENT_NAME, this::clientDisconnectHandler);
     }
 }
