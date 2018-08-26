@@ -1,7 +1,5 @@
 package cz.stechy.drd.model.inventory;
 
-import cz.stechy.drd.R;
-import cz.stechy.drd.R.Images;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.service.KeyboardService;
 import java.io.ByteArrayInputStream;
@@ -37,9 +35,6 @@ public class ItemSlot {
 
     // region Constants
 
-    private static final Image SLOT_BACKGROUND = new Image(
-        R.class.getResourceAsStream(Images.Inventory.SLOT)
-    );
     private static final DataFormat MOVE_ITEM = new DataFormat("move_item");
     private static final int LABEL_TRANSLATE_Y = 15;
     private static final int LABEL_SIZE = 10;
@@ -48,12 +43,14 @@ public class ItemSlot {
     private static final String STYLE_CLASS_ACCEPTING = "accepting";
     private static final String STYLE_CLASS_DECLINE = "decline";
 
+    // Výchozí item filter, který přijímá vše
     private static final Predicate<ItemBase> DEFAULT_FILTER = itemBase -> true;
 
     public static final int SLOT_SIZE = 60;
     // endregion
 
     // region Variables
+
     // Kontejner s obrázkem
     private final StackPane container = new StackPane();
     // Obrázek itemu
@@ -68,11 +65,13 @@ public class ItemSlot {
     private DragDropHandlers dragDropHandlers;
     private ClickListener clickListener;
     private TooltipTranslator tooltipTranslator;
+    // Item stack předmetu
     private ItemStack itemStack;
-    // Výchozí item filster, který přijímá vše
+    // Filtr slotu pro příjem vybraných předmětů
     private Predicate<ItemBase> filter = DEFAULT_FILTER;
     // Kontejner pro tooltip
     private GridPane tooltipContainer;
+    // Obrázek předmětu
     private Image backgroundImage;
 
     // endregion
