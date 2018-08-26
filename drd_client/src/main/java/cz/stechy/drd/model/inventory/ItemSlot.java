@@ -209,7 +209,7 @@ public class ItemSlot {
         imgItem.setOnDragOver(onDragOver);
         imgItem.setOnDragDropped(onDragDropped);
 
-        Tooltip.install(imgItem, tooltip);
+        //Tooltip.install(imgItem, tooltip);
     }
 
     private void setImage(byte[] image) {
@@ -251,7 +251,7 @@ public class ItemSlot {
         imgItem.setImage(backgroundImage);
         lblAmmount.setText(null);
         clickListener = null;
-        //removeImageHandlers();
+        Tooltip.uninstall(imgItem, tooltip);
     }
 
     /**
@@ -270,7 +270,7 @@ public class ItemSlot {
             setImage(item.getImage());
             this.itemStack.getItem().imageProperty().addListener(imageChangeListener);
             this.filter = itemBase -> itemBase.getItemType() == item.getItemType();
-//            addImageHandlers();
+            Tooltip.install(imgItem, tooltip);
             return;
         }
 
