@@ -517,6 +517,18 @@ public final class R {
             public static final String ZIVOTY = "/images/icon/zivoty.png";
         }
 
+        public static class Inventory {
+
+            public static final String BODY = "/images/inventory/body.png";
+            public static final String BOTS = "/images/inventory/bots.png";
+            public static final String GLOVES = "/images/inventory/gloves.png";
+            public static final String HELM = "/images/inventory/helm.png";
+            public static final String JEWELRY = "/images/inventory/jewelry.png";
+            public static final String LEGS = "/images/inventory/legs.png";
+            public static final String SLOT = "/images/inventory/slot.png";
+            public static final String SWORD = "/images/inventory/sword.png";
+        }
+
         public static final String LOGO = "/images/logo.png";
         public static class Source {
 

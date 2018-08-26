@@ -3,7 +3,6 @@ package cz.stechy.drd.util;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.WithImage;
-import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.widget.MoneyWidget;
 import java.io.ByteArrayInputStream;
 import javafx.beans.property.BooleanProperty;
@@ -23,6 +22,8 @@ import javafx.scene.text.TextAlignment;
  */
 public final class CellUtils {
 
+    private static final int SLOT_SIZE = 40;
+
     /**
      * Pomocná metoda pro vygenerování tabulkové buňky, která obsahuje obrázek
      *
@@ -32,8 +33,8 @@ public final class CellUtils {
     public static <S> TableCell<S, Image> forImage() {
         final ImageView imageView = new ImageView();
         {
-            imageView.setFitWidth(ItemSlot.SLOT_SIZE);
-            imageView.setFitHeight(ItemSlot.SLOT_SIZE);
+            imageView.setFitWidth(SLOT_SIZE);
+            imageView.setFitHeight(SLOT_SIZE);
         }
         return new TableCell<S, Image>() {
             @Override
@@ -171,8 +172,8 @@ public final class CellUtils {
         final HBox container = new HBox(imageView, label);
 
         {
-            imageView.setFitWidth(ItemSlot.SLOT_SIZE);
-            imageView.setFitHeight(ItemSlot.SLOT_SIZE);
+            imageView.setFitWidth(SLOT_SIZE);
+            imageView.setFitHeight(SLOT_SIZE);
 
             label.setTextFill(Color.BLACK);
             label.setMinHeight(40);

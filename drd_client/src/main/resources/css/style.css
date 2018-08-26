@@ -139,7 +139,12 @@
 }
 
 .item-slot {
-  -fx-background-color: rgba(128, 0, 0, 0.5);
+  /*-fx-background-color: rgba(128, 0, 0, 0.5);*/
+  -fx-background-image: url("../images/inventory/slot.png");
+  -fx-background-repeat: no-repeat;
+  -fx-background-position: center center;
+  -fx-background-size: cover;
+  -fx-padding: 8;
 }
 
 .item-slot.accepting {

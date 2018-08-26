@@ -2,6 +2,7 @@ package cz.stechy.drd.model.inventory.container;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Images.Icon;
+import cz.stechy.drd.R.Images.Inventory;
 import cz.stechy.drd.model.inventory.InventoryRecord;
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
@@ -24,19 +25,19 @@ public class EquipItemContainer extends ItemContainer {
     // region Constants
 
     private static final Image SLOT_BACKGROUND_SWORD = new Image(
-        R.class.getResourceAsStream(Icon.CLOSE));
+        R.class.getResourceAsStream(Inventory.SWORD));
     private static final Image SLOT_BACKGROUND_SHIELD = new Image(
         R.class.getResourceAsStream(Icon.CLOSE));
     private static final Image SLOT_BACKGROUND_HELM = new Image(
-        R.class.getResourceAsStream(Icon.CLOSE));
+        R.class.getResourceAsStream(Inventory.HELM));
     private static final Image SLOT_BACKGROUND_BODY = new Image(
-        R.class.getResourceAsStream(Icon.CLOSE));
+        R.class.getResourceAsStream(Inventory.BODY));
     private static final Image SLOT_BACKGROUND_LEGS = new Image(
-        R.class.getResourceAsStream(Icon.CLOSE));
+        R.class.getResourceAsStream(Inventory.LEGS));
     private static final Image SLOT_BACKGROUND_BOTS = new Image(
-        R.class.getResourceAsStream(Icon.CLOSE));
+        R.class.getResourceAsStream(Inventory.BOTS));
     private static final Image SLOT_BACKGROUND_GLOVES = new Image(
-        R.class.getResourceAsStream(Icon.CLOSE));
+        R.class.getResourceAsStream(Inventory.GLOVES));
 
     // Počet slotů v inventáři
     public static final int CAPACITY = 7;
@@ -81,8 +82,6 @@ public class EquipItemContainer extends ItemContainer {
         container.setHgap(1);
         container.setVgap(1);
         BorderPane.setAlignment(container, Pos.CENTER);
-        container.prefHeight(100);
-        container.setStyle("-fx-background-color: orange");
 
         final ItemSlot slotSword = ItemSlotHelper.forWeapon(idCounter++, dragDropHandlers);
         final ItemSlot slotShield = ItemSlotHelper.forShield(idCounter++, dragDropHandlers);

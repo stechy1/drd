@@ -44,8 +44,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -87,7 +87,7 @@ public class MainController extends BaseController implements Initializable {
     private GridPane defaultStaff;
 
     @FXML
-    private BorderPane inventory;
+    private HBox inventory;
 
     @FXML
     private StackPane profession;

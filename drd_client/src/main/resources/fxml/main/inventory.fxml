@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<BorderPane fx:id="container" prefHeight="400.0" prefWidth="600.0"
+<?import javafx.geometry.Insets?>
+<HBox fx:id="container" prefHeight="400.0" prefWidth="600.0"
   xmlns="http://javafx.com/javafx/8.0.112"
   xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="cz.stechy.drd.app.main.inventory.InventoryController">
-  <top>
-    <Label text="Inventář"/>
-  </top>
-  <bottom>
-    <HBox>
-      <Region HBox.hgrow="ALWAYS"/>
-      <Label fx:id="lblWeight"/>
-    </HBox>
-  </bottom>
-</BorderPane>
+  <padding>
+    <Insets topRightBottomLeft="16"/>
+  </padding>
+</HBox>

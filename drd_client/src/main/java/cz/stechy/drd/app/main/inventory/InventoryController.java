@@ -32,7 +32,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 
 /**
  * Kontroler pro inventář hrdiny
@@ -45,7 +47,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
     // region FXML
 
     @FXML
-    private BorderPane container;
+    private HBox container;
     @FXML
     private Label lblWeight;
     // endregion
@@ -155,10 +157,15 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        container.setLeft(equipItemContainer.getGraphics());
-        container.setCenter(mainItemContainer.getGraphics());
+        Region region = new Region();
+        HBox.setHgrow(region, Priority.ALWAYS);
+        container.getChildren().setAll(
+            equipItemContainer.getGraphics(),
+            region,
+            mainItemContainer.getGraphics()
+        );
 
-        lblWeight.textProperty().bind(InventoryContentDao.getWeight().asString());
+        //lblWeight.textProperty().bind(InventoryContentDao.getWeight().asString());
     }
 
     @Override
