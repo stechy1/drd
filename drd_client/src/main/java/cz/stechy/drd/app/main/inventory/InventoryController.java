@@ -31,7 +31,6 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -48,8 +47,6 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
 
     @FXML
     private HBox container;
-    @FXML
-    private Label lblWeight;
     // endregion
 
     // Základní inventář
@@ -164,8 +161,6 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
             region,
             mainItemContainer.getGraphics()
         );
-
-        //lblWeight.textProperty().bind(InventoryContentDao.getWeight().asString());
     }
 
     @Override

@@ -187,7 +187,7 @@ public class Hero extends EntityBase {
 
         // Nastavení nosnosti
         this.capacity.bind(Bindings.createIntegerBinding(() ->
-                CAPACITY_BY_STRENGTH[this.strength.getRepair() + 5],
+                CAPACITY_BY_STRENGTH[this.strength.getRepair() + 5] * 4,
             this.strength.repairProperty()));
 
         // Nastavení postřehu na objekty
