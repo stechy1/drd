@@ -549,3 +549,27 @@
 .jfx-badge {
 
 }
+
+.card {
+  -fx-background-color: rgba(255.0, 255.0, 255.0, 0.6);
+  -fx-background-radius: 4.0;
+  -fx-effect: dropshadow(gaussian, rgba(0.0, 0.0, 0.0, 0.15), 6.0, 0.7, 0.0, 1.5);
+}
+
+.card .card-header {
+  -fx-effect: dropshadow(gaussian, rgba(0.0, 0.0, 0.0, 0.15), 6.0, 0.7, 0.0, 1.5);
+  -fx-background-radius: 4.0;
+  -fx-background-color: rgba(20, 95, 183, 0.6);
+}
+
+.card .card-header .card-header-title {
+  -fx-text-fill: white;
+  -fx-pref-height: 35;
+  -fx-font-family: "Roboto Medium";
+  -fx-font-size: 14;
+  -fx-padding: 16;
+}
+
+.card .card-content {
+  -fx-padding: 8, 8, 8, 32;
+}

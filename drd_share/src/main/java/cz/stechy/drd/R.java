@@ -456,6 +456,7 @@ public final class R {
 
     public static class Images {
 
+        public static final String BACKGROUND = "/images/background.png";
         public static class Coins {
 
             public static final String COPPER_COIN = "/images/coins/copper_coin.png";

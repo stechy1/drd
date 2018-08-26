@@ -202,3 +202,10 @@
 .underline:hover {
   -fx-underline: true;
 }
+
+.background {
+  -fx-background-image: url("../images/background.png");
+  -fx-background-repeat: no-repeat;
+  -fx-background-size: cover;
+  -fx-background-position: center center;
+}
