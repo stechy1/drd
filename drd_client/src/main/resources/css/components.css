@@ -563,13 +563,75 @@
 }
 
 .card .card-header .card-header-title {
-  -fx-text-fill: white;
   -fx-pref-height: 35;
   -fx-font-family: "Roboto Medium";
+  -fx-text-fill: white;
   -fx-font-size: 14;
   -fx-padding: 16;
 }
 
 .card .card-content {
   -fx-padding: 8, 8, 8, 32;
+}
+
+.card .card-content > .label, .card .card-content > .text {
+  -fx-text-fill: #1f1f1f;
+}
+
+.labeled-max-act-value {
+  -fx-background-color: rgba(255.0, 255.0, 255.0, 0.6);
+  -fx-background-radius: 4;
+  -fx-effect: dropshadow(gaussian, rgba(0.0, 0.0, 0.0, 0.1), 6.0, 0.7, 0.0,1.5);
+  -fx-max-width: 263;
+  -fx-max-height: 135;
+  -fx-min-width: 263;
+  -fx-min-height: 135;
+  -fx-pref-width: 263;
+  -fx-pref-height: 135;
+}
+
+.labeled-max-act-value .labeled-max-act-value-header {
+  -fx-background-radius: 4;
+  -fx-effect: dropshadow(gaussian, rgba(0.0, 0.0, 0.0, 0.1), 6.0, 0.7, 0.0,1.5);
+  -fx-pref-width: 100;
+  -fx-pref-height: 100;
+}
+
+.labeled-max-act-value .labeled-max-act-value-header .labeled-max-act-value-image {
+  /*-fx-fit-to-width: 80px;*/
+  /*-fx-fit-to-height: 80px;*/
+}
+
+.labeled-max-act-value .labeled-max-act-value-title {
+  -fx-alignment: center-right;
+  -fx-content-display: right;
+  -fx-pref-height: 22;
+  -fx-pref-width: 122;
+  -fx-text-fill: #1f1f1f;
+  -fx-font-family: Roboto;
+  -fx-font-size: 14;
+}
+
+.labeled-max-act-value .labeled-max-act-value-widget {
+  -fx-alignment: top-right;
+  -fx-content-display: right;
+  -fx-pref-width: 122;
+  -fx-pref-height: 30;
+  -fx-font-family: Roboto;
+  -fx-text-fill: #1f1f1f;
+  -fx-font-size: 24;
+}
+
+.labeled-max-act-value .labeled-max-act-value-progress-bar {
+  -fx-min-height: 5;
+  -fx-pref-height: 5;
+  -fx-pref-width: 235;
+}
+
+.labeled-max-act-value .labeled-max-act-value-description {
+  -fx-pref-height: 22;
+  -fx-pref-width: 229;
+  -fx-font-family: Roboto Regular;
+  -fx-text-fill: #1f1f1f;
+  -fx-font-size: 14;
 }
