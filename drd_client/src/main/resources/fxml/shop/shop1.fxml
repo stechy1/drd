@@ -79,6 +79,19 @@
         </tooltip>
       </JFXButton>
       <Separator/>
+      <JFXButton onAction="#handleUpdateLocalItem" styleClass="sidebar-button, icon-update-local"
+        fx:id="btnUpdateLocalItem">
+        <tooltip>
+          <Tooltip text="%drd_firebase_update_local"/>
+        </tooltip>
+      </JFXButton>
+      <JFXButton onAction="#handleUpdateOnlineItem" styleClass="sidebar-button, icon-update-online"
+        fx:id="btnUpdateOnlineItem">
+        <tooltip>
+          <Tooltip text="%drd_firebase_update_online"/>
+        </tooltip>
+      </JFXButton>
+      <Separator/>
       <JFXButton onAction="#handleSynchronize" styleClass="sidebar-button, icon-synchronize"
         fx:id="btnSynchronize">
         <tooltip>

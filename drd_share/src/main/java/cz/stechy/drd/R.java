@@ -237,6 +237,8 @@ public final class R {
         public static final String FIREBASE_ENTRY_REMOVE = "drd_firebase_entry_remove";
         public static final String FIREBASE_ENTRY_UPLOAD = "drd_firebase_entry_upload";
         public static final String FIREBASE_ENTRY_DOWNLOAD = "drd_firebase_entry_download";
+        public static final String FIREBASE_UPDATE_LOCAL = "drd_firebase_update_local";
+        public static final String FIREBASE_UPDATE_ONLINE = "drd_firebase_update_online";
         public static final String ITEM_NAME = "drd_item_name";
         public static final String ITEM_AUTHOR = "drd_item_author";
         public static final String ITEM_DESCRIPTION = "drd_item_description";
@@ -512,6 +514,8 @@ public final class R {
             public static final String SUBTRACT = "/images/icon/subtract.png";
             public static final String SYNCHRONIZE = "/images/icon/synchronize.png";
             public static final String TYPING = "/images/icon/typing.gif";
+            public static final String UPDATE_LOCAL = "/images/icon/update_local.png";
+            public static final String UPDATE_ONLINE = "/images/icon/update_online.png";
             public static final String UPLOAD = "/images/icon/upload.png";
             public static final String WIP = "/images/icon/wip.png";
             public static final String ZIVOTY = "/images/icon/zivoty.png";

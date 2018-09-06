@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.shop;
 
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXToggleButton;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
@@ -98,6 +99,10 @@ public class ShopController1 extends BaseController implements Initializable {
     @FXML
     private Button btnRemoveOnlineItem;
     @FXML
+    private JFXButton btnUpdateLocalItem;
+    @FXML
+    private JFXButton btnUpdateOnlineItem;
+    @FXML
     private ToggleButton btnToggleOnline;
     @FXML
     private Label lblTotalPrice;
@@ -120,7 +125,7 @@ public class ShopController1 extends BaseController implements Initializable {
     private final BooleanProperty editMode = new SimpleBooleanProperty(this,
         "editMode", false);
     private final BooleanProperty userLogged = new SimpleBooleanProperty(this,
-        "userLogged", false);
+        "userLogged", true);
     private final BooleanProperty heroSelected = new SimpleBooleanProperty(this,
         "heroSelected", false);
     private final BooleanProperty disableDownloadBtn = new SimpleBooleanProperty(this,
@@ -149,9 +154,9 @@ public class ShopController1 extends BaseController implements Initializable {
         heroSelected.set(this.hero != null);
         this.shoppingCart = new ShoppingCart(hero);
         this.user = userService.getUser();
-        if (this.user != null) {
-            userLogged.bind(this.user.loggedProperty());
-        }
+//        if (this.user != null) {
+//            userLogged.bind(this.user.loggedProperty());
+//        }
 
         this.translatedItemType.addAll(translator.getTranslationFor(Key.SHOP_ITEMS));
     }
@@ -220,6 +225,16 @@ public class ShopController1 extends BaseController implements Initializable {
                 editMode.not().or(
                     disableRemoveOnlineBtn.or(
                         showOnlineDatabase.not()))));
+        btnUpdateLocalItem.disableProperty().bind(
+            userLogged.not().or(
+                editMode.not().or(
+                    showOnlineDatabase.or(
+                        selectedRowBinding))));
+        btnUpdateOnlineItem.disableProperty().bind(
+            userLogged.not().or(
+                editMode.not().or(
+                    showOnlineDatabase.or(
+                        selectedRowBinding))));
 
         btnContinueShopping.disableProperty().bind(
             editMode.or(
@@ -367,6 +382,16 @@ public class ShopController1 extends BaseController implements Initializable {
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
         ShopItemController<? extends ShopEntry> controller = controllers[selectedAccordionPaneIndex.get()];
         controller.getSelectedItem().ifPresent(entry -> controller.requestRemoveItem(entry, true));
+    }
+
+    @FXML
+    private void handleUpdateLocalItem(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void handleUpdateOnlineItem(ActionEvent actionEvent) {
+
     }
 
     @FXML
