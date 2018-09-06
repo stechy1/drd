@@ -34,6 +34,12 @@ public final class DialogUtils {
 
     // endregion
 
+    // region Variables
+
+    private static File lastDirectory = null;
+
+    // endregion
+
     // region Constructors
 
     /**
@@ -76,23 +82,18 @@ public final class DialogUtils {
         final FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
         fileChooser.getExtensionFilters().add(filter);
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setInitialDirectory(lastDirectory == null ? new File(System.getProperty("user.home")) : lastDirectory);
         final File file = fileChooser
             .showOpenDialog(owner);
         if (file == null) {
             return new byte[0];
         }
 
+        lastDirectory = file.getParentFile();
         final byte[] image = ImageUtils.readImage(file);
         return ImageUtils.resizeImageRaw(image, width, height);
     }
 
-//    public static List<ChoiceEntry> getItemRegistryChoices() {
-//        return ItemRegistry.getINSTANCE().getRegistry().entrySet()
-//            .stream()
-//            .map(entry -> new ChoiceEntry((WithSameProperties) entry.getValue()))
-//            .collect(Collectors.toList());
-//    }
     public static List<ChoiceEntry> getItemChoices(Collection<ItemBase> items) {
         return items.stream()
             .map(ChoiceEntry::new)
