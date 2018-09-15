@@ -2,6 +2,7 @@ package cz.stechy.drd.model;
 
 import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.util.StringUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -39,12 +40,8 @@ public class DiffEntry<T extends DatabaseItem> {
 
     // region Private methods
 
-    private static String capitalizeFirst(String text) {
-        return text.substring(0,1).toUpperCase() + text.substring(1).toLowerCase();
-    }
-
     private static Optional<Method> findMethod(Method[] methods, String property) {
-        property = capitalizeFirst(property);
+        property = StringUtils.capitalizeFirst(property);
 
         for (Method method : methods) {
             final String methodName = method.getName();
@@ -92,8 +89,8 @@ public class DiffEntry<T extends DatabaseItem> {
                 try {
                     final Object leftValue = method.invoke(left);
                     final Object rightValue = method.invoke(right);
-                    final String methodName = method.getName().toLowerCase();
-                    final String propertyName = methodName.replaceAll("is|get|can", "");
+                    final String methodName = method.getName();
+                    final String propertyName = StringUtils.lowerFirst(methodName.replaceAll("is|get|can", ""));
                     String translationKey = propertyName;
                     final Optional<Field> optionalField = findFieldByName(fields, propertyName);
                     if (optionalField.isPresent()) {
