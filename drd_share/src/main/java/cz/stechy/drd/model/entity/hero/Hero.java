@@ -1,5 +1,7 @@
 package cz.stechy.drd.model.entity.hero;
 
+import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.MaxActValue;
@@ -10,6 +12,8 @@ import cz.stechy.drd.model.entity.EntityProperty;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.SimpleEntityProperty;
 import cz.stechy.drd.util.HashGenerator;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -49,41 +53,58 @@ public class Hero extends EntityBase {
     // region Variables
 
     // Rasa
+    @TranslateEntry(key = Translate.HERO_RACE)
     private final ObjectProperty<Race> race = new SimpleObjectProperty<>(this, "race");
     // Profece
-    private final ObjectProperty<Profession> profession = new SimpleObjectProperty<>(this,
-        "profession");
+    @TranslateEntry(key = Translate.HERO_PROFESSION)
+    private final ObjectProperty<Profession> profession = new SimpleObjectProperty<>(this, "profession");
     // Úroveň
+    @TranslateEntry(key = Translate.LEVEL_UP_TITLE)
     private final IntegerProperty level = new SimpleIntegerProperty(this, "level");
     // Peníze
+    @TranslateEntry(key = Translate.MONEY_TITLE)
     private final Money money = new Money();
     // Zkušenosti
+    @TranslateEntry(key = Translate.HERO_EXPERIENCE)
     private final MaxActValue experiences = new MaxActValue();
     // Síla
-    private final EntityProperty strength = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.HERO_STRENGTH)
+    private final EntityProperty strength = new SimpleEntityProperty(this, "strength");
     // Obratnost
-    private final EntityProperty dexterity = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.HERO_DEXTERITY)
+    private final EntityProperty dexterity = new SimpleEntityProperty(this, "dexterity");
     // Odolnost
-    private final EntityProperty immunity = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.HERO_IMMUNITY)
+    private final EntityProperty immunity = new SimpleEntityProperty(this, "immunity");
     // Inteligence
-    private final EntityProperty intelligence = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.HERO_INTELLIGENCE)
+    private final EntityProperty intelligence = new SimpleEntityProperty(this, "intelligence");
     // Charisma
-    private final EntityProperty charisma = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.HERO_CHARISMA)
+    private final EntityProperty charisma = new SimpleEntityProperty(this, "charisma");
     // Nosnost
+    @TranslateEntry(key = Translate.HERO_CAPACITY)
     private final IntegerProperty capacity = new SimpleIntegerProperty(this, "capacity");
     // Pohyblivost
-    private final EntityProperty agility = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.HERO_AGILITY)
+    private final EntityProperty agility = new SimpleEntityProperty(this, "agility");
     // Mírné naložení
-    private final EntityProperty lowLoad = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.HERO_LOW_LOAD)
+    private final EntityProperty lowLoad = new SimpleEntityProperty(this, "lowLoad");
     // Střední naložení
-    private final EntityProperty mediumLoad = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.HERO_MEDIUM_LOAD)
+    private final EntityProperty mediumLoad = new SimpleEntityProperty(this, "mediumLoad");
     // Velké naložení
-    private final EntityProperty highLoad = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.HERO_HIGH_LOAD)
+    private final EntityProperty highLoad = new SimpleEntityProperty(this, "highLoad");
     // Postřeh
-    private final EntityProperty observationObjects = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.HERO_OBSERVATION_OBJECTS)
+    private final EntityProperty observationObjects = new SimpleEntityProperty(this, "observationObjects");
     // Postřeh na mechanické předměty
-    private final EntityProperty observationMechanics = new SimpleEntityProperty();
-
+    @TranslateEntry(key = Translate.HERO_OBSERVATION_MECHANICS)
+    private final EntityProperty observationMechanics = new SimpleEntityProperty(this, "observationMechanics");
+    // Indikátor, zda-li může hrdina přestoupit na novou úroveň
+    @TranslateEntry(key = Translate.HERO_LEVEL_UP)
     private final BooleanProperty levelUp = new SimpleBooleanProperty(this, "levelUp");
 
     // endregion
@@ -370,6 +391,87 @@ public class Hero extends EntityBase {
     }
 
     // endregion
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final Hero hero = (Hero) other;
+
+
+        if (!Objects.equals(this.getRace(), hero.getRace())) {
+            diffList.add(race.getName());
+        }
+
+        if (!Objects.equals(this.getProfession(), hero.getProfession())) {
+            diffList.add(profession.getName());
+        }
+
+        if (!Objects.equals(this.getLevel(), hero.getLevel())) {
+            diffList.add(level.getName());
+        }
+
+        if (!Objects.equals(this.getMoney(), hero.getMoney())) {
+            diffList.add("money");
+        }
+
+        if (!Objects.equals(this.getExperiences(), hero.getExperiences())) {
+            diffList.add("experiences");
+        }
+
+        if (!Objects.equals(this.getStrength(), hero.getStrength())) {
+            diffList.add(strength.getName());
+        }
+
+        if (!Objects.equals(this.getDexterity(), hero.getDexterity())) {
+            diffList.add(dexterity.getName());
+        }
+
+        if (!Objects.equals(this.getImmunity(), hero.getImmunity())) {
+            diffList.add(immunity.getName());
+        }
+
+        if (!Objects.equals(this.getIntelligence(), hero.getIntelligence())) {
+            diffList.add(intelligence.getName());
+        }
+
+        if (!Objects.equals(this.getCharisma(), hero.getCharisma())) {
+            diffList.add(charisma.getName());
+        }
+
+        if (!Objects.equals(this.getCapacity(), hero.getCapacity())) {
+            diffList.add(capacity.getName());
+        }
+
+        if (!Objects.equals(this.getAgility(), hero.getAgility())) {
+            diffList.add(agility.getName());
+        }
+
+        if (!Objects.equals(this.getLowLoad(), hero.getLowLoad())) {
+            diffList.add(lowLoad.getName());
+        }
+
+        if (!Objects.equals(this.getMediumLoad(), hero.getMediumLoad())) {
+            diffList.add(mediumLoad.getName());
+        }
+
+        if (!Objects.equals(this.getHighLoad(), hero.getHighLoad())) {
+            diffList.add(highLoad.getName());
+        }
+
+        if (!Objects.equals(this.getObservationObjects(), hero.getObservationObjects())) {
+            diffList.add(observationObjects.getName());
+        }
+
+        if (!Objects.equals(this.getObservationMechanics(), hero.getObservationMechanics())) {
+            diffList.add(observationMechanics.getName());
+        }
+
+        if (!Objects.equals(this.canLevelUp(), hero.canLevelUp())) {
+            diffList.add(levelUp.getName());
+        }
+
+        return diffList;
+    }
 
     // Výčet ras
     public enum Race {

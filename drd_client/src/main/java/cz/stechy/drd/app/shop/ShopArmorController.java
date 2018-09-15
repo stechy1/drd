@@ -291,4 +291,11 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
 
         return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
+
+    @Override
+    public void showDiffDialog() {
+        service.getDiff().thenAccept(diffEntries -> {
+            System.out.println(diffEntries.toString());
+        });
+    }
 }

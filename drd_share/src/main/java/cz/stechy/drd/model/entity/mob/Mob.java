@@ -1,5 +1,7 @@
 package cz.stechy.drd.model.entity.mob;
 
+import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.Rule;
@@ -9,6 +11,8 @@ import cz.stechy.drd.model.entity.EntityBase;
 import cz.stechy.drd.model.entity.EntityProperty;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.SimpleEntityProperty;
+import java.util.List;
+import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -23,43 +27,51 @@ public final class Mob extends EntityBase implements WithSameProperties {
 
     // region Variables
 
-    private final ObjectProperty<byte[]> image = new SimpleObjectProperty<>();
+    @TranslateEntry(key = Translate.ITEM_IMAGE)
+    private final ObjectProperty<byte[]> image = new SimpleObjectProperty<>(this, "new");
     // Třída nestvůry
-    private final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>();
+    @TranslateEntry(key = Translate.BESTIARY_MOB_CLASS)
+    private final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>(this, "new");
     // Typ pravidel, do kterých nestvůra patří
-    private final ObjectProperty<Rule> rulesType = new SimpleObjectProperty<>();
+    @TranslateEntry(key = Translate.BESTIARY_RULES_TYPE)
+    private final ObjectProperty<Rule> rulesType = new SimpleObjectProperty<>(this, "new");
     // Životaschpnost
-    private final IntegerProperty viability = new SimpleIntegerProperty(this,
-        "viability");
+    @TranslateEntry(key = Translate.BESTIARY_VIABILITY)
+    private final IntegerProperty viability = new SimpleIntegerProperty(this, "viability");
     // Odolnost
-    private final EntityProperty immunity = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.BESTIARY_IMMUNITY)
+    private final EntityProperty immunity = new SimpleEntityProperty(this, "immunity");
     // Bojovnost
+    @TranslateEntry(key = Translate.BESTIARY_IMMUNITY)
     private final IntegerProperty mettle = new SimpleIntegerProperty(this, "mettle");
     // Zranitenost
-    private final IntegerProperty vulnerability = new SimpleIntegerProperty();
+    @TranslateEntry(key = Translate.BESTIARY_VULNERABILITY)
+    private final IntegerProperty vulnerability = new SimpleIntegerProperty(this, "vulnerability");
     // Pohyblivost
-    private final IntegerProperty mobility = new SimpleIntegerProperty(this,
-        "mobility");
+    @TranslateEntry(key = Translate.BESTIARY_MOBILITY)
+    private final IntegerProperty mobility = new SimpleIntegerProperty(this, "mobility");
     // Vytrvalost
-    private final IntegerProperty perservance = new SimpleIntegerProperty(this,
-        "perservance");
+    @TranslateEntry(key = Translate.BESTIARY_PERSERVANCE)
+    private final IntegerProperty perservance = new SimpleIntegerProperty(this, "perservance");
     // Manévrovací schopnosti
-    private final IntegerProperty controlAbility = new SimpleIntegerProperty(this,
-        "controlAbility");
+    @TranslateEntry(key = Translate.BESTIARY_CONTROL_ABILITY)
+    private final IntegerProperty controlAbility = new SimpleIntegerProperty(this, "controlAbility");
     // Inteligence
-    private final EntityProperty intelligence = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.BESTIARY_INTELLIGENCE)
+    private final EntityProperty intelligence = new SimpleEntityProperty(this, "intelligence");
     // Charisma
-    private final EntityProperty charisma = new SimpleEntityProperty();
+    @TranslateEntry(key = Translate.BESTIARY_CHARISMA)
+    private final EntityProperty charisma = new SimpleEntityProperty(this, "charisma");
     // Základní síla mysli
-    private final IntegerProperty basicPowerOfMind = new SimpleIntegerProperty(this,
-        "basicPowerOfMind");
+    @TranslateEntry(key = Translate.BESTIARY_BASIC_POWER_OF_MIND)
+    private final IntegerProperty basicPowerOfMind = new SimpleIntegerProperty(this, "basicPowerOfMind");
     // TODO vymyslet, jak implementovat poklad
     // Zkušenosti
-    private final IntegerProperty experience = new SimpleIntegerProperty(this,
-        "experience");
+    @TranslateEntry(key = Translate.HERO_EXPERIENCE)
+    private final IntegerProperty experience = new SimpleIntegerProperty(this, "experience");
     // Ochočení
-    private final IntegerProperty domestication = new SimpleIntegerProperty(this,
-        "domestication");
+    @TranslateEntry(key = Translate.BESTIARY_DOMESTICATION)
+    private final IntegerProperty domestication = new SimpleIntegerProperty(this, "domestication");
 
     // endregion
 
@@ -338,6 +350,74 @@ public final class Mob extends EntityBase implements WithSameProperties {
     }
 
     // endregion
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final Mob mob = (Mob) other;
+
+        if (!Objects.equals(this.getImage(), mob.getImage())) {
+            diffList.add(image.getName());
+        }
+
+        if (!Objects.equals(this.getMobClass(), mob.getMobClass())) {
+            diffList.add(mobClass.getName());
+        }
+
+        if (!Objects.equals(this.getRulesType(), mob.getRulesType())) {
+            diffList.add(rulesType.getName());
+        }
+
+        if (!Objects.equals(this.getViability(), mob.getViability())) {
+            diffList.add(viability.getName());
+        }
+
+        if (!Objects.equals(this.getImmunity(), mob.getImmunity())) {
+            diffList.add(immunity.getName());
+        }
+
+        if (!Objects.equals(this.getMettle(), mob.getMettle())) {
+            diffList.add(mettle.getName());
+        }
+
+        if (!Objects.equals(this.getVulnerability(), mob.getVulnerability())) {
+            diffList.add(vulnerability.getName());
+        }
+
+        if (!Objects.equals(this.getMobility(), mob.getMobility())) {
+            diffList.add(mobility.getName());
+        }
+
+        if (!Objects.equals(this.getPerservance(), mob.getPerservance())) {
+            diffList.add(perservance.getName());
+        }
+
+        if (!Objects.equals(this.getControlAbility(), mob.getControlAbility())) {
+            diffList.add(controlAbility.getName());
+        }
+
+        if (!Objects.equals(this.getIntelligence(), mob.getIntelligence())) {
+            diffList.add(intelligence.getName());
+        }
+
+        if (!Objects.equals(this.getCharisma(), mob.getCharisma())) {
+            diffList.add(charisma.getName());
+        }
+
+        if (!Objects.equals(this.getBasicPowerOfMind(), mob.getBasicPowerOfMind())) {
+            diffList.add(basicPowerOfMind.getName());
+        }
+
+        if (!Objects.equals(this.getExperience(), mob.getExperience())) {
+            diffList.add(experience.getName());
+        }
+
+        if (!Objects.equals(this.getDomestication(), mob.getDomestication())) {
+            diffList.add(domestication.getName());
+        }
+
+        return diffList;
+    }
 
     public enum MobClass {
         DRAGON, SNAKE, LYCANTROP, UNDEATH, INVISIBLE, STATUE, SPIDER, INSECT, OTHER

@@ -1,12 +1,17 @@
 package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.db.base.OnlineItem;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.WithSameProperties;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -26,16 +31,22 @@ public abstract class ItemBase extends OnlineItem implements IDescriptable, With
 
     // ID předmětu
     // Název předmětu
+    @TranslateEntry(key = Translate.ITEM_NAME)
     protected final StringProperty name = new SimpleStringProperty(this, "name");
     // Popis předmětu
+    @TranslateEntry(key = Translate.ITEM_DESCRIPTION)
     protected final StringProperty description = new SimpleStringProperty(this, "description");
     // Váha předmětu
+    @TranslateEntry(key = Translate.ITEM_WEIGHT)
     protected final IntegerProperty weight = new SimpleIntegerProperty(this, "weight");
     // Cena předmětu
+    @TranslateEntry(key = Translate.ITEM_PRICE)
     protected final Money price = new Money();
     // Obrázek předmětu v Base64
+    @TranslateEntry(key = Translate.ITEM_IMAGE)
     protected final ObjectProperty<byte[]> image = new SimpleObjectProperty<>(this, "image");
     // Maximální počet předmětů, který může být v jednom stacku ve slotu inventáře
+    @TranslateEntry(key = Translate.ITEM_STACK_SIZE)
     protected final IntegerProperty stackSize = new SimpleIntegerProperty(this, "stackSize");
     // endregion
 
@@ -174,6 +185,38 @@ public abstract class ItemBase extends OnlineItem implements IDescriptable, With
     public abstract ItemType getItemType();
 
     // endregion
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final ItemBase itemBase = (ItemBase) other;
+
+        if (!Objects.equals(this.getName(), itemBase.getName())) {
+            diffList.add(name.getName());
+        }
+
+        if (!Objects.equals(this.getDescription(), itemBase.getDescription())) {
+            diffList.add(description.getName());
+        }
+
+        if (!Objects.equals(this.getWeight(), itemBase.getWeight())) {
+            diffList.add(weight.getName());
+        }
+
+        if (!Objects.equals(this.getPrice(), itemBase.getPrice())) {
+            diffList.add("price");
+        }
+
+        if (!Arrays.equals(this.getImage(), itemBase.getImage())) {
+            diffList.add(image.getName());
+        }
+
+        if (!Objects.equals(this.getStackSize(), itemBase.getStackSize())) {
+            diffList.add(stackSize.getName());
+        }
+
+        return diffList;
+    }
 
     @Override
     public String toString() {

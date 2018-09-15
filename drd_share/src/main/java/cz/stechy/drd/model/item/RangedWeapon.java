@@ -1,10 +1,14 @@
 package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.ITranslatedEnum;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -20,13 +24,16 @@ public final class RangedWeapon extends WeaponBase {
     // region Variables
 
     // Typ střelné zbraně
-    protected final ObjectProperty<RangedWeaponType> weaponType = new SimpleObjectProperty<>(this,
-        "weaponType", RangedWeaponType.FIRE);
+    @TranslateEntry(key = Translate.ITEM_WEAPON_MELE_RANGED_TYPE)
+    protected final ObjectProperty<RangedWeaponType> weaponType = new SimpleObjectProperty<>(this, "weaponType", RangedWeaponType.FIRE);
     // Dostřel - malý
+    @TranslateEntry(key = Translate.ITEM_WEAPON_RANGED_RANGE_LOW)
     protected final IntegerProperty rangeLow = new SimpleIntegerProperty(this, "rangeLow");
     // Dostřel - střední
+    @TranslateEntry(key = Translate.ITEM_WEAPON_RANGED_RANGE_MEDIUM)
     protected final IntegerProperty rangeMedium = new SimpleIntegerProperty(this, "rangeMedium");
     // Dostřel - velký
+    @TranslateEntry(key = Translate.ITEM_WEAPON_RANGED_RANGE_LONG)
     protected final IntegerProperty rangeLong = new SimpleIntegerProperty(this, "rangeLong");
 
     // endregion
@@ -170,6 +177,30 @@ public final class RangedWeapon extends WeaponBase {
     }
 
     // endregion
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final RangedWeapon rangedWeapon = (RangedWeapon) other;
+
+        if (!Objects.equals(this.getWeaponType(), rangedWeapon.getWeaponType())) {
+            diffList.add(weaponType.getName());
+        }
+
+        if (!Objects.equals(this.getRangeLow(), rangedWeapon.getRangeLow())) {
+            diffList.add(rangeLow.getName());
+        }
+
+        if (!Objects.equals(this.getRangeMedium(), rangedWeapon.getRangeMedium())) {
+            diffList.add(rangeMedium.getName());
+        }
+
+        if (!Objects.equals(this.getRangeLong(), rangedWeapon.getRangeLong())) {
+            diffList.add(rangeLong.getName());
+        }
+
+        return diffList;
+    }
 
     // Typ zbraně
     public enum RangedWeaponType implements ITranslatedEnum {

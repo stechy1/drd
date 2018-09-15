@@ -5,6 +5,7 @@ import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.db.base.OnlineDatabase;
 import cz.stechy.drd.db.base.OnlineItem;
 import cz.stechy.drd.di.Inject;
+import cz.stechy.drd.model.DiffEntry;
 import cz.stechy.drd.net.ClientCommunicator;
 import cz.stechy.drd.net.ConnectionState;
 import cz.stechy.drd.net.OnDataReceivedListener;
@@ -20,9 +21,11 @@ import cz.stechy.drd.util.Base64Util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
 import java.util.function.Predicate;
@@ -31,6 +34,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -190,7 +194,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     // region Public methods
 
-    public Optional<T> selectOnline(Predicate<T> filter) {
+    public Optional<T> selectOnline(Predicate<? super T> filter) {
         return onlineDatabase.stream().filter(filter).findFirst();
     }
 
@@ -341,6 +345,41 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
             return workingList.size();
         }, ThreadPool.COMMON_EXECUTOR);
+    }
+
+    public CompletableFuture<ObservableSet<DiffEntry<T>>> getDiff() {
+        return CompletableFuture.supplyAsync(() -> {
+            final ObservableSet<DiffEntry<T>> diff = FXCollections.observableSet(new HashSet<>());
+            final Set<String> helpSet = new HashSet<>();
+            for (T item : super.items) {
+                final String itemId = item.getId();
+                helpSet.add(itemId);
+                selectOnline(ID_FILTER(itemId)).ifPresent(onlineItem -> {
+                    final DiffEntry<T> diffEntry = new DiffEntry<>(item, onlineItem);
+                    if (diffEntry.hasDifferentValues()) {
+                        diff.add(diffEntry);
+                    }
+                });
+            }
+
+            for (T onlineItem : onlineDatabase) {
+                final String onlineItemId = onlineItem.getId();
+                if (helpSet.contains(onlineItemId)) {
+                    continue;
+                }
+
+                helpSet.add(onlineItemId);
+                select(ID_FILTER(onlineItemId)).ifPresent(item -> {
+                    final DiffEntry<T> diffEntry = new DiffEntry<>(onlineItem, item);
+                    if (diffEntry.hasDifferentValues()) {
+                        diff.add(diffEntry);
+                    }
+                });
+            }
+
+            return diff;
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenApplyAsync(set -> set, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     // endregion

@@ -3,6 +3,8 @@ package cz.stechy.drd.model.inventory;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.util.HashGenerator;
+import java.util.List;
+import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -20,11 +22,11 @@ public final class Inventory extends DatabaseItem {
 
     // region Variables
     // Id hrdiny, kterému patří inventář
-    private final StringProperty heroId = new SimpleStringProperty();
+    private final StringProperty heroId = new SimpleStringProperty(this, "heroId");
     // Typ inventáře
-    private final ObjectProperty<InventoryType> inventoryType = new SimpleObjectProperty<>();
+    private final ObjectProperty<InventoryType> inventoryType = new SimpleObjectProperty<>(this, "inventoryType");
     // Kapacita inventáře
-    private final IntegerProperty capacity = new SimpleIntegerProperty();
+    private final IntegerProperty capacity = new SimpleIntegerProperty(this, "capacity");
 
     // endregion
 
@@ -117,6 +119,26 @@ public final class Inventory extends DatabaseItem {
     }
 
     // endregion
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final Inventory inventory = (Inventory) other;
+
+        if (!Objects.equals(this.getHeroId(), inventory.getHeroId())) {
+            diffList.add(heroId.getName());
+        }
+
+        if (!Objects.equals(this.getInventoryType(), inventory.getInventoryType())) {
+            diffList.add(inventoryType.getName());
+        }
+
+        if (!Objects.equals(this.getCapacity(), inventory.getCapacity())) {
+            diffList.add(capacity.getName());
+        }
+
+        return diffList;
+    }
 
     @Override
     public boolean equals(Object o) {

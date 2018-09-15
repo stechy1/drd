@@ -103,6 +103,7 @@ public final class R {
         public static final String HERO_DESCRIPTION = "drd_hero_description";
         public static final String HERO_LIVE = "drd_hero_live";
         public static final String HERO_LIVES = "drd_hero_lives";
+        public static final String HERO_IS_ALIVE = "drd_hero_is_alive";
         public static final String HERO_MAG = "drd_hero_mag";
         public static final String HERO_MAGS = "drd_hero_mags";
         public static final String HERO_MAIN_PROPERTIES = "drd_hero_main_properties";
@@ -445,6 +446,10 @@ public final class R {
         public static final String SERVER_STATUS_CONNECTING = "drd_server_status_connecting";
         public static final String SERVER_STATUS_CONNECTED = "drd_server_status_connected";
         public static final String SERVER_DISCONNECT = "drd_server_disconnect";
+        public static final String ENTRY_ID = "drd_entry_id";
+        public static final String ENTRY_AUTHOR = "drd_entry_author";
+        public static final String ENTRY_DOWNLOADED = "drd_entry_downloaded";
+        public static final String ENTRY_UPLOADED = "drd_entry_uploaded";
     }
 
     public static class Config {

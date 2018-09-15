@@ -133,4 +133,6 @@ interface ShopItemController<T extends ShopEntry> {
      * @return {@link Optional<ItemBase>}
      */
     Optional<T> getSelectedItem();
+
+    void showDiffDialog();
 }

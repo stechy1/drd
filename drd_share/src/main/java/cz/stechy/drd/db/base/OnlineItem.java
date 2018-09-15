@@ -1,5 +1,9 @@
 package cz.stechy.drd.db.base;
 
+import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.annotation.TranslateEntry;
+import java.util.List;
+import java.util.Objects;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -15,11 +19,14 @@ public abstract class OnlineItem extends DatabaseItem {
     // region Variables
 
     // Autor entity
+    @TranslateEntry(key = Translate.ENTRY_AUTHOR)
     protected final StringProperty author = new SimpleStringProperty(this, "author");
     // Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
+    @TranslateEntry(key = Translate.ENTRY_DOWNLOADED)
     protected final BooleanProperty downloaded = new SimpleBooleanProperty(this, "downloaded",
         false);
     // Přiznak určující, zda-li je položka nahrána v online databázi, či nikoliv
+    @TranslateEntry(key = Translate.ENTRY_UPLOADED)
     private final BooleanProperty uploaded = new SimpleBooleanProperty(this, "uploaded", false);
 
     // endregion
@@ -53,6 +60,18 @@ public abstract class OnlineItem extends DatabaseItem {
         OnlineItem onlineItem = (OnlineItem) other;
         setDownloaded(onlineItem.isDownloaded());
         setUploaded(onlineItem.isUploaded());
+    }
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final OnlineItem onlineItem = (OnlineItem) other;
+
+        if (!Objects.equals(this.getAuthor(), onlineItem.getAuthor())) {
+            diffList.add(author.getName());
+        }
+
+        return diffList;
     }
 
     // endregion

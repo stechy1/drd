@@ -1,10 +1,14 @@
 package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.ITranslatedEnum;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -20,13 +24,14 @@ public final class MeleWeapon extends WeaponBase {
     // region Variables
 
     // Obrana zbraně
+    @TranslateEntry(key = Translate.ITEM_WEAPON_MELE_ARMOR_DEFENCE_NUMBER)
     protected final IntegerProperty defence = new SimpleIntegerProperty(this, "defence");
     // Třída zbraně
-    protected final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(this,
-        "weaponClass", MeleWeaponClass.LIGHT);
+    @TranslateEntry(key = Translate.ITEM_WEAPON_MELE_CLASS)
+    protected final ObjectProperty<MeleWeaponClass> weaponClass = new SimpleObjectProperty<>(this, "weaponClass", MeleWeaponClass.LIGHT);
     // Typ zbraně
-    protected final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(this,
-        "weaponType", MeleWeaponType.ONE_HAND);
+    @TranslateEntry(key = Translate.ITEM_WEAPON_MELE_RANGED_TYPE)
+    protected final ObjectProperty<MeleWeaponType> weaponType = new SimpleObjectProperty<>(this, "weaponType", MeleWeaponType.ONE_HAND);
 
     // endregion
 
@@ -153,6 +158,26 @@ public final class MeleWeapon extends WeaponBase {
     }
 
     // endregion
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final MeleWeapon meleWeapon = (MeleWeapon) other;
+
+        if (!Objects.equals(this.getDefence(), meleWeapon.getDefence())) {
+            diffList.add(defence.getName());
+        }
+
+        if (!Objects.equals(this.getWeaponClass(), meleWeapon.getWeaponClass())) {
+            diffList.add(weaponClass.getName());
+        }
+
+        if (!Objects.equals(this.getWeaponType(), meleWeapon.getWeaponType())) {
+            diffList.add(weaponType.getName());
+        }
+
+        return diffList;
+    }
 
     // Třída zbraně
     public enum MeleWeaponClass implements ITranslatedEnum {

@@ -386,7 +386,7 @@ public class ShopController1 extends BaseController implements Initializable {
 
     @FXML
     private void handleUpdateLocalItem(ActionEvent actionEvent) {
-
+        controllers[selectedAccordionPaneIndex.get()].showDiffDialog();
     }
 
     @FXML

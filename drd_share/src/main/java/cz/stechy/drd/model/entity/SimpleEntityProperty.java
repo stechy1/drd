@@ -23,15 +23,34 @@ public final class SimpleEntityProperty extends EntityProperty {
 
     // region Constructors
 
+    /**
+     * Vytvoří novou vlastnost
+     */
     public SimpleEntityProperty() {
         super(MIN_VALUE, MAX_VALUE);
 
+        init();
+    }
+
+    /**
+     * Vytvoří novou vlastnost
+     *
+     * @param bean Objekt obsahující tuto vlastnost
+     * @param name Název vlastnosti
+     */
+    public SimpleEntityProperty(Object bean, String name) {
+        super(bean, name, MIN_VALUE, MAX_VALUE);
+
+        init();
+    }
+
+    // endregion
+
+    private void init() {
         value.addListener((observable, oldValue, newValue) -> {
             int index = limit(newValue).intValue();
             int repairValue = REPAIRS[index - 1];
             repair.setValue(repairValue);
         });
     }
-
-    // endregion
 }
