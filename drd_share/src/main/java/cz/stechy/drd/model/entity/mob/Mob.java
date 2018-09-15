@@ -28,50 +28,50 @@ public final class Mob extends EntityBase implements WithSameProperties {
     // region Variables
 
     @TranslateEntry(key = Translate.ITEM_IMAGE)
-    private final ObjectProperty<byte[]> image = new SimpleObjectProperty<>(this, "new");
+    protected final ObjectProperty<byte[]> image = new SimpleObjectProperty<>(this, "new");
     // Třída nestvůry
     @TranslateEntry(key = Translate.BESTIARY_MOB_CLASS)
-    private final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>(this, "new");
+    protected final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>(this, "new");
     // Typ pravidel, do kterých nestvůra patří
     @TranslateEntry(key = Translate.BESTIARY_RULES_TYPE)
-    private final ObjectProperty<Rule> rulesType = new SimpleObjectProperty<>(this, "new");
+    protected final ObjectProperty<Rule> rulesType = new SimpleObjectProperty<>(this, "new");
     // Životaschpnost
     @TranslateEntry(key = Translate.BESTIARY_VIABILITY)
-    private final IntegerProperty viability = new SimpleIntegerProperty(this, "viability");
+    protected final IntegerProperty viability = new SimpleIntegerProperty(this, "viability");
     // Odolnost
     @TranslateEntry(key = Translate.BESTIARY_IMMUNITY)
-    private final EntityProperty immunity = new SimpleEntityProperty(this, "immunity");
+    protected final EntityProperty immunity = new SimpleEntityProperty(this, "immunity");
     // Bojovnost
     @TranslateEntry(key = Translate.BESTIARY_IMMUNITY)
-    private final IntegerProperty mettle = new SimpleIntegerProperty(this, "mettle");
+    protected final IntegerProperty mettle = new SimpleIntegerProperty(this, "mettle");
     // Zranitenost
     @TranslateEntry(key = Translate.BESTIARY_VULNERABILITY)
-    private final IntegerProperty vulnerability = new SimpleIntegerProperty(this, "vulnerability");
+    protected final IntegerProperty vulnerability = new SimpleIntegerProperty(this, "vulnerability");
     // Pohyblivost
     @TranslateEntry(key = Translate.BESTIARY_MOBILITY)
-    private final IntegerProperty mobility = new SimpleIntegerProperty(this, "mobility");
+    protected final IntegerProperty mobility = new SimpleIntegerProperty(this, "mobility");
     // Vytrvalost
     @TranslateEntry(key = Translate.BESTIARY_PERSERVANCE)
-    private final IntegerProperty perservance = new SimpleIntegerProperty(this, "perservance");
+    protected final IntegerProperty perservance = new SimpleIntegerProperty(this, "perservance");
     // Manévrovací schopnosti
     @TranslateEntry(key = Translate.BESTIARY_CONTROL_ABILITY)
-    private final IntegerProperty controlAbility = new SimpleIntegerProperty(this, "controlAbility");
+    protected final IntegerProperty controlAbility = new SimpleIntegerProperty(this, "controlAbility");
     // Inteligence
     @TranslateEntry(key = Translate.BESTIARY_INTELLIGENCE)
-    private final EntityProperty intelligence = new SimpleEntityProperty(this, "intelligence");
+    protected final EntityProperty intelligence = new SimpleEntityProperty(this, "intelligence");
     // Charisma
     @TranslateEntry(key = Translate.BESTIARY_CHARISMA)
-    private final EntityProperty charisma = new SimpleEntityProperty(this, "charisma");
+    protected final EntityProperty charisma = new SimpleEntityProperty(this, "charisma");
     // Základní síla mysli
     @TranslateEntry(key = Translate.BESTIARY_BASIC_POWER_OF_MIND)
-    private final IntegerProperty basicPowerOfMind = new SimpleIntegerProperty(this, "basicPowerOfMind");
+    protected final IntegerProperty basicPowerOfMind = new SimpleIntegerProperty(this, "basicPowerOfMind");
     // TODO vymyslet, jak implementovat poklad
     // Zkušenosti
     @TranslateEntry(key = Translate.HERO_EXPERIENCE)
-    private final IntegerProperty experience = new SimpleIntegerProperty(this, "experience");
+    protected final IntegerProperty experience = new SimpleIntegerProperty(this, "experience");
     // Ochočení
     @TranslateEntry(key = Translate.BESTIARY_DOMESTICATION)
-    private final IntegerProperty domestication = new SimpleIntegerProperty(this, "domestication");
+    protected final IntegerProperty domestication = new SimpleIntegerProperty(this, "domestication");
 
     // endregion
 

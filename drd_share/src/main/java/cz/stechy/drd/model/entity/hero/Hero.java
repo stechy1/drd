@@ -54,58 +54,58 @@ public class Hero extends EntityBase {
 
     // Rasa
     @TranslateEntry(key = Translate.HERO_RACE)
-    private final ObjectProperty<Race> race = new SimpleObjectProperty<>(this, "race");
+    protected final ObjectProperty<Race> race = new SimpleObjectProperty<>(this, "race");
     // Profece
     @TranslateEntry(key = Translate.HERO_PROFESSION)
-    private final ObjectProperty<Profession> profession = new SimpleObjectProperty<>(this, "profession");
+    protected final ObjectProperty<Profession> profession = new SimpleObjectProperty<>(this, "profession");
     // Úroveň
     @TranslateEntry(key = Translate.LEVEL_UP_TITLE)
-    private final IntegerProperty level = new SimpleIntegerProperty(this, "level");
+    protected final IntegerProperty level = new SimpleIntegerProperty(this, "level");
     // Peníze
     @TranslateEntry(key = Translate.MONEY_TITLE)
-    private final Money money = new Money();
+    protected final Money money = new Money();
     // Zkušenosti
     @TranslateEntry(key = Translate.HERO_EXPERIENCE)
-    private final MaxActValue experiences = new MaxActValue();
+    protected final MaxActValue experiences = new MaxActValue();
     // Síla
     @TranslateEntry(key = Translate.HERO_STRENGTH)
-    private final EntityProperty strength = new SimpleEntityProperty(this, "strength");
+    protected final EntityProperty strength = new SimpleEntityProperty(this, "strength");
     // Obratnost
     @TranslateEntry(key = Translate.HERO_DEXTERITY)
-    private final EntityProperty dexterity = new SimpleEntityProperty(this, "dexterity");
+    protected final EntityProperty dexterity = new SimpleEntityProperty(this, "dexterity");
     // Odolnost
     @TranslateEntry(key = Translate.HERO_IMMUNITY)
-    private final EntityProperty immunity = new SimpleEntityProperty(this, "immunity");
+    protected final EntityProperty immunity = new SimpleEntityProperty(this, "immunity");
     // Inteligence
     @TranslateEntry(key = Translate.HERO_INTELLIGENCE)
-    private final EntityProperty intelligence = new SimpleEntityProperty(this, "intelligence");
+    protected final EntityProperty intelligence = new SimpleEntityProperty(this, "intelligence");
     // Charisma
     @TranslateEntry(key = Translate.HERO_CHARISMA)
-    private final EntityProperty charisma = new SimpleEntityProperty(this, "charisma");
+    protected final EntityProperty charisma = new SimpleEntityProperty(this, "charisma");
     // Nosnost
     @TranslateEntry(key = Translate.HERO_CAPACITY)
-    private final IntegerProperty capacity = new SimpleIntegerProperty(this, "capacity");
+    protected final IntegerProperty capacity = new SimpleIntegerProperty(this, "capacity");
     // Pohyblivost
     @TranslateEntry(key = Translate.HERO_AGILITY)
-    private final EntityProperty agility = new SimpleEntityProperty(this, "agility");
+    protected final EntityProperty agility = new SimpleEntityProperty(this, "agility");
     // Mírné naložení
     @TranslateEntry(key = Translate.HERO_LOW_LOAD)
-    private final EntityProperty lowLoad = new SimpleEntityProperty(this, "lowLoad");
+    protected final EntityProperty lowLoad = new SimpleEntityProperty(this, "lowLoad");
     // Střední naložení
     @TranslateEntry(key = Translate.HERO_MEDIUM_LOAD)
-    private final EntityProperty mediumLoad = new SimpleEntityProperty(this, "mediumLoad");
+    protected final EntityProperty mediumLoad = new SimpleEntityProperty(this, "mediumLoad");
     // Velké naložení
     @TranslateEntry(key = Translate.HERO_HIGH_LOAD)
-    private final EntityProperty highLoad = new SimpleEntityProperty(this, "highLoad");
+    protected final EntityProperty highLoad = new SimpleEntityProperty(this, "highLoad");
     // Postřeh
     @TranslateEntry(key = Translate.HERO_OBSERVATION_OBJECTS)
-    private final EntityProperty observationObjects = new SimpleEntityProperty(this, "observationObjects");
+    protected final EntityProperty observationObjects = new SimpleEntityProperty(this, "observationObjects");
     // Postřeh na mechanické předměty
     @TranslateEntry(key = Translate.HERO_OBSERVATION_MECHANICS)
-    private final EntityProperty observationMechanics = new SimpleEntityProperty(this, "observationMechanics");
+    protected final EntityProperty observationMechanics = new SimpleEntityProperty(this, "observationMechanics");
     // Indikátor, zda-li může hrdina přestoupit na novou úroveň
     @TranslateEntry(key = Translate.HERO_LEVEL_UP)
-    private final BooleanProperty levelUp = new SimpleBooleanProperty(this, "levelUp");
+    protected final BooleanProperty levelUp = new SimpleBooleanProperty(this, "levelUp");
 
     // endregion
 
