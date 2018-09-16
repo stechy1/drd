@@ -183,8 +183,19 @@ public class ShopWeaponRangedController implements Initializable,
         highlightDiffItems.addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue) {
                 service.getDiff().thenAcceptAsync(diffEntries -> {
-                    System.out.println(diffEntries.toString());
+                    diffEntries.forEach(diffEntry -> {
+                        final String id = diffEntry.getId();
+                        rangedWeapons
+                            .parallelStream()
+                            .filter(entry -> id.equals(entry.getId()))
+                            .findFirst()
+                            .ifPresent(generalEntry -> {
+                                generalEntry.setDiffMap(diffEntry.getDiffMap());
+                            });
+                    });
                 }, ThreadPool.JAVAFX_EXECUTOR);
+            } else {
+                rangedWeapons.parallelStream().forEach(entry -> entry.clearDiffMap());
             }
         });
     }

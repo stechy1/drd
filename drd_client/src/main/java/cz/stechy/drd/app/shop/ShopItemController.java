@@ -151,6 +151,8 @@ interface ShopItemController<T extends ShopEntry> {
         private final BooleanProperty highlightDiffItem;
         private final StringProperty style = new SimpleStringProperty("");
 
+        private T oldItem;
+
         ShopRow(BooleanProperty highlightDiffItem) {
             this.highlightDiffItem = highlightDiffItem;
         }
@@ -159,15 +161,20 @@ interface ShopItemController<T extends ShopEntry> {
         protected void updateItem(T item, boolean empty) {
             super.updateItem(item, empty);
             if (item == null || empty) {
+                if (oldItem != null) {
+                    oldItem.hasDiffProperty().removeListener(diffListener);
+                }
                 styleProperty().unbind();
                 setStyle("");
-                highlightDiffItem.removeListener(this.diffListener);
+                highlightDiffItem.removeListener(ShopRow.this.diffListener);
             } else {
                 styleProperty().bind(style);
-                highlightDiffItem.addListener(this.diffListener);
-                if (highlightDiffItem.get()) {
+                highlightDiffItem.addListener(ShopRow.this.diffListener);
+                if (highlightDiffItem.get() && item.hasDiff()) {
                     style.setValue("-fx-background-color: tomato;");
                 }
+                item.hasDiffProperty().addListener(diffListener);
+                oldItem = item;
             }
         }
 
@@ -175,7 +182,11 @@ interface ShopItemController<T extends ShopEntry> {
             if (newValue == null || !newValue) {
                 style.setValue("");
             } else {
-                style.setValue("-fx-background-color: tomato;");
+                if (getItem().hasDiff()) {
+                    style.setValue("-fx-background-color: tomato;");
+                } else {
+                    style.setValue("");
+                }
             }
         };
     }

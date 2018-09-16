@@ -179,8 +179,19 @@ public class ShopWeaponMeleController implements Initializable,
         highlightDiffItems.addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue) {
                 service.getDiff().thenAcceptAsync(diffEntries -> {
-                    System.out.println(diffEntries.toString());
+                    diffEntries.forEach(diffEntry -> {
+                        final String id = diffEntry.getId();
+                        meleWeapons
+                            .parallelStream()
+                            .filter(entry -> id.equals(entry.getId()))
+                            .findFirst()
+                            .ifPresent(generalEntry -> {
+                                generalEntry.setDiffMap(diffEntry.getDiffMap());
+                            });
+                    });
                 }, ThreadPool.JAVAFX_EXECUTOR);
+            } else {
+                meleWeapons.parallelStream().forEach(entry -> entry.clearDiffMap());
             }
         });
     }

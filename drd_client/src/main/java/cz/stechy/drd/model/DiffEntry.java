@@ -21,6 +21,7 @@ public class DiffEntry<T extends DatabaseItem> {
 
     // region Variables
 
+    private final String id;
     private final T left;
     private final T right;
 
@@ -31,6 +32,10 @@ public class DiffEntry<T extends DatabaseItem> {
     // region Constructors
 
     public DiffEntry(T left, T right) {
+        if (!Objects.equals(left.getId(), right.getId())) {
+            throw new IllegalArgumentException("Musí se porovnávat dva stejné předměty.");
+        }
+        id = left.getId();
         this.left = left;
         this.right = right;
         this.diffMap = calculateDifferentValues();
@@ -118,6 +123,14 @@ public class DiffEntry<T extends DatabaseItem> {
 
     public Map<String, DiffEntryTuple> getDiffMap() {
         return Collections.unmodifiableMap(diffMap);
+    }
+
+    // endregion
+
+    // region Getters & Seters
+
+    public String getId() {
+        return id;
     }
 
     // endregion
