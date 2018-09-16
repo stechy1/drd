@@ -280,6 +280,30 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     }
 
     @Override
+    public CompletableFuture<Void> updateOnlineAsync(T item) {
+        return CompletableFuture.supplyAsync(() -> {
+            communicator.sendMessage(new DatabaseMessage(
+                MessageSource.CLIENT, new DatabaseMessageCRUD(
+                    toStringItemMap(item), getFirebaseChildName(), DatabaseAction.UPDATE, item.getId())
+            ));
+
+            workingItemId = item.getId();
+
+            try {
+                semaphore.acquire();
+            } catch (InterruptedException ignored) {}
+
+            if (!success) {
+                throw new RuntimeException("Aktualizace předmětu se nezdařila.");
+            }
+
+            LOGGER.info("Aktualizace proběhla v pořádku.");
+            return item;
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenApplyAsync(t -> null, ThreadPool.JAVAFX_EXECUTOR);
+    }
+
+    @Override
     public CompletableFuture<Void> deleteRemoteAsync(T item) {
         return CompletableFuture.supplyAsync(() -> {
             communicator.sendMessage(new DatabaseMessage(

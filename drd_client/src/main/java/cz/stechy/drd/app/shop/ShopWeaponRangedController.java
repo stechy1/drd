@@ -314,4 +314,19 @@ public class ShopWeaponRangedController implements Initializable,
 
         return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
+
+    @Override
+    public void updateLocalItem(ShopEntry itemBase) {
+        service.selectOnline(AdvancedDatabaseService.ID_FILTER(itemBase.getId())).ifPresent(rangedWeapon -> {
+            service.uploadAsync(rangedWeapon).thenAccept(entry -> {
+                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                itemBase.clearDiffMap();
+            });
+        });
+    }
+
+    @Override
+    public void updateOnlineItem(ShopEntry itemBase) {
+        service.uploadAsync((RangedWeapon) itemBase.getItemBase()).thenAccept(ignored -> {});
+    }
 }

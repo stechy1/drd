@@ -10,7 +10,6 @@ import cz.stechy.drd.net.message.ChatMessage;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatAction;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClient;
-import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRequestConnect;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRoom;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientTyping;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationRoom;
@@ -100,10 +99,10 @@ public final class ChatService {
             }
 
             // Přihlásím nového uživatele
-            communicator.sendMessage(new ChatMessage(MessageSource.CLIENT,
-                new ChatMessageAdministrationData(
-                    new ChatMessageAdministrationClientRequestConnect(newValue.getId(),
-                        userService.getUser().getName()))));
+//            communicator.sendMessage(new ChatMessage(MessageSource.CLIENT,
+//                new ChatMessageAdministrationData(
+//                    new ChatMessageAdministrationClientRequestConnect(newValue.getId(),
+//                        userService.getUser().getName()))));
         });
     }
 

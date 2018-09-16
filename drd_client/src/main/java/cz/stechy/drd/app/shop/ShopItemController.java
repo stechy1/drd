@@ -146,6 +146,20 @@ interface ShopItemController<T extends ShopEntry> {
      */
     Optional<T> getSelectedItem();
 
+    /**
+     * Aktualizuje lokální záznam předmětu z online databáze
+     *
+     * @param itemBase {@link ItemBase} Lokální předmět, který se aktualizuje z online databáze
+     */
+    void updateLocalItem(ShopEntry itemBase);
+
+    /**
+     * Aktualizuje online záznam předmětu z lokální databáze
+     *
+     * @param itemBase {@link ItemBase} Lokální předmět, který aktualizuje online záznam
+     */
+    void updateOnlineItem(ShopEntry itemBase);
+
     class ShopRow<T extends ShopEntry> extends TableRow<T> {
 
         private final BooleanProperty highlightDiffItem;

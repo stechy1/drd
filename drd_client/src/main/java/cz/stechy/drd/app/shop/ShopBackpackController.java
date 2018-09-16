@@ -291,4 +291,14 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
         return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
+
+    @Override
+    public void updateLocalItem(ShopEntry itemBase) {
+
+    }
+
+    @Override
+    public void updateOnlineItem(ShopEntry itemBase) {
+
+    }
 }

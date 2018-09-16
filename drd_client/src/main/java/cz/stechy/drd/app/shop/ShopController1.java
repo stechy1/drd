@@ -385,27 +385,25 @@ public class ShopController1 extends BaseController implements Initializable {
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
         ShopItemController<? extends ShopEntry> controller = controllers[selectedAccordionPaneIndex.get()];
-        controller.getSelectedItem()
-            .ifPresent(entry -> {
-                if (diffHighlightMode.get()) {
-
-                } else {
-                    controller.uploadRequest(entry.getItemBase());
-                }
-            });
+        controller.getSelectedItem().ifPresent(entry -> {
+            if (diffHighlightMode.get()) {
+                controller.updateOnlineItem(entry);
+            } else {
+                controller.uploadRequest(entry.getItemBase());
+            }
+        });
     }
 
     @FXML
     private void handleDownloadItem(ActionEvent actionEvent) {
         ShopItemController<? extends ShopEntry> controller = controllers[selectedAccordionPaneIndex.get()];
-        controller.getSelectedItem()
-            .ifPresent(entry -> {
-                if (diffHighlightMode.get()) {
-
-                } else {
-                    controller.onAddItem(entry.getItemBase(), true);
-                }
-            });
+        controller.getSelectedItem().ifPresent(entry -> {
+            if (diffHighlightMode.get()) {
+                controller.updateLocalItem(entry);
+            } else {
+                controller.onAddItem(entry.getItemBase(), true);
+            }
+        });
     }
 
     @FXML
