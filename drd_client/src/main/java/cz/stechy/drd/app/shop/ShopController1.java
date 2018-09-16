@@ -233,6 +233,11 @@ public class ShopController1 extends BaseController implements Initializable {
                 btnToggleShowDiffItems.setSelected(false);
             }
         });
+        showOnlineDatabase.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue) {
+                btnToggleShowDiffItems.setSelected(false);
+            }
+        });
         diffHighlightMode.addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 btnDownloadItem.getStyleClass().remove("icon-download");
