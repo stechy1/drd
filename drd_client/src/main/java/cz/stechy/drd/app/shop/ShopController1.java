@@ -219,8 +219,7 @@ public class ShopController1 extends BaseController implements Initializable {
         btnToggleShowDiffItems.disableProperty().bind(
             userLogged.not().or(
                 editMode.not().or(
-                    showOnlineDatabase.or(
-                        selectedRowBinding))));
+                    showOnlineDatabase)));
         btnContinueShopping.disableProperty().bind(
             editMode.or(
                 heroSelected.not().or(
