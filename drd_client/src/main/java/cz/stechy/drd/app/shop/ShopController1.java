@@ -1,6 +1,5 @@
 package cz.stechy.drd.app.shop;
 
-import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXToggleButton;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
@@ -99,9 +98,7 @@ public class ShopController1 extends BaseController implements Initializable {
     @FXML
     private Button btnRemoveOnlineItem;
     @FXML
-    private JFXButton btnUpdateLocalItem;
-    @FXML
-    private JFXButton btnUpdateOnlineItem;
+    private ToggleButton btnToggleShowDiffItems;
     @FXML
     private ToggleButton btnToggleOnline;
     @FXML
@@ -115,25 +112,19 @@ public class ShopController1 extends BaseController implements Initializable {
 
     private final ShoppingCart shoppingCart;
     private final List<String> translatedItemType = new ArrayList<>();
-    private final IntegerProperty selectedAccordionPaneIndex = new SimpleIntegerProperty(
-        NO_SELECTED_INDEX);
+    private final IntegerProperty selectedAccordionPaneIndex = new SimpleIntegerProperty(NO_SELECTED_INDEX);
     private final IntegerProperty selectedRowIndex = new SimpleIntegerProperty(NO_SELECTED_INDEX);
     private final BooleanProperty showOnlineDatabase = new SimpleBooleanProperty(false);
-    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(this,
-        "ammountEditable", false);
+    private final BooleanProperty ammountEditable = new SimpleBooleanProperty(this, "ammountEditable", false);
     // Indikuje, zda-li se nacházím v edit modu
-    private final BooleanProperty editMode = new SimpleBooleanProperty(this,
-        "editMode", false);
-    private final BooleanProperty userLogged = new SimpleBooleanProperty(this,
-        "userLogged", true);
-    private final BooleanProperty heroSelected = new SimpleBooleanProperty(this,
-        "heroSelected", false);
-    private final BooleanProperty disableDownloadBtn = new SimpleBooleanProperty(this,
-        "disableDownloadBtn", true);
-    private final BooleanProperty disableUploadBtn = new SimpleBooleanProperty(this,
-        "disableUploadBtn", true);
-    private final BooleanProperty disableRemoveOnlineBtn = new SimpleBooleanProperty(this,
-        "disableRemoveOnlineBtn", true);
+    private final BooleanProperty editMode = new SimpleBooleanProperty(this, "editMode", false);
+    // Indikuje, zda-li se nacházím v režimu zobrazení rozdílných hodnot o proti online záznamům
+    private final BooleanProperty diffHighlightMode = new SimpleBooleanProperty(this, "diffHighglightMode", false);
+    private final BooleanProperty userLogged = new SimpleBooleanProperty(this, "userLogged", true);
+    private final BooleanProperty heroSelected = new SimpleBooleanProperty(this, "heroSelected", false);
+    private final BooleanProperty disableDownloadBtn = new SimpleBooleanProperty(this, "disableDownloadBtn", true);
+    private final BooleanProperty disableUploadBtn = new SimpleBooleanProperty(this, "disableUploadBtn", true);
+    private final BooleanProperty disableRemoveOnlineBtn = new SimpleBooleanProperty(this, "disableRemoveOnlineBtn", true);
     private final ShopNotificationProvider notificationProvider = this::showNotification;
 
     private final User user;
@@ -175,8 +166,7 @@ public class ShopController1 extends BaseController implements Initializable {
             tableBackpackController
         };
 
-        accodionShopContainer.expandedPaneProperty()
-            .addListener((observable, oldValue, newValue) -> {
+        accodionShopContainer.expandedPaneProperty().addListener((observable, oldValue, newValue) -> {
                 if (newValue == null) {
                     selectedAccordionPaneIndex.setValue(NO_SELECTED_INDEX);
                     selectedRowIndex.setValue(NO_SELECTED_INDEX);
@@ -187,10 +177,10 @@ public class ShopController1 extends BaseController implements Initializable {
             });
 
         editMode.bindBidirectional(btnToggleEditMode.selectedProperty());
+        diffHighlightMode.bind(btnToggleShowDiffItems.selectedProperty().and(editMode));
 
         final BooleanBinding selectedRowBinding = selectedRowIndex.isEqualTo(NO_SELECTED_INDEX);
-        final BooleanBinding selectedAccordionPane = selectedAccordionPaneIndex
-            .isNotEqualTo(NO_SELECTED_INDEX).not();
+        final BooleanBinding selectedAccordionPane = selectedAccordionPaneIndex.isNotEqualTo(NO_SELECTED_INDEX).not();
         btnAddItem.disableProperty().bind(Bindings.or(
             editMode.not(),
             Bindings.or(
@@ -224,18 +214,13 @@ public class ShopController1 extends BaseController implements Initializable {
             userLogged.not().or(
                 editMode.not().or(
                     disableRemoveOnlineBtn.or(
-                        showOnlineDatabase.not()))));
-        btnUpdateLocalItem.disableProperty().bind(
+                        showOnlineDatabase.not()
+                            .or(diffHighlightMode)))));
+        btnToggleShowDiffItems.disableProperty().bind(
             userLogged.not().or(
                 editMode.not().or(
                     showOnlineDatabase.or(
                         selectedRowBinding))));
-        btnUpdateOnlineItem.disableProperty().bind(
-            userLogged.not().or(
-                editMode.not().or(
-                    showOnlineDatabase.or(
-                        selectedRowBinding))));
-
         btnContinueShopping.disableProperty().bind(
             editMode.or(
                 heroSelected.not().or(
@@ -243,6 +228,24 @@ public class ShopController1 extends BaseController implements Initializable {
                 )
             )
         );
+        editMode.addListener((observable, oldValue, newValue) -> {
+            if (newValue == null || !newValue) {
+                btnToggleShowDiffItems.setSelected(false);
+            }
+        });
+        diffHighlightMode.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                btnDownloadItem.getStyleClass().remove("icon-download");
+                btnDownloadItem.getStyleClass().add("icon-update-local");
+                btnUploadItem.getStyleClass().remove("icon-upload");
+                btnUploadItem.getStyleClass().add("icon-update-online");
+            } else {
+                btnDownloadItem.getStyleClass().add("icon-download");
+                btnDownloadItem.getStyleClass().remove("icon-update-local");
+                btnUploadItem.getStyleClass().add("icon-upload");
+                btnUploadItem.getStyleClass().remove("icon-update-online");
+            }
+        });
         selectedAccordionPaneIndex.addListener((observable, oldValue, newValue) -> {
             int index = newValue.intValue();
             if (index < 0) {
@@ -290,6 +293,7 @@ public class ShopController1 extends BaseController implements Initializable {
             controller.setShoppingCart(shoppingCart);
             controller.setRowSelectedIndexProperty(selectedRowIndex);
             controller.setShowOnlineDatabase(showOnlineDatabase);
+            controller.setHighlightDiffItems(diffHighlightMode);
             controller.setAmmountEditableProperty(ammountEditable);
             controller.setNotificationProvider(notificationProvider);
             controller.setOnlineListener(firebaseListener);
@@ -382,16 +386,6 @@ public class ShopController1 extends BaseController implements Initializable {
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
         ShopItemController<? extends ShopEntry> controller = controllers[selectedAccordionPaneIndex.get()];
         controller.getSelectedItem().ifPresent(entry -> controller.requestRemoveItem(entry, true));
-    }
-
-    @FXML
-    private void handleUpdateLocalItem(ActionEvent actionEvent) {
-        controllers[selectedAccordionPaneIndex.get()].showDiffDialog();
-    }
-
-    @FXML
-    private void handleUpdateOnlineItem(ActionEvent actionEvent) {
-
     }
 
     @FXML

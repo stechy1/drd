@@ -4,6 +4,7 @@ import static cz.stechy.drd.app.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.app.shop.entry.BackpackEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
 import cz.stechy.drd.dao.BackpackDao;
@@ -79,6 +80,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
     private final SortedList<BackpackEntry> sortedList = new SortedList<>(backpacks,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
+    private final BooleanProperty highlightDiffItem = new SimpleBooleanProperty(false);
     private final AdvancedDatabaseService<Backpack> service;
     private final Translator translator;
     private final User user;
@@ -107,6 +109,7 @@ public class ShopBackpackController implements Initializable, ShopItemController
         tableBackpacks.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
         tableBackpacks.setFixedCellSize(SHOP_ROW_HEIGHT);
+        tableBackpacks.setRowFactory(param -> new ShopRow<>(highlightDiffItem));
         sortedList.comparatorProperty().bind(tableBackpacks.comparatorProperty());
 
         columnMaxLoad.setCellFactory(param -> CellUtils.forWeight());
@@ -149,6 +152,18 @@ public class ShopBackpackController implements Initializable, ShopItemController
             }
 
             service.toggleDatabase(newValue);
+        });
+    }
+
+    @Override
+    public void setHighlightDiffItems(BooleanProperty highlightDiffItems) {
+        this.highlightDiffItem.bind(highlightDiffItems);
+        highlightDiffItems.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue) {
+                service.getDiff().thenAcceptAsync(diffEntries -> {
+                    System.out.println(diffEntries.toString());
+                }, ThreadPool.JAVAFX_EXECUTOR);
+            }
         });
     }
 
@@ -264,12 +279,5 @@ public class ShopBackpackController implements Initializable, ShopItemController
         }
 
         return Optional.of(sortedList.get(selectedRowIndex.get()));
-    }
-
-    @Override
-    public void showDiffDialog() {
-        service.getDiff().thenAccept(diffEntries -> {
-            System.out.println(diffEntries.toString());
-        });
     }
 }

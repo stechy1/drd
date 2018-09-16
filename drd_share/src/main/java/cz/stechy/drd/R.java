@@ -238,8 +238,7 @@ public final class R {
         public static final String FIREBASE_ENTRY_REMOVE = "drd_firebase_entry_remove";
         public static final String FIREBASE_ENTRY_UPLOAD = "drd_firebase_entry_upload";
         public static final String FIREBASE_ENTRY_DOWNLOAD = "drd_firebase_entry_download";
-        public static final String FIREBASE_UPDATE_LOCAL = "drd_firebase_update_local";
-        public static final String FIREBASE_UPDATE_ONLINE = "drd_firebase_update_online";
+        public static final String FIREBASE_HIGHLIGHT_DIFF_ENTRIES = "drd_firebase_highlight_diff_entries";
         public static final String ITEM_NAME = "drd_item_name";
         public static final String ITEM_AUTHOR = "drd_item_author";
         public static final String ITEM_DESCRIPTION = "drd_item_description";

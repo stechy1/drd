@@ -4,6 +4,7 @@ import static cz.stechy.drd.app.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
 import cz.stechy.drd.dao.GeneralItemDao;
@@ -77,6 +78,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     private final SortedList<GeneralEntry> sortedList = new SortedList<>(generalItems,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
+    private final BooleanProperty highlightDiffItem = new SimpleBooleanProperty(false);
     private final AdvancedDatabaseService<GeneralItem> service;
     private final Translator translator;
     private final User user;
@@ -106,6 +108,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         tableGeneralItems.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
         tableGeneralItems.setFixedCellSize(SHOP_ROW_HEIGHT);
+        tableGeneralItems.setRowFactory(param -> new ShopRow<>(highlightDiffItem));
         sortedList.comparatorProperty().bind(tableGeneralItems.comparatorProperty());
 
         columnWeight.setCellFactory(param -> CellUtils.forWeight());
@@ -147,6 +150,18 @@ public class ShopGeneralController implements Initializable, ShopItemController<
             }
 
             service.toggleDatabase(newValue);
+        });
+    }
+
+    @Override
+    public void setHighlightDiffItems(BooleanProperty highlightDiffItems) {
+        this.highlightDiffItem.bind(highlightDiffItems);
+        highlightDiffItems.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue) {
+                service.getDiff().thenAcceptAsync(diffEntries -> {
+                    System.out.println(diffEntries.toString());
+                }, ThreadPool.JAVAFX_EXECUTOR);
+            }
         });
     }
 
@@ -262,12 +277,5 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         }
 
         return Optional.of(sortedList.get(selectedRowIndex.get()));
-    }
-
-    @Override
-    public void showDiffDialog() {
-        service.getDiff().thenAccept(diffEntries -> {
-            System.out.println(diffEntries.toString());
-        });
     }
 }

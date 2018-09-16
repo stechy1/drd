@@ -6,6 +6,10 @@ import cz.stechy.screens.Bundle;
 import java.util.Optional;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.scene.control.TableRow;
 
 /**
  * Rozhraní pro definici kontroleru, který zprostředkovává nakupování
@@ -33,6 +37,14 @@ interface ShopItemController<T extends ShopEntry> {
      * @param showOnlineDatabase True pro online itemy, jinak offline itemy
      */
     void setShowOnlineDatabase(BooleanProperty showOnlineDatabase);
+
+    /**
+     * Přidá referenci na {@link BooleanProperty} indikující, zda-li se mají zvýraznit
+     * itemy, které mají odlišné hodnoty od online záznamů
+     *
+     * @param highlightDiffItems True, pokud se mají zvýraznit rozdílné itemy, jinak False
+     */
+    void setHighlightDiffItems(BooleanProperty highlightDiffItems);
 
     /**
      * Přidá referenci na {@link BooleanProperty} indikující, zda-li je možné přidávat věci do
@@ -134,5 +146,37 @@ interface ShopItemController<T extends ShopEntry> {
      */
     Optional<T> getSelectedItem();
 
-    void showDiffDialog();
+    class ShopRow<T extends ShopEntry> extends TableRow<T> {
+
+        private final BooleanProperty highlightDiffItem;
+        private final StringProperty style = new SimpleStringProperty("");
+
+        ShopRow(BooleanProperty highlightDiffItem) {
+            this.highlightDiffItem = highlightDiffItem;
+        }
+
+        @Override
+        protected void updateItem(T item, boolean empty) {
+            super.updateItem(item, empty);
+            if (item == null || empty) {
+                styleProperty().unbind();
+                setStyle("");
+                highlightDiffItem.removeListener(this.diffListener);
+            } else {
+                styleProperty().bind(style);
+                highlightDiffItem.addListener(this.diffListener);
+                if (highlightDiffItem.get()) {
+                    style.setValue("-fx-background-color: tomato;");
+                }
+            }
+        }
+
+        private final ChangeListener<? super Boolean> diffListener = (observable, oldValue, newValue) -> {
+            if (newValue == null || !newValue) {
+                style.setValue("");
+            } else {
+                style.setValue("-fx-background-color: tomato;");
+            }
+        };
+    }
 }

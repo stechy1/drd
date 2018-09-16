@@ -36,6 +36,8 @@ public abstract class ShopEntry {
     protected final BooleanProperty uploaded = new SimpleBooleanProperty();
     protected final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
     private final ObjectProperty<Image> image = new SimpleObjectProperty<>();
+    protected final BooleanProperty hasDiff = new SimpleBooleanProperty();
+    protected final BooleanProperty showDiff = new SimpleBooleanProperty();
 
     // endregion
 
