@@ -204,7 +204,10 @@ public class ShopController1 extends BaseController implements Initializable {
             userLogged.not().or(
                 editMode.not().or(
                     disableDownloadBtn.or(
-                        showOnlineDatabase.not()))));
+                        Bindings
+                            .when(diffHighlightMode)
+                            .then(showOnlineDatabase)
+                            .otherwise(showOnlineDatabase.not())))));
         btnUploadItem.disableProperty().bind(
             userLogged.not().or(
                 editMode.not().or(
@@ -272,8 +275,15 @@ public class ShopController1 extends BaseController implements Initializable {
                 final BooleanBinding authorBinding = Bindings.createBooleanBinding(() ->
                         (user != null) && entry.getAuthor().equals(user.getName()),
                     entry.authorProperty());
-                disableDownloadBtn.bind(entry.downloadedProperty());
-                disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding.not()));
+                disableDownloadBtn.bind(Bindings
+                    .when(diffHighlightMode)
+                    .then(entry.hasDiffProperty().not())
+                    .otherwise(entry.downloadedProperty()));
+                disableUploadBtn.bind(Bindings
+                    .when(diffHighlightMode)
+                    .then(entry.hasDiffProperty().not())
+                    .otherwise(entry.uploadedProperty().or(
+                        authorBinding.not())));
                 disableRemoveOnlineBtn.bind(authorBinding.not());
             } else {
                 disableDownloadBtn.unbind();
@@ -376,14 +386,26 @@ public class ShopController1 extends BaseController implements Initializable {
     private void handleUploadItem(ActionEvent actionEvent) {
         ShopItemController<? extends ShopEntry> controller = controllers[selectedAccordionPaneIndex.get()];
         controller.getSelectedItem()
-            .ifPresent(entry -> controller.uploadRequest(entry.getItemBase()));
+            .ifPresent(entry -> {
+                if (diffHighlightMode.get()) {
+
+                } else {
+                    controller.uploadRequest(entry.getItemBase());
+                }
+            });
     }
 
     @FXML
     private void handleDownloadItem(ActionEvent actionEvent) {
         ShopItemController<? extends ShopEntry> controller = controllers[selectedAccordionPaneIndex.get()];
         controller.getSelectedItem()
-            .ifPresent(entry -> controller.onAddItem(entry.getItemBase(), true));
+            .ifPresent(entry -> {
+                if (diffHighlightMode.get()) {
+
+                } else {
+                    controller.onAddItem(entry.getItemBase(), true);
+                }
+            });
     }
 
     @FXML
