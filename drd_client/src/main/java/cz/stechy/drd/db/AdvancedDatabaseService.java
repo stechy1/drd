@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
 import java.util.function.Predicate;
@@ -350,27 +349,10 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     public CompletableFuture<ObservableSet<DiffEntry<T>>> getDiff() {
         return CompletableFuture.supplyAsync(() -> {
             final ObservableSet<DiffEntry<T>> diff = FXCollections.observableSet(new HashSet<>());
-            final Set<String> helpSet = new HashSet<>();
             for (T item : super.items) {
                 final String itemId = item.getId();
-                helpSet.add(itemId);
                 selectOnline(ID_FILTER(itemId)).ifPresent(onlineItem -> {
                     final DiffEntry<T> diffEntry = new DiffEntry<>(item, onlineItem);
-                    if (diffEntry.hasDifferentValues()) {
-                        diff.add(diffEntry);
-                    }
-                });
-            }
-
-            for (T onlineItem : onlineDatabase) {
-                final String onlineItemId = onlineItem.getId();
-                if (helpSet.contains(onlineItemId)) {
-                    continue;
-                }
-
-                helpSet.add(onlineItemId);
-                select(ID_FILTER(onlineItemId)).ifPresent(item -> {
-                    final DiffEntry<T> diffEntry = new DiffEntry<>(onlineItem, item);
                     if (diffEntry.hasDifferentValues()) {
                         diff.add(diffEntry);
                     }
