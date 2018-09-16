@@ -179,7 +179,7 @@ interface ShopItemController<T extends ShopEntry> {
         }
 
         private final ChangeListener<? super Boolean> diffListener = (observable, oldValue, newValue) -> {
-            if (newValue == null || !newValue) {
+            if (newValue == null || !newValue || getItem() == null) {
                 style.setValue("");
             } else {
                 if (getItem().hasDiff()) {
