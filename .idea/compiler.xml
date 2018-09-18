@@ -2,19 +2,24 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile default="true" name="Default">
-        <outputRelativeToContentRoot value="true" />
+      <profile default="true" name="Default" enabled="true">
         <processorPath useClasspath="false">
-          <entry name="$PROJECT_DIR$/src/main/java/cz.stechy.drd.annotation.ManagerProcessor" />
+          <entry name="$PROJECT_DIR$/drd_preprocessing/src/main/java/cz/stechy/drd/processor/resources/ResourcesProcessor.java" />
         </processorPath>
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="drd_annotations_main" target="1.8" />
+      <module name="drd_annotations_test" target="1.8" />
+      <module name="drd_client_annotationProcessor" target="1.8" />
       <module name="drd_client_main" target="1.8" />
       <module name="drd_client_test" target="1.8" />
       <module name="drd_main" target="1.8" />
+      <module name="drd_preprocessing_main" target="1.8" />
+      <module name="drd_preprocessing_test" target="1.8" />
       <module name="drd_server_main" target="1.8" />
       <module name="drd_server_test" target="1.8" />
+      <module name="drd_share_annotationProcessor" target="1.8" />
       <module name="drd_share_main" target="1.8" />
       <module name="drd_share_test" target="1.8" />
       <module name="drd_test" target="1.8" />

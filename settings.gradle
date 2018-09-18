@@ -2,4 +2,6 @@ rootProject.name = 'drd'
 include 'drd_share'
 include 'drd_client'
 include 'drd_server'
+include 'drd_annotations'
+include 'drd_preprocessing'
 

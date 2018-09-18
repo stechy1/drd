@@ -24,12 +24,34 @@
     <orderEntry type="library" name="Gradle: org.testfx:testfx-legacy:4.0.6-alpha" level="project" />
     <orderEntry type="library" name="Gradle: org.testfx:testfx-core:4.0.6-alpha" level="project" />
     <orderEntry type="library" name="Gradle: org.testfx:openjfx-monocle:8u76-b04" level="project" />
+    <orderEntry type="module" module-name="drd_preprocessing_main" />
+    <orderEntry type="module" module-name="drd_annotations_main" />
     <orderEntry type="library" name="Gradle: net.java.dev.jna:jna:4.3.0" level="project" />
     <orderEntry type="library" name="Gradle: org.hamcrest:hamcrest-core:1.3" level="project" />
-    <orderEntry type="library" name="Gradle: com.google.guava:guava:21.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.auto.service:auto-service:1.0-rc4" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.auto:auto-common:0.8" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.guava:guava:23.5-jre" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:annotations:3.0.1u2" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.velocity:velocity:1.7" level="project" />
     <orderEntry type="library" name="Gradle: net.jcip:jcip-annotations:1.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:3.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: commons-collections:commons-collections:3.2.1" level="project" />
+    <orderEntry type="library" name="Gradle: commons-lang:commons-lang:2.4" level="project" />
+    <orderEntry type="library" name="Gradle: org.checkerframework:checker-qual:2.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.errorprone:error_prone_annotations:2.0.18" level="project" />
+    <orderEntry type="module-library">
+      <library name="Gradle: com.google.j2objc:j2objc-annotations:1.1">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/1.1/976d8d30bebc251db406f2bdb3eb01962b5685b3/j2objc-annotations-1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/1.1/dcd31de68a90e41e336f6b7afce0d39285c433d7/j2objc-annotations-1.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/1.1/1efdf5b737b02f9b72ebdec4f72c37ec411302ff/j2objc-annotations-1.1-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Gradle: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
   </component>
   <component name="TestModuleProperties" production-module="drd_client_main" />
 </module>

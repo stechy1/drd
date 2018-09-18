@@ -22,12 +22,6 @@ compileJava.options.encoding = 'UTF-8'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-task buildResources(type: Exec) {
-    println 'Generuji soubor R.java'
-    commandLine 'python3', './scripts/src/resource_generator.py'
-}
-processResources.dependsOn buildResources
-
 repositories {
     jcenter()
     maven { url 'https://jitpack.io' }

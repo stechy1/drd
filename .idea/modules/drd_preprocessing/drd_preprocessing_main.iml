@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module external.linked.project.id="drd:main" external.linked.project.path="$MODULE_DIR$/../.." external.root.project.path="$MODULE_DIR$/../.." external.system.id="GRADLE" external.system.module.group="cz.stechy" external.system.module.type="sourceSet" external.system.module.version="alfa-0.1" type="JAVA_MODULE" version="4">
+<module external.linked.project.id=":drd_preprocessing:main" external.linked.project.path="$MODULE_DIR$/../../../drd_preprocessing" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="cz.stechy" external.system.module.type="sourceSet" external.system.module.version="alfa-0.1" type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
-    <output url="file://$MODULE_DIR$/../../out/production/classes" />
+    <output url="file://$MODULE_DIR$/../../../drd_preprocessing/out/production/classes" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../src/main">
-      <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
+    <content url="file://$MODULE_DIR$/../../../drd_preprocessing/src/main">
+      <sourceFolder url="file://$MODULE_DIR$/../../../drd_preprocessing/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../drd_preprocessing/src/main/resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="drd_share_main" />
-    <orderEntry type="module" module-name="drd_preprocessing_main" />
-    <orderEntry type="module" module-name="drd_annotations_main" />
-    <orderEntry type="library" name="Gradle: org.xerial:sqlite-jdbc:3.21.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.auto.service:auto-service:1.0-rc4" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.velocity:velocity:1.7" level="project" />
+    <orderEntry type="module" module-name="drd_annotations_main" />
     <orderEntry type="library" name="Gradle: com.google.auto:auto-common:0.8" level="project" />
     <orderEntry type="library" name="Gradle: com.google.guava:guava:23.5-jre" level="project" />
     <orderEntry type="library" name="Gradle: commons-collections:commons-collections:3.2.1" level="project" />
