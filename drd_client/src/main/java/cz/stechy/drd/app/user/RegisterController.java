@@ -81,7 +81,7 @@ public class RegisterController extends BaseController implements Initializable 
                 showNotification(new Notification(registerFail, Length.LONG));
                 throw new RuntimeException(throwable);
             })
-            .thenAcceptAsync(ignored -> {
+            .thenAccept(ignored -> {
                 setResult(RESULT_SUCCESS);
                 finish();
             });
