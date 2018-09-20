@@ -1,16 +1,22 @@
 package cz.stechy.drd.app.spellbook;
 
+import cz.stechy.drd.model.DiffEntry.DiffEntryTuple;
 import cz.stechy.drd.model.spell.Spell;
 import cz.stechy.drd.model.spell.Spell.SpellProfessionType;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import java.io.ByteArrayInputStream;
+import java.util.Map;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.scene.image.Image;
 
 /**
@@ -20,6 +26,7 @@ public final class SpellEntry {
 
     // region Variables
 
+    private final StringProperty id = new SimpleStringProperty(this, "id");
     private final StringProperty name = new SimpleStringProperty(this, "name");
     private final StringProperty magicName = new SimpleStringProperty(this, "magicName");
     private final StringProperty author = new SimpleStringProperty(this, "author");
@@ -30,6 +37,8 @@ public final class SpellEntry {
     private final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "imageRaw");
     private final BooleanProperty downloaded = new SimpleBooleanProperty(this, "downloaded");
     private final BooleanProperty uploaded = new SimpleBooleanProperty(this, "uploaded");
+    protected final ReadOnlyBooleanWrapper hasDiff = new ReadOnlyBooleanWrapper();
+    protected final ObservableMap<String, DiffEntryTuple> diffMap = FXCollections.observableHashMap();
 
     private final Spell spellBase;
 
@@ -40,6 +49,7 @@ public final class SpellEntry {
     public SpellEntry(Spell spell) {
         this.spellBase = spell;
 
+        this.id.bind(spell.idProperty());
         this.name.bind(spell.nameProperty());
         this.magicName.bind(spell.magicNameProperty());
         this.author.bind(spell.authorProperty());
@@ -52,11 +62,25 @@ public final class SpellEntry {
             final ByteArrayInputStream inputStream = new ByteArrayInputStream(spell.getImage());
             return new Image(inputStream);
         }, imageRaw));
+
+        hasDiff.bind(Bindings.createBooleanBinding(() -> !diffMap.isEmpty(), diffMap));
     }
 
     // endregion
 
     // region Getters & Setters
+
+    public String getId() {
+        return id.get();
+    }
+
+    public StringProperty idProperty() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id.set(id);
+    }
 
     public String getName() {
         return name.get();
@@ -164,6 +188,27 @@ public final class SpellEntry {
 
     public void setUploaded(boolean uploaded) {
         this.uploaded.set(uploaded);
+    }
+
+    public boolean hasDiff() {
+        return hasDiff.get();
+    }
+
+    public ReadOnlyBooleanProperty hasDiffProperty() {
+        return hasDiff;
+    }
+
+    public ObservableMap<String, DiffEntryTuple> getDiffMap() {
+        return diffMap;
+    }
+
+    public void setDiffMap(Map<String, DiffEntryTuple> diffMap) {
+        clearDiffMap();
+        this.diffMap.putAll(diffMap);
+    }
+
+    public void clearDiffMap() {
+        this.diffMap.clear();
     }
 
     public Spell getSpellBase() {

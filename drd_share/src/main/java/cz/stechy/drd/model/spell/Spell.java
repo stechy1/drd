@@ -1,6 +1,7 @@
 package cz.stechy.drd.model.spell;
 
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.db.base.OnlineItem;
 import cz.stechy.drd.model.IClonable;
@@ -32,37 +33,47 @@ public final class Spell extends OnlineItem implements WithSameProperties {
     // region Variables
 
     // Název kouzla
-    private final StringProperty name = new SimpleStringProperty(this, Translate.SPELL_NAME);
+    @TranslateEntry(key = Translate.SPELL_NAME)
+    private final StringProperty name = new SimpleStringProperty(this, "name");
     // Název kouzla, jak je uváděno kouzelnických knihách
-    private final StringProperty magicName = new SimpleStringProperty(this, Translate.SPELL_MAGIC_NAME);
+    @TranslateEntry(key = Translate.SPELL_MAGIC_NAME)
+    private final StringProperty magicName = new SimpleStringProperty(this, "magicName");
     // Popis účinků, připravy a dalších efektů kouzla
-    private final StringProperty description = new SimpleStringProperty(this, Translate.SPELL_DESCRIPTION);
+    @TranslateEntry(key = Translate.SPELL_DESCRIPTION)
+    private final StringProperty description = new SimpleStringProperty(this, "description");
     // Typ kouzla podle povolání
-    private final ObjectProperty<SpellProfessionType> type = new SimpleObjectProperty<>(this,
-        Translate.SPELL_PROFESSION_TYPE);
+    @TranslateEntry(key = Translate.SPELL_PROFESSION_TYPE)
+    private final ObjectProperty<SpellProfessionType> type = new SimpleObjectProperty<>(this, "professionType");
     // Cena kouzla
-    private final ObjectProperty<ISpellPrice> price = new SimpleObjectProperty<>(this, Translate.SPELL_PRICE);
+    @TranslateEntry(key = Translate.SPELL_PRICE)
+    private final ObjectProperty<ISpellPrice> price = new SimpleObjectProperty<>(this, "price");
     // Dosah kouzla v sázích, přičemž platí:
     // -1 = dotyk - kouzlo působí na toho, koho se kouzelník dotkne (i na sebe)
     //  0 = kouzlo působí pouze na kouzelníka
     // >0 = kouzlo působí na všechny, kdo jsou v dosahu
-    private final IntegerProperty radius = new SimpleIntegerProperty(this, Translate.SPELL_RADIUS);
+    @TranslateEntry(key = Translate.SPELL_RADIUS)
+    private final IntegerProperty radius = new SimpleIntegerProperty(this, "radius");
     // Rozsah kouzla - na kolik cílů lze kouzlo poslat
-    private final IntegerProperty range = new SimpleIntegerProperty(this, Translate.SPELL_RANGE);
+    @TranslateEntry(key = Translate.SPELL_RANGE)
+    private final IntegerProperty range = new SimpleIntegerProperty(this, "range");
     // Typ cíle, na který je možné kouzlo poslat
-    private final ObjectProperty<SpellTarget> target = new SimpleObjectProperty<>(this, Translate.SPELL_TARGET_TYPE);
+    @TranslateEntry(key = Translate.SPELL_TARGET_TYPE)
+    private final ObjectProperty<SpellTarget> target = new SimpleObjectProperty<>(this, "targetType");
     // Doba v kolech, která je zapotřebí k vyvolání kouzla
-    private final IntegerProperty castTime = new SimpleIntegerProperty(this, Translate.SPELL_CAST_TIME);
+    @TranslateEntry(key = Translate.SPELL_CAST_TIME)
+    private final IntegerProperty castTime = new SimpleIntegerProperty(this, "castTime");
     // Doba trvání kouzla, přičemž platí:
     // -1 = Doba bude záležet na dodané magenergii
     //  0 = Instantní - kouzlo bude působit okamžitě, pak účinky vyprší
     // >0 = Počet kol, po které bude kouzlo působit
-    private final IntegerProperty duration = new SimpleIntegerProperty(this, Translate.SPELL_DURATION);
+    @TranslateEntry(key = Translate.SPELL_DURATION)
+    private final IntegerProperty duration = new SimpleIntegerProperty(this, "duration");
     //TODO implementovat past
     // Past <=> nebezpečnost kouzla
 //    private final ObjectProperty<Trap> trap = new SimpleObjectProperty<>(this, "trap");
     // Obrázek reprezentující kouzlo
-    private final ObjectProperty<byte[]> image = new SimpleObjectProperty<>(this, Translate.SPELL_IMAGE);
+    @TranslateEntry(key = Translate.SPELL_IMAGE)
+    private final ObjectProperty<byte[]> image = new SimpleObjectProperty<>(this, "image");
 
     // endregion
 
@@ -306,7 +317,7 @@ public final class Spell extends OnlineItem implements WithSameProperties {
             diffList.add(type.getName());
         }
 
-        if (!Objects.equals(this.getPrice(), spell.getPrice())) {
+        if (!Objects.equals(this.getPrice().pack(), spell.getPrice().pack())) {
             diffList.add(price.getName());
         }
 

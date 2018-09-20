@@ -97,6 +97,11 @@
         </tooltip>
       </JFXButton>
       <Separator/>
+      <ToggleButton fx:id="btnToggleShowDiffItems" styleClass="sidebar-button, icon-update-local">
+        <tooltip>
+          <Tooltip text="%drd_firebase_highlight_diff_entries" />
+        </tooltip>
+      </ToggleButton>
       <JFXButton fx:id="btnSynchronize" onAction="#handleSynchronize"
         styleClass="sidebar-button, icon-synchronize">
         <tooltip>
