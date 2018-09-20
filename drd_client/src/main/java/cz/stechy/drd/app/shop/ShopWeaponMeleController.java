@@ -4,6 +4,7 @@ import static cz.stechy.drd.app.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.MeleWeaponEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
@@ -93,6 +94,7 @@ public class ShopWeaponMeleController implements Initializable,
     private final SortedList<MeleWeaponEntry> sortedList = new SortedList<>(meleWeapons,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
+    private final BooleanProperty highlightDiffItem = new SimpleBooleanProperty(false);
     private final AdvancedDatabaseService<MeleWeapon> service;
     private final Translator translator;
     private final User user;
@@ -122,6 +124,7 @@ public class ShopWeaponMeleController implements Initializable,
         tableMeleWeapon.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
         tableMeleWeapon.setFixedCellSize(SHOP_ROW_HEIGHT);
+        tableMeleWeapon.setRowFactory(param -> new ShopRow<>(highlightDiffItem));
         sortedList.comparatorProperty().bind(tableMeleWeapon.comparatorProperty());
 
         columnImage.setCellFactory(param -> CellUtils.forImage());
@@ -167,6 +170,29 @@ public class ShopWeaponMeleController implements Initializable,
             }
 
             service.toggleDatabase(newValue);
+        });
+    }
+
+    @Override
+    public void setHighlightDiffItems(BooleanProperty highlightDiffItems) {
+        this.highlightDiffItem.bind(highlightDiffItems);
+        highlightDiffItems.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue) {
+                service.getDiff().thenAcceptAsync(diffEntries -> {
+                    diffEntries.forEach(diffEntry -> {
+                        final String id = diffEntry.getId();
+                        meleWeapons
+                            .parallelStream()
+                            .filter(entry -> id.equals(entry.getId()))
+                            .findFirst()
+                            .ifPresent(generalEntry -> {
+                                generalEntry.setDiffMap(diffEntry.getDiffMap());
+                            });
+                    });
+                }, ThreadPool.JAVAFX_EXECUTOR);
+            } else {
+                meleWeapons.parallelStream().forEach(entry -> entry.clearDiffMap());
+            }
         });
     }
 
@@ -283,5 +309,22 @@ public class ShopWeaponMeleController implements Initializable,
         }
 
         return Optional.of(sortedList.get(selectedRowIndex.get()));
+    }
+
+    @Override
+    public void updateLocalItem(ShopEntry itemBase) {
+        service.selectOnline(AdvancedDatabaseService.ID_FILTER(itemBase.getId())).ifPresent(meleWeapon -> {
+            service.updateAsync(meleWeapon).thenAccept(entry -> {
+                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                itemBase.clearDiffMap();
+            });
+        });
+    }
+
+    @Override
+    public void updateOnlineItem(ShopEntry itemBase) {
+        service.uploadAsync((MeleWeapon) itemBase.getItemBase()).thenAccept(ignored -> {
+            LOGGER.info("Aktualizace online záznamu proběhla úspěšně.");
+        });
     }
 }

@@ -1,5 +1,6 @@
 package cz.stechy.drd.model;
 
+import java.util.Objects;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -184,4 +185,26 @@ public final class MaxActValue {
     }
 
     // endregion
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        MaxActValue that = (MaxActValue) o;
+        return Objects.equals(getActValue(), that.getActValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getActValue());
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(getActValue());
+    }
 }

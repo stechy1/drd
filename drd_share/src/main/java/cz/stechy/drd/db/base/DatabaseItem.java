@@ -1,6 +1,11 @@
 package cz.stechy.drd.db.base;
 
+import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.model.IClonable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -13,6 +18,7 @@ public abstract class DatabaseItem implements IClonable {
     // region Variables
 
     // Id
+    @TranslateEntry(key = Translate.ENTRY_ID)
     protected final StringProperty id = new SimpleStringProperty(this, "id");
 
     // endregion
@@ -28,7 +34,6 @@ public abstract class DatabaseItem implements IClonable {
         setId(id);
     }
 
-    ;
     // endregion
 
     // region Public methods
@@ -40,6 +45,22 @@ public abstract class DatabaseItem implements IClonable {
      */
     public void update(DatabaseItem other) {
         this.id.setValue(other.getId());
+    }
+
+    /**
+     * Vrátí kolekci, která obsahuje názvy vlastností, které jsou rozdílné s porovnávaným záznamem
+     *
+     * @param other {@link DatabaseItem} Porovnávaný záznam
+     * @return {@link List<String>} Kolekci vlastností s různými hodnotami
+     */
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = new LinkedList<>();
+
+        if (!Objects.equals(this.getId(), other.getId())) {
+            diffList.add(id.getName());
+        }
+
+        return diffList;
     }
 
     // endregion

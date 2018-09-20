@@ -5,6 +5,7 @@ import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.db.base.OnlineDatabase;
 import cz.stechy.drd.db.base.OnlineItem;
 import cz.stechy.drd.di.Inject;
+import cz.stechy.drd.model.DiffEntry;
 import cz.stechy.drd.net.ClientCommunicator;
 import cz.stechy.drd.net.ConnectionState;
 import cz.stechy.drd.net.OnDataReceivedListener;
@@ -20,6 +21,7 @@ import cz.stechy.drd.util.Base64Util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -31,6 +33,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -169,8 +172,18 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 });
                 break;
             case UPDATE:
-                LOGGER.trace("Položka v online databázi byla změněna");
-                // TODO vymslet, jak aktualizovat údaj
+                Platform.runLater(() -> {
+                    onlineDatabase.stream()
+                        .filter(ID_FILTER(item.getId()))
+                        .findFirst()
+                        .ifPresent(onlineItem -> {
+                            onlineItem.update(item);
+                            LOGGER.trace("Položka v online databázi {} byla změněna.", item.getId());
+                        });
+                    });
+//                updateAsync(item).thenAccept(t -> {
+//                    LOGGER.trace("Položka v online databázi byla změněna");
+//                });
                 break;
             case DELETE:
                 LOGGER.trace("Položka v online databázi: {} byla odebrána", item.toString());
@@ -190,7 +203,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     // region Public methods
 
-    public Optional<T> selectOnline(Predicate<T> filter) {
+    public Optional<T> selectOnline(Predicate<? super T> filter) {
         return onlineDatabase.stream().filter(filter).findFirst();
     }
 
@@ -277,6 +290,30 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     }
 
     @Override
+    public CompletableFuture<Void> updateOnlineAsync(T item) {
+        return CompletableFuture.supplyAsync(() -> {
+            communicator.sendMessage(new DatabaseMessage(
+                MessageSource.CLIENT, new DatabaseMessageCRUD(
+                    toStringItemMap(item), getFirebaseChildName(), DatabaseAction.UPDATE, item.getId())
+            ));
+
+            workingItemId = item.getId();
+
+            try {
+                semaphore.acquire();
+            } catch (InterruptedException ignored) {}
+
+            if (!success) {
+                throw new RuntimeException("Aktualizace předmětu se nezdařila.");
+            }
+
+            LOGGER.info("Aktualizace proběhla v pořádku.");
+            return item;
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenApplyAsync(t -> null, ThreadPool.JAVAFX_EXECUTOR);
+    }
+
+    @Override
     public CompletableFuture<Void> deleteRemoteAsync(T item) {
         return CompletableFuture.supplyAsync(() -> {
             communicator.sendMessage(new DatabaseMessage(
@@ -341,6 +378,24 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
             return workingList.size();
         }, ThreadPool.COMMON_EXECUTOR);
+    }
+
+    public CompletableFuture<ObservableSet<DiffEntry<T>>> getDiff() {
+        return CompletableFuture.supplyAsync(() -> {
+            final ObservableSet<DiffEntry<T>> diff = FXCollections.observableSet(new HashSet<>());
+            for (T item : super.items) {
+                final String itemId = item.getId();
+                selectOnline(ID_FILTER(itemId)).ifPresent(onlineItem -> {
+                    final DiffEntry<T> diffEntry = new DiffEntry<>(item, onlineItem);
+                    if (diffEntry.hasDifferentValues()) {
+                        diff.add(diffEntry);
+                    }
+                });
+            }
+
+            return diff;
+        }, ThreadPool.COMMON_EXECUTOR)
+            .thenApplyAsync(set -> set, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     // endregion

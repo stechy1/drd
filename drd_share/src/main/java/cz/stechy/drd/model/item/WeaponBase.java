@@ -1,8 +1,12 @@
 package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.db.base.DatabaseItem;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -15,10 +19,13 @@ public abstract class WeaponBase extends ItemBase {
     // region Variables
 
     // Síla zbraně
+    @TranslateEntry(key = Translate.ITEM_WEAPON_STRENGTH)
     protected final IntegerProperty strength = new SimpleIntegerProperty(this, "strength");
     // Útočnost zbraně
+    @TranslateEntry(key = Translate.ITEM_WEAPON_RAMPANCY)
     protected final IntegerProperty rampancy = new SimpleIntegerProperty(this, "rampancy");
     // Sláva/známost zbraně
+    @TranslateEntry(key = Translate.ITEM_WEAPON_RENOWN)
     protected final IntegerProperty renown = new SimpleIntegerProperty(this, "renown");
 
     // endregion
@@ -117,4 +124,24 @@ public abstract class WeaponBase extends ItemBase {
     }
 
     // endregion
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final WeaponBase weaponBase = (WeaponBase) other;
+
+        if (!Objects.equals(this.getStrength(), weaponBase.getStrength())) {
+            diffList.add(strength.getName());
+        }
+
+        if (!Objects.equals(this.getRampancy(), weaponBase.getRampancy())) {
+            diffList.add(rampancy.getName());
+        }
+
+        if (!Objects.equals(this.getRenown(), weaponBase.getRenown())) {
+            diffList.add(renown.getName());
+        }
+
+        return diffList;
+    }
 }

@@ -43,6 +43,11 @@ public class DatabaseMessage implements IMessage {
         return success;
     }
 
+    @Override
+    public String toString() {
+        return getType() + " - " + data.toString();
+    }
+
     public interface IDatabaseMessageData extends Serializable {
 
         DatabaseMessageDataType getDataType();
@@ -99,6 +104,11 @@ public class DatabaseMessage implements IMessage {
             return itemMap;
         }
 
+        @Override
+        public String toString() {
+            return getAction().toString();
+        }
+
         public enum DatabaseAction {
             CREATE, UPDATE, DELETE
         }
@@ -128,6 +138,11 @@ public class DatabaseMessage implements IMessage {
         @Override
         public Object getData() {
             return tableName;
+        }
+
+        @Override
+        public String toString() {
+            return getAction() + " table: " + getData().toString();
         }
 
         public enum DatabaseAction {

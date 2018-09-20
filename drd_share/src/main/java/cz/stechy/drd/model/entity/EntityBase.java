@@ -1,8 +1,12 @@
 package cz.stechy.drd.model.entity;
 
+import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.db.base.OnlineItem;
 import cz.stechy.drd.model.MaxActValue;
+import java.util.List;
+import java.util.Objects;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -24,24 +28,31 @@ public abstract class EntityBase extends OnlineItem implements IAggressive {
     // region Variales
 
     // Jméno
-    protected final StringProperty name = new SimpleStringProperty();
+    @TranslateEntry(key = Translate.HERO_NAME)
+    protected final StringProperty name = new SimpleStringProperty(this, "name");
     // Popis entity
-    protected final StringProperty description = new SimpleStringProperty();
+    @TranslateEntry(key = Translate.HERO_DESCRIPTION)
+    protected final StringProperty description = new SimpleStringProperty(this, "description");
     // Aktuální počet životů
+    @TranslateEntry(key = Translate.HERO_LIVE)
     protected final MaxActValue live = new MaxActValue();
     // Aktuální počet magů
+    @TranslateEntry(key = Translate.HERO_MAG)
     protected final MaxActValue mag = new MaxActValue();
     // Přesvědčení
-    protected final ObjectProperty<Conviction> conviction = new SimpleObjectProperty<>(
-        Conviction.NEUTRAL);
+    @TranslateEntry(key = Translate.HERO_CONVICTION)
+    protected final ObjectProperty<Conviction> conviction = new SimpleObjectProperty<>(this, "conviction" , Conviction.NEUTRAL);
     // Velikost
-    protected final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
+    @TranslateEntry(key = Translate.HERO_HEIGHT)
+    protected final ObjectProperty<Height> height = new SimpleObjectProperty<>(this, "height" , Height.B);
     // Útočné číslo
-    protected final IntegerProperty attackNumber = new SimpleIntegerProperty();
+    @TranslateEntry(key = Translate.BESTIARY_ATTACK_NUMBER)
+    protected final IntegerProperty attackNumber = new SimpleIntegerProperty(this, "attackNumber");
     // Obranné číslo
-    protected final IntegerProperty defenceNumber = new SimpleIntegerProperty(this,
-        "defenceNumber");
-    protected final BooleanProperty alive = new SimpleBooleanProperty();
+    @TranslateEntry(key = Translate.HERO_DEFENCE_NUMBER)
+    protected final IntegerProperty defenceNumber = new SimpleIntegerProperty(this, "defenceNumber");
+    @TranslateEntry(key = Translate.HERO_IS_ALIVE)
+    protected final BooleanProperty alive = new SimpleBooleanProperty(this, "alive");
 
     // endregion
 
@@ -212,6 +223,50 @@ public abstract class EntityBase extends OnlineItem implements IAggressive {
     }
 
     // endregion
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final EntityBase entityBase = (EntityBase) other;
+
+        if (!Objects.equals(this.getName(), entityBase.getName())) {
+            diffList.add(name.getName());
+        }
+
+        if (!Objects.equals(this.getDescription(), entityBase.getDescription())) {
+            diffList.add(description.getName());
+        }
+
+        if (!Objects.equals(this.getLive(), entityBase.getLive())) {
+            diffList.add("live");
+        }
+
+        if (!Objects.equals(this.getMag(), entityBase.getMag())) {
+            diffList.add("mag");
+        }
+
+        if (!Objects.equals(this.getConviction(), entityBase.getConviction())) {
+            diffList.add(conviction.getName());
+        }
+
+        if (!Objects.equals(this.getHeight(), entityBase.getHeight())) {
+            diffList.add(height.getName());
+        }
+
+        if (!Objects.equals(this.getAttackNumber(), entityBase.getAttackNumber())) {
+            diffList.add(attackNumber.getName());
+        }
+
+        if (!Objects.equals(this.getDefenceNumber(), entityBase.getDefenceNumber())) {
+            diffList.add(defenceNumber.getName());
+        }
+
+        if (!Objects.equals(this.isAlive(), entityBase.isAlive())) {
+            diffList.add(alive.getName());
+        }
+
+        return diffList;
+    }
 
     @Override
     public String toString() {

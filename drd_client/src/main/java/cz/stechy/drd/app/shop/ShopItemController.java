@@ -6,6 +6,10 @@ import cz.stechy.screens.Bundle;
 import java.util.Optional;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.scene.control.TableRow;
 
 /**
  * Rozhraní pro definici kontroleru, který zprostředkovává nakupování
@@ -33,6 +37,14 @@ interface ShopItemController<T extends ShopEntry> {
      * @param showOnlineDatabase True pro online itemy, jinak offline itemy
      */
     void setShowOnlineDatabase(BooleanProperty showOnlineDatabase);
+
+    /**
+     * Přidá referenci na {@link BooleanProperty} indikující, zda-li se mají zvýraznit
+     * itemy, které mají odlišné hodnoty od online záznamů
+     *
+     * @param highlightDiffItems True, pokud se mají zvýraznit rozdílné itemy, jinak False
+     */
+    void setHighlightDiffItems(BooleanProperty highlightDiffItems);
 
     /**
      * Přidá referenci na {@link BooleanProperty} indikující, zda-li je možné přidávat věci do
@@ -133,4 +145,63 @@ interface ShopItemController<T extends ShopEntry> {
      * @return {@link Optional<ItemBase>}
      */
     Optional<T> getSelectedItem();
+
+    /**
+     * Aktualizuje lokální záznam předmětu z online databáze
+     *
+     * @param itemBase {@link ItemBase} Lokální předmět, který se aktualizuje z online databáze
+     */
+    void updateLocalItem(ShopEntry itemBase);
+
+    /**
+     * Aktualizuje online záznam předmětu z lokální databáze
+     *
+     * @param itemBase {@link ItemBase} Lokální předmět, který aktualizuje online záznam
+     */
+    void updateOnlineItem(ShopEntry itemBase);
+
+    class ShopRow<T extends ShopEntry> extends TableRow<T> {
+
+        private final BooleanProperty highlightDiffItem;
+        private final StringProperty style = new SimpleStringProperty("");
+
+        private T oldItem;
+
+        ShopRow(BooleanProperty highlightDiffItem) {
+            this.highlightDiffItem = highlightDiffItem;
+        }
+
+        @Override
+        protected void updateItem(T item, boolean empty) {
+            super.updateItem(item, empty);
+            if (item == null || empty) {
+                if (oldItem != null) {
+                    oldItem.hasDiffProperty().removeListener(diffListener);
+                }
+                styleProperty().unbind();
+                setStyle("");
+                highlightDiffItem.removeListener(ShopRow.this.diffListener);
+            } else {
+                styleProperty().bind(style);
+                highlightDiffItem.addListener(ShopRow.this.diffListener);
+                if (highlightDiffItem.get() && item.hasDiff()) {
+                    style.setValue("-fx-background-color: tomato;");
+                }
+                item.hasDiffProperty().addListener(diffListener);
+                oldItem = item;
+            }
+        }
+
+        private final ChangeListener<? super Boolean> diffListener = (observable, oldValue, newValue) -> {
+            if (newValue == null || !newValue || getItem() == null) {
+                style.setValue("");
+            } else {
+                if (getItem().hasDiff()) {
+                    style.setValue("-fx-background-color: tomato;");
+                } else {
+                    style.setValue("");
+                }
+            }
+        };
+    }
 }

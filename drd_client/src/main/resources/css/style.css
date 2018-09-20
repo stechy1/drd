@@ -106,6 +106,14 @@
   -fx-background-image: url("../images/icon/upload.png");
 }
 
+.icon-update-local {
+  -fx-background-image: url("../images/icon/update_local.png");
+}
+
+.icon-update-online{
+  -fx-background-image: url("../images/icon/update_online.png");
+}
+
 .icon-remove-online {
   -fx-background-image: url("../images/icon/remove_online.png");
 }

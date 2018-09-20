@@ -1,19 +1,25 @@
 package cz.stechy.drd.app.shop.entry;
 
 import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.model.DiffEntry.DiffEntryTuple;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.ItemBase;
 import java.io.ByteArrayInputStream;
+import java.util.Map;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.scene.image.Image;
 
 /**
@@ -36,6 +42,8 @@ public abstract class ShopEntry {
     protected final BooleanProperty uploaded = new SimpleBooleanProperty();
     protected final ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>();
     private final ObjectProperty<Image> image = new SimpleObjectProperty<>();
+    protected final ReadOnlyBooleanWrapper hasDiff = new ReadOnlyBooleanWrapper();
+    protected final ObservableMap<String, DiffEntryTuple> diffMap = FXCollections.observableHashMap();
 
     // endregion
 
@@ -65,6 +73,8 @@ public abstract class ShopEntry {
         this.downloaded.bind(itemBase.downloadedProperty());
         this.uploaded.bind(itemBase.uploadedProperty());
         this.imageRaw.bind(itemBase.imageProperty());
+
+        hasDiff.bind(Bindings.createBooleanBinding(() -> !diffMap.isEmpty(), diffMap));
     }
 
     // endregion
@@ -197,6 +207,27 @@ public abstract class ShopEntry {
 
     public void setImage(Image image) {
         this.image.set(image);
+    }
+
+    public boolean hasDiff() {
+        return hasDiff.get();
+    }
+
+    public ReadOnlyBooleanProperty hasDiffProperty() {
+        return hasDiff;
+    }
+
+    public ObservableMap<String, DiffEntryTuple> getDiffMap() {
+        return diffMap;
+    }
+
+    public void setDiffMap(Map<String, DiffEntryTuple> diffMap) {
+        clearDiffMap();
+        this.diffMap.putAll(diffMap);
+    }
+
+    public void clearDiffMap() {
+        this.diffMap.clear();
     }
 
     // endregion

@@ -1,12 +1,16 @@
 package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.ITranslatedEnum;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.Height;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -22,24 +26,31 @@ public final class Armor extends ItemBase {
     // region Variables
 
     // Obranné číslo zbroje
+    @TranslateEntry(key = Translate.ITEM_WEAPON_MELE_ARMOR_DEFENCE_NUMBER)
     private final IntegerProperty defenceNumber = new SimpleIntegerProperty(this, "defenceNumber");
     // Váha zbroje pro postavy velikosti A
+    @TranslateEntry(key = Translate.ITEM_WEIGHT_A)
     private final IntegerProperty weightA = new SimpleIntegerProperty(this, "weightA");
     // Váha zbroje pro postavy velikosti B
+    @TranslateEntry(key = Translate.ITEM_WEIGHT_B)
     private final IntegerProperty weightB = new SimpleIntegerProperty(this, "weightB");
     // Váha zbroje pro postavy velikosti C
+    @TranslateEntry(key = Translate.ITEM_WEIGHT_C)
     private final IntegerProperty weightC = new SimpleIntegerProperty(this, "weightC");
     // Cena zbroje pro ostavy velikosti A
+    @TranslateEntry(key = Translate.ITEM_PRICE_A)
     private final Money priceA = new Money();
     // Cena zbroje pro ostavy velikosti B
+    @TranslateEntry(key = Translate.ITEM_PRICE_B)
     private final Money priceB = new Money();
     // Cena zbroje pro ostavy velikosti C
+    @TranslateEntry(key = Translate.ITEM_PRICE_C)
     private final Money priceC = new Money();
     // Minimální sila, kterou musí postava mít, aby zbroj unesla
-    private final IntegerProperty minimumStrength = new SimpleIntegerProperty(this,
-        "minimumStrength");
-    private final ObjectProperty<ArmorType> type = new SimpleObjectProperty<>(this,
-        "type");
+    @TranslateEntry(key = Translate.ITEM_ARMOR_MINIMUM_STRENGTH)
+    private final IntegerProperty minimumStrength = new SimpleIntegerProperty(this, "minimumStrength");
+    @TranslateEntry(key = Translate.ITEM_ARMOR_TYPE)
+    private final ObjectProperty<ArmorType> type = new SimpleObjectProperty<>(this, "type");
 
     // endregion
 
@@ -248,6 +259,50 @@ public final class Armor extends ItemBase {
     }
 
     // endregion
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final Armor armor = (Armor) other;
+
+        if (!Objects.equals(this.getDefenceNumber(), armor.getDefenceNumber())) {
+            diffList.add(defenceNumber.getName());
+        }
+
+        if (!Objects.equals(this.getWeightA(), armor.getWeightA())) {
+            diffList.add(weightA.getName());
+        }
+
+        if (!Objects.equals(this.getWeightB(), armor.getWeightB())) {
+            diffList.add(weightB.getName());
+        }
+
+        if (!Objects.equals(this.getWeightC(), armor.getWeightC())) {
+            diffList.add(weightC.getName());
+        }
+
+        if (!Objects.equals(this.getPriceA(), armor.getPriceA())) {
+            diffList.add("priceA");
+        }
+
+        if (!Objects.equals(this.getPriceB(), armor.getPriceB())) {
+            diffList.add("priceB");
+        }
+
+        if (!Objects.equals(this.getPriceC(), armor.getPriceC())) {
+            diffList.add("priceC");
+        }
+
+        if (!Objects.equals(this.getMinimumStrength(), armor.getMinimumStrength())) {
+            diffList.add(minimumStrength.getName());
+        }
+
+        if (!Objects.equals(this.getType(), armor.getType())) {
+            diffList.add(type.getName());
+        }
+
+        return diffList;
+    }
 
     // Typ části brnění
     public enum ArmorType implements ITranslatedEnum {

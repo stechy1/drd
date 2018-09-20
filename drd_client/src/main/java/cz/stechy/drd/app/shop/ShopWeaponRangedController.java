@@ -4,6 +4,7 @@ import static cz.stechy.drd.app.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.RangedWeaponEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
@@ -95,6 +96,7 @@ public class ShopWeaponRangedController implements Initializable,
     private final SortedList<RangedWeaponEntry> sortedList = new SortedList<>(rangedWeapons,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
+    private final BooleanProperty highlightDiffItem = new SimpleBooleanProperty(false);
     private final AdvancedDatabaseService<RangedWeapon> service;
     private final Translator translator;
     private final User user;
@@ -125,6 +127,7 @@ public class ShopWeaponRangedController implements Initializable,
         tableRangedWeapons.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
         tableRangedWeapons.setFixedCellSize(SHOP_ROW_HEIGHT);
+        tableRangedWeapons.setRowFactory(param -> new ShopRow<>(highlightDiffItem));
         sortedList.comparatorProperty().bind(tableRangedWeapons.comparatorProperty());
 
         columnImage.setCellFactory(param -> CellUtils.forImage());
@@ -171,6 +174,29 @@ public class ShopWeaponRangedController implements Initializable,
             }
 
             service.toggleDatabase(newValue);
+        });
+    }
+
+    @Override
+    public void setHighlightDiffItems(BooleanProperty highlightDiffItems) {
+        this.highlightDiffItem.bind(highlightDiffItems);
+        highlightDiffItems.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue) {
+                service.getDiff().thenAcceptAsync(diffEntries -> {
+                    diffEntries.forEach(diffEntry -> {
+                        final String id = diffEntry.getId();
+                        rangedWeapons
+                            .parallelStream()
+                            .filter(entry -> id.equals(entry.getId()))
+                            .findFirst()
+                            .ifPresent(generalEntry -> {
+                                generalEntry.setDiffMap(diffEntry.getDiffMap());
+                            });
+                    });
+                }, ThreadPool.JAVAFX_EXECUTOR);
+            } else {
+                rangedWeapons.parallelStream().forEach(entry -> entry.clearDiffMap());
+            }
         });
     }
 
@@ -287,5 +313,22 @@ public class ShopWeaponRangedController implements Initializable,
         }
 
         return Optional.of(sortedList.get(selectedRowIndex.get()));
+    }
+
+    @Override
+    public void updateLocalItem(ShopEntry itemBase) {
+        service.selectOnline(AdvancedDatabaseService.ID_FILTER(itemBase.getId())).ifPresent(rangedWeapon -> {
+            service.updateAsync(rangedWeapon).thenAccept(entry -> {
+                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                itemBase.clearDiffMap();
+            });
+        });
+    }
+
+    @Override
+    public void updateOnlineItem(ShopEntry itemBase) {
+        service.uploadAsync((RangedWeapon) itemBase.getItemBase()).thenAccept(ignored -> {
+            LOGGER.info("Aktualizace online záznamu proběhla úspěšně.");
+        });
     }
 }

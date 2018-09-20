@@ -1,11 +1,15 @@
 package cz.stechy.drd.model.spell;
 
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.db.base.OnlineItem;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.SpellParser;
 import cz.stechy.drd.model.WithSameProperties;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -28,37 +32,37 @@ public final class Spell extends OnlineItem implements WithSameProperties {
     // region Variables
 
     // Název kouzla
-    private final StringProperty name = new SimpleStringProperty(this, "name");
+    private final StringProperty name = new SimpleStringProperty(this, Translate.SPELL_NAME);
     // Název kouzla, jak je uváděno kouzelnických knihách
-    private final StringProperty magicName = new SimpleStringProperty(this, "magicName");
+    private final StringProperty magicName = new SimpleStringProperty(this, Translate.SPELL_MAGIC_NAME);
     // Popis účinků, připravy a dalších efektů kouzla
-    private final StringProperty description = new SimpleStringProperty(this, "description");
+    private final StringProperty description = new SimpleStringProperty(this, Translate.SPELL_DESCRIPTION);
     // Typ kouzla podle povolání
     private final ObjectProperty<SpellProfessionType> type = new SimpleObjectProperty<>(this,
-        "type");
+        Translate.SPELL_PROFESSION_TYPE);
     // Cena kouzla
-    private final ObjectProperty<ISpellPrice> price = new SimpleObjectProperty<>(this, "price");
+    private final ObjectProperty<ISpellPrice> price = new SimpleObjectProperty<>(this, Translate.SPELL_PRICE);
     // Dosah kouzla v sázích, přičemž platí:
     // -1 = dotyk - kouzlo působí na toho, koho se kouzelník dotkne (i na sebe)
     //  0 = kouzlo působí pouze na kouzelníka
     // >0 = kouzlo působí na všechny, kdo jsou v dosahu
-    private final IntegerProperty radius = new SimpleIntegerProperty(this, "radius");
+    private final IntegerProperty radius = new SimpleIntegerProperty(this, Translate.SPELL_RADIUS);
     // Rozsah kouzla - na kolik cílů lze kouzlo poslat
-    private final IntegerProperty range = new SimpleIntegerProperty(this, "range");
+    private final IntegerProperty range = new SimpleIntegerProperty(this, Translate.SPELL_RANGE);
     // Typ cíle, na který je možné kouzlo poslat
-    private final ObjectProperty<SpellTarget> target = new SimpleObjectProperty<>(this, "target");
+    private final ObjectProperty<SpellTarget> target = new SimpleObjectProperty<>(this, Translate.SPELL_TARGET_TYPE);
     // Doba v kolech, která je zapotřebí k vyvolání kouzla
-    private final IntegerProperty castTime = new SimpleIntegerProperty(this, "spellCastTime");
+    private final IntegerProperty castTime = new SimpleIntegerProperty(this, Translate.SPELL_CAST_TIME);
     // Doba trvání kouzla, přičemž platí:
     // -1 = Doba bude záležet na dodané magenergii
     //  0 = Instantní - kouzlo bude působit okamžitě, pak účinky vyprší
     // >0 = Počet kol, po které bude kouzlo působit
-    private final IntegerProperty duration = new SimpleIntegerProperty(this, "duration");
+    private final IntegerProperty duration = new SimpleIntegerProperty(this, Translate.SPELL_DURATION);
     //TODO implementovat past
     // Past <=> nebezpečnost kouzla
 //    private final ObjectProperty<Trap> trap = new SimpleObjectProperty<>(this, "trap");
     // Obrázek reprezentující kouzlo
-    private final ObjectProperty<byte[]> image = new SimpleObjectProperty<>(this, "image");
+    private final ObjectProperty<byte[]> image = new SimpleObjectProperty<>(this, Translate.SPELL_IMAGE);
 
     // endregion
 
@@ -280,6 +284,58 @@ public final class Spell extends OnlineItem implements WithSameProperties {
     }
 
     // endregion
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final Spell spell = (Spell) other;
+
+        if (!Objects.equals(this.getName(), spell.getName())) {
+            diffList.add(name.getName());
+        }
+
+        if (!Objects.equals(this.getMagicName(), spell.getMagicName())) {
+            diffList.add(magicName.getName());
+        }
+
+        if (!Objects.equals(this.getDescription(), spell.getDescription())) {
+            diffList.add(description.getName());
+        }
+
+        if (!Objects.equals(this.getType(), spell.getType())) {
+            diffList.add(type.getName());
+        }
+
+        if (!Objects.equals(this.getPrice(), spell.getPrice())) {
+            diffList.add(price.getName());
+        }
+
+        if (!Objects.equals(this.getRadius(), spell.getRadius())) {
+            diffList.add(radius.getName());
+        }
+
+        if (!Objects.equals(this.getRange(), spell.getRange())) {
+            diffList.add(range.getName());
+        }
+
+        if (!Objects.equals(this.getTarget(), spell.getTarget())) {
+            diffList.add(target.getName());
+        }
+
+        if (!Objects.equals(this.getCastTime(), spell.getCastTime())) {
+            diffList.add(castTime.getName());
+        }
+
+        if (!Objects.equals(this.getDuration(), spell.getDuration())) {
+            diffList.add(duration.getName());
+        }
+
+        if (!Arrays.equals(this.getImage(), spell.getImage())) {
+            diffList.add(image.getName());
+        }
+
+        return diffList;
+    }
 
     public static final class Builder {
 

@@ -13,26 +13,25 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="500" prefWidth="900"
-  xmlns="http://javafx.com/javafx/8.0.121"
-  fx:controller="cz.stechy.drd.app.shop.ShopController1">
+
+<BorderPane prefHeight="500" prefWidth="900" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cz.stechy.drd.app.shop.ShopController1">
   <center>
     <Accordion fx:id="accodionShopContainer">
       <panes>
-        <TitledPane text="%drd_item_type_weapon_mele" fx:id="paneWeaponMele">
-          <fx:include source="shop_mele_weapon.fxml" fx:id="tableMeleWeapon"/>
+        <TitledPane fx:id="paneWeaponMele" text="%drd_item_type_weapon_mele">
+          <fx:include fx:id="tableMeleWeapon" source="shop_mele_weapon.fxml" />
         </TitledPane>
-        <TitledPane text="%drd_item_type_weapon_ranged" fx:id="paneWeaponRanged">
-          <fx:include source="shop_ranged_weapon.fxml" fx:id="tableRangedWeapon"/>
+        <TitledPane fx:id="paneWeaponRanged" text="%drd_item_type_weapon_ranged">
+          <fx:include fx:id="tableRangedWeapon" source="shop_ranged_weapon.fxml" />
         </TitledPane>
-        <TitledPane text="%drd_item_type_armor" fx:id="paneArmor">
-          <fx:include source="shop_armor.fxml" fx:id="tableArmor"/>
+        <TitledPane fx:id="paneArmor" text="%drd_item_type_armor">
+          <fx:include fx:id="tableArmor" source="shop_armor.fxml" />
         </TitledPane>
-        <TitledPane text="%drd_item_type_general" fx:id="paneGeneral">
-          <fx:include source="shop_general.fxml" fx:id="tableGeneral"/>
+        <TitledPane fx:id="paneGeneral" text="%drd_item_type_general">
+          <fx:include fx:id="tableGeneral" source="shop_general.fxml" />
         </TitledPane>
-        <TitledPane text="%drd_item_type_backpack" fx:id="paneBackpack">
-          <fx:include source="shop_backpack.fxml" fx:id="tableBackpack"/>
+        <TitledPane fx:id="paneBackpack" text="%drd_item_type_backpack">
+          <fx:include fx:id="tableBackpack" source="shop_backpack.fxml" />
         </TitledPane>
       </panes>
     </Accordion>
@@ -40,70 +39,67 @@
   <right>
     <VBox prefWidth="50.0" spacing="8.0">
       <padding>
-        <Insets bottom="8.0" left="8.0" right="8.0" top="32.0"/>
+        <Insets bottom="8.0" left="8.0" right="8.0" top="32.0" />
       </padding>
-      <JFXButton onAction="#handleAddItem" styleClass="sidebar-button, icon-add" fx:id="btnAddItem">
+      <JFXButton fx:id="btnAddItem" onAction="#handleAddItem" styleClass="sidebar-button, icon-add">
         <tooltip>
-          <Tooltip text="%drd_repository_item_add"/>
+          <Tooltip text="%drd_repository_item_add" />
         </tooltip>
       </JFXButton>
-      <JFXButton onAction="#handleRemoveItem" styleClass="sidebar-button, icon-subtract"
-        fx:id="btnRemoveItem">
+      <JFXButton fx:id="btnRemoveItem" onAction="#handleRemoveItem" styleClass="sidebar-button, icon-subtract">
         <tooltip>
-          <Tooltip text="%drd_repository_item_remove"/>
+          <Tooltip text="%drd_repository_item_remove" />
         </tooltip>
       </JFXButton>
-      <JFXButton onAction="#handleEditItem" styleClass="sidebar-button, icon-edit"
-        fx:id="btnEditItem">
+      <JFXButton fx:id="btnEditItem" onAction="#handleEditItem" styleClass="sidebar-button, icon-edit">
         <tooltip>
-          <Tooltip text="%drd_repository_item_edit"/>
+          <Tooltip text="%drd_repository_item_edit" />
         </tooltip>
       </JFXButton>
-      <Separator/>
-      <JFXButton onAction="#handleUploadItem" styleClass="sidebar-button, icon-upload"
-        fx:id="btnUploadItem">
+      <Separator />
+      <JFXButton fx:id="btnUploadItem" onAction="#handleUploadItem" styleClass="sidebar-button, icon-upload">
         <tooltip>
-          <Tooltip text="%drd_firebase_entry_upload"/>
+          <Tooltip text="%drd_firebase_entry_upload" />
         </tooltip>
       </JFXButton>
-      <JFXButton onAction="#handleDownloadItem" styleClass="sidebar-button, icon-download"
-        fx:id="btnDownloadItem">
+      <JFXButton fx:id="btnDownloadItem" onAction="#handleDownloadItem" styleClass="sidebar-button, icon-download">
         <tooltip>
-          <Tooltip text="%drd_firebase_entry_download"/>
+          <Tooltip text="%drd_firebase_entry_download" />
         </tooltip>
       </JFXButton>
-      <JFXButton onAction="#handleRemoveOnlineItem" styleClass="sidebar-button, icon-remove-online"
-        fx:id="btnRemoveOnlineItem">
+      <JFXButton fx:id="btnRemoveOnlineItem" onAction="#handleRemoveOnlineItem" styleClass="sidebar-button, icon-remove-online">
         <tooltip>
-          <Tooltip text="%drd_firebase_entry_remove"/>
+          <Tooltip text="%drd_firebase_entry_remove" />
         </tooltip>
       </JFXButton>
-      <Separator/>
-      <JFXButton onAction="#handleSynchronize" styleClass="sidebar-button, icon-synchronize"
-        fx:id="btnSynchronize">
+      <Separator />
+      <ToggleButton fx:id="btnToggleShowDiffItems" styleClass="sidebar-button, icon-update-local">
         <tooltip>
-          <Tooltip text="%drd_repository_item_synchronize"/>
+          <Tooltip text="%drd_firebase_highlight_diff_entries" />
+        </tooltip>
+      </ToggleButton>
+      <JFXButton fx:id="btnSynchronize" onAction="#handleSynchronize" styleClass="sidebar-button, icon-synchronize">
+        <tooltip>
+          <Tooltip text="%drd_repository_item_synchronize" />
         </tooltip>
       </JFXButton>
-      <ToggleButton styleClass="sidebar-button, icon-online" fx:id="btnToggleOnline">
+      <ToggleButton fx:id="btnToggleOnline" styleClass="sidebar-button, icon-online">
         <tooltip>
-          <Tooltip text="%drd_repository_toggle_online_database"/>
+          <Tooltip text="%drd_repository_toggle_online_database" />
         </tooltip>
       </ToggleButton>
     </VBox>
   </right>
   <bottom>
     <HBox prefHeight="50.0" spacing="8.0" styleClass="separator-line, line-top">
-      <Label prefHeight="34.0" text="%drd_total_price"/>
-      <Label prefHeight="34.0" fx:id="lblTotalPrice"/>
-      <Region HBox.hgrow="ALWAYS"/>
-      <JFXToggleButton prefHeight="34.0" text="%drd_shop_edit_mode" fx:id="btnToggleEditMode"/>
-      <Region HBox.hgrow="ALWAYS" layoutX="130.0" layoutY="18.0"/>
-      <JFXButton disable="true" onAction="#handleContinueShopping" prefHeight="34.0"
-        styleClass="btn, btn-primary, btn-raised" text="%drd_shop_continue_shopping"
-        fx:id="btnContinueShopping"/>
+      <Label prefHeight="34.0" text="%drd_total_price" />
+      <Label fx:id="lblTotalPrice" prefHeight="34.0" />
+      <Region HBox.hgrow="ALWAYS" />
+      <JFXToggleButton fx:id="btnToggleEditMode" prefHeight="34.0" text="%drd_shop_edit_mode" />
+      <Region layoutX="130.0" layoutY="18.0" HBox.hgrow="ALWAYS" />
+      <JFXButton fx:id="btnContinueShopping" disable="true" onAction="#handleContinueShopping" prefHeight="34.0" styleClass="btn, btn-primary, btn-raised" text="%drd_shop_continue_shopping" />
       <padding>
-        <Insets topRightBottomLeft="8.0"/>
+        <Insets topRightBottomLeft="8.0" />
       </padding>
     </HBox>
   </bottom>

@@ -35,9 +35,17 @@ public interface OnlineDatabase<T> {
      * Nahraje item na server
      *
      * @param item {@link T} Item, který se má nahrát
-     * @return {@link CompletableFuture<Void}
+     * @return {@link CompletableFuture<Void>}
      */
     CompletableFuture<Void> uploadAsync(T item);
+
+    /**
+     * Aktualizuje item na serveru
+     *
+     * @param item {@link T} Item, který se má aktualizovat
+     * @return {@link CompletableFuture<Void>}
+     */
+    CompletableFuture<Void> updateOnlineAsync(T item);
 
     /**
      * Odstraní item ze serveru

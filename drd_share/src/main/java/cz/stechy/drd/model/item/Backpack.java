@@ -1,9 +1,13 @@
 package cz.stechy.drd.model.item;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.model.IClonable;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -25,8 +29,10 @@ public final class Backpack extends ItemBase {
     // region Variables
 
     // Maximální nosnost baťohu
+    @TranslateEntry(key = Translate.ITEM_MAX_LOAD)
     private final IntegerProperty maxLoad = new SimpleIntegerProperty(this, "maxLoad");
     // Počet slotů v batohu
+    @TranslateEntry(key = Translate.ITEM_BACKPACK_SIZE)
     private final ObjectProperty<Size> size = new SimpleObjectProperty<>(this, "size");
 
     // endregion
@@ -132,6 +138,22 @@ public final class Backpack extends ItemBase {
     }
 
     // endregion
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final Backpack backpack = (Backpack) other;
+
+        if (!Objects.equals(this.getMaxLoad(), backpack.getMaxLoad())) {
+            diffList.add(maxLoad.getName());
+        }
+
+        if (!Objects.equals(this.getSize(), backpack.getSize())) {
+            diffList.add(size.getName());
+        }
+
+        return diffList;
+    }
 
     public static class Builder {
 

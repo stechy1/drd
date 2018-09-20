@@ -1,5 +1,6 @@
 package cz.stechy.drd.model.entity;
 
+import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -9,6 +10,13 @@ import javafx.beans.value.ObservableValue;
  * Třída představující jednu vlastnost entity a její opravu
  */
 public abstract class EntityProperty {
+
+    // region Constants
+
+    private static final Object DEFAULT_BEAN = null;
+    private static final String DEFAULT_NAME = "";
+
+    // endregion
 
     // region Variables
 
@@ -21,6 +29,11 @@ public abstract class EntityProperty {
     // Horní hranice intervalu hodnoty valstnosti
     protected int maxValue;
 
+    // Objekt vlastnící tuto vlastnost
+    private final Object bean;
+    // Název této vlastnosti
+    private final String name;
+
     // endregion
 
     // region Constructors
@@ -32,6 +45,20 @@ public abstract class EntityProperty {
      * @param maxValue Horní hranice intervalu hodnoty valstnosti
      */
     protected EntityProperty(int minValue, int maxValue) {
+        this(DEFAULT_BEAN, DEFAULT_NAME, minValue, maxValue);
+    }
+
+    /**
+     * Vytvoří novou vlastnost entity
+     *
+     * @param bean Objekt vlastnící tuto vlastnost
+     * @param name Název vlastnosti
+     * @param minValue Spodní hranice intervalu hodnoty vlastnosti
+     * @param maxValue Horní hranice intervalu hodnoty valstnosti
+     */
+    protected EntityProperty(Object bean, String name, int minValue, int maxValue) {
+        this.bean = bean;
+        this.name = name;
         this.minValue = minValue;
         this.maxValue = maxValue;
     }
@@ -78,6 +105,14 @@ public abstract class EntityProperty {
 
     // region Getters & Setters
 
+    public Object getBean() {
+        return bean;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public int getValue() {
         return value.get();
     }
@@ -103,4 +138,26 @@ public abstract class EntityProperty {
     }
 
     // endregion
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        EntityProperty that = (EntityProperty) o;
+        return Objects.equals(getValue(), that.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getValue());
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(getValue());
+    }
 }

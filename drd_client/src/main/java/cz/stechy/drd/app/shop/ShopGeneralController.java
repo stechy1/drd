@@ -4,6 +4,7 @@ import static cz.stechy.drd.app.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
 import cz.stechy.drd.dao.GeneralItemDao;
@@ -77,6 +78,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
     private final SortedList<GeneralEntry> sortedList = new SortedList<>(generalItems,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
+    private final BooleanProperty highlightDiffItem = new SimpleBooleanProperty(false);
     private final AdvancedDatabaseService<GeneralItem> service;
     private final Translator translator;
     private final User user;
@@ -106,6 +108,7 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         tableGeneralItems.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
         tableGeneralItems.setFixedCellSize(SHOP_ROW_HEIGHT);
+        tableGeneralItems.setRowFactory(param -> new ShopRow<>(highlightDiffItem));
         sortedList.comparatorProperty().bind(tableGeneralItems.comparatorProperty());
 
         columnWeight.setCellFactory(param -> CellUtils.forWeight());
@@ -147,6 +150,29 @@ public class ShopGeneralController implements Initializable, ShopItemController<
             }
 
             service.toggleDatabase(newValue);
+        });
+    }
+
+    @Override
+    public void setHighlightDiffItems(BooleanProperty highlightDiffItems) {
+        this.highlightDiffItem.bind(highlightDiffItems);
+        highlightDiffItems.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue) {
+                service.getDiff().thenAcceptAsync(diffEntries -> {
+                    diffEntries.forEach(diffEntry -> {
+                        final String id = diffEntry.getId();
+                        generalItems
+                            .parallelStream()
+                            .filter(entry -> id.equals(entry.getId()))
+                            .findFirst()
+                            .ifPresent(generalEntry -> {
+                                generalEntry.setDiffMap(diffEntry.getDiffMap());
+                            });
+                    });
+                }, ThreadPool.JAVAFX_EXECUTOR);
+            } else {
+                generalItems.parallelStream().forEach(entry -> entry.clearDiffMap());
+            }
         });
     }
 
@@ -262,5 +288,22 @@ public class ShopGeneralController implements Initializable, ShopItemController<
         }
 
         return Optional.of(sortedList.get(selectedRowIndex.get()));
+    }
+
+    @Override
+    public void updateLocalItem(ShopEntry itemBase) {
+        service.selectOnline(AdvancedDatabaseService.ID_FILTER(itemBase.getId())).ifPresent(generalItem -> {
+            service.updateAsync(generalItem).thenAccept(entry -> {
+                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                itemBase.clearDiffMap();
+            });
+        });
+    }
+
+    @Override
+    public void updateOnlineItem(ShopEntry itemBase) {
+        service.uploadAsync((GeneralItem) itemBase.getItemBase()).thenAccept(ignored -> {
+            LOGGER.info("Aktualizace online záznamu proběhla úspěšně.");
+        });
     }
 }

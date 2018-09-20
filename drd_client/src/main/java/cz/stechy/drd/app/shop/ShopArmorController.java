@@ -4,6 +4,7 @@ import static cz.stechy.drd.app.shop.ShopHelper.SHOP_ROW_HEIGHT;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.app.shop.entry.ArmorEntry;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
@@ -90,6 +91,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
     private final SortedList<ArmorEntry> sortedList = new SortedList<>(armors,
         Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
+    private final BooleanProperty highlightDiffItem = new SimpleBooleanProperty(false);
     private final ObjectProperty<Height> height = new SimpleObjectProperty<>(Height.B);
     private final AdvancedDatabaseService<Armor> service;
     private final Translator translator;
@@ -133,6 +135,7 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         tableArmor.getSelectionModel().selectedIndexProperty()
             .addListener((observable, oldValue, newValue) -> selectedRowIndex.setValue(newValue));
         tableArmor.setFixedCellSize(SHOP_ROW_HEIGHT);
+        tableArmor.setRowFactory(param -> new ShopRow<>(highlightDiffItem));
         sortedList.comparatorProperty().bind(tableArmor.comparatorProperty());
 
         columnWeight.setCellFactory(param -> CellUtils.forWeight());
@@ -175,6 +178,29 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
             }
 
             service.toggleDatabase(newValue);
+        });
+    }
+
+    @Override
+    public void setHighlightDiffItems(BooleanProperty highlightDiffItems) {
+        this.highlightDiffItem.bind(highlightDiffItems);
+        highlightDiffItems.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue) {
+                service.getDiff().thenAcceptAsync(diffEntries -> {
+                    diffEntries.forEach(diffEntry -> {
+                        final String id = diffEntry.getId();
+                        armors
+                            .parallelStream()
+                            .filter(entry -> id.equals(entry.getId()))
+                            .findFirst()
+                            .ifPresent(generalEntry -> {
+                                generalEntry.setDiffMap(diffEntry.getDiffMap());
+                            });
+                    });
+                }, ThreadPool.JAVAFX_EXECUTOR);
+            } else {
+                armors.parallelStream().forEach(entry -> entry.clearDiffMap());
+            }
         });
     }
 
@@ -290,5 +316,22 @@ public class ShopArmorController implements Initializable, ShopItemController<Ar
         }
 
         return Optional.of(sortedList.get(selectedRowIndex.get()));
+    }
+
+    @Override
+    public void updateLocalItem(ShopEntry itemBase) {
+        service.selectOnline(AdvancedDatabaseService.ID_FILTER(itemBase.getId())).ifPresent(armor -> {
+            service.updateAsync(armor).thenAccept(entry -> {
+                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                itemBase.clearDiffMap();
+            });
+        });
+    }
+
+    @Override
+    public void updateOnlineItem(ShopEntry itemBase) {
+        service.uploadAsync((Armor) itemBase.getItemBase()).thenAccept(ignored -> {
+            LOGGER.info("Aktualizace online záznamu proběhla úspěšně.");
+        });
     }
 }

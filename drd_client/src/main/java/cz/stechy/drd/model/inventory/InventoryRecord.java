@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -24,13 +26,13 @@ public final class InventoryRecord extends DatabaseItem {
     // region Variables
 
     // Id inventáře
-    private final StringProperty inventoryId = new SimpleStringProperty();
+    private final StringProperty inventoryId = new SimpleStringProperty(this, "inventoryId");
     // Id itemu, který je v slotu
-    private final StringProperty itemId = new SimpleStringProperty();
+    private final StringProperty itemId = new SimpleStringProperty(this, "itemId");
     // Počet itemů ve slotu
-    private final IntegerProperty ammount = new SimpleIntegerProperty();
+    private final IntegerProperty ammount = new SimpleIntegerProperty(this, "ammount");
     // Id slotu, ve kterém se item nacházi
-    private final IntegerProperty slotId = new SimpleIntegerProperty();
+    private final IntegerProperty slotId = new SimpleIntegerProperty(this, "slotId");
     // Pomocná data o záznamu
     private final Metadata metadata = new Metadata();
 
@@ -169,6 +171,30 @@ public final class InventoryRecord extends DatabaseItem {
     }
 
     // endregion
+
+    @Override
+    public List<String> getDiffList(DatabaseItem other) {
+        final List<String> diffList = super.getDiffList(other);
+        final InventoryRecord inventoryRecord = (InventoryRecord) other;
+
+        if (!Objects.equals(this.getInventoryId(), inventoryRecord.getInventoryId())) {
+            diffList.add(inventoryId.getName());
+        }
+
+        if (!Objects.equals(this.getItemId(), inventoryRecord.getItemId())) {
+            diffList.add(itemId.getName());
+        }
+
+        if (!Objects.equals(this.getAmmount(), inventoryRecord.getAmmount())) {
+            diffList.add(ammount.getName());
+        }
+
+        if (!Objects.equals(this.getSlotId(), inventoryRecord.getSlotId())) {
+            diffList.add(slotId.getName());
+        }
+
+        return diffList;
+    }
 
     @Override
     public String toString() {
