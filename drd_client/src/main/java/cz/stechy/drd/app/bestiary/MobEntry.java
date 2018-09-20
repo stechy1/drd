@@ -1,18 +1,24 @@
 package cz.stechy.drd.app.bestiary;
 
+import cz.stechy.drd.model.DiffEntry.DiffEntryTuple;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
 import java.io.ByteArrayInputStream;
+import java.util.Map;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.scene.image.Image;
 
 /**
@@ -22,6 +28,7 @@ public final class MobEntry {
 
     // region Variables
 
+    private final StringProperty id = new SimpleStringProperty(this, "id");
     private final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
     private final StringProperty name = new SimpleStringProperty(this, "name");
     private final StringProperty author = new SimpleStringProperty(this, "author");
@@ -30,6 +37,8 @@ public final class MobEntry {
     private final IntegerProperty viability = new SimpleIntegerProperty(this, "viability");
     private final BooleanProperty downloaded = new SimpleBooleanProperty(this, "downloaded");
     private final BooleanProperty uploaded = new SimpleBooleanProperty(this, "uploaded");
+    protected final ReadOnlyBooleanWrapper hasDiff = new ReadOnlyBooleanWrapper();
+    protected final ObservableMap<String, DiffEntryTuple> diffMap = FXCollections.observableHashMap();
 
     private final Mob mobBase;
 
@@ -40,6 +49,7 @@ public final class MobEntry {
     public MobEntry(Mob mobBase) {
         this.mobBase = mobBase;
 
+        this.id.bind(mobBase.idProperty());
         ObjectProperty<byte[]> imageRaw = new SimpleObjectProperty<>(this, "imageRaw");
         imageRaw.bind(mobBase.imageProperty());
         this.name.bind(mobBase.nameProperty());
@@ -54,11 +64,25 @@ public final class MobEntry {
             final ByteArrayInputStream inputStream = new ByteArrayInputStream(mobBase.getImage());
             return new Image(inputStream);
         }, imageRaw));
+
+        hasDiff.bind(Bindings.createBooleanBinding(() -> !diffMap.isEmpty(), diffMap));
     }
 
     // endregion
 
     // region Getters & Setters
+
+    public String getId() {
+        return id.get();
+    }
+
+    public StringProperty idProperty() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id.set(id);
+    }
 
     public Image getImage() {
         return image.get();
@@ -150,6 +174,27 @@ public final class MobEntry {
 
     public Mob getMobBase() {
         return mobBase;
+    }
+
+    public boolean hasDiff() {
+        return hasDiff.get();
+    }
+
+    public ReadOnlyBooleanProperty hasDiffProperty() {
+        return hasDiff;
+    }
+
+    public ObservableMap<String, DiffEntryTuple> getDiffMap() {
+        return diffMap;
+    }
+
+    public void setDiffMap(Map<String, DiffEntryTuple> diffMap) {
+        clearDiffMap();
+        this.diffMap.putAll(diffMap);
+    }
+
+    public void clearDiffMap() {
+        this.diffMap.clear();
     }
 
     // endregion

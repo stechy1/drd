@@ -1,6 +1,7 @@
 package cz.stechy.drd.app.bestiary;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.dao.BestiaryDao;
 import cz.stechy.drd.db.AdvancedDatabaseService;
 import cz.stechy.drd.model.Rule;
@@ -26,6 +27,9 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,6 +39,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -88,6 +93,8 @@ public class BestiaryController extends BaseController implements Initializable 
     @FXML
     private Button btnRemoveOnlineItem;
     @FXML
+    private ToggleButton btnToggleShowDiffItems;
+    @FXML
     private Button btnSynchronize;
     @FXML
     private ToggleButton btnToggleOnline;
@@ -95,20 +102,15 @@ public class BestiaryController extends BaseController implements Initializable 
     // endregion
 
     private final ObservableList<MobEntry> mobs = FXCollections.observableArrayList();
-    private final SortedList<MobEntry> sortedList = new SortedList<>(mobs,
-        Comparator.comparing(MobEntry::getName));
-    private final IntegerProperty selectedRowIndex = new SimpleIntegerProperty(
-        this, "selectedRowIndex");
-    private final BooleanProperty userLogged = new SimpleBooleanProperty(this,
-        "userLogged", false);
-    private final BooleanProperty showOnlineDatabase = new SimpleBooleanProperty(this,
-        "showOnlineDatabase", false);
-    private final BooleanProperty disableDownloadBtn = new SimpleBooleanProperty(this,
-        "disableDownloadBtn", true);
-    private final BooleanProperty disableUploadBtn = new SimpleBooleanProperty(this,
-        "disableUploadBtn", true);
-    private final BooleanProperty disableRemoveOnlineBtn = new SimpleBooleanProperty(this,
-        "disableRemoveOnlineBtn", true);
+    private final SortedList<MobEntry> sortedList = new SortedList<>(mobs, Comparator.comparing(MobEntry::getName));
+    private final IntegerProperty selectedRowIndex = new SimpleIntegerProperty(this, "selectedRowIndex");
+    private final BooleanProperty userLogged = new SimpleBooleanProperty(this, "userLogged", false);
+    // Indikuje, zda-li se nacházím v režimu zobrazení rozdílných hodnot o proti online záznamům
+    private final BooleanProperty diffHighlightMode = new SimpleBooleanProperty(this, "diffHighglightMode", false);
+    private final BooleanProperty showOnlineDatabase = new SimpleBooleanProperty(this, "showOnlineDatabase", false);
+    private final BooleanProperty disableDownloadBtn = new SimpleBooleanProperty(this, "disableDownloadBtn", true);
+    private final BooleanProperty disableUploadBtn = new SimpleBooleanProperty(this, "disableUploadBtn", true);
+    private final BooleanProperty disableRemoveOnlineBtn = new SimpleBooleanProperty(this, "disableRemoveOnlineBtn", true);
     private final User user;
     private final Translator translator;
 
@@ -137,14 +139,14 @@ public class BestiaryController extends BaseController implements Initializable 
     /**
      * Vrátí {@link Optional} obsahující vybranou nestvůru, nebo prázdnou hodnotu
      *
-     * @return {@link Optional<Mob>}
+     * @return {@link Optional<MobEntry>}
      */
-    private Optional<Mob> getSelectedEntry() {
+    private Optional<MobEntry> getSelectedEntry() {
         if (selectedRowIndex.getValue() == null || selectedRowIndex.get() < 0) {
             return Optional.empty();
         }
 
-        return Optional.of(sortedList.get(selectedRowIndex.get()).getMobBase());
+        return Optional.of(sortedList.get(selectedRowIndex.get()));
     }
 
     private void selectedRowListener(ObservableValue<? extends Number> observable, Number oldValue,
@@ -165,8 +167,15 @@ public class BestiaryController extends BaseController implements Initializable 
         final BooleanBinding authorBinding = Bindings.createBooleanBinding(() ->
                 (user != null) && entry.getAuthor().equals(user.getName()),
             entry.authorProperty());
-        disableDownloadBtn.bind(entry.downloadedProperty());
-        disableUploadBtn.bind(entry.uploadedProperty().or(authorBinding.not()));
+        disableDownloadBtn.bind(Bindings
+            .when(diffHighlightMode)
+            .then(entry.hasDiffProperty().not())
+            .otherwise(entry.downloadedProperty()));
+        disableUploadBtn.bind(Bindings
+            .when(diffHighlightMode)
+            .then(entry.hasDiffProperty().not())
+            .otherwise(entry.uploadedProperty().or(
+                authorBinding.not())));
         disableRemoveOnlineBtn.bind(authorBinding.not());
     }
 
@@ -178,8 +187,10 @@ public class BestiaryController extends BaseController implements Initializable 
 
         tableBestiary.setItems(sortedList);
         tableBestiary.setFixedCellSize(BestiaryHelper.MOB_ROW_HEIGHT);
+        tableBestiary.setRowFactory(mob -> new MobRow(diffHighlightMode));
         sortedList.comparatorProperty().bind(tableBestiary.comparatorProperty());
 
+        diffHighlightMode.bind(btnToggleShowDiffItems.selectedProperty());
         final BooleanBinding selectedRowBinding = selectedRowIndex.isEqualTo(NO_SELECTED_INDEX);
         selectedRowIndex.bind(tableBestiary.getSelectionModel().selectedIndexProperty());
         showOnlineDatabase.bindBidirectional(btnToggleOnline.selectedProperty());
@@ -193,7 +204,10 @@ public class BestiaryController extends BaseController implements Initializable 
         btnDownloadItem.disableProperty().bind(
             userLogged.not().or(
                 disableDownloadBtn.or(
-                    showOnlineDatabase.not())));
+                    Bindings
+                        .when(diffHighlightMode)
+                        .then(showOnlineDatabase)
+                        .otherwise(showOnlineDatabase.not()))));
         btnUploadItem.disableProperty().bind(
             userLogged.not().or(
                 disableUploadBtn.or(
@@ -201,11 +215,34 @@ public class BestiaryController extends BaseController implements Initializable 
         btnRemoveOnlineItem.disableProperty().bind(
             userLogged.not().or(
                 disableRemoveOnlineBtn.or(
-                    showOnlineDatabase.not())));
+                    showOnlineDatabase.not().or(
+                        diffHighlightMode))));
 
         btnSynchronize.disableProperty().bind(userLogged.not());
 
         selectedRowIndex.addListener(this::selectedRowListener);
+        diffHighlightMode.addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && newValue) {
+                btnDownloadItem.getStyleClass().remove("icon-download");
+                btnDownloadItem.getStyleClass().add("icon-update-local");
+                btnUploadItem.getStyleClass().remove("icon-upload");
+                btnUploadItem.getStyleClass().add("icon-update-online");
+                service.getDiff().thenAcceptAsync(diffEntries ->
+                    diffEntries.forEach(diffEntry -> {
+                        final String id = diffEntry.getId();
+                        mobs.parallelStream()
+                            .filter(entry -> id.equals(entry.getId()))
+                            .findFirst()
+                            .ifPresent(entry -> entry.setDiffMap(diffEntry.getDiffMap()));
+                    }), ThreadPool.JAVAFX_EXECUTOR);
+            } else {
+                btnDownloadItem.getStyleClass().add("icon-download");
+                btnDownloadItem.getStyleClass().remove("icon-update-local");
+                btnUploadItem.getStyleClass().add("icon-upload");
+                btnUploadItem.getStyleClass().remove("icon-update-online");
+                mobs.parallelStream().forEach(MobEntry::clearDiffMap);
+            }
+        });
         showOnlineDatabase.addListener((observable, oldValue, newValue) -> {
             if (newValue == null) {
                 return;
@@ -215,10 +252,8 @@ public class BestiaryController extends BaseController implements Initializable 
         });
 
         columnImage.setCellFactory(param -> CellUtils.forImage());
-        columnMobClass.setCellFactory(
-            TextFieldTableCell.forTableColumn(translator.getConvertor(Key.MOB_CLASSES)));
-        columnRulesType.setCellFactory(
-            TextFieldTableCell.forTableColumn(translator.getConvertor(Key.RULES)));
+        columnMobClass.setCellFactory(TextFieldTableCell.forTableColumn(translator.getConvertor(Key.MOB_CLASSES)));
+        columnRulesType.setCellFactory(TextFieldTableCell.forTableColumn(translator.getConvertor(Key.RULES)));
 
         service.selectAllAsync()
             .thenAccept(m -> ObservableMergers.mergeList(MobEntry::new, mobs, m));
@@ -308,28 +343,48 @@ public class BestiaryController extends BaseController implements Initializable 
 
     @FXML
     private void handleUploadItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(mob -> service.uploadAsync(mob)
-            .exceptionally(throwable -> {
-                LOGGER.error("Příšeru {} se nepodařilo nahrát", mob);
-                throw new RuntimeException(throwable);
-            })
-            .thenAccept(ignored -> showNotification(new Notification(String
-                .format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPLOADED),
-                    mob.getName())))));
+        getSelectedEntry().ifPresent(mob -> {
+            if (diffHighlightMode.get()) {
+                service.uploadAsync(mob.getMobBase()).thenAccept(ignored -> {
+                    LOGGER.info("Aktualizace online záznamu proběhla úspěšně.");
+                });
+            } else {
+                service.uploadAsync(mob.getMobBase())
+                    .exceptionally(throwable -> {
+                        LOGGER.error("Příšeru {} se nepodařilo nahrát", mob);
+                        throw new RuntimeException(throwable);
+                    })
+                    .thenAccept(ignored -> showNotification(new Notification(String
+                        .format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPLOADED),
+                            mob.getName()))));
+            }
+        });
     }
 
     @FXML
     private void handleDownloadItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(item -> service.insertAsync(item)
-            .exceptionally(throwable -> {
-                LOGGER.error(throwable.getMessage(), throwable);
-                throw new RuntimeException(throwable);
-            }));
+        getSelectedEntry().ifPresent(mobEntry -> {
+            if (diffHighlightMode.get()) {
+                service.selectOnline(AdvancedDatabaseService.ID_FILTER(mobEntry.getId()))
+                    .ifPresent(generalItem -> {
+                        service.updateAsync(generalItem).thenAccept(entry -> {
+                            LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                            mobEntry.clearDiffMap();
+                        });
+                    });
+            } else {
+                service.insertAsync(mobEntry.getMobBase())
+                    .exceptionally(throwable -> {
+                        LOGGER.error(throwable.getMessage(), throwable);
+                        throw new RuntimeException(throwable);
+                    });
+            }
+        });
     }
 
     @FXML
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(mob -> service.deleteRemoteAsync(mob)
+        getSelectedEntry().ifPresent(mob -> service.deleteRemoteAsync(mob.getMobBase())
             .exceptionally(throwable -> {
                 LOGGER.error("Příšeru {} se nepodařilo odstranit z online databáze", mob);
                 throw new RuntimeException(throwable);
@@ -342,9 +397,54 @@ public class BestiaryController extends BaseController implements Initializable 
     @FXML
     private void handleSynchronize(ActionEvent actionEvent) {
         service.synchronize(user.getName())
-            .thenAccept(
-                total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " příšer."));
+            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " příšer."));
     }
 
     // endregion
+
+    // TODO generalizovat i tohle
+    class MobRow extends TableRow<MobEntry> {
+
+        private final BooleanProperty highlightDiffItem;
+        private final StringProperty style = new SimpleStringProperty("");
+
+        private MobEntry oldMob;
+
+        MobRow(BooleanProperty highlightDiffItem) {
+            this.highlightDiffItem = highlightDiffItem;
+        }
+
+        @Override
+        protected void updateItem(MobEntry mobEntry, boolean empty) {
+            super.updateItem(mobEntry, empty);
+            if (mobEntry == null || empty) {
+                if (mobEntry != null) {
+                    mobEntry.hasDiffProperty().removeListener(diffListener);
+                }
+                styleProperty().unbind();
+                setStyle("");
+                highlightDiffItem.removeListener(MobRow.this.diffListener);
+            } else {
+                styleProperty().bind(style);
+                highlightDiffItem.addListener(MobRow.this.diffListener);
+                if (highlightDiffItem.get() && mobEntry.hasDiff()) {
+                    style.setValue("-fx-background-color: tomato;");
+                }
+                mobEntry.hasDiffProperty().addListener(diffListener);
+                oldMob = mobEntry;
+            }
+        }
+
+        private final ChangeListener<? super Boolean> diffListener = (observable, oldValue, newValue) -> {
+            if (newValue == null || !newValue || getItem() == null) {
+                style.setValue("");
+            } else {
+                if (getItem().hasDiff()) {
+                    style.setValue("-fx-background-color: tomato;");
+                } else {
+                    style.setValue("");
+                }
+            }
+        };
+    }
 }

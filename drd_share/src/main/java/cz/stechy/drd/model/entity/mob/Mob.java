@@ -11,6 +11,7 @@ import cz.stechy.drd.model.entity.EntityBase;
 import cz.stechy.drd.model.entity.EntityProperty;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.SimpleEntityProperty;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import javafx.beans.property.IntegerProperty;
@@ -31,10 +32,10 @@ public final class Mob extends EntityBase implements WithSameProperties {
     protected final ObjectProperty<byte[]> image = new SimpleObjectProperty<>(this, "new");
     // Třída nestvůry
     @TranslateEntry(key = Translate.BESTIARY_MOB_CLASS)
-    protected final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>(this, "new");
+    protected final ObjectProperty<MobClass> mobClass = new SimpleObjectProperty<>(this, "mobClass");
     // Typ pravidel, do kterých nestvůra patří
     @TranslateEntry(key = Translate.BESTIARY_RULES_TYPE)
-    protected final ObjectProperty<Rule> rulesType = new SimpleObjectProperty<>(this, "new");
+    protected final ObjectProperty<Rule> rulesType = new SimpleObjectProperty<>(this, "rulesType");
     // Životaschpnost
     @TranslateEntry(key = Translate.BESTIARY_VIABILITY)
     protected final IntegerProperty viability = new SimpleIntegerProperty(this, "viability");
@@ -356,7 +357,7 @@ public final class Mob extends EntityBase implements WithSameProperties {
         final List<String> diffList = super.getDiffList(other);
         final Mob mob = (Mob) other;
 
-        if (!Objects.equals(this.getImage(), mob.getImage())) {
+        if (!Arrays.equals(this.getImage(), mob.getImage())) {
             diffList.add(image.getName());
         }
 
