@@ -172,8 +172,18 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 });
                 break;
             case UPDATE:
-                LOGGER.trace("Položka v online databázi byla změněna");
-                // TODO vymslet, jak aktualizovat údaj
+                Platform.runLater(() -> {
+                    onlineDatabase.stream()
+                        .filter(ID_FILTER(item.getId()))
+                        .findFirst()
+                        .ifPresent(onlineItem -> {
+                            onlineItem.update(item);
+                            LOGGER.trace("Položka v online databázi {} byla změněna.", item.getId());
+                        });
+                    });
+//                updateAsync(item).thenAccept(t -> {
+//                    LOGGER.trace("Položka v online databázi byla změněna");
+//                });
                 break;
             case DELETE:
                 LOGGER.trace("Položka v online databázi: {} byla odebrána", item.toString());

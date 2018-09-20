@@ -41,7 +41,7 @@ class FirebaseService implements IFirebaseService {
 
     // endregion
 
-   // region Variables
+    // region Variables
 
     private final Map<String, List<FirebaseEntryEventListener>> listeners = new HashMap<>();
     private final Map<String, List<Map<String, Object>>> entries = new HashMap<>();
@@ -231,6 +231,7 @@ class FirebaseService implements IFirebaseService {
         @Override
         public void onChildAdded(DataSnapshot snapshot, String previousChildName) {
             final Map<String, Object> item = convertor.convert(snapshot);
+            LOGGER.trace("Do tabulky {} byl přidán nový záznam: {}.", tableName, item);
             // Uložení itemu do lokální kolekce
             final List<Map<String, Object>> list = entries.get(tableName);
             list.add(item);
@@ -242,6 +243,7 @@ class FirebaseService implements IFirebaseService {
         @Override
         public void onChildChanged(DataSnapshot snapshot, String previousChildName) {
             final Map<String, Object> item = convertor.convert(snapshot);
+            LOGGER.trace("V tabulce {} došlo ke změně hodnot v záznamu: {}", tableName, item);
             final List<Map<String, Object>> list = entries.get(tableName);
             final String idKey = tableName + "_id";
             final Object id = item.get(idKey);
@@ -261,6 +263,7 @@ class FirebaseService implements IFirebaseService {
         @Override
         public void onChildRemoved(DataSnapshot snapshot) {
             final Map<String, Object> item = convertor.convert(snapshot);
+            LOGGER.trace("Z tabulky {} byl odstraněn záznam: {}", tableName, item);
             final List<Map<String, Object>> list = entries.get(tableName);
             final String idKey = tableName + "_id";
 //            item.keySet().parallelStream()

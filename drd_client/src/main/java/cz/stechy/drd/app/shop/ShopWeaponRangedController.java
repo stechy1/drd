@@ -318,7 +318,7 @@ public class ShopWeaponRangedController implements Initializable,
     @Override
     public void updateLocalItem(ShopEntry itemBase) {
         service.selectOnline(AdvancedDatabaseService.ID_FILTER(itemBase.getId())).ifPresent(rangedWeapon -> {
-            service.uploadAsync(rangedWeapon).thenAccept(entry -> {
+            service.updateAsync(rangedWeapon).thenAccept(entry -> {
                 LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
                 itemBase.clearDiffMap();
             });

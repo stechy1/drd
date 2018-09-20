@@ -202,6 +202,11 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
     }
 
     @Override
+    public CompletableFuture<Void> updateOnlineAsync(ItemCollection item) {
+        return CompletableFuture.completedFuture(null);
+    }
+
+    @Override
     public CompletableFuture<Void> deleteRemoteAsync(ItemCollection item) {
         return CompletableFuture.supplyAsync(() -> {
             workingId = item.getId();
