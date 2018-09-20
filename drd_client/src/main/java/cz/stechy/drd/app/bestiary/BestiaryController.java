@@ -418,8 +418,8 @@ public class BestiaryController extends BaseController implements Initializable 
         protected void updateItem(MobEntry mobEntry, boolean empty) {
             super.updateItem(mobEntry, empty);
             if (mobEntry == null || empty) {
-                if (mobEntry != null) {
-                    mobEntry.hasDiffProperty().removeListener(diffListener);
+                if (oldMob != null) {
+                    oldMob.hasDiffProperty().removeListener(diffListener);
                 }
                 styleProperty().unbind();
                 setStyle("");
