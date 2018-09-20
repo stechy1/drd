@@ -147,7 +147,7 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
     @Override
     public void setHighlightDiffItems(BooleanProperty highlightDiffItems) {
         this.highlightDiffItem.bind(highlightDiffItems);
-        highlightDiffItems.addListener((observable, oldValue, newValue) -> {
+        highlightDiffItem.addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue) {
                 service.getDiff().thenAcceptAsync(diffEntries ->
                     diffEntries.forEach(diffEntry -> {

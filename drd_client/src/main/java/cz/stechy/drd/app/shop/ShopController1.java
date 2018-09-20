@@ -217,8 +217,8 @@ public class ShopController1 extends BaseController implements Initializable {
             userLogged.not().or(
                 editMode.not().or(
                     disableRemoveOnlineBtn.or(
-                        showOnlineDatabase.not()
-                            .or(diffHighlightMode)))));
+                        showOnlineDatabase.not().or(
+                            diffHighlightMode)))));
         btnToggleShowDiffItems.disableProperty().bind(
             userLogged.not().or(
                 editMode.not().or(
