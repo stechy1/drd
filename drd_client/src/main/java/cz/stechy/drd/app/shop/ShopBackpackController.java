@@ -294,11 +294,18 @@ public class ShopBackpackController implements Initializable, ShopItemController
 
     @Override
     public void updateLocalItem(ShopEntry itemBase) {
-
+        service.selectOnline(AdvancedDatabaseService.ID_FILTER(itemBase.getId())).ifPresent(backpack -> {
+            service.updateAsync(backpack).thenAccept(entry -> {
+                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                itemBase.clearDiffMap();
+            });
+        });
     }
 
     @Override
     public void updateOnlineItem(ShopEntry itemBase) {
-
+        service.uploadAsync((Backpack) itemBase.getItemBase()).thenAccept(ignored -> {
+            LOGGER.info("Aktualizace online záznamu proběhla úspěšně.");
+        });
     }
 }

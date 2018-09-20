@@ -327,6 +327,8 @@ public class ShopWeaponRangedController implements Initializable,
 
     @Override
     public void updateOnlineItem(ShopEntry itemBase) {
-        service.uploadAsync((RangedWeapon) itemBase.getItemBase()).thenAccept(ignored -> {});
+        service.uploadAsync((RangedWeapon) itemBase.getItemBase()).thenAccept(ignored -> {
+            LOGGER.info("Aktualizace online záznamu proběhla úspěšně.");
+        });
     }
 }

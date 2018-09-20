@@ -292,11 +292,18 @@ public class ShopGeneralController implements Initializable, ShopItemController<
 
     @Override
     public void updateLocalItem(ShopEntry itemBase) {
-
+        service.selectOnline(AdvancedDatabaseService.ID_FILTER(itemBase.getId())).ifPresent(generalItem -> {
+            service.updateAsync(generalItem).thenAccept(entry -> {
+                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                itemBase.clearDiffMap();
+            });
+        });
     }
 
     @Override
     public void updateOnlineItem(ShopEntry itemBase) {
-
+        service.uploadAsync((GeneralItem) itemBase.getItemBase()).thenAccept(ignored -> {
+            LOGGER.info("Aktualizace online záznamu proběhla úspěšně.");
+        });
     }
 }

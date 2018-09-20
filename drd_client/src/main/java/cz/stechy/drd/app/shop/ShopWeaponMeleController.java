@@ -313,11 +313,18 @@ public class ShopWeaponMeleController implements Initializable,
 
     @Override
     public void updateLocalItem(ShopEntry itemBase) {
-
+        service.selectOnline(AdvancedDatabaseService.ID_FILTER(itemBase.getId())).ifPresent(meleWeapon -> {
+            service.updateAsync(meleWeapon).thenAccept(entry -> {
+                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                itemBase.clearDiffMap();
+            });
+        });
     }
 
     @Override
     public void updateOnlineItem(ShopEntry itemBase) {
-
+        service.uploadAsync((MeleWeapon) itemBase.getItemBase()).thenAccept(ignored -> {
+            LOGGER.info("Aktualizace online záznamu proběhla úspěšně.");
+        });
     }
 }
