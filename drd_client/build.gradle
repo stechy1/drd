@@ -1,7 +1,3 @@
-group 'cz.stechy'
-version 'alfa-0.1'
-
-
 buildscript {
     dependencies {
         classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
@@ -14,7 +10,17 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
+
+plugins {
+    id 'java'
+//    id 'javafx-gradle-plugin'
+    id "com.ewerk.gradle.plugins.annotation-processor" version "1.0.2"
+}
+
+group 'cz.stechy'
+version 'alfa-0.1'
+
+//apply plugin: 'java'
 apply plugin: 'javafx-gradle-plugin'
 
 compileJava.options.encoding = 'UTF-8'
@@ -40,17 +46,22 @@ javadoc {
     options.charSet = 'UTF-8'
 }
 
+annotationProcessor {
+    library project (':drd_preprocessing')
+    processor "cz.stechy.drd.processor.dao.DaoProcessor"
+}
+
 dependencies {
 
     compile project(':drd_share')
 
-    implementation group: 'com.github.stechy1', name: 'screens', version: 'v2.3'
-    implementation group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'
-    implementation group: 'net.java.dev.jna', name: 'jna-platform', version: '4.3.0'
-    implementation group: 'com.github.harawata', name: 'appdirs', version: '1.0.0-SNAPSHOT'
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
-    implementation group: 'com.jfoenix', name: 'jfoenix', version: '8.0.3'
+    compile group: 'com.github.stechy1', name: 'screens', version: 'v2.3'
+    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'
+    compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.3.0'
+    compile group: 'com.github.harawata', name: 'appdirs', version: '1.0.0-SNAPSHOT'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.25'
+    compile group: 'com.jfoenix', name: 'jfoenix', version: '8.0.3'
 
 
     testImplementation group: 'junit', name: 'junit', version: '4.11'

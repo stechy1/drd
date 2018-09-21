@@ -42,6 +42,5 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Gradle: org.codehaus.mojo:animal-sniffer-annotations:1.14" level="project" />
-    <orderEntry type="module" module-name="drd_share_annotationProcessor" />
   </component>
 </module>
