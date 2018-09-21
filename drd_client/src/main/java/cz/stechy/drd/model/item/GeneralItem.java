@@ -1,10 +1,12 @@
 package cz.stechy.drd.model.item;
 
+import cz.stechy.drd.annotation.dao.Table;
 import cz.stechy.drd.model.IClonable;
 
 /**
  * Třída reprezentující běžný předmět
  */
+@Table(tableName = "generalItem", itemType = "general", customizeMapEntries = true)
 public final class GeneralItem extends ItemBase {
 
     // region Constructors

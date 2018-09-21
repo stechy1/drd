@@ -2,6 +2,7 @@ package cz.stechy.drd.db.base;
 
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.annotation.TranslateEntry;
+import cz.stechy.drd.annotation.dao.Column;
 import java.util.List;
 import java.util.Objects;
 import javafx.beans.property.BooleanProperty;
@@ -19,9 +20,11 @@ public abstract class OnlineItem extends DatabaseItem {
     // region Variables
 
     // Autor entity
+    @Column(columnName = "author", clazz = "String")
     @TranslateEntry(key = Translate.ENTRY_AUTHOR)
     protected final StringProperty author = new SimpleStringProperty(this, "author");
     // Příznak určující, zda-li je položka uložena v offline databázi, či nikoliv
+    @Column(columnName = "downloaded", clazz = "Boolean")
     @TranslateEntry(key = Translate.ENTRY_DOWNLOADED)
     protected final BooleanProperty downloaded = new SimpleBooleanProperty(this, "downloaded",
         false);

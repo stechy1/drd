@@ -3,6 +3,7 @@ package cz.stechy.drd.model.item;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.annotation.TranslateEntry;
+import cz.stechy.drd.annotation.dao.Column;
 import cz.stechy.drd.db.base.DatabaseItem;
 import cz.stechy.drd.db.base.OnlineItem;
 import cz.stechy.drd.model.Money;
@@ -31,21 +32,27 @@ public abstract class ItemBase extends OnlineItem implements IDescriptable, With
 
     // ID předmětu
     // Název předmětu
+    @Column(columnName = "name", clazz = "String")
     @TranslateEntry(key = Translate.ITEM_NAME)
     protected final StringProperty name = new SimpleStringProperty(this, "name");
     // Popis předmětu
+    @Column(columnName = "description", clazz = "String")
     @TranslateEntry(key = Translate.ITEM_DESCRIPTION)
     protected final StringProperty description = new SimpleStringProperty(this, "description");
     // Váha předmětu
+    @Column(columnName = "weight", clazz = "Integer")
     @TranslateEntry(key = Translate.ITEM_WEIGHT)
     protected final IntegerProperty weight = new SimpleIntegerProperty(this, "weight");
     // Cena předmětu
+    @Column(columnName = "Price", clazz = "String")
     @TranslateEntry(key = Translate.ITEM_PRICE)
     protected final Money price = new Money();
     // Obrázek předmětu v Base64
+    @Column(columnName = "image", clazz = "Image")
     @TranslateEntry(key = Translate.ITEM_IMAGE)
     protected final ObjectProperty<byte[]> image = new SimpleObjectProperty<>(this, "image");
     // Maximální počet předmětů, který může být v jednom stacku ve slotu inventáře
+    @Column(columnName = "stackSize", clazz = "Integer")
     @TranslateEntry(key = Translate.ITEM_STACK_SIZE)
     protected final IntegerProperty stackSize = new SimpleIntegerProperty(this, "stackSize");
     // endregion

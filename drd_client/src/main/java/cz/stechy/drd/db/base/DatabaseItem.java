@@ -1,7 +1,12 @@
 package cz.stechy.drd.db.base;
 
+import static cz.stechy.drd.annotation.dao.Column.Specification.NOT_NULL;
+import static cz.stechy.drd.annotation.dao.Column.Specification.PRIMARY_KEY;
+import static cz.stechy.drd.annotation.dao.Column.Specification.UNIQUE;
+
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.annotation.TranslateEntry;
+import cz.stechy.drd.annotation.dao.Column;
 import cz.stechy.drd.model.IClonable;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +23,7 @@ public abstract class DatabaseItem implements IClonable {
     // region Variables
 
     // Id
+    @Column(columnName = "id", clazz = "String", specifications = {PRIMARY_KEY, NOT_NULL, UNIQUE})
     @TranslateEntry(key = Translate.ENTRY_ID)
     protected final StringProperty id = new SimpleStringProperty(this, "id");
 
