@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.linked.project.id=":drd_share:annotationProcessor" external.linked.project.path="$MODULE_DIR$/../../../drd_share" external.root.project.path="$MODULE_DIR$/../../.." external.system.id="GRADLE" external.system.module.group="cz.stechy" external.system.module.type="sourceSet" external.system.module.version="alfa-0.1" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
+    <output url="file://$MODULE_DIR$/../../../drd_share/out/annotationProcessor/classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../drd_share/src/annotationProcessor" />
+    <content url="file://$MODULE_DIR$/../../../drd_share/src/generated">
+      <sourceFolder url="file://$MODULE_DIR$/../../../drd_share/src/generated/java" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>
