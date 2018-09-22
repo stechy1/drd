@@ -3,10 +3,7 @@
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/../../../drd_client/out/annotationProcessor/classes" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../../drd_client/src/annotationProcessor" />
-    <content url="file://$MODULE_DIR$/../../../drd_client/src/generated">
-      <sourceFolder url="file://$MODULE_DIR$/../../../drd_client/src/generated/java" isTestSource="false" />
-    </content>
+    <content url="file://$MODULE_DIR$/../../../drd_client/src/annotationProcessor/resources" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

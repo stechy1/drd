@@ -20,10 +20,10 @@ plugins {
 group 'cz.stechy'
 version 'alfa-0.1'
 
-//apply plugin: 'java'
 apply plugin: 'javafx-gradle-plugin'
 
 compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -48,11 +48,15 @@ javadoc {
 
 annotationProcessor {
     library project (':drd_preprocessing')
-    processor "cz.stechy.drd.processor.dao.DaoProcessor"
+    processor "cz.stechy.drd.processor.dao.DaoProcessor,cz.stechy.drd.processor.resources.ResourcesProcessor"
 }
+
+sourceSets.main.java.srcDirs = ['src/main/java', 'src/generated/java']
 
 dependencies {
 
+    compile project(':drd_annotations')
+    compile project(':drd_preprocessing')
     compile project(':drd_share')
 
     compile group: 'com.github.stechy1', name: 'screens', version: 'v2.3'

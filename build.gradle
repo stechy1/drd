@@ -11,5 +11,6 @@ repositories {
 
 dependencies {
 
-    compile project(':drd_share')
+    compile project(':drd_client')
+    compile project(':drd_server')
 }

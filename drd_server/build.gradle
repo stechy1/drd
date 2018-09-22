@@ -8,10 +8,23 @@ version 'alfa-0.1'
 sourceCompatibility = 1.8
 
 compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
 
 repositories {
     mavenCentral()
 }
+
+task copyResources(type: Copy) {
+    from file('../drd_client/src/generated/java/cz/stechy/drd/R.java')
+    into file('src/main/java/cz/stechy/drd')
+}
+
+task deleteResources(type: Delete) {
+    delete file('src/main/java/cz/stechy/drd/R.java')
+}
+
+compileJava.dependsOn 'copyResources'
+clean.dependsOn 'deleteResources'
 
 dependencies {
 

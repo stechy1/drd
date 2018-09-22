@@ -1,6 +1,7 @@
 package cz.stechy.drd;
 
 import com.sun.javafx.application.LauncherImpl;
+import cz.stechy.drd.annotation.resources.ResourcesRoot;
 import cz.stechy.drd.model.MyPreloaderNotification;
 import cz.stechy.drd.service.KeyboardService;
 import cz.stechy.drd.util.UTF8ResourceBundleControl;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Vstupní bod aplikace
  */
+@ResourcesRoot
 public class App extends Application {
 
     // region Constants

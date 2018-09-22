@@ -154,7 +154,7 @@ public class ResourcesProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        if (new File("./drd_share/src/generated/java/cz/stechy/drd/R.java").exists()) {
+        if (new File("./drd_client/src/generated/java/cz/stechy/drd/R.java").exists()) {
             return true;
         }
 
