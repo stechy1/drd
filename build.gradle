@@ -2,11 +2,19 @@ group 'cz.stechy'
 version 'alfa-0.1'
 
 apply plugin: 'java'
+apply plugin: 'idea'
 
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+}
+
+idea {
+    module {
+        outputDir file('build/classes/main')
+        testOutputDir file('build/classes/test')
+    }
 }
 
 dependencies {
