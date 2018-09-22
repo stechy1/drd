@@ -83,3 +83,5 @@ crashlytics-build.properties
 fabric.properties
 /src/main/resources/other/firebase_credentials.json
 /.idea/markdown-navigator.xml
+/drd_client/src/generated/*
+/drd_server/src/generated/*
