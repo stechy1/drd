@@ -504,7 +504,7 @@ public class MainController extends BaseController implements Initializable {
     }
 
     public void handleShowServer(ActionEvent actionEvent) {
-        startNewDialog("server");
+        startNewDialog(R.Fxml.SERVER);
     }
 
     // endregion

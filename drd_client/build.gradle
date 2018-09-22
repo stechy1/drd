@@ -59,7 +59,7 @@ dependencies {
     compile project(':drd_preprocessing')
     compile project(':drd_share')
 
-    compile group: 'com.github.stechy1', name: 'screens', version: 'v2.3'
+    compile group: 'com.github.stechy1', name: 'screens', version: 'v2.4'
     compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.21.0'
     compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.3.0'
     compile group: 'com.github.harawata', name: 'appdirs', version: '1.0.0-SNAPSHOT'

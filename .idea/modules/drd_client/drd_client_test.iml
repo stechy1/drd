@@ -14,9 +14,9 @@
     <orderEntry type="module" module-name="drd_annotations_main" />
     <orderEntry type="module" module-name="drd_share_main" />
     <orderEntry type="module-library">
-      <library name="Gradle: com.github.stechy1:screens:v2.3">
+      <library name="Gradle: com.github.stechy1:screens:v2.4">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.stechy1/screens/v2.3/bf0ab94348a00d305a136c5199419f8d1351fda4/screens-v2.3.jar!/" />
+          <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.stechy1/screens/v2.4/2079a121b7a1c0cafe30e1474f5ec937976b6deb/screens-v2.4.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
