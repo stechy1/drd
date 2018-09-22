@@ -224,3 +224,100 @@ vypracováno: {
 	Ohnivý drak
 	
 }
+
+Kouzla:
+ Hraničář:
+  Mluv se zvířaty
+  Najdi stopy
+  Najdi zvíře
+  Neutralizuj jed
+  Odstraň ochromení
+  Uzdrav lehká zranění
+  Uzdrav nemocného
+  Uzdrav těžká zranění
+  Zmam osobu
+ Kouzelník:
+  Dým
+  Hyperprostor
+  Hypnéha
+  Levitace
+  Magický štít
+  Mágův velký mix
+  Melenina krása
+  Metamorfóza
+  Modré blesky
+  Montyho čardáš
+  Najdi neviděné
+  Nebezpečné ovoce
+  Neviditelnost
+  Oheň
+  Ohnivý déšť
+  Protoplazma
+  Rychlost
+  Sugesce
+  Světlo
+  Tichi
+  Tma
+  Vodní dech
+  Zaklep
+  Zamkni
+  Zelené blesky
+  Zenerova karta
+  Zlom kouzlo
+Alchymista:
+ Dočasné:
+  Lektvary:
+   Antigravitační cloumák
+   Čarovná rtuť
+   Éterický olej
+   Lektvar chladných vod
+   Lektvar mlhovina
+   Lektvar obří síly
+   Lektvar rudého kříže
+   Lektvar vlády nad lykantropy
+   Lektvar zmenšování
+   Megacloumák
+   Metamorfóza
+   Pavoučí lektvar
+   Rychlost
+  Svitky:
+   Ochrana před ďábly
+   Ochrana před nemrtvými
+   Ochrana před neviděnými
+   Ochrana před démony
+   Ochrana před kouzly
+  Ostatní:
+   Detekční hůlka
+   Lakmusový papírek
+   Píšťalka
+ Trvalé:
+  Zbraně a zbroj:
+   Čarovné brnění
+   Kouzelný luk
+   Kouzelný štít
+   Meč noci
+   Ohnivý meč
+   Plášť
+  Prsteny:
+   Prsten černé vodoměrky
+   Prsten knížete D'Raguly
+   Prsten uhranutí
+   Sluneční prsten
+  Ostatní:
+   Ebenová hůlka
+   Elfí boty
+   Kostka štěstí
+   Létající koště
+   Pytel beztíže
+ Nemagické:
+  Jedy:
+   Černá zhouba
+   Jablečná vůně
+   Kurare
+   Melenova pomsta
+  Výbušniny:
+   Bomba
+   Ohnivá hlína
+  Zbraně:
+   Hvězdice-bumerang
+   Zubaté ostří
