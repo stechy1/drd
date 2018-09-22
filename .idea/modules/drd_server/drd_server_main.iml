@@ -9,7 +9,6 @@
     <content url="file://$MODULE_DIR$/../../../drd_server/src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../../drd_server/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../../drd_server/src/main/resources" type="java-resource" />
-      <excludeFolder url="file://$MODULE_DIR$/../../../drd_server/src/main/java/cz/stechy/drd/old" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

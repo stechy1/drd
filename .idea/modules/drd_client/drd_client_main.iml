@@ -21,10 +21,7 @@
           <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.stechy1/screens/v2.4/2079a121b7a1c0cafe30e1474f5ec937976b6deb/screens-v2.4.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/../../../../screens/src/main/java" />
-          <root url="file://$MODULE_DIR$/../../../../screens/src/test/java" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
     <orderEntry type="library" name="Gradle: org.xerial:sqlite-jdbc:3.21.0" level="project" />
