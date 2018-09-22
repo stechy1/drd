@@ -16,15 +16,17 @@ repositories {
 
 task copyResources(type: Copy) {
     from file('../drd_client/src/generated/java/cz/stechy/drd/R.java')
-    into file('src/main/java/cz/stechy/drd')
+    into file('src/generated/java/cz/stechy/drd')
 }
 
 task deleteResources(type: Delete) {
-    delete file('src/main/java/cz/stechy/drd/R.java')
+    delete file('src/generated/java/cz/stechy/drd/R.java')
 }
 
 compileJava.dependsOn 'copyResources'
 clean.dependsOn 'deleteResources'
+
+sourceSets.main.java.srcDirs = ['src/main/java', 'src/generated/java']
 
 dependencies {
 
