@@ -1,5 +1,6 @@
 package cz.stechy.drd.service;
 
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.crypto.RSA.CypherKey;
 import cz.stechy.drd.di.Singleton;
 import cz.stechy.drd.model.chat.ChatContact;
@@ -10,6 +11,7 @@ import cz.stechy.drd.net.message.ChatMessage;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatAction;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClient;
+import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRequestConnect;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientRoom;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationClientTyping;
 import cz.stechy.drd.net.message.ChatMessage.ChatMessageAdministrationData.ChatMessageAdministrationRoom;
@@ -21,6 +23,7 @@ import cz.stechy.drd.net.message.MessageSource;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -99,10 +102,14 @@ public final class ChatService {
             }
 
             // Přihlásím nového uživatele
-//            communicator.sendMessage(new ChatMessage(MessageSource.CLIENT,
-//                new ChatMessageAdministrationData(
-//                    new ChatMessageAdministrationClientRequestConnect(newValue.getId(),
-//                        userService.getUser().getName()))));
+            ThreadPool.SCHEDULER.schedule(() -> {
+                LOGGER.info("Přihlašuji se do chatu...");
+                communicator.sendMessage(new ChatMessage(MessageSource.CLIENT,
+                    new ChatMessageAdministrationData(
+                        new ChatMessageAdministrationClientRequestConnect(newValue.getId(),
+                            userService.getUser().getName()))));
+            }, 5, TimeUnit.SECONDS);
+
         });
     }
 

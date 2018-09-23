@@ -1,8 +1,10 @@
 package cz.stechy.drd;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinWorkerThread;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javafx.application.Platform;
 
@@ -23,6 +25,8 @@ public final class ThreadPool {
 
     public static final Executor JAVAFX_EXECUTOR = Platform::runLater;
 
+    public static final ScheduledExecutorService SCHEDULER = Executors.newSingleThreadScheduledExecutor();
+
     // endregion
 
     // region Public static methods
@@ -33,6 +37,7 @@ public final class ThreadPool {
     public static void shutDown() {
         DB_EXECUTOR.shutdown();
         COMMON_EXECUTOR.shutdown();
+        SCHEDULER.shutdown();
 
         try {
             DB_EXECUTOR.awaitTermination(5, TimeUnit.SECONDS);
@@ -42,6 +47,12 @@ public final class ThreadPool {
 
         try {
             COMMON_EXECUTOR.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            SCHEDULER.awaitTermination(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
