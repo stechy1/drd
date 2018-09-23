@@ -14,6 +14,7 @@ import cz.stechy.drd.cmd.CmdParser;
 import cz.stechy.drd.cmd.IParameterFactory;
 import cz.stechy.drd.plugins.firebase.FirebaseEntryEvent;
 import cz.stechy.drd.plugins.firebase.FirebaseEntryEventListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -113,10 +114,14 @@ class FirebaseService implements IFirebaseService {
         }
 
         LOGGER.info("Inicializuji Firebase...");
-        final String credentialsPath = parameterFactory.getParameters().getString(CmdParser.FB_URL);
-        LOGGER.info(String.format("Čtu přístupové údaje ze souboru: %s.", credentialsPath));
-        try (FileInputStream serviceAccount = new FileInputStream(credentialsPath)) {
-            final String fbURL = resolveFirebaseUrl(new FileInputStream(credentialsPath));
+        final File credentialsFile = new File(parameterFactory.getParameters().getString(CmdParser.FB_URL));
+        if (!credentialsFile.exists() || !credentialsFile.isFile()) {
+            LOGGER.warn("Firebase se nepodařilo inicializovat - nezadali jste přístupové údaje.");
+            return;
+        }
+        LOGGER.info(String.format("Čtu přístupové údaje ze souboru: %s.", credentialsFile.getAbsolutePath()));
+        try (FileInputStream serviceAccount = new FileInputStream(credentialsFile)) {
+            final String fbURL = resolveFirebaseUrl(new FileInputStream(credentialsFile));
             final Map<String, Object> auth = new HashMap<>();
             auth.put("uid", "my_resources");
             LOGGER.info(String.format("Připojuji se k firebase na adresu: %s.", fbURL));
@@ -163,12 +168,14 @@ class FirebaseService implements IFirebaseService {
                 .child(id)
                 .removeValueAsync().get();
         } catch (Exception ignored) {}
-
-        final List<Map<String, Object>> maps = entries.get(tableName);
     }
 
     @Override
     public void registerListener(String tableName, FirebaseEntryEventListener listener) {
+        if (!initialized) {
+            LOGGER.trace("Listener pro tabulku: {} jsme nezaregistroval, protože Firebase není inicializována.", tableName);
+            return;
+        }
         List<FirebaseEntryEventListener> observables = listeners.get(tableName);
         // Pokud jsem ještě neprovedl žádnou registraci pro daný typ předmětu
         if (observables == null) {
@@ -193,6 +200,9 @@ class FirebaseService implements IFirebaseService {
 
     @Override
     public void unregisterListener(String tableName, FirebaseEntryEventListener listener) {
+        if (!initialized) {
+            LOGGER.trace("Neodebral jsem listener pro tabulku: {}, protože Firebase nebyla inicializována.", tableName);
+        }
         final List<FirebaseEntryEventListener> observables = listeners.get(tableName);
         if (observables == null) {
             return;
