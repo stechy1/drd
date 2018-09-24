@@ -53,6 +53,14 @@ annotationProcessor {
 
 sourceSets.main.java.srcDirs = ['src/main/java', 'src/generated/java']
 
+task zipApplication(type: Zip) {
+    from 'build/jfx/app'
+    archiveName 'drd.zip'
+    destinationDir(file('build'))
+}
+
+zipApplication.dependsOn 'jfxJar'
+
 dependencies {
 
     compile project(':drd_annotations')

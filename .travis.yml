@@ -22,3 +22,13 @@ before_install:
 
 script:
   - ./gradlew build --scan -s -x test
+  - ./gradlew :drd_client:zipApplication
+
+deploy:
+  provider: releases
+  api_key:
+    secure: LbjHNWY6Nl-Dx2KoQNuouQ
+  file: "drd_client/jfx/drd.zip"
+  skip_cleanup: true
+  on:
+    tags: true
