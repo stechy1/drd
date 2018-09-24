@@ -30,5 +30,3 @@ deploy:
     secure: LbjHNWY6Nl-Dx2KoQNuouQ
   file: "drd_client/jfx/drd.zip"
   skip_cleanup: true
-  on:
-    tags: true
