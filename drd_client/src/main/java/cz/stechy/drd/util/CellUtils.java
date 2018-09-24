@@ -63,8 +63,6 @@ public final class CellUtils {
         return forMaxActValue(null);
     }
 
-    private static int counter = 0;
-
     /**
      * Pomocná metody pro vygenerování tabulkové buňky, která obsahuje editační pole pro zadání
      * hodnoty ze zadaného rozsahu
@@ -85,8 +83,6 @@ public final class CellUtils {
                 if (editable != null) {
                     input.disableProperty().bind(editable);
                 }
-                this.getStyleClass().add("cell-" + counter++);
-                System.out.println("New TableCell: " + this.toString());
             }
 
             @Override
@@ -105,13 +101,11 @@ public final class CellUtils {
                     if (oldItem != null && item != oldItem) {
                         FormUtils.disposeTextField(input, oldItem);
                         initialized = false;
-                        System.out.println("Text unbind: " + oldItem.toString() + "; " + this.toString());
                     }
                     if (!initialized) {
                         FormUtils.initTextFormater(input, item);
                         this.oldItem = item;
                         initialized = true;
-                        System.out.println("Text bind: " +item.toString() + "; " + this.toString());
                     }
                     setGraphic(input);
                     setText(null);
