@@ -2,6 +2,7 @@
 ![Úvodní obrazovka](screenshots/main_screen.png)
 
 [![Release Version](https://img.shields.io/github/release/stechy1/drd.svg)](https://github.com/stechy1/drd/releases)
+[![Build Status](https://travis-ci.org/stechy1/drd.svg?branch=develop)](https://travis-ci.org/stechy1/drd)
 
 ## Instalace
 ### Prerekvizity
