@@ -112,19 +112,22 @@ public class FirebasePlugin implements IPlugin {
                 final DatabaseMessageCRUD.DatabaseAction crudAction = databaseMessageCRUD.getAction();
                 final String itemId = databaseMessageCRUD.getItemId();
                 tableName = databaseMessageCRUD.getTableName();
+                boolean success;
                 switch (crudAction) {
                     case CREATE:
-                        firebaseService.performInsert(tableName, (Map<String, Object>) databaseMessageCRUD.getData(), itemId);
+                        success = firebaseService.performInsert(tableName, (Map<String, Object>) databaseMessageCRUD.getData(), itemId);
                         break;
                     case UPDATE:
-                        firebaseService.performUpdate(tableName, (Map<String, Object>) databaseMessageCRUD.getData(), itemId);
+                        success = firebaseService.performUpdate(tableName, (Map<String, Object>) databaseMessageCRUD.getData(), itemId);
                         break;
                     case DELETE:
-                        firebaseService.performDelete(tableName, itemId);
+                        success = firebaseService.performDelete(tableName, itemId);
                         break;
                     default:
                         throw new IllegalArgumentException("Neplatný parametr.");
                 }
+
+                client.sendMessageAsync(databaseMessage.getResponce(success));
                 break;
             default:
                 throw new IllegalArgumentException("Neplatný parametr.");
