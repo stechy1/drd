@@ -3,8 +3,8 @@ package cz.stechy.drd.dao;
 import static cz.stechy.drd.R.Database.Collections.COLUMN_AUTHOR;
 import static cz.stechy.drd.R.Database.Collections.COLUMN_BESTIARY;
 import static cz.stechy.drd.R.Database.Collections.COLUMN_ID;
-import static cz.stechy.drd.R.Database.Collections.COLUMN_NAME;
 import static cz.stechy.drd.R.Database.Collections.COLUMN_ITEMS;
+import static cz.stechy.drd.R.Database.Collections.COLUMN_NAME;
 import static cz.stechy.drd.R.Database.Collections.COLUMN_SPELLS;
 import static cz.stechy.drd.R.Database.Collections.FIREBASE_CHILD;
 import static cz.stechy.drd.R.Database.Collections.TABLE_NAME;
@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Semaphore;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -50,10 +49,7 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
     // region Variables
 
     private final ObservableList<ItemCollection> collections = FXCollections.observableArrayList();
-    private final Semaphore semaphore = new Semaphore(0);
     private final ClientCommunicator communicator;
-    private String workingId;
-    private boolean success;
 
     // endregion
 
@@ -89,55 +85,30 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
     // region Public methods
 
-    public CompletableFuture<Void> addItemToCollection(ItemCollection collection,
-        CollectionType type, String id) {
-        return CompletableFuture.supplyAsync(() -> {
-            workingId = collection.getId();
-
-            collection.getCollection(type).add(id);
-            communicator.sendMessage(new DatabaseMessage(MessageSource.CLIENT,
-                new DatabaseMessageCRUD(toStringItemMap(collection),
-                    getFirebaseChildName(),
-                    DatabaseAction.UPDATE, collection.getId())));
-
-            try {
-                semaphore.acquire();
-            } catch (InterruptedException ignored) {
-            }
-
-            if (!success) {
-                collection.getCollection(type).remove(id);
-                throw new RuntimeException("Item se nepodařilo přidat do kolekce.");
-            }
-
-            return null;
-        }, ThreadPool.COMMON_EXECUTOR)
-            .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
+    public CompletableFuture<Void> addItemToCollection(ItemCollection collection, CollectionType type, String id) {
+        return communicator.sendMessageFuture(
+            new DatabaseMessage(MessageSource.CLIENT,
+                new DatabaseMessageCRUD(toStringItemMap(collection), getFirebaseChildName(), DatabaseAction.UPDATE, collection.getId())))
+            .thenAcceptAsync(responce -> {
+                if (!responce.isSuccess()) {
+                    throw new RuntimeException("Item se nepodařilo přidat do kolekce.");
+                }
+                collection.getCollection(type).add(id);
+                LOGGER.info("Item se podařilo vložit do kolekce.");
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
-    public CompletableFuture<Void> removeItemFromCollection(ItemCollection collection,
-        CollectionType type, String id) {
-        return CompletableFuture.supplyAsync(() -> {
-            workingId = collection.getId();
-            collection.getCollection(type).remove(id);
-            communicator.sendMessage(new DatabaseMessage(MessageSource.CLIENT,
-                new DatabaseMessageCRUD(toStringItemMap(collection),
-                    getFirebaseChildName(),
-                    DatabaseAction.UPDATE, collection.getId())));
+    public CompletableFuture<Void> removeItemFromCollection(ItemCollection collection, CollectionType type, String id) {
+        return communicator.sendMessageFuture(
+            new DatabaseMessage(MessageSource.CLIENT,
+                new DatabaseMessageCRUD(toStringItemMap(collection), getFirebaseChildName(), DatabaseAction.UPDATE, collection.getId())))
+            .thenAcceptAsync(responce -> {
+                if (!responce.isSuccess()) {
+                    throw new RuntimeException("Item se nepodařilo smazat z kolekce.");
+                }
 
-            try {
-                semaphore.acquire();
-            } catch (InterruptedException ignored) {}
-
-            if (!success) {
-                collection.getCollection(type).add(id);
-                throw new RuntimeException("Item se nepodařilo smazat z kolekce.");
-            }
-
-            LOGGER.info("Item se podařilo smazat z kolekce.");
-            return null;
-        }, ThreadPool.COMMON_EXECUTOR)
-            .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
+                collection.getCollection(type).remove(id);
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     // endregion
@@ -175,30 +146,14 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
     @Override
     public CompletableFuture<Void> uploadAsync(ItemCollection item) {
-        return CompletableFuture.supplyAsync(() -> {
-            workingId = item.getId();
-
-            communicator.sendMessage(new DatabaseMessage(
-                MessageSource.CLIENT, new DatabaseMessageCRUD(
-                toStringItemMap(item), getFirebaseChildName(),
-                DatabaseAction.CREATE,
-                item.getId()
-            )));
-
-            try {
-                semaphore.acquire();
-            } catch (InterruptedException ignored) {
-            }
-
-            if (!success) {
+        return communicator.sendMessageFuture(
+            new DatabaseMessage(MessageSource.CLIENT,
+                new DatabaseMessageCRUD(toStringItemMap(item), getFirebaseChildName(), DatabaseAction.CREATE, item.getId())))
+            .thenAcceptAsync(responce -> {
+            if (!responce.isSuccess()) {
                 throw new RuntimeException("Nahrání se nezdařilo.");
             }
-
-            LOGGER.info("Nahrání proběhlo v pořádku.");
-            return item;
-
-        }, ThreadPool.COMMON_EXECUTOR)
-            .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     @Override
@@ -208,29 +163,14 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
 
     @Override
     public CompletableFuture<Void> deleteRemoteAsync(ItemCollection item) {
-        return CompletableFuture.supplyAsync(() -> {
-            workingId = item.getId();
-
-            communicator.sendMessage(new DatabaseMessage(
-                MessageSource.CLIENT, new DatabaseMessageCRUD(
-                toStringItemMap(item), getFirebaseChildName(),
-                DatabaseAction.DELETE,
-                item.getId())));
-
-            try {
-                semaphore.acquire();
-            } catch (InterruptedException ignored) {
-            }
-
-            if (!success) {
-                throw new RuntimeException("Smazání záznamu se nezdařilo.");
-            }
-
-            LOGGER.info("Smazání proběhlo v pořádku.");
-            return item;
-
-        }, ThreadPool.COMMON_EXECUTOR)
-            .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
+            return communicator.sendMessageFuture(
+                new DatabaseMessage(MessageSource.CLIENT,
+                    new DatabaseMessageCRUD(toStringItemMap(item), getFirebaseChildName(), DatabaseAction.DELETE, item.getId())))
+                .thenAcceptAsync(responce -> {
+                    if (!responce.isSuccess()) {
+                        throw new RuntimeException("Smazání záznamu se nezdařilo.");
+                    }
+                }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     // endregion
@@ -244,12 +184,6 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
     // endregion
 
     private final OnDataReceivedListener databaseListener = message -> {
-        this.success = message.isSuccess();
-        if (!success) {
-            semaphore.release();
-            return;
-        }
-
         final DatabaseMessage databaseMessage = (DatabaseMessage) message;
         IDatabaseMessageData databaseMessageData = (IDatabaseMessageData) databaseMessage.getData();
 
@@ -272,6 +206,7 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
                 Platform.runLater(() -> collections.add(itemCollection));
                 break;
             case UPDATE:
+                LOGGER.info("Musím aktualizovat záznam.");
                 break;
             case DELETE:
                 LOGGER.trace("Kolekce předmětů {} byla smazána z online databáze",
@@ -280,11 +215,6 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
                 break;
             default:
                 throw new IllegalArgumentException("Neplatny argument");
-        }
-
-        if (itemCollection.getId().equals(workingId)) {
-            workingId = null;
-            semaphore.release();
         }
     };
 

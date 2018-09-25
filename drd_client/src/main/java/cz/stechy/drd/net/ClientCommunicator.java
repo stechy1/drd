@@ -17,7 +17,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.LinkedBlockingQueue;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
@@ -54,6 +56,7 @@ public final class ClientCommunicator {
     private final StringProperty connectedServer = new SimpleStringProperty(this, "connectedServer",
         null);
     private final ObjectProperty<ServerStatus> serverStatus = new SimpleObjectProperty<>(this, "serverStatus", ServerStatus.EMPTY);
+    private final Queue<Request> requests = new LinkedBlockingQueue<>();
 
     private CryptoService cryptoService;
     private ReaderThread readerThread;
@@ -101,6 +104,14 @@ public final class ClientCommunicator {
     }
 
     private final OnDataReceivedListener listener = message -> {
+        if (message.isResponce()) {
+            final Request poll = requests.poll();
+            if (poll != null) {
+                poll.onResponce(message);
+            }
+            return;
+        }
+
         final List<OnDataReceivedListener> listenerList = listeners.get(message.getType());
         if (listenerList == null) {
             return;
@@ -233,6 +244,18 @@ public final class ClientCommunicator {
         if (writerThread != null) {
             writerThread.addMessageToQueue(message);
         }
+    }
+
+    public synchronized CompletableFuture<IMessage> sendMessageFuture(IMessage message) {
+        return CompletableFuture.supplyAsync(() -> {
+            sendMessage(message);
+            return null;
+        })
+            .thenCompose(ignored -> {
+                Request request = new Request();
+                requests.add(request);
+                return request.getFuture();
+            });
     }
 
     /**

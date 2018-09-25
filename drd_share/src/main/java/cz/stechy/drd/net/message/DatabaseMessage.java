@@ -109,6 +109,8 @@ public class DatabaseMessage implements IMessage {
             return getAction().toString();
         }
 
+
+
         public enum DatabaseAction {
             CREATE, UPDATE, DELETE
         }
