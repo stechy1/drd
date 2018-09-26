@@ -97,6 +97,7 @@ public final class DialogUtils {
     public static List<ChoiceEntry> getItemChoices(Collection<ItemBase> items) {
         return items.stream()
             .map(ChoiceEntry::new)
+            .sorted()
             .collect(Collectors.toList());
     }
 
@@ -132,7 +133,7 @@ public final class DialogUtils {
 
     // endregion
 
-    public static final class ChoiceEntry implements WithImage {
+    public static final class ChoiceEntry implements WithImage, Comparable<ChoiceEntry> {
 
         final StringProperty id = new SimpleStringProperty();
         final StringProperty name = new SimpleStringProperty();
@@ -144,6 +145,11 @@ public final class DialogUtils {
             this.id.setValue(entry.getId());
             this.name.setValue(entry.getName());
             imageRaw.set(entry.getImage());
+        }
+
+        @Override
+        public int compareTo(ChoiceEntry choiceEntry) {
+            return getName().compareTo(choiceEntry.getName());
         }
 
         @Override
