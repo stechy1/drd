@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Semaphore;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
@@ -54,11 +53,9 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     protected final ObservableList<T> onlineDatabase = FXCollections.observableArrayList();
     private final ObservableList<T> usedItems = FXCollections.observableArrayList();
-    private final Semaphore semaphore = new Semaphore(0);
 
     private boolean success = false;
     private boolean showOnline = false;
-    private String workingItemId;
     private ClientCommunicator communicator;
 
     // endregion
@@ -135,10 +132,6 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
     @SuppressWarnings("unchecked")
     private final OnDataReceivedListener databaseListener = message -> {
         this.success = message.isSuccess();
-        if (!success) {
-            semaphore.release();
-            return;
-        }
 
         final DatabaseMessage databaseMessage = (DatabaseMessage) message;
         final IDatabaseMessageData databaseMessageData = (IDatabaseMessageData) databaseMessage
@@ -191,11 +184,6 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                 break;
             default:
                 throw new IllegalArgumentException("Neplatný argument");
-        }
-
-        if (item.getId().equals(workingItemId)) {
-            workingItemId = null;
-            semaphore.release();
         }
     };
 
@@ -261,28 +249,15 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     @Override
     public CompletableFuture<Void> uploadAsync(T item) {
-        return CompletableFuture.supplyAsync(() -> {
-            communicator.sendMessage(new DatabaseMessage(
-                MessageSource.CLIENT, new DatabaseMessageCRUD(
-                    toStringItemMap(item), getFirebaseChildName(), DatabaseAction.CREATE,
-                    item.getId())
-            ));
+        return communicator.sendMessageFuture(
+            new DatabaseMessage(MessageSource.CLIENT,
+                new DatabaseMessageCRUD(toStringItemMap(item), getFirebaseChildName(), DatabaseAction.CREATE, item.getId())))
+            .thenCompose(responce -> {
+                if (!responce.isSuccess()) {
+                    throw new RuntimeException("Nahrání záznamu se nezdařilo.");
+                }
 
-            workingItemId = item.getId();
-
-            try {
-                semaphore.acquire();
-            } catch (InterruptedException ignored) {}
-
-            if (!success) {
-                throw new RuntimeException("Nahrání se nezdařilo.");
-            }
-
-            LOGGER.info("Nahrání proběhlo v pořádku.");
-            return item;
-        }, ThreadPool.COMMON_EXECUTOR)
-            .thenCompose(t -> {
-                final T itemCopy = t.duplicate();
+                final T itemCopy = item.duplicate();
                 itemCopy.setUploaded(true);
                 return updateAsync(itemCopy);
             })
@@ -291,56 +266,32 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     @Override
     public CompletableFuture<Void> updateOnlineAsync(T item) {
-        return CompletableFuture.supplyAsync(() -> {
-            communicator.sendMessage(new DatabaseMessage(
-                MessageSource.CLIENT, new DatabaseMessageCRUD(
-                    toStringItemMap(item), getFirebaseChildName(), DatabaseAction.UPDATE, item.getId())
-            ));
-
-            workingItemId = item.getId();
-
-            try {
-                semaphore.acquire();
-            } catch (InterruptedException ignored) {}
-
-            if (!success) {
-                throw new RuntimeException("Aktualizace předmětu se nezdařila.");
-            }
-
-            LOGGER.info("Aktualizace proběhla v pořádku.");
-            return item;
-        }, ThreadPool.COMMON_EXECUTOR)
-            .thenApplyAsync(t -> null, ThreadPool.JAVAFX_EXECUTOR);
+        return communicator.sendMessageFuture(
+            new DatabaseMessage(MessageSource.CLIENT,
+                new DatabaseMessageCRUD(toStringItemMap(item), getFirebaseChildName(), DatabaseAction.UPDATE, item.getId())))
+            .thenAcceptAsync(responce-> {
+                if(!responce.isSuccess()) {
+                    throw new RuntimeException("Aktualizace záznamu se nezdařila.");
+                }
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     @Override
     public CompletableFuture<Void> deleteRemoteAsync(T item) {
-        return CompletableFuture.supplyAsync(() -> {
-            communicator.sendMessage(new DatabaseMessage(
-                MessageSource.CLIENT, new DatabaseMessageCRUD(
-                    toStringItemMap(item), getFirebaseChildName(), DatabaseAction.DELETE,
-                    item.getId())
-            ));
-
-            workingItemId = item.getId();
-
-            try {
-                semaphore.acquire();
-            } catch (InterruptedException ignored) {}
-
-            if (!success) {
-                throw new RuntimeException("Odstranění z databáze se nezdařilo.");
-            }
-
-            LOGGER.info("Smazání proběhlo v pořádku.");
-            return item;
-        }, ThreadPool.COMMON_EXECUTOR)
-            .thenCompose(t -> {
-                final T itemCopy = t.duplicate();
+        return communicator.sendMessageFuture(
+            new DatabaseMessage(MessageSource.CLIENT,
+                new DatabaseMessageCRUD(toStringItemMap(item), getFirebaseChildName(), DatabaseAction.DELETE, item.getId())))
+            .thenAcceptAsync(responce -> {
+                if (!responce.isSuccess()) {
+                    throw new RuntimeException("Odstranění online záznamu z databáze se nezdařilo.");
+                }
+            }, ThreadPool.JAVAFX_EXECUTOR)
+            .thenComposeAsync(ignored -> {
+                final T itemCopy = item.duplicate();
                 itemCopy.setUploaded(false);
                 return updateAsync(itemCopy);
-            })
-            .thenApplyAsync(ignored -> null, ThreadPool.JAVAFX_EXECUTOR);
+            }, ThreadPool.COMMON_EXECUTOR)
+            .thenAcceptAsync(ignored -> {}, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     /**

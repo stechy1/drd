@@ -18,4 +18,12 @@ public interface IMessage extends Serializable {
     default byte[] toByteArray() throws IOException {
         return new byte[0];
     }
+
+    default boolean isResponce() {
+        return false;
+    }
+
+    default IMessage getResponce(boolean success, Object... responceData) {
+        return new ResponceMessage(success, responceData);
+    }
 }

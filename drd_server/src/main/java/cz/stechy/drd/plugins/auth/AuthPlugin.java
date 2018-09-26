@@ -44,8 +44,9 @@ public class AuthPlugin implements IPlugin {
         final Optional<User> userOptional = authService.register(usernameRaw, passwordRaw);
         final boolean success = userOptional.isPresent();
         final String id = success ? userOptional.get().id : "";
-        client.sendMessageAsync(new AuthMessage(MessageSource.SERVER, AuthAction.REGISTER,
-            success, new AuthMessageData(id)));
+
+//        client.sendMessageAsync(new AuthMessage(MessageSource.SERVER, AuthAction.REGISTER,
+//            success, new AuthMessageData(id)));
     }
 
     private void callLogin(byte[] usernameRaw, byte[] passwordRaw, IClient client) {
@@ -61,19 +62,27 @@ public class AuthPlugin implements IPlugin {
         final MessageReceivedEvent messageReceivedEvent = (MessageReceivedEvent) event;
         final AuthMessage authMessage = (AuthMessage) messageReceivedEvent.getReceivedMessage();
         final AuthMessageData data = (AuthMessageData) authMessage.getData();
-
+        Optional<User> optionalUser = Optional.empty();
         switch (authMessage.getAction()) {
             case REGISTER:
-                callRegister(data.name, data.password, messageReceivedEvent.getClient());
+                 optionalUser = authService.register(data.name, data.password);
+                //callRegister(data.name, data.password, messageReceivedEvent.getClient());
                 break;
             case LOGIN:
-                callLogin(data.name, data.password, messageReceivedEvent.getClient());
+                optionalUser = authService.login(data.name, data.password);
+                //callLogin(data.name, data.password, messageReceivedEvent.getClient());
                 break;
             case LOGOUT:
                 break;
             default:
                 throw new RuntimeException("Neplatný parametr");
         }
+
+        final IClient client = messageReceivedEvent.getClient();
+        final boolean success = optionalUser.isPresent();
+
+        client.sendMessageAsync(authMessage.getResponce(success, success ? optionalUser.get().id : null));
+
     }
 
     // endregion

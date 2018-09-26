@@ -18,8 +18,9 @@ public interface IFirebaseService {
      * @param tableName Název tabulky
      * @param item Záznam, který se má vložit
      * @param id Id záznamu
+     * @return True, pokud se záznam podařilo vložit, jinak false
      */
-    void performInsert(final String tableName, Map<String, Object> item, String id);
+    boolean performInsert(final String tableName, Map<String, Object> item, String id);
 
     /**
      * Aktualizuje záznam ve firebase
@@ -27,16 +28,18 @@ public interface IFirebaseService {
      * @param tableName Název tabulky
      * @param item Záznam, který se má aktualizovat
      * @param id Id záznamu
+     * @return True, pokud se záznam podařilo aktualizovat, jinak false
      */
-    void performUpdate(final String tableName, Map<String, Object> item, String id);
+    boolean performUpdate(final String tableName, Map<String, Object> item, String id);
 
     /**
      * Odstraní záznam z firebase
      *
      * @param tableName Název tabulky
      * @param id Id záznamu
+     * @return True, pokud se záznam podařilo odstranit, jinak false
      */
-    void performDelete(final String tableName, String id);
+    boolean performDelete(final String tableName, String id);
 
     /**
      * Zaregistruje posluchače událostí pro danou tabulku

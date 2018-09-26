@@ -141,33 +141,48 @@ class FirebaseService implements IFirebaseService {
     }
 
     @Override
-    public void performInsert(String tableName, Map<String, Object> item, String id) {
+    public boolean performInsert(String tableName, Map<String, Object> item, String id) {
+        boolean success = true;
         try {
             this.entriesReference
                 .child(tableName)
                 .child(id)
                 .setValueAsync(item).get();
-        } catch (Exception ignored) {}
+        } catch (Exception ex) {
+            success = false;
+        }
+
+        return success;
     }
 
     @Override
-    public void performUpdate(String tableName, Map<String, Object> item, String id) {
+    public boolean performUpdate(String tableName, Map<String, Object> item, String id) {
+        boolean success = true;
         try {
             this.entriesReference
                 .child(tableName)
                 .child(id)
                 .updateChildrenAsync(item).get();
-        } catch (Exception ignored) {}
+        } catch (Exception ex) {
+            success = false;
+        }
+
+        return success;
     }
 
     @Override
-    public void performDelete(String tableName, String id) {
+    public boolean performDelete(String tableName, String id) {
+        boolean success = true;
         try {
             this.entriesReference
                 .child(tableName)
                 .child(id)
                 .removeValueAsync().get();
-        } catch (Exception ignored) {}
+        } catch (Exception ex) {
+            success = false;
+        }
+
+        return success;
     }
 
     @Override
