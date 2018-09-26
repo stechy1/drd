@@ -20,10 +20,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,6 +76,36 @@ public class ServerController extends BaseController implements Initializable {
 
     // region Private methods
 
+    /**
+     * Pokusí se navázat spojení s vybraným serverem.
+     *
+     * @param scene {@link Scene} Scena, ve které se bude měnit kurzor myši
+     */
+    private void connect(Scene scene) {
+        final String hostPort = txtHostPort.textProperty().get();
+        final String host = hostPort.substring(0, hostPort.indexOf(":"));
+        final String portRaw = hostPort.substring(hostPort.indexOf(":") + 1);
+        int port;
+        try {
+            port = Integer.parseInt(portRaw);
+        } catch (Exception ex) {
+            showNotification(new Notification("Port serveru není správně zadán."));
+            return;
+        }
+
+        scene.setCursor(Cursor.WAIT);
+        this.communicator.connect(host, port)
+            .thenAccept(success -> {
+                if (!success) {
+                    showNotification(new Notification("Spojení se nepodařilo navázat."));
+                }
+            })
+            .whenComplete((aVoid, throwable) -> {
+                scene.setCursor(Cursor.DEFAULT);
+                finish();
+            });
+    }
+
     private void serverSelectionListener(ObservableValue<? extends ServerStatusModel> observable,
         ServerStatusModel oldValue, ServerStatusModel newValue) {
         if (newValue == null) {
@@ -81,6 +113,14 @@ public class ServerController extends BaseController implements Initializable {
             return;
         }
         txtHostPort.textProperty().set(String.format("%s:%d", newValue.getServerAddress().getHostAddress(), newValue.getPort()));
+    }
+
+    private void serverClickListener(MouseEvent mouseEvent) {
+        if (mouseEvent.getClickCount() == 2) {
+            if (lvServers.getSelectionModel().getSelectedItem() != null) {
+                connect(((Parent) (mouseEvent.getSource())).getScene());
+            }
+        }
     }
 
     // endregion
@@ -115,6 +155,7 @@ public class ServerController extends BaseController implements Initializable {
         lvServers.setCellFactory(param -> new ServerStatusCell());
         lvServers.setItems(this.serverFinder.getServerList());
         lvServers.getSelectionModel().selectedItemProperty().addListener(this::serverSelectionListener);
+        lvServers.setOnMouseClicked(this::serverClickListener);
     }
 
     @Override
@@ -137,28 +178,7 @@ public class ServerController extends BaseController implements Initializable {
 
     @FXML
     private void handleConnect(ActionEvent actionEvent) {
-        final String hostPort = txtHostPort.textProperty().get();
-        final String host = hostPort.substring(0, hostPort.indexOf(":"));
-        final String portRaw = hostPort.substring(hostPort.indexOf(":") + 1);
-        int port;
-        try {
-            port = Integer.parseInt(portRaw);
-        } catch (Exception ex) {
-            showNotification(new Notification("Port serveru není správně zadán."));
-            return;
-        }
-
-        ((Parent)(actionEvent.getSource())).getScene().setCursor(Cursor.WAIT);
-        this.communicator.connect(host, port)
-            .thenAccept(success -> {
-                if (!success) {
-                    showNotification(new Notification("Spojení se nepodařilo navázat."));
-                }
-            })
-            .whenComplete((aVoid, throwable) -> {
-                ((Parent) (actionEvent.getSource())).getScene().setCursor(Cursor.DEFAULT);
-                finish();
-            });
+        connect(((Parent) (actionEvent.getSource())).getScene());
     }
 
     @FXML
