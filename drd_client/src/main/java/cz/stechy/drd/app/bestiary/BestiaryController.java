@@ -1,6 +1,7 @@
 package cz.stechy.drd.app.bestiary;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.dao.BestiaryDao;
 import cz.stechy.drd.db.AdvancedDatabaseService;
@@ -278,6 +279,7 @@ public class BestiaryController extends BaseController implements Initializable 
                 mob.setId(HashGenerator.createHash());
                 service.insertAsync(mob)
                     .exceptionally(throwable -> {
+                        showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_INSERTED), mob.getName())));
                         throwable.printStackTrace();
                         throw new RuntimeException(throwable);
                     })
@@ -286,9 +288,7 @@ public class BestiaryController extends BaseController implements Initializable 
                             .filter(mobEntry -> mobEntry.getName().equals(m.getName()))
                             .findFirst()
                             .ifPresent(tableBestiary.getSelectionModel()::select);
-                        showNotification(new Notification(String.format(
-                            translator.translate(R.Translate.NOTIFY_RECORD_IS_INSERTED),
-                            m.getName())));
+                        showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_INSERTED), m.getName())));
                     });
                 break;
 
@@ -301,11 +301,11 @@ public class BestiaryController extends BaseController implements Initializable 
                 service.updateAsync(mob)
                     .exceptionally(throwable -> {
                         LOGGER.warn("Příšeru {} se nepodařilo aktualizovat", mob.getName());
+                        showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), mob.getName())));
                         throw new RuntimeException(throwable);
                     })
-                    .thenAccept(m -> showNotification(new Notification(String
-                        .format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPDATED),
-                            m.getName()))));
+                    .thenAccept(m ->
+                        showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPDATED), m.getName()))));
                 break;
         }
     }
@@ -327,10 +327,11 @@ public class BestiaryController extends BaseController implements Initializable 
         service.deleteAsync(entry.getMobBase())
             .exceptionally(throwable -> {
                 LOGGER.error("Příšeru {} se nepodařilo odebrat z databáze", name, throwable);
+                showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_DELETED), name)));
                 throw new RuntimeException(throwable);
             })
-            .thenAccept(m -> showNotification(new Notification(String
-                .format(translator.translate(R.Translate.NOTIFY_RECORD_IS_DELETED), m.getName()))));
+            .thenAccept(m ->
+                showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_DELETED), name))));
     }
 
     @FXML
@@ -352,11 +353,11 @@ public class BestiaryController extends BaseController implements Initializable 
                 service.uploadAsync(mob.getMobBase())
                     .exceptionally(throwable -> {
                         LOGGER.error("Příšeru {} se nepodařilo nahrát", mob);
+                        showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), mob.getName())));
                         throw new RuntimeException(throwable);
                     })
-                    .thenAccept(ignored -> showNotification(new Notification(String
-                        .format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPLOADED),
-                            mob.getName()))));
+                    .thenAccept(ignored ->
+                        showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPLOADED), mob.getName()))));
             }
         });
     }
@@ -367,37 +368,43 @@ public class BestiaryController extends BaseController implements Initializable 
             if (diffHighlightMode.get()) {
                 service.selectOnline(AdvancedDatabaseService.ID_FILTER(mobEntry.getId()))
                     .ifPresent(generalItem -> {
-                        service.updateAsync(generalItem).thenAccept(entry -> {
-                            LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
-                            mobEntry.clearDiffMap();
+                        service.updateAsync(generalItem)
+                            .thenAccept(entry -> {
+                                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                                mobEntry.clearDiffMap();
                         });
                     });
             } else {
                 service.insertAsync(mobEntry.getMobBase())
                     .exceptionally(throwable -> {
                         LOGGER.error(throwable.getMessage(), throwable);
+                        showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_DOWNLOADED), mobEntry.getName())));
                         throw new RuntimeException(throwable);
-                    });
+                    })
+                    .thenAccept(mob ->
+                        showNotification(new Notification(String.format(translator.translate(Translate.NOTIFY_RECORD_IS_DOWNLOADED), mobEntry.getName()))));
             }
         });
     }
 
     @FXML
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
-        getSelectedEntry().ifPresent(mob -> service.deleteRemoteAsync(mob.getMobBase())
-            .exceptionally(throwable -> {
-                LOGGER.error("Příšeru {} se nepodařilo odstranit z online databáze", mob);
-                throw new RuntimeException(throwable);
-            })
-            .thenAccept(ignored-> showNotification(new Notification(String.format(
-                    translator.translate(R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
-                    mob.getName())))));
+        getSelectedEntry().ifPresent(mob ->
+            service.deleteRemoteAsync(mob.getMobBase())
+                .exceptionally(throwable -> {
+                    LOGGER.error("Příšeru {} se nepodařilo odstranit z online databáze", mob);
+                    showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE), mob.getName())));
+                    throw new RuntimeException(throwable);
+                })
+                .thenAccept(ignored ->
+                    showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE), mob.getName())))));
     }
 
     @FXML
     private void handleSynchronize(ActionEvent actionEvent) {
         service.synchronize(user.getName())
-            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " příšer."));
+            .thenAccept(total ->
+                LOGGER.info("Bylo synchronizováno celkem: " + total + " příšer."));
     }
 
     // endregion

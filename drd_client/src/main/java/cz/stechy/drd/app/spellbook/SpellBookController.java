@@ -147,14 +147,12 @@ public class SpellBookController extends BaseController implements Initializable
     private void insertSpell(Spell spell) {
         spellBook.insertAsync(spell)
             .exceptionally(throwable -> {
-                showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_NOT_INSERTED), spell.getName())));
                 LOGGER.warn("Kouzlo {} se nepodařilo vložit do databáze", spell.toString());
+                showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_INSERTED), spell.getName())));
                 throw new RuntimeException(throwable);
             })
             .thenAccept(spell1 -> {
-                showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_INSERTED), spell1.getName())));
+                showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_INSERTED), spell1.getName())));
                 sortedList.stream()
                     .filter(spellEntry -> spellEntry.getName().equals(spell1.getName()))
                     .findFirst()
@@ -298,14 +296,12 @@ public class SpellBookController extends BaseController implements Initializable
                 spell = SpellBookHelper.fromBundle(bundle);
                 spellBook.updateAsync(spell)
                     .exceptionally(throwable -> {
-                        showNotification(new Notification(String.format(translator.translate(
-                            R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), spell.getName())));
+                        showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), spell.getName())));
                         LOGGER.error("Kouzlo {} se nepodařilo aktualizovat", spell.getName());
                         throw new RuntimeException(throwable);
                     })
                     .thenAccept(generalItem ->
-                        showNotification(new Notification(String.format(translator.translate(
-                            Translate.NOTIFY_RECORD_IS_NOT_UPDATED), spell.getName()))));
+                        showNotification(new Notification(String.format(translator.translate(Translate.NOTIFY_RECORD_IS_NOT_UPDATED), spell.getName()))));
                 break;
         }
     }
@@ -330,14 +326,12 @@ public class SpellBookController extends BaseController implements Initializable
         final SpellEntry entry = sortedList.get(rowIndex);
         spellBook.deleteAsync(entry.getSpellBase())
             .exceptionally(throwable -> {
-                showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED), entry.getName())));
+                showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_DELETED), entry.getName())));
                 LOGGER.warn("Kouzlo {} se nepodařilo odebrat z databáze", entry.getName());
                 throw new RuntimeException(throwable);
             })
-            .thenAccept(
-                spell -> showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_DELETED), entry.getName()))));
+            .thenAccept(spell ->
+                showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_DELETED), entry.getName()))));
     }
 
     @FXML
@@ -359,14 +353,12 @@ public class SpellBookController extends BaseController implements Initializable
             } else {
                 spellBook.uploadAsync(spell.getSpellBase())
                     .exceptionally(throwable -> {
-                        showNotification(new Notification(String.format(translator.translate(
-                            Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), spell.getName())));
+                        showNotification(new Notification(String.format(translator.translate(Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), spell.getName())));
                         LOGGER.warn("Položku {} se nepodařilo nahrát", spell.toString());
                         throw new RuntimeException(throwable);
                     })
                     .thenAccept(ignored ->
-                        showNotification(new Notification(String.format(translator.translate(
-                            Translate.NOTIFY_RECORD_IS_UPLOADED), spell.getName()))));
+                        showNotification(new Notification(String.format(translator.translate(Translate.NOTIFY_RECORD_IS_UPLOADED), spell.getName()))));
             }
         });
     }
@@ -392,23 +384,19 @@ public class SpellBookController extends BaseController implements Initializable
     private void handleRemoveOnlineItem(ActionEvent actionEvent) {
         getSelectedEntry().ifPresent(spell -> spellBook.deleteRemoteAsync(spell.getSpellBase())
             .exceptionally(throwable -> {
-                showNotification(new Notification(String.format(translator.translate(
-                    Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
-                    spell.getName())));
-                LOGGER.error("Položku {} se nepodařilo odebrat z online databáze",
-                    spell.getName());
+                showNotification(new Notification(String.format(translator.translate(Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE), spell.getName())));
+                LOGGER.error("Položku {} se nepodařilo odebrat z online databáze", spell.getName());
                 throw new RuntimeException(throwable);
             })
             .thenAccept(ignored ->
-                showNotification(new Notification(String.format(translator.translate(
-                Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE),
-                spell.getName())))));
+                showNotification(new Notification(String.format(translator.translate(Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE), spell.getName())))));
     }
 
     @FXML
     private void handleSynchronize(ActionEvent actionEvent) {
         spellBook.synchronize(user.getName())
-            .thenAccept(total -> LOGGER.info("Bylo synchronizováno clekem: {} kouzel.", total));
+            .thenAccept(total ->
+                LOGGER.info("Bylo synchronizováno clekem: {} kouzel.", total));
     }
 
     // endregion

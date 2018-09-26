@@ -80,7 +80,6 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
     private IntegerProperty selectedRowIndex;
     protected ResourceBundle resources;
     private ShopNotificationProvider notifier;
-    private ShopOnlineListener shopOnlineListener;
 
     // endregion
 
@@ -95,6 +94,30 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
     // endregion
 
     protected abstract E getEntry(T item);
+
+    private void handleItemRemove(String name, boolean remote, boolean success) {
+        if (!success) {
+            final String key = remote
+                ? R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE
+                : R.Translate.NOTIFY_RECORD_IS_NOT_DELETED;
+            notifier.showNotification(new Notification(String.format(translator.translate(key), name)));
+            LOGGER.error("Položku {} se nepodařilo odstranit z online databáze", name);
+        } else {
+            final String key = remote
+                ? R.Translate.NOTIFY_RECORD_IS_DELETED_FROM_ONLINE_DATABASE
+                : R.Translate.NOTIFY_RECORD_IS_DELETED;
+            notifier.showNotification(new Notification(String.format(translator.translate(key), name)));
+        }
+    }
+
+    private void handleItemUpload(String name, boolean success) {
+        if (!success) {
+            notifier.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), name)));
+            LOGGER.error("Položku {} se nepodařilo nahrát", name);
+        } else {
+            notifier.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPLOADED), name)));
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resources) {
@@ -174,36 +197,27 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
     }
 
     @Override
-    public void setOnlineListener(ShopOnlineListener onlineListener) {
-        this.shopOnlineListener = onlineListener;
-    }
-
-    @Override
     public void onAddItem(ItemBase item, boolean remote) {
         service.insertAsync((T) item)
             .exceptionally(throwable -> {
-                notifier.showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_NOT_INSERTED), item.getName())));
+                notifier.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_INSERTED), item.getName())));
                 LOGGER.error("Item {} se nepodařilo vložit do databáze", item.getName());
                 throw new RuntimeException(throwable);
             })
-            .thenAccept(generalItem -> notifier
-                .showNotification(new Notification(String.format(translator.translate(
-                    Translate.NOTIFY_RECORD_IS_INSERTED), item.getName()))));
+            .thenAccept(generalItem ->
+                notifier.showNotification(new Notification(String.format(translator.translate(Translate.NOTIFY_RECORD_IS_INSERTED), item.getName()))));
     }
 
     @Override
     public void onUpdateItem(ItemBase item) {
         service.updateAsync((T) item)
             .exceptionally(throwable -> {
-                notifier.showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), item.getName())));
+                notifier.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), item.getName())));
                 LOGGER.error("Položku {} se nepodařilo aktualizovat", item.getName());
                 throw new RuntimeException(throwable);
             })
-            .thenAccept(generalItem -> notifier
-                .showNotification(new Notification(String.format(translator.translate(
-                    Translate.NOTIFY_RECORD_IS_NOT_UPDATED), item.getName()))));
+            .thenAccept(generalItem ->
+                notifier.showNotification(new Notification(String.format(translator.translate(Translate.NOTIFY_RECORD_IS_NOT_UPDATED), item.getName()))));
     }
 
     @Override
@@ -211,34 +225,32 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
         final E entry = sortedList.get(index);
         service.deleteAsync((T) entry.getItemBase())
             .exceptionally(throwable -> {
-                notifier.showNotification(new Notification(String.format(translator.translate(
-                    R.Translate.NOTIFY_RECORD_IS_NOT_DELETED), entry.getName())));
+                notifier.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_DELETED), entry.getName())));
                 LOGGER.error("Položku {} se nepodařilo aktualizovat", entry.getName());
                 throw new RuntimeException(throwable);
             })
-            .thenAccept(generalItem -> notifier
-                .showNotification(new Notification(String.format(translator.translate(
-                    Translate.NOTIFY_RECORD_IS_DELETED), entry.getName()))));
+            .thenAccept(generalItem ->
+                notifier.showNotification(new Notification(String.format(translator.translate(Translate.NOTIFY_RECORD_IS_DELETED), entry.getName()))));
     }
 
     @Override
     public void requestRemoveItem(ShopEntry entry, boolean remote) {
         service.deleteRemoteAsync((T) entry.getItemBase())
             .exceptionally(throwable -> {
-                shopOnlineListener.handleItemRemove(entry.getName(), remote, false);
+                handleItemRemove(entry.getName(), remote, false);
                 throw new RuntimeException(throwable);
             })
-            .thenAccept(aVoid -> shopOnlineListener.handleItemRemove(entry.getName(), remote, true));
+            .thenAccept(aVoid -> handleItemRemove(entry.getName(), remote, true));
     }
 
     @Override
     public void uploadRequest(ItemBase item) {
         service.uploadAsync((T) item)
             .exceptionally(throwable -> {
-                shopOnlineListener.handleItemUpload(item.getName(), false);
+                handleItemUpload(item.getName(), false);
                 throw new RuntimeException(throwable);
             })
-            .thenAccept(aVoid -> shopOnlineListener.handleItemUpload(item.getName(), true));
+            .thenAccept(aVoid -> handleItemUpload(item.getName(), true));
     }
 
     @Override
@@ -249,7 +261,7 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
     @Override
     public void synchronizeItems() {
         service.synchronize(this.user.getName())
-            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů typu general item."));
+            .thenAccept(total -> LOGGER.info("Bylo synchronizováno celkem: " + total + " předmětů."));
     }
 
     @Override
