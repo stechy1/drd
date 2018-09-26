@@ -151,13 +151,14 @@ public class ServerController extends BaseController implements Initializable {
         ((Parent)(actionEvent.getSource())).getScene().setCursor(Cursor.WAIT);
         this.communicator.connect(host, port)
             .thenAccept(success -> {
-                if (success) {
-                    showNotification(new Notification("Spojení bylo navázáno."));
-                } else {
-                    showNotification(new Notification("Spojení se nezdařilo."));
+                if (!success) {
+                    showNotification(new Notification("Spojení se nepodařilo navázat."));
                 }
             })
-            .whenComplete((aVoid, throwable) -> ((Parent)(actionEvent.getSource())).getScene().setCursor(Cursor.DEFAULT));
+            .whenComplete((aVoid, throwable) -> {
+                ((Parent) (actionEvent.getSource())).getScene().setCursor(Cursor.DEFAULT);
+                finish();
+            });
     }
 
     @FXML
