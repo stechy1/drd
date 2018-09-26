@@ -57,6 +57,22 @@ public class RegisterController extends BaseController implements Initializable 
 
     // endregion
 
+    // region Private methods
+
+    private void register() {
+        userService.registerAsync(loginModel.login.getValue(), loginModel.password.getValue())
+            .exceptionally(throwable -> {
+                showNotification(new Notification(registerFail, Length.LONG));
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(ignored -> {
+                setResult(RESULT_SUCCESS);
+                finish();
+            });
+    }
+
+    // endregion
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.USER_REGISTER_TITLE);
@@ -65,6 +81,17 @@ public class RegisterController extends BaseController implements Initializable 
         txtLogin.textProperty().bindBidirectional(loginModel.login);
         txtPassword.textProperty().bindBidirectional(loginModel.password);
         btnRegister.disableProperty().bind(loginModel.valid.not());
+
+        txtLogin.setOnAction(actionEvent -> {
+            if (!txtLogin.getText().isEmpty()) {
+                txtPassword.requestFocus();
+            }
+        });
+        txtPassword.setOnAction(actionEvent -> {
+            if (!txtPassword.getText().isEmpty()) {
+                register();
+            }
+        });
     }
 
     @Override
@@ -76,15 +103,7 @@ public class RegisterController extends BaseController implements Initializable 
     // region Button handlers
     @FXML
     private void handleRegister(ActionEvent actionEvent) {
-        userService.registerAsync(loginModel.login.getValue(), loginModel.password.getValue())
-            .exceptionally(throwable -> {
-                showNotification(new Notification(registerFail, Length.LONG));
-                throw new RuntimeException(throwable);
-            })
-            .thenAccept(ignored -> {
-                setResult(RESULT_SUCCESS);
-                finish();
-            });
+        register();
     }
 
     // endregion

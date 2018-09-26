@@ -62,6 +62,24 @@ public class LoginController extends BaseController implements Initializable {
 
     // endregion
 
+    // region Private methods
+
+    private void login() {
+        userService.loginAsync(loginModel.login.getValue(), loginModel.password.getValue())
+            .exceptionally(throwable -> {
+                LOGGER.info("Přihlášení se nezdařilo.");
+                showNotification(new Notification(loginFail));
+                loginModel.valid.set(false);
+                throw new RuntimeException(throwable);
+            })
+            .thenAccept(user -> {
+                setResult(RESULT_SUCCESS);
+                finish();
+            });
+    }
+
+    // endregion
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.USER_LOGIN_TITLE);
@@ -72,6 +90,17 @@ public class LoginController extends BaseController implements Initializable {
         txtLogin.textProperty().bindBidirectional(loginModel.login);
         txtPassword.textProperty().bindBidirectional(loginModel.password);
         btnLogin.disableProperty().bind(loginModel.valid.not());
+
+        txtLogin.setOnAction(actionEvent -> {
+            if (!txtLogin.getText().isEmpty()) {
+                txtPassword.requestFocus();
+            }
+        });
+        txtPassword.setOnAction(actionEvent -> {
+            if (!txtPassword.getText().isEmpty()) {
+                login();
+            }
+        });
     }
 
     @Override
@@ -101,17 +130,7 @@ public class LoginController extends BaseController implements Initializable {
 
     @FXML
     private void handleLogin(ActionEvent actionEvent) {
-        userService.loginAsync(loginModel.login.getValue(), loginModel.password.getValue())
-            .exceptionally(throwable -> {
-                LOGGER.info("Přihlášení se nezdařilo.");
-                showNotification(new Notification(loginFail));
-                loginModel.valid.set(false);
-                throw new RuntimeException(throwable);
-            })
-            .thenAccept(user -> {
-                setResult(RESULT_SUCCESS);
-                finish();
-            });
+        login();
     }
 
     @FXML
