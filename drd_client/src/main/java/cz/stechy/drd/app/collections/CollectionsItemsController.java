@@ -155,14 +155,12 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
             .collect(Collectors.toList());
         itemRegistry.merge(itemBaseList)
             .exceptionally(throwable -> {
-                notificationProvider.showNotification(new Notification(translator.translate(
-                    R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
-                LOGGER.error("Položky se nepodařilo zmergovat");
+                notificationProvider.showNotification(new Notification(translator.translate(R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
+                LOGGER.error("Nepodařilo se uložit všechny předměty.", throwable);
                 throw new RuntimeException(throwable);
             })
             .thenAccept(merged ->
-                notificationProvider.showNotification(new Notification(String.format(
-                    translator.translate(R.Translate.NOTIFY_MERGED_ITEMS), merged))));
+                notificationProvider.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_MERGED_ITEMS), merged))));
     }
 
     public static final class ItemEntry {
@@ -171,17 +169,18 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
         public final IntegerProperty weight = new SimpleIntegerProperty(this, "weight");
         public final ObjectProperty<Money> price = new SimpleObjectProperty<>(this, "price");
         public final ObjectProperty<Image> image = new SimpleObjectProperty<>(this, "image");
-        final ItemBase itemBase;
+        private ItemBase itemBase;
 
-        public ItemEntry(String id) {
-            final Optional<ItemBase> optionalItem = OnlineItemRegistry.getINSTANCE()
-                .getItemById(id);
-            this.itemBase = optionalItem.isPresent() ? optionalItem.get() : null;
-            setName(itemBase.getName());
-            setWeight(itemBase.getWeight());
-            setPrice(itemBase.getPrice());
-            ByteArrayInputStream bais = new ByteArrayInputStream(itemBase.getImage());
-            setImage(new Image(bais));
+        ItemEntry(String id) {
+            final Optional<ItemBase> optionalItem = OnlineItemRegistry.getINSTANCE().getItemById(id);
+            optionalItem.ifPresent(itemBase -> {
+                this.itemBase = itemBase;
+                setName(itemBase.getName());
+                setWeight(itemBase.getWeight());
+                setPrice(itemBase.getPrice());
+                final ByteArrayInputStream bais = new ByteArrayInputStream(itemBase.getImage());
+                setImage(new Image(bais));
+            });
         }
 
         public String getId() {

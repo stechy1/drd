@@ -280,7 +280,6 @@ public class BestiaryController extends BaseController implements Initializable 
                 service.insertAsync(mob)
                     .exceptionally(throwable -> {
                         showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_INSERTED), mob.getName())));
-                        throwable.printStackTrace();
                         throw new RuntimeException(throwable);
                     })
                     .thenAccept(m -> {
@@ -300,7 +299,6 @@ public class BestiaryController extends BaseController implements Initializable 
                 mob = BestiaryHelper.mobFromBundle(bundle);
                 service.updateAsync(mob)
                     .exceptionally(throwable -> {
-                        LOGGER.warn("Příšeru {} se nepodařilo aktualizovat", mob.getName());
                         showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), mob.getName())));
                         throw new RuntimeException(throwable);
                     })
@@ -326,7 +324,6 @@ public class BestiaryController extends BaseController implements Initializable 
         final String name = entry.getName();
         service.deleteAsync(entry.getMobBase())
             .exceptionally(throwable -> {
-                LOGGER.error("Příšeru {} se nepodařilo odebrat z databáze", name, throwable);
                 showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_DELETED), name)));
                 throw new RuntimeException(throwable);
             })
@@ -346,13 +343,10 @@ public class BestiaryController extends BaseController implements Initializable 
     private void handleUploadItem(ActionEvent actionEvent) {
         getSelectedEntry().ifPresent(mob -> {
             if (diffHighlightMode.get()) {
-                service.uploadAsync(mob.getMobBase()).thenAccept(ignored -> {
-                    LOGGER.info("Aktualizace online záznamu proběhla úspěšně.");
-                });
+                service.uploadAsync(mob.getMobBase()).thenAccept(ignored -> {});
             } else {
                 service.uploadAsync(mob.getMobBase())
                     .exceptionally(throwable -> {
-                        LOGGER.error("Příšeru {} se nepodařilo nahrát", mob);
                         showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), mob.getName())));
                         throw new RuntimeException(throwable);
                     })
@@ -377,7 +371,6 @@ public class BestiaryController extends BaseController implements Initializable 
             } else {
                 service.insertAsync(mobEntry.getMobBase())
                     .exceptionally(throwable -> {
-                        LOGGER.error(throwable.getMessage(), throwable);
                         showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_DOWNLOADED), mobEntry.getName())));
                         throw new RuntimeException(throwable);
                     })
@@ -392,7 +385,6 @@ public class BestiaryController extends BaseController implements Initializable 
         getSelectedEntry().ifPresent(mob ->
             service.deleteRemoteAsync(mob.getMobBase())
                 .exceptionally(throwable -> {
-                    LOGGER.error("Příšeru {} se nepodařilo odstranit z online databáze", mob);
                     showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE), mob.getName())));
                     throw new RuntimeException(throwable);
                 })
@@ -403,8 +395,7 @@ public class BestiaryController extends BaseController implements Initializable 
     @FXML
     private void handleSynchronize(ActionEvent actionEvent) {
         service.synchronize(user.getName())
-            .thenAccept(total ->
-                LOGGER.info("Bylo synchronizováno celkem: " + total + " příšer."));
+            .thenAccept(total -> {});
     }
 
     // endregion

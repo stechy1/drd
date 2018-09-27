@@ -1,6 +1,6 @@
 package cz.stechy.drd.app.collections;
 
-import cz.stechy.drd.dao.ItemCollectionDao;
+import cz.stechy.drd.R;
 import cz.stechy.drd.dao.SpellBookDao;
 import cz.stechy.drd.model.item.ItemCollection;
 import cz.stechy.drd.model.item.ItemCollection.CollectionType;
@@ -10,6 +10,7 @@ import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.List;
@@ -60,22 +61,22 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
     private final ObservableList<ChoiceEntry> spellRegistry = FXCollections.observableArrayList();
 
     private final SpellBookDao spellService;
+    private final Translator translator;
 
     private StringProperty selectedEntry;
+    private CollectionsNotificationProvider notificationProvider;
 
     // endregion
 
     // region Constructors
 
-    public CollectionsSpellsController(SpellBookDao spellService,
-        Translator translator, ItemCollectionDao collectionService) {
+    public CollectionsSpellsController(SpellBookDao spellService, Translator translator) {
         this.spellService = spellService;
-        Translator translator1 = translator;
-        // Nemůžu dát "final", protože by mi to brečelo v bestiaryCollectionContentListener
-        ItemCollectionDao collectionService1 = collectionService;
+        this.translator = translator;
 
         spellService.selectAllAsync()
-            .thenAccept(spells -> this.spellRegistry.setAll(DialogUtils.getSpellChoices(spells)));
+            .thenAccept(spells ->
+                this.spellRegistry.setAll(DialogUtils.getSpellChoices(spells)));
     }
 
     // endregion
@@ -133,7 +134,7 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
 
     @Override
     public void setNotificationProvider(CollectionsNotificationProvider notificationProvider) {
-        CollectionsNotificationProvider notificationProvider1 = notificationProvider;
+        this.notificationProvider = notificationProvider;
     }
 
     @Override
@@ -153,11 +154,12 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
             .collect(Collectors.toList());
         spellService.saveAll(spellList)
             .exceptionally(throwable -> {
-                System.out.println("Něco se zvrtlo");
-                throwable.printStackTrace();
+                notificationProvider.showNotification(new Notification(translator.translate(R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
+                LOGGER.error("Nepodařilo se uložit všechna kouzla.", throwable);
                 throw new RuntimeException(throwable);
             })
-            .thenAccept(integer -> System.out.println("Bylo uloženo: " + integer + " kouzel."));
+            .thenAccept(merged ->
+                notificationProvider.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_MERGED_ITEMS), merged))));
     }
 
     public final class SpellEntry {
@@ -169,13 +171,12 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
 
         public SpellEntry(String id) {
             this.id = id;
-            final Optional<Spell> optionalSpell = spellService
-                .selectOnline(spell -> spell.getId().equals(id));
+            final Optional<Spell> optionalSpell = spellService.selectOnline(spell -> spell.getId().equals(id));
             optionalSpell.ifPresent(spell -> {
                 this.spell = spell;
                 setName(spell.getName());
                 setType(spell.getType());
-                ByteArrayInputStream bais = new ByteArrayInputStream(spell.getImage());
+                final ByteArrayInputStream bais = new ByteArrayInputStream(spell.getImage());
                 setImage(new Image(bais));
             });
         }

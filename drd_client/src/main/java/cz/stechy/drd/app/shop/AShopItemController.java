@@ -113,7 +113,6 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
     private void handleItemUpload(String name, boolean success) {
         if (!success) {
             notifier.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), name)));
-            LOGGER.error("Položku {} se nepodařilo nahrát", name);
         } else {
             notifier.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPLOADED), name)));
         }
@@ -201,7 +200,6 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
         service.insertAsync((T) item)
             .exceptionally(throwable -> {
                 notifier.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_INSERTED), item.getName())));
-                LOGGER.error("Item {} se nepodařilo vložit do databáze", item.getName());
                 throw new RuntimeException(throwable);
             })
             .thenAccept(generalItem ->
@@ -213,7 +211,6 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
         service.updateAsync((T) item)
             .exceptionally(throwable -> {
                 notifier.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_UPDATED), item.getName())));
-                LOGGER.error("Položku {} se nepodařilo aktualizovat", item.getName());
                 throw new RuntimeException(throwable);
             })
             .thenAccept(generalItem ->
@@ -226,7 +223,6 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
         service.deleteAsync((T) entry.getItemBase())
             .exceptionally(throwable -> {
                 notifier.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_NOT_DELETED), entry.getName())));
-                LOGGER.error("Položku {} se nepodařilo aktualizovat", entry.getName());
                 throw new RuntimeException(throwable);
             })
             .thenAccept(generalItem ->
@@ -276,9 +272,10 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
     @Override
     public void updateLocalItem(ShopEntry itemBase) {
         service.selectOnline(AdvancedDatabaseService.ID_FILTER(itemBase.getId()))
-            .ifPresent(generalItem -> {
-                service.updateAsync(generalItem).thenAccept(entry -> {
+            .ifPresent(onlineEntry -> {
+                service.updateAsync(onlineEntry).thenAccept(entry -> {
                     LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                    notifier.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPDATED), entry.toString())));
                     itemBase.clearDiffMap();
                 });
             });
@@ -286,7 +283,7 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
 
     @Override
     public void updateOnlineItem(ShopEntry itemBase) {
-        service.uploadAsync((T) itemBase.getItemBase()).thenAccept(ignored -> {
+        service.updateOnlineAsync((T) itemBase.getItemBase()).thenAccept(ignored -> {
             LOGGER.info("Aktualizace online záznamu proběhla úspěšně.");
         });
     }

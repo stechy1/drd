@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.collections;
 
+import cz.stechy.drd.R;
 import cz.stechy.drd.dao.BestiaryDao;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.entity.mob.Mob;
@@ -9,6 +10,7 @@ import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.Translator;
+import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.List;
@@ -58,17 +60,19 @@ public class CollectionsBestiaryController implements Initializable, Collections
 
     private final ObservableList<BestiaryEntry> collectionItems = FXCollections.observableArrayList();
     private final ObservableList<ChoiceEntry> mobRegistry = FXCollections.observableArrayList();
+    private final Translator translator;
 
     // Nemůžu dát "final", protože by mi to brečelo v bestiaryCollectionContentListener
     private BestiaryDao bestiaryService;
     private StringProperty selectedEntry;
+    private CollectionsNotificationProvider notificationProvider;
 
     // endregion
 
     // region Constructors
 
     public CollectionsBestiaryController(Translator translator, BestiaryDao bestiaryService) {
-        Translator translator1 = translator;
+        this.translator = translator;
         this.bestiaryService = bestiaryService;
 
         bestiaryService.selectAllAsync()
@@ -129,7 +133,9 @@ public class CollectionsBestiaryController implements Initializable, Collections
     }
 
     @Override
-    public void setNotificationProvider(CollectionsNotificationProvider notificationProvider) {}
+    public void setNotificationProvider(CollectionsNotificationProvider notificationProvider) {
+        this.notificationProvider = notificationProvider;
+    }
 
     @Override
     public CollectionType getCollectionType() {
@@ -148,11 +154,12 @@ public class CollectionsBestiaryController implements Initializable, Collections
             .collect(Collectors.toList());
         bestiaryService.saveAll(mobList)
             .exceptionally(throwable -> {
-                System.out.println("Něco se zvrtlo");
-                throwable.printStackTrace();
+                notificationProvider.showNotification(new Notification(translator.translate(R.Translate.NOTIFY_ITEM_MERGE_FAILED)));
+                LOGGER.error("Nepodařilo se uložit všechny nestvůry.", throwable);
                 throw new RuntimeException(throwable);
             })
-            .thenAccept(integer -> System.out.println("Bylo uloženo: " + integer + " nestvůr."));
+            .thenAccept(merged ->
+                notificationProvider.showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_MERGED_ITEMS), merged))));
     }
 
     public final class BestiaryEntry {

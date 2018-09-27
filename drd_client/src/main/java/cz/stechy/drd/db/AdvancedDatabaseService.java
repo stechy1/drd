@@ -320,8 +320,10 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends Base
     public CompletableFuture<Integer> saveAll(Collection items) {
         final List<T> workingList = new ArrayList<>(items);
         workingList.removeAll(super.items);
+        LOGGER.info("Budu ukládat celkem: {} záznamů.", workingList.size());
 
         if (workingList.isEmpty()) {
+            LOGGER.info("Nemám co ukládat.");
             return CompletableFuture.completedFuture(0);
         }
 
@@ -332,6 +334,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends Base
                 insertAsync(duplicated).join();
             }
 
+            LOGGER.info("Bylo uloženo celkem: {} záznamů.", workingList.size());
             return workingList.size();
         }, ThreadPool.COMMON_EXECUTOR);
     }
@@ -368,8 +371,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends Base
                     return;
                 }
 
-                this.communicator
-                    .registerMessageObserver(DatabaseMessage.MESSAGE_TYPE, this.databaseListener);
+                this.communicator.registerMessageObserver(DatabaseMessage.MESSAGE_TYPE, this.databaseListener);
                 LOGGER.info("Posílám registrační požadavek pro tabulku: " + getFirebaseChildName());
                 this.communicator.sendMessage(getRegistrationMessage());
             });
