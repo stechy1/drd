@@ -231,6 +231,7 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
     @Override
     public CompletableFuture<T> selectAsync(Predicate<? super T> filter) {
+        LOGGER.trace("Provádím select dotaz v tabulce: {} ve vlákně: {}", getTable(), Thread.currentThread());
         return CompletableFuture.supplyAsync(() -> {
             Optional<T> item = items.stream()
                 .filter(filter)
@@ -239,7 +240,8 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
                 return item.get();
             }
 
-            throw new RuntimeException("Item not found");
+            LOGGER.error("Záznam nebyl nalezen.");
+            throw new RuntimeException("Entry not found.");
         });
     }
 
@@ -264,11 +266,8 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
     @Override
     public CompletableFuture<T> insertAsync(T item) {
-        final String query = String
-            .format("INSERT INTO %s (%s) VALUES (%s)", getTable(), getColumnsKeys(),
-                getColumnValues());
-        LOGGER.trace("Vkládám položku {} do databáze ve vlákně: {}.", item.toString(),
-            Thread.currentThread());
+        final String query = String.format("INSERT INTO %s (%s) VALUES (%s)", getTable(), getColumnsKeys(), getColumnValues());
+        LOGGER.trace("Vkládám položku {} do databáze ve vlákně: {}.", item.toString(), Thread.currentThread());
         return db.queryAsync(query, itemToParams(item).toArray())
             .thenApplyAsync(value -> {
                 final TransactionOperation<T> operation = new InsertOperation<>(item);
@@ -284,13 +283,10 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
     @Override
     public CompletableFuture<T> updateAsync(T item) {
-        final String query = String
-            .format("UPDATE %s SET %s WHERE %s = ?", getTable(), getColumnsUpdate(),
-                getColumnWithId());
+        final String query = String.format("UPDATE %s SET %s WHERE %s = ?", getTable(), getColumnsUpdate(), getColumnWithId());
         final List<Object> params = itemToParams(item);
         params.add(item.getId());
-        LOGGER.trace("Aktualizuji položku {} v databázi ve vlákně: {}.", item.toString(),
-            Thread.currentThread());
+        LOGGER.trace("Aktualizuji položku {} v databázi ve vlákně: {}.", item.toString(), Thread.currentThread());
 
         return db.queryAsync(query, params.toArray())
             .thenApplyAsync(value -> {
@@ -311,10 +307,8 @@ public abstract class BaseDatabaseService<T extends DatabaseItem> implements Dat
 
     @Override
     public CompletableFuture<T> deleteAsync(T item) {
-        final String query = String
-            .format("DELETE FROM %s WHERE %s = ?", getTable(), getColumnWithId());
-        LOGGER.trace("Mažu položku {} z databáze ve vlákně: {}.", item.getId(),
-            Thread.currentThread());
+        final String query = String.format("DELETE FROM %s WHERE %s = ?", getTable(), getColumnWithId());
+        LOGGER.trace("Mažu položku {} z databáze ve vlákně: {}.", item.toString(), Thread.currentThread());
 
         return db.queryAsync(query, item.getId())
             .thenApplyAsync(value -> {

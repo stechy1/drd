@@ -1,11 +1,21 @@
 package cz.stechy.drd.db.base;
 
+import cz.stechy.drd.model.DiffEntry;
 import javafx.collections.ObservableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Třída představující jednu operaci transakce
  */
 public abstract class TransactionOperation<T extends DatabaseItem> {
+
+    // region Constants
+
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionOperation.class);
+
+    // endregion
 
     // region Variables
 
@@ -40,8 +50,7 @@ public abstract class TransactionOperation<T extends DatabaseItem> {
 
     // endregion
 
-    public static final class InsertOperation<T extends DatabaseItem> extends
-        TransactionOperation<T> {
+    public static final class InsertOperation<T extends DatabaseItem> extends TransactionOperation<T> {
 
         public InsertOperation(T model) {
             super(null, model);
@@ -49,13 +58,12 @@ public abstract class TransactionOperation<T extends DatabaseItem> {
 
         @Override
         public void commit(ObservableList<T> items) {
+            LOGGER.trace("Commit INSERT of {}.", after.toString());
             items.add(after);
         }
     }
 
-    public static final class UpdateOperation<T extends DatabaseItem> extends
-        TransactionOperation<T> {
-
+    public static final class UpdateOperation<T extends DatabaseItem> extends TransactionOperation<T> {
 
         public UpdateOperation(T before, T after) {
             super(before, after);
@@ -63,12 +71,13 @@ public abstract class TransactionOperation<T extends DatabaseItem> {
 
         @Override
         public void commit(ObservableList<T> items) {
+            final DiffEntry<T> diffEntry = new DiffEntry<>(before, after);
+            LOGGER.trace("Commit UPDATE of: {} diff: {}.", after.toString(), diffEntry.getDiffMap());
             before.update(after);
         }
     }
 
-    public static final class DeleteOperation<T extends DatabaseItem> extends
-        TransactionOperation<T> {
+    public static final class DeleteOperation<T extends DatabaseItem> extends TransactionOperation<T> {
 
         public DeleteOperation(T model) {
             super(model, null);
@@ -76,6 +85,7 @@ public abstract class TransactionOperation<T extends DatabaseItem> {
 
         @Override
         public void commit(ObservableList<T> items) {
+            LOGGER.trace("Commit DELETE of {}.", before.toString());
             items.remove(before);
         }
     }

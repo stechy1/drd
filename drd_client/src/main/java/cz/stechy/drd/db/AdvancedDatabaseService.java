@@ -39,8 +39,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Vylepšený databázový manažer o možnost spojení s firebase
  */
-public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
-    BaseDatabaseService<T> implements OnlineDatabase<T> {
+public abstract class AdvancedDatabaseService<T extends OnlineItem> extends BaseDatabaseService<T> implements OnlineDatabase<T> {
 
     // region Constants
 
@@ -171,7 +170,7 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
                         .findFirst()
                         .ifPresent(onlineItem -> {
                             onlineItem.update(item);
-                            LOGGER.trace("Položka v online databázi {} byla změněna.", item.getId());
+                            LOGGER.trace("Položka v online databázi {} byla změněna.", item.toString());
                         });
                     });
 //                updateAsync(item).thenAccept(t -> {
@@ -249,11 +248,13 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     @Override
     public CompletableFuture<Void> uploadAsync(T item) {
+        LOGGER.trace("Nahrávám záznam {} do online databáze do tabulky: {}", item.toString(), getTable());
         return communicator.sendMessageFuture(
             new DatabaseMessage(MessageSource.CLIENT,
                 new DatabaseMessageCRUD(toStringItemMap(item), getFirebaseChildName(), DatabaseAction.CREATE, item.getId())))
             .thenCompose(responce -> {
                 if (!responce.isSuccess()) {
+                    LOGGER.error("Nahrání záznamu {} se nezdařilo.", item.toString());
                     throw new RuntimeException("Nahrání záznamu se nezdařilo.");
                 }
 
@@ -266,11 +267,13 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     @Override
     public CompletableFuture<Void> updateOnlineAsync(T item) {
+        LOGGER.trace("Aktualizuji online záznam {} v tabulce: {}", item.toString(), getTable());
         return communicator.sendMessageFuture(
             new DatabaseMessage(MessageSource.CLIENT,
                 new DatabaseMessageCRUD(toStringItemMap(item), getFirebaseChildName(), DatabaseAction.UPDATE, item.getId())))
             .thenAcceptAsync(responce-> {
                 if(!responce.isSuccess()) {
+                    LOGGER.error("Aktualizace záznamu {} se nezdařila.", item.toString());
                     throw new RuntimeException("Aktualizace záznamu se nezdařila.");
                 }
             }, ThreadPool.JAVAFX_EXECUTOR);
@@ -278,11 +281,13 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends
 
     @Override
     public CompletableFuture<Void> deleteRemoteAsync(T item) {
+        LOGGER.trace("Mažu záznam {} z online databáze z tabulky: {}", item.toString(), getTable());
         return communicator.sendMessageFuture(
             new DatabaseMessage(MessageSource.CLIENT,
                 new DatabaseMessageCRUD(toStringItemMap(item), getFirebaseChildName(), DatabaseAction.DELETE, item.getId())))
             .thenAcceptAsync(responce -> {
                 if (!responce.isSuccess()) {
+                    LOGGER.error("Odstranění záznamu {} se nezdařilo.", item.toString());
                     throw new RuntimeException("Odstranění online záznamu z databáze se nezdařilo.");
                 }
             }, ThreadPool.JAVAFX_EXECUTOR)
