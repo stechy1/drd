@@ -68,6 +68,9 @@ public class MainController extends BaseController implements Initializable {
     private static final int ACTION_MONEY_EXPERIENCE = 4;
     private static final int ACTION_LEVEL_UP = 5;
 
+    private static final Image LOGIN_IMAGE = new Image(MainController.class.getResourceAsStream(R.Images.Icon.LOGIN), 16, 16, true, true);
+    private static final Image LOGOUT_IMAGE = new Image(MainController.class.getResourceAsStream(R.Images.Icon.LOGOUT),16, 16, true, true);
+
     // endregion
 
     // region Variables
@@ -94,6 +97,8 @@ public class MainController extends BaseController implements Initializable {
 
     @FXML
     private MenuItem menuLogin;
+    @FXML
+    private ImageView loginImage;
     @FXML
     private MenuItem menuCloseHero;
 
@@ -164,6 +169,11 @@ public class MainController extends BaseController implements Initializable {
             .when(loggedProperty)
             .then(new SimpleObjectProperty<EventHandler<ActionEvent>>(this::handleMenuLogout))
             .otherwise(new SimpleObjectProperty<>(this::handleMenuLogin)));
+        this.loginImage.imageProperty().bind(Bindings
+            .when(loggedProperty)
+            .then(LOGOUT_IMAGE)
+            .otherwise(LOGIN_IMAGE));
+        loggedProperty.addListener(this::loggedHandler);
     }
 
     private void resetChildScreensAndHero() {
@@ -195,13 +205,11 @@ public class MainController extends BaseController implements Initializable {
 
     // region Method handlers
 
-    private void levelUpHandler(ObservableValue<? extends Boolean> observable,
-        Boolean oldValue, Boolean newValue) {
+    private void levelUpHandler(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
         showNotification(new Notification("levelUp"));
     }
 
-    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue,
-        Hero newValue) {
+    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue, Hero newValue) {
         if (newValue == null) {
             if (oldValue != null) {
                 oldValue.levelUpProperty().removeListener(this::levelUpHandler);
@@ -216,8 +224,7 @@ public class MainController extends BaseController implements Initializable {
         tabPane.getSelectionModel().selectFirst();
     }
 
-    private void userHandler(ObservableValue<? extends User> observable, User oldValue,
-        User newValue) {
+    private void userHandler(ObservableValue<? extends User> observable, User oldValue, User newValue) {
         if (newValue == null) {
             bindMenuLogin(null);
         } else {
@@ -229,10 +236,19 @@ public class MainController extends BaseController implements Initializable {
         resetChildScreensAndHero();
     }
 
-    private void connectionStateHandler(ObservableValue<? extends ConnectionState> observable,
-        ConnectionState oldValue, ConnectionState newValue) {
+    private void connectionStateHandler(ObservableValue<? extends ConnectionState> observable, ConnectionState oldValue, ConnectionState newValue) {
         if (newValue == ConnectionState.DISCONNECTED) {
             this.userService.logoutAsync();
+        }
+    }
+
+    private void loggedHandler(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        if (newValue == null || !newValue) {
+            this.btnLogin.getStyleClass().add("icon-login");
+            this.btnLogin.getStyleClass().remove("icon-logout");
+        } else {
+            this.btnLogin.getStyleClass().add("icon-logout");
+            this.btnLogin.getStyleClass().remove("icon-login");
         }
     }
 

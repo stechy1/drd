@@ -122,6 +122,10 @@
   -fx-background-image: url("../images/icon/login.png");
 }
 
+.icon-logout {
+  -fx-background-image: url("../images/icon/logout.png");
+}
+
 .icon-server {
   -fx-background-image: url("../images/icon/server.png");
 }
