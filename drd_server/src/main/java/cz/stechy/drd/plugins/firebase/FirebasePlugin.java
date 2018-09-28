@@ -84,6 +84,7 @@ public class FirebasePlugin implements IPlugin {
         };
     }
 
+    @SuppressWarnings("unchecked")
     private void firebaseMessageHandler(IEvent event) {
         assert event instanceof MessageReceivedEvent;
         final MessageReceivedEvent messageReceivedEvent = (MessageReceivedEvent) event;
