@@ -13,12 +13,21 @@ import java.util.concurrent.CompletableFuture;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Služba pro přístup ke správě uživatelů
  */
 @Singleton
 public class UserService {
+
+    // region Constants
+
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+
+    // endregion
 
     // region Variables
 
@@ -49,11 +58,13 @@ public class UserService {
      * @param password Uživatelské heslo
      */
     public CompletableFuture<User> loginAsync(String username, String password) {
+        LOGGER.trace("Přihlašuji uživatele s loginem: {}.", username);
         final byte[] usernameRaw = cryptoService.encrypt(username.getBytes());
         final byte[] passwordRaw = cryptoService.encrypt(password.getBytes());
         return communicator.sendMessageFuture(new AuthMessage(MessageSource.CLIENT, AuthAction.LOGIN, new AuthMessageData(usernameRaw, passwordRaw)))
             .thenApply(responce -> {
                 if (!responce.isSuccess()) {
+                    LOGGER.error("Přihlášení uživatele {} se nezdařilo.", username);
                     throw new RuntimeException("Přihlášení se nezdařilo.");
                 }
 
@@ -71,6 +82,7 @@ public class UserService {
      * Odhlásí uživatele z aplikace
      */
     public CompletableFuture<Void> logoutAsync() {
+        LOGGER.trace("Odhlašuji uživatele...");
         return CompletableFuture.supplyAsync(() -> {
             getUser().setLogged(false);
             user.set(null);
@@ -85,15 +97,16 @@ public class UserService {
      * @param password Uživatelské heslo
      */
     public CompletableFuture<Void> registerAsync(String username, String password) {
+        LOGGER.trace("Registruji uživatele {}.", username);
         final byte[] usernameRaw = cryptoService.encrypt(username.getBytes());
         final byte[] passwordRaw = cryptoService.encrypt(password.getBytes());
         return communicator.sendMessageFuture(new AuthMessage(MessageSource.CLIENT, AuthAction.REGISTER, new AuthMessageData(usernameRaw, passwordRaw)))
-            .thenApplyAsync(responce -> {
+            .thenAcceptAsync(responce -> {
                 if (!responce.isSuccess()) {
+                    LOGGER.error("Registrace uživatele {} se nezdařila.", username);
                     throw new RuntimeException("Registrace se nezdařila.");
                 }
 
-                return null;
             }, ThreadPool.JAVAFX_EXECUTOR);
     }
 

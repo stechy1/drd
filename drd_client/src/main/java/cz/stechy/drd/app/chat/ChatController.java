@@ -4,7 +4,6 @@ import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTreeView;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.chat.ChatContact;
-import cz.stechy.drd.model.chat.OnChatMessageReceived;
 import cz.stechy.drd.service.ChatService;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.BaseController;
@@ -95,12 +94,9 @@ public class ChatController extends BaseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.CHAT_TITLE);
 
-        chatService.addChatMessageReceivedListener(this.chatMessageReceived);
-
         listContacts.setCellFactory(param -> new ChatListViewEntry());
         listContacts.setOnMouseClicked(this.listContactsClick);
-        final BooleanBinding canSendMessage = tabConversations.getSelectionModel()
-            .selectedItemProperty().isNull();
+        final BooleanBinding canSendMessage = tabConversations.getSelectionModel().selectedItemProperty().isNull();
         btnSend.disableProperty().bind(canSendMessage);
         txtMessage.disableProperty().bind(canSendMessage);
         txtMessage.textProperty().addListener(this.messageContentListener);
@@ -113,11 +109,6 @@ public class ChatController extends BaseController implements Initializable {
     protected void onResume() {
         setTitle(title);
         setScreenSize(600, 350);
-    }
-
-    @Override
-    protected void onClose() {
-        chatService.removeChatMessageReceivedListener(this.chatMessageReceived);
     }
 
     // region Button handlers
@@ -142,14 +133,6 @@ public class ChatController extends BaseController implements Initializable {
     }
 
     // endregion
-
-    private final OnChatMessageReceived chatMessageReceived = (message, source) -> {
-        // Use case:
-        // 1. Přijde zpráva
-        // 2. pokud je otevřený tab, do kterého patří zpráva
-        //    + přidej text a skonči
-        //    - zobraz notifikaci o příchozí zprávě, inkrementuj indikátor u příslušného kontaktu a zprávu ulož
-    };
 
     private final EventHandler<? super MouseEvent> listContactsClick = event -> {
         final int clickCount = event.getClickCount();

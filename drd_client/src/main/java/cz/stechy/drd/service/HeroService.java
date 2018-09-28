@@ -56,8 +56,7 @@ public class HeroService {
      * který hrdina u sebe bude mít od začátku
      * @return {@link CompletableFuture <Void>}
      */
-    public CompletableFuture<Void> insertWithItems(Hero hero,
-        ObservableList<InventoryHelper.ItemRecord> items) {
+    public CompletableFuture<Void> insertWithItems(Hero hero, ObservableList<InventoryHelper.ItemRecord> items) {
         return heroDao.insertAsync(hero)
             .thenCompose(hero1 ->
                 heroDao.getInventoryAsync(hero1)

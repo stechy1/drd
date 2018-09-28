@@ -65,8 +65,7 @@ public final class ItemRegistry {
      * @param itemProvider {@link BaseDatabaseService} Služba poskytující předměty
      * @param itemType {@link ItemType} Typ předmětů, které služba poskytuje
      */
-    public void registerItemProvider(AdvancedDatabaseService<? extends ItemBase> itemProvider,
-        ItemType itemType) {
+    public void registerItemProvider(AdvancedDatabaseService<? extends ItemBase> itemProvider, ItemType itemType) {
         itemProviders.put(itemType, itemProvider);
         itemProvider.selectAllAsync().thenAccept(this::addColection);
     }
