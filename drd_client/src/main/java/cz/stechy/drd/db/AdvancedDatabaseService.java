@@ -236,6 +236,11 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends Base
      * @param showOnline True, pokud se má zobrazit online databáze, jinak offline databáze
      */
     public void toggleDatabase(boolean showOnline) {
+        // Prevence, abych zbytečně nenastavoval znovu listenery
+        if (this.showOnline == showOnline) {
+            return;
+        }
+
         this.showOnline = showOnline;
         this.usedItems.clear();
 
@@ -368,6 +373,8 @@ public abstract class AdvancedDatabaseService<T extends OnlineItem> extends Base
         this.communicator.connectionStateProperty()
             .addListener((observable, oldValue, newValue) -> {
                 if (newValue != ConnectionState.CONNECTED) {
+                    onlineDatabase.clear();
+                    toggleDatabase(false);
                     return;
                 }
 

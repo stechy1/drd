@@ -60,6 +60,7 @@ public class ItemCollectionDao implements OnlineDatabase<ItemCollection> {
         this.communicator.connectionStateProperty()
             .addListener((observable, oldValue, newValue) -> {
                 if (newValue != ConnectionState.CONNECTED) {
+                    collections.clear();
                     return;
                 }
 
