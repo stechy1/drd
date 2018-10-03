@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.dice;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -7,7 +8,7 @@ import cz.stechy.drd.service.dice.IDiceService;
 import cz.stechy.drd.service.dice.IDiceService.AdditionType;
 import cz.stechy.drd.service.dice.IDiceService.DiceAddition;
 import cz.stechy.drd.service.dice.IDiceService.DiceType;
-import cz.stechy.drd.service.dice.IDiceServiceFactory;
+import cz.stechy.drd.service.hero.IHeroService;
 import cz.stechy.drd.service.translator.ITranslatorService;
 import cz.stechy.drd.service.translator.TranslatorService.Key;
 import cz.stechy.drd.util.FormUtils;
@@ -76,9 +77,10 @@ public class DiceController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public DiceController(Hero hero, IDiceServiceFactory diceServiceFactory, ITranslatorService translator) {
-        this.hero = hero;
-        this.diceService = diceServiceFactory.getService(hero);
+    @Inject
+    public DiceController(IHeroService heroService, IDiceService diceService, ITranslatorService translator) {
+        this.hero = heroService.getHero();
+        this.diceService = diceService;
         this.translator = translator;
     }
 

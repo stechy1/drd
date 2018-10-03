@@ -11,6 +11,8 @@ import cz.stechy.drd.db.base.ITableFactory;
 import cz.stechy.drd.db.base.ITableWrapperFactory;
 import cz.stechy.drd.db.base.TableDefinitionsFactory;
 import cz.stechy.drd.db.base.TableWrapperFactory;
+import cz.stechy.drd.service.dice.DiceServiceProvider;
+import cz.stechy.drd.service.dice.IDiceService;
 import cz.stechy.drd.util.UTF8ResourceBundleControl;
 import cz.stechy.screens.ScreenManager;
 import cz.stechy.screens.ScreenManagerConfiguration;
@@ -63,6 +65,8 @@ public class AppModule extends AbstractModule {
         bind(File.class).annotatedWith(ConfigFile.class).toProvider(() -> new File(applicationDirectory, CONFIG_FILE_NAME));
         bind(Database.class).toInstance(new SQLite(new File(applicationDirectory, DEFAULT_VALUE_DATABASE).toString(), 1));
         bind(IAppSettings.class).to(AppSettings.class).asEagerSingleton();
+
+        bind(IDiceService.class).toProvider(DiceServiceProvider.class).asEagerSingleton();
 
         bind(ITableDefinitionsFactory.class).to(TableDefinitionsFactory.class).asEagerSingleton();
         bind(ITableWrapperFactory.class).to(TableWrapperFactory.class).asEagerSingleton();

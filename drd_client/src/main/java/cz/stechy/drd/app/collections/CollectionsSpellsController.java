@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.collections;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.db.base.ITableWrapperFactory;
 import cz.stechy.drd.db.base.OfflineOnlineTableWrapper;
 import cz.stechy.drd.model.item.OnlineCollection;
@@ -66,6 +67,7 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
 
     // region Constructors
 
+    @Inject
     public CollectionsSpellsController(ITableWrapperFactory tableFactory) {
         this.spellService = tableFactory.getTableWrapper(Spell.class);
         // Nemůžu dát "final", protože by mi to brečelo v bestiaryCollectionContentListener

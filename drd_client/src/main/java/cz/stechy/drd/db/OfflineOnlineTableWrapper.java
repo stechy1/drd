@@ -53,6 +53,8 @@ public abstract class OfflineOnlineTableWrapper<T extends OnlineRecord> implemen
     public OfflineOnlineTableWrapper(BaseOfflineTable<T> offlineTable, BaseOnlineTable<T> onlineTable) {
         this.offlineTable = offlineTable;
         this.onlineTable = onlineTable;
+
+        attachOfflineListener();
     }
 
     // region Public methods
