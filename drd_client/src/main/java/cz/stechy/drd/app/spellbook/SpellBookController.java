@@ -3,17 +3,18 @@ package cz.stechy.drd.app.spellbook;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.ThreadPool;
-import cz.stechy.drd.dao.SpellBookDao;
-import cz.stechy.drd.db.AdvancedDatabaseService;
+import cz.stechy.drd.db.BaseOfflineTable;
+import cz.stechy.drd.db.base.ITableWrapperFactory;
+import cz.stechy.drd.db.base.OfflineOnlineTableWrapper;
 import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.spell.Spell;
 import cz.stechy.drd.model.spell.Spell.SpellProfessionType;
-import cz.stechy.drd.service.UserService;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.HashGenerator;
 import cz.stechy.drd.util.ObservableMergers;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -43,6 +44,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,19 +109,20 @@ public class SpellBookController extends BaseController implements Initializable
     private final BooleanProperty disableDownloadBtn = new SimpleBooleanProperty(this, "disableDownloadBtn", true);
     private final BooleanProperty disableUploadBtn = new SimpleBooleanProperty(this, "disableUploadBtn", true);
     private final BooleanProperty disableRemoveOnlineBtn = new SimpleBooleanProperty(this, "disableRemoveOnlineBtn", true);
-    private final User user;
-    private final Translator translator;
 
-    private final SpellBookDao spellBook;
+    private final User user;
+    private final ITranslatorService translator;
+    private final OfflineOnlineTableWrapper<Spell> spellBook;
+
     private String title;
 
     // endregion
 
     // region Constructors
 
-    public SpellBookController(SpellBookDao spellBook, UserService userService,
-        Translator translator) {
-        this.spellBook = spellBook;
+    @Inject
+    public SpellBookController(ITableWrapperFactory tableFactory, IUserService userService, ITranslatorService translator) {
+        this.spellBook = tableFactory.getTableWrapper(Spell.class);
         this.user = userService.getUser();
         this.translator = translator;
         if (this.user != null) {
@@ -263,9 +266,7 @@ public class SpellBookController extends BaseController implements Initializable
         columnType.setCellFactory(TextFieldTableCell.forTableColumn(translator.getConvertor(
             Key.SPELL_PROFESSION_TYPES)));
 
-        spellBook.selectAllAsync()
-            .thenAccept(
-                spellList -> ObservableMergers.mergeList(SpellEntry::new, spells, spellList));
+        ObservableMergers.mergeList(SpellEntry::new, spells, spellBook.getUsed());
     }
 
     @Override
@@ -367,13 +368,13 @@ public class SpellBookController extends BaseController implements Initializable
     private void handleDownloadItem(ActionEvent actionEvent) {
         getSelectedEntry().ifPresent(spellEntry -> {
             if (diffHighlightMode.get()) {
-                spellBook.selectOnline(AdvancedDatabaseService.ID_FILTER(spellEntry.getId()))
-                    .ifPresent(spell -> {
-                        spellBook.updateAsync(spell).thenAccept(entry -> {
-                            LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
-                            spellEntry.clearDiffMap();
-                        });
-                    });
+                spellBook.selectOnline(BaseOfflineTable.ID_FILTER(spellEntry.getId()))
+                    .ifPresent(spell ->
+                        spellBook.updateAsync(spell)
+                            .thenAccept(entry -> {
+                                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                                spellEntry.clearDiffMap();
+                            }));
             } else {
                 insertSpell(spellEntry.getSpellBase());
             }

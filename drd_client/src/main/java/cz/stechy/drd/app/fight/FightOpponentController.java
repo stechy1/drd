@@ -1,12 +1,14 @@
 package cz.stechy.drd.app.fight;
 
+import com.google.inject.Inject;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.InjectableChild;
 import cz.stechy.drd.app.MoneyController;
 import cz.stechy.drd.app.bestiary.BestiaryHelper;
-import cz.stechy.drd.dao.BestiaryDao;
+import cz.stechy.drd.db.BaseOfflineTable;
+import cz.stechy.drd.db.base.ITableFactory;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.hero.Hero;
@@ -66,7 +68,7 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
 
     // endregion
 
-    private final BestiaryDao bestiary;
+    private final BaseOfflineTable<Mob> bestiary;
     private final ObjectProperty<Mob> selectedMob = new SimpleObjectProperty<>();
     private final Money treasure = new Money();
     private BaseController parent;
@@ -75,8 +77,9 @@ public class FightOpponentController implements Initializable, IFightChild, Inje
 
     // region Constructors
 
-    public FightOpponentController(BestiaryDao bestiaryDao) {
-        this.bestiary = bestiaryDao;
+    @Inject
+    public FightOpponentController(ITableFactory tableFactory) {
+        this.bestiary = tableFactory.getOfflineTable(Mob.class);
     }
 
     // endregion

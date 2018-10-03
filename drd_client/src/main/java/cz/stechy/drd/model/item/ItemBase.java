@@ -4,8 +4,8 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.annotation.TranslateEntry;
 import cz.stechy.drd.annotation.dao.Column;
-import cz.stechy.drd.db.base.DatabaseItem;
-import cz.stechy.drd.db.base.OnlineItem;
+import cz.stechy.drd.db.base.Row;
+import cz.stechy.drd.db.base.OnlineRecord;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.WithSameProperties;
 import java.util.Arrays;
@@ -26,7 +26,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Základní třída pro všechny itemy ve světě dračího doupěte
  */
-public abstract class ItemBase extends OnlineItem implements IDescriptable, WithSameProperties {
+public abstract class ItemBase extends OnlineRecord implements IDescriptable, WithSameProperties {
 
     // region Variables
 
@@ -162,7 +162,7 @@ public abstract class ItemBase extends OnlineItem implements IDescriptable, With
      *
      * @param other {@link ItemBase} Druhý předmět, ze kterého se aktualizují parametry
      */
-    public void update(DatabaseItem other) {
+    public void update(Row other) {
         super.update(other);
 
         ItemBase item = (ItemBase) other;
@@ -194,7 +194,7 @@ public abstract class ItemBase extends OnlineItem implements IDescriptable, With
     // endregion
 
     @Override
-    public List<String> getDiffList(DatabaseItem other) {
+    public List<String> getDiffList(Row other) {
         final List<String> diffList = super.getDiffList(other);
         final ItemBase itemBase = (ItemBase) other;
 

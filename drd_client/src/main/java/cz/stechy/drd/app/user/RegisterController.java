@@ -1,7 +1,8 @@
 package cz.stechy.drd.app.user;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
-import cz.stechy.drd.service.UserService;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Notification;
 import cz.stechy.screens.Notification.Length;
@@ -41,7 +42,7 @@ public class RegisterController extends BaseController implements Initializable 
 
     // endregion
 
-    private final UserService userService;
+    private final IUserService userService;
     private final LoginModel loginModel = new LoginModel();
 
     private String title;
@@ -51,7 +52,8 @@ public class RegisterController extends BaseController implements Initializable 
 
     // region Constructors
 
-    public RegisterController(UserService userService) {
+    @Inject
+    public RegisterController(IUserService userService) {
         this.userService = userService;
     }
 

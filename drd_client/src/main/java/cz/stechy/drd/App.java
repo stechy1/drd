@@ -3,7 +3,7 @@ package cz.stechy.drd;
 import com.sun.javafx.application.LauncherImpl;
 import cz.stechy.drd.annotation.resources.ResourcesRoot;
 import cz.stechy.drd.model.MyPreloaderNotification;
-import cz.stechy.drd.service.KeyboardService;
+import cz.stechy.drd.service.keyboard.KeyboardService;
 import cz.stechy.drd.util.UTF8ResourceBundleControl;
 import cz.stechy.screens.ScreenManager;
 import cz.stechy.screens.ScreenManagerConfiguration;
@@ -96,10 +96,10 @@ public class App extends Application {
         notifyPreloader(new MyPreloaderNotification("Inicializace databáze"));
         Thread.sleep(1000);
         context = new Context(manager.getResources());
-        context.setPreloaderNotifier(notifier);
+//        context.setPreloaderNotifier(notifier);
         notifier.increaseMaxProgress(context.getServiceCount());
         context.init().join();
-        manager.setControllerFactory(new ControllerFactory(context.getContainer()));
+        //manager.setControllerFactory(new ControllerFactory(context.getContainer()));
 
         notifyPreloader(new MyPreloaderNotification(0.99, "Dokončování..."));
         Thread.sleep(1000);
@@ -127,10 +127,10 @@ public class App extends Application {
         initScreenManager();
         notifyPreloader(new MyPreloaderNotification("Inicializace databáze"));
         context = new Context(manager.getResources());
-        context.setPreloaderNotifier(notifier);
+//        context.setPreloaderNotifier(notifier);
         notifier.increaseMaxProgress(context.getServiceCount());
         context.init().join();
-        manager.setControllerFactory(new ControllerFactory(context.getContainer()));
+        //manager.setControllerFactory(new ControllerFactory(context.getContainer()));
 
         notifyPreloader(new MyPreloaderNotification(0.99, "Dokončování..."));
         notifyPreloader(new MyPreloaderNotification(1, "Done"));

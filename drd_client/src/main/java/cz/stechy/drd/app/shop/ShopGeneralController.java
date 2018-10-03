@@ -1,12 +1,13 @@
 package cz.stechy.drd.app.shop;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.shop.entry.GeneralEntry;
-import cz.stechy.drd.dao.GeneralItemDao;
+import cz.stechy.drd.db.base.ITableWrapperFactory;
 import cz.stechy.drd.model.item.GeneralItem;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.service.UserService;
-import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.screens.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +26,9 @@ public class ShopGeneralController extends AShopItemController<GeneralItem, Gene
 
     // region Constrollers
 
-    public ShopGeneralController(UserService userService, GeneralItemDao generalItemDao, Translator translator) {
-        super(generalItemDao, translator, userService);
+    @Inject
+    public ShopGeneralController(IUserService userService, ITableWrapperFactory tableFactory, ITranslatorService translator) {
+        super(tableFactory.getTableWrapper(GeneralItem.class), translator, userService);
     }
 
     // endregion

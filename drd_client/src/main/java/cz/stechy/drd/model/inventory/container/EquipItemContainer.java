@@ -1,14 +1,15 @@
 package cz.stechy.drd.model.inventory.container;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Images.Icon;
 import cz.stechy.drd.R.Images.Inventory;
-import cz.stechy.drd.model.inventory.InventoryRecord;
+import cz.stechy.drd.model.inventory.InventoryContent;
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.inventory.ItemSlotHelper;
 import cz.stechy.drd.model.inventory.TooltipTranslator;
-import cz.stechy.drd.service.ItemRegistry;
+import cz.stechy.drd.service.item.IItemRegistry;
 import java.util.function.Predicate;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -42,13 +43,13 @@ public class EquipItemContainer extends ItemContainer {
     // Počet slotů v inventáři
     public static final int CAPACITY = 7;
 
-    public static final Predicate<InventoryRecord> SLOT_SWORD = o -> o.getSlotId() == 0;
-    public static final Predicate<InventoryRecord> SLOT_SHIELD = o -> o.getSlotId() == 1;
-    public static final Predicate<InventoryRecord> SLOT_HELM = o -> o.getSlotId() == 2;
-    public static final Predicate<InventoryRecord> SLOT_BODY = o -> o.getSlotId() == 3;
-    public static final Predicate<InventoryRecord> SLOT_LEGS = o -> o.getSlotId() == 4;
-    public static final Predicate<InventoryRecord> SLOT_BOTS = o -> o.getSlotId() == 5;
-    public static final Predicate<InventoryRecord> SLOT_GLOVES = o -> o.getSlotId() == 6;
+    public static final Predicate<InventoryContent> SLOT_SWORD = o -> o.getSlotId() == 0;
+    public static final Predicate<InventoryContent> SLOT_SHIELD = o -> o.getSlotId() == 1;
+    public static final Predicate<InventoryContent> SLOT_HELM = o -> o.getSlotId() == 2;
+    public static final Predicate<InventoryContent> SLOT_BODY = o -> o.getSlotId() == 3;
+    public static final Predicate<InventoryContent> SLOT_LEGS = o -> o.getSlotId() == 4;
+    public static final Predicate<InventoryContent> SLOT_BOTS = o -> o.getSlotId() == 5;
+    public static final Predicate<InventoryContent> SLOT_GLOVES = o -> o.getSlotId() == 6;
 
     // endregion
 
@@ -65,10 +66,11 @@ public class EquipItemContainer extends ItemContainer {
     /**
      * Inicializuje kontainer pro výbavu postavy.
      *
-     * @param itemRegistry
+     * @param itemRegistry {@link IItemRegistry}
      * @param tooltipTranslator {@link TooltipTranslator}
      */
-    public EquipItemContainer(ItemRegistry itemRegistry, TooltipTranslator tooltipTranslator) {
+    @Inject
+    public EquipItemContainer(IItemRegistry itemRegistry, TooltipTranslator tooltipTranslator) {
         super(itemRegistry, tooltipTranslator, CAPACITY);
 
         init();

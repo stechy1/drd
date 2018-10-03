@@ -1,14 +1,16 @@
 package cz.stechy.drd.app.main.profession;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
-import cz.stechy.drd.dao.BestiaryDao;
+import cz.stechy.drd.db.BaseOfflineTable;
+import cz.stechy.drd.db.base.ITableFactory;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.profession.Warior;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.item.ItemType;
 import cz.stechy.drd.model.item.WeaponBase;
-import cz.stechy.drd.service.ItemRegistry;
+import cz.stechy.drd.service.item.ItemRegistry;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.util.ObservableMergers;
@@ -52,7 +54,7 @@ public class WarriorController implements IProfessionController, Initializable {
 
     private final ObservableList<Mob> mobs = FXCollections.observableArrayList();
     private final ObservableList<WeaponBase> items = FXCollections.observableArrayList();
-    private final BestiaryDao bestiary;
+    private final BaseOfflineTable<Mob> bestiary;
     private final ItemRegistry itemRegistry;
 
     private String successText;
@@ -63,8 +65,9 @@ public class WarriorController implements IProfessionController, Initializable {
 
     // region Constructors
 
-    public WarriorController(BestiaryDao bestiaryDao, ItemRegistry itemRegistry) {
-        this.bestiary = bestiaryDao;
+    @Inject
+    public WarriorController(ITableFactory tableFactory, ItemRegistry itemRegistry) {
+        this.bestiary = tableFactory.getOfflineTable(Mob.class);
         this.itemRegistry = itemRegistry;
     }
 

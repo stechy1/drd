@@ -2,8 +2,8 @@ package cz.stechy.drd.model.spell;
 
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.annotation.TranslateEntry;
-import cz.stechy.drd.db.base.DatabaseItem;
-import cz.stechy.drd.db.base.OnlineItem;
+import cz.stechy.drd.db.base.Row;
+import cz.stechy.drd.db.base.OnlineRecord;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.SpellParser;
 import cz.stechy.drd.model.WithSameProperties;
@@ -24,7 +24,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Třída reprezentující kouzlo, které může vyvolat kouzelník, nebo hraničár
  */
-public final class Spell extends OnlineItem implements WithSameProperties {
+public final class Spell extends OnlineRecord implements WithSameProperties {
 
     // region Constants
 
@@ -134,7 +134,7 @@ public final class Spell extends OnlineItem implements WithSameProperties {
     // region Public methods
 
     @Override
-    public void update(DatabaseItem other) {
+    public void update(Row other) {
         super.update(other);
 
         Spell spell = (Spell) other;
@@ -297,7 +297,7 @@ public final class Spell extends OnlineItem implements WithSameProperties {
     // endregion
 
     @Override
-    public List<String> getDiffList(DatabaseItem other) {
+    public List<String> getDiffList(Row other) {
         final List<String> diffList = super.getDiffList(other);
         final Spell spell = (Spell) other;
 

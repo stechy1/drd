@@ -60,32 +60,6 @@ public class SQLite implements Database {
 
     // region Private methods
 
-    private long queryTransactional(String query, Object... params) throws SQLException {
-        try (Connection connection = pool.getConnection()) {
-            return query(connection, query, params);
-        }
-    }
-
-    private long query(Connection connection, String query, Object... params) throws SQLException {
-        long result = -1;
-        try (PreparedStatement statement = connection
-            .prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
-            for (int i = 0; i < params.length; i++) {
-                // Indexy v databázi jsou od 1, proto i+1
-                statement.setObject(i + 1, params[i]);
-            }
-            statement.executeUpdate();
-
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    result = generatedKeys.getLong(1);
-                }
-            }
-        }
-
-        return result;
-    }
-
     private CompletableFuture<Long> queryTransactionalAsync(String query, Object... params) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -94,9 +68,9 @@ public class SQLite implements Database {
                 throw new RuntimeException(e);
             }
         }, ThreadPool.DB_EXECUTOR)
-            .thenCompose(connection -> queryAsync(connection, query, params)
-                .thenApply(
-                    value -> {
+            .thenCompose(connection ->
+                queryAsync(connection, query, params)
+                    .thenApply(value -> {
                         try {
                             connection.close();
                         } catch (SQLException e) {
@@ -106,12 +80,10 @@ public class SQLite implements Database {
                     }));
     }
 
-    private CompletableFuture<Long> queryAsync(Connection connection, String query,
-        Object... params) {
+    private CompletableFuture<Long> queryAsync(Connection connection, String query, Object... params) {
         return CompletableFuture.supplyAsync(() -> {
             long result;
-            try (PreparedStatement statement = connection
-                .prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement statement = connection.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS)) {
                 for (int i = 0; i < params.length; i++) {
                     // Indexy v databázi jsou od 1, proto i+1
                     statement.setObject(i + 1, params[i]);
@@ -139,8 +111,7 @@ public class SQLite implements Database {
     }
 
     @Override
-    public <T> CompletableFuture<List<T>> selectAsync(RowTransformHandler<T> handler, String query,
-        Object... params) {
+    public <T> CompletableFuture<List<T>> selectAsync(RowTransformHandler<T> handler, String query, Object... params) {
         return CompletableFuture.supplyAsync(() -> {
             final List<T> resultList = new ArrayList<>();
             try (

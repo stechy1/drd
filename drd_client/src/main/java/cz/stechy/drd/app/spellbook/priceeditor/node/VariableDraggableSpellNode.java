@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.spellbook.priceeditor.node;
 
+import com.google.inject.Inject;
 import com.jfoenix.controls.JFXComboBox;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.spellbook.priceeditor.ILinkListener;
@@ -7,8 +8,8 @@ import cz.stechy.drd.app.spellbook.priceeditor.INodeManipulator;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import cz.stechy.drd.model.spell.price.VariableSpellPrice;
 import cz.stechy.drd.model.spell.price.VariableSpellPrice.VariableType;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -22,8 +23,8 @@ public class VariableDraggableSpellNode extends DraggableSpellNode {
 
     // region Constructors
 
-    public VariableDraggableSpellNode(INodeManipulator nodeManipulator, ILinkListener linkListener,
-        Translator translator) {
+    @Inject
+    public VariableDraggableSpellNode(INodeManipulator nodeManipulator, ILinkListener linkListener, ITranslatorService translator) {
         super(nodeManipulator, linkListener, translator);
     }
 

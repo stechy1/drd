@@ -1,0 +1,52 @@
+package cz.stechy.drd;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.multibindings.MapBinder;
+import cz.stechy.drd.db.base.BaseTableDefinitions;
+import cz.stechy.drd.db.BaseOfflineTable;
+import cz.stechy.drd.db.BaseOnlineTable;
+import cz.stechy.drd.db.base.OfflineOnlineTableWrapper;
+
+#foreach($entity in $entities)
+import ${entity};
+#end
+
+#foreach($tableDefinition in $tableDefinitions)
+import ${tableDefinition.getTablePackage()}.${tableDefinition.getTableName()};
+#end
+
+#foreach($offlineTable in $offlineTables)
+import ${offlineTable.getTablePackage()}.${offlineTable.getTableName()};
+#end
+
+#foreach($onlineTable in $onlineTables)
+import ${onlineTable.getTablePackage()}.${onlineTable.getTableName()};
+#end
+
+#foreach($offlineOnlineTable in $offlineOnlineTables)
+import ${offlineOnlineTable.getTablePackage()}.${offlineOnlineTable.getTableName()};
+#end
+
+public class TableModule extends AbstractModule {
+    @Override
+    protected void configure() {
+
+        MapBinder<Class, BaseTableDefinitions> tableDefinitionsBinder = MapBinder.newMapBinder(binder(), Class.class, BaseTableDefinitions.class);
+        MapBinder<Class, BaseOfflineTable> offlineTableBinder = MapBinder.newMapBinder(binder(), Class.class, BaseOfflineTable.class);
+        MapBinder<Class, BaseOnlineTable> onlineTableBinder = MapBinder.newMapBinder(binder(), Class.class, BaseOnlineTable.class);
+        MapBinder<Class, OfflineOnlineTableWrapper> offlineOnlineBinder = MapBinder.newMapBinder(binder(), Class.class, OfflineOnlineTableWrapper.class);
+
+        #foreach($tableDefinition in $tableDefinitions)tableDefinitionsBinder.addBinding(${tableDefinition.getEntityName()}.class).to(${tableDefinition.getTableName()}.class).asEagerSingleton();
+        #end
+
+        #foreach($offlineTable in $offlineTables)offlineTableBinder.addBinding(${offlineTable.getEntityName()}.class).to(${offlineTable.getTableName()}.class).asEagerSingleton();
+        #end
+
+        #foreach($onlineTable in $onlineTables)onlineTableBinder.addBinding(${onlineTable.getEntityName()}.class).to(${onlineTable.getTableName()}.class).asEagerSingleton();
+        #end
+
+        #foreach($offlineOnlineTable in $offlineOnlineTables)offlineOnlineBinder.addBinding(${offlineOnlineTable.getEntityName()}.class).to(${offlineOnlineTable.getTableName()}.class);
+        #end
+
+    }
+}

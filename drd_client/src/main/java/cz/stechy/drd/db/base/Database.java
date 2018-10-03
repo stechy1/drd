@@ -17,8 +17,7 @@ public interface Database {
      * @param params Parametry dotazu
      * @return {@link CompletableFuture<List>}
      */
-    <T> CompletableFuture<List<T>> selectAsync(RowTransformHandler<T> handler, String query,
-        Object... params);
+    <T> CompletableFuture<List<T>> selectAsync(RowTransformHandler<T> handler, String query, Object... params);
 
     /**
      * Zpracuje a provede zadaný příkaz.

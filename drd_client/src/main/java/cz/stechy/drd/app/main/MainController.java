@@ -1,7 +1,7 @@
 package cz.stechy.drd.app.main;
 
+import com.google.inject.Inject;
 import com.jfoenix.controls.JFXButton;
-import cz.stechy.drd.AppSettings;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.InjectableChild;
 import cz.stechy.drd.app.hero.HeroHelper;
@@ -14,12 +14,12 @@ import cz.stechy.drd.app.moneyxp.MoneyXpController;
 import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
-import cz.stechy.drd.net.ClientCommunicator;
 import cz.stechy.drd.net.ConnectionState;
-import cz.stechy.drd.service.ChatService;
-import cz.stechy.drd.service.HeroService;
-import cz.stechy.drd.service.UserService;
-import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.service.chat.IChatService;
+import cz.stechy.drd.service.communicator.IClientCommunicator;
+import cz.stechy.drd.service.hero.IHeroService;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -111,14 +111,13 @@ public class MainController extends BaseController implements Initializable {
 
     // endregion
 
-    private final BooleanProperty serverConnected = new SimpleBooleanProperty(this, "serverConnected",
-        false);
+    private final BooleanProperty serverConnected = new SimpleBooleanProperty(this, "serverConnected", false);
     private final ReadOnlyObjectProperty<Hero> hero;
     private final ReadOnlyObjectProperty<User> user;
-    private final HeroService heroService;
-    private final UserService userService;
-    private final Translator translator;
-    private final ClientCommunicator communicator;
+    private final IHeroService heroService;
+    private final IUserService userService;
+    private final ITranslatorService translator;
+    private final IClientCommunicator communicator;
 
     private String title;
     private String loginText;
@@ -128,14 +127,14 @@ public class MainController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public MainController(HeroService heroService, UserService userService, AppSettings settings,
-        Translator translator, ClientCommunicator communicator, ChatService chatService) {
+    @Inject
+    public MainController(IHeroService heroService, IUserService userService, ITranslatorService translatorService, IClientCommunicator clientCommunicator, IChatService chatService) {
         this.heroService = heroService;
         this.userService = userService;
-        this.translator = translator;
+        this.translator = translatorService;
         this.hero = heroService.heroProperty();
         this.user = userService.userProperty();
-        this.communicator = communicator;
+        this.communicator = clientCommunicator;
         this.serverConnected.bind(this.communicator.connectionStateProperty().isEqualTo(ConnectionState.CONNECTED));
     }
 
@@ -195,13 +194,11 @@ public class MainController extends BaseController implements Initializable {
 
     // region Method handlers
 
-    private void levelUpHandler(ObservableValue<? extends Boolean> observable,
-        Boolean oldValue, Boolean newValue) {
+    private void levelUpHandler(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
         showNotification(new Notification("levelUp"));
     }
 
-    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue,
-        Hero newValue) {
+    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue, Hero newValue) {
         if (newValue == null) {
             if (oldValue != null) {
                 oldValue.levelUpProperty().removeListener(this::levelUpHandler);
@@ -216,8 +213,7 @@ public class MainController extends BaseController implements Initializable {
         tabPane.getSelectionModel().selectFirst();
     }
 
-    private void userHandler(ObservableValue<? extends User> observable, User oldValue,
-        User newValue) {
+    private void userHandler(ObservableValue<? extends User> observable, User oldValue, User newValue) {
         if (newValue == null) {
             bindMenuLogin(null);
         } else {
@@ -229,8 +225,7 @@ public class MainController extends BaseController implements Initializable {
         resetChildScreensAndHero();
     }
 
-    private void connectionStateHandler(ObservableValue<? extends ConnectionState> observable,
-        ConnectionState oldValue, ConnectionState newValue) {
+    private void connectionStateHandler(ObservableValue<? extends ConnectionState> observable, ConnectionState oldValue, ConnectionState newValue) {
         if (newValue == ConnectionState.DISCONNECTED) {
             this.userService.logoutAsync();
         }

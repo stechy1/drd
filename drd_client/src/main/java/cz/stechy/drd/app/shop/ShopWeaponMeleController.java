@@ -1,15 +1,16 @@
 package cz.stechy.drd.app.shop;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.shop.entry.MeleWeaponEntry;
-import cz.stechy.drd.dao.MeleWeaponDao;
+import cz.stechy.drd.db.base.ITableWrapperFactory;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponType;
-import cz.stechy.drd.service.UserService;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -52,8 +53,9 @@ public class ShopWeaponMeleController extends AShopItemController<MeleWeapon, Me
 
     // region Constructors
 
-    public ShopWeaponMeleController(UserService userService, MeleWeaponDao meleWeaponDao, Translator translator) {
-        super(meleWeaponDao, translator, userService);
+    @Inject
+    public ShopWeaponMeleController(IUserService userService, ITableWrapperFactory tableFactory, ITranslatorService translator) {
+        super(tableFactory.getTableWrapper(MeleWeapon.class), translator, userService);
     }
 
     // endregion

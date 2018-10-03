@@ -1,19 +1,19 @@
 package cz.stechy.drd.app.fight;
 
-import cz.stechy.drd.dao.InventoryContentDao;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.container.EquipItemContainer;
 import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.WeaponBase;
-import cz.stechy.drd.service.ItemRegistry;
+import cz.stechy.drd.service.inventory.IInventoryContentService;
+import cz.stechy.drd.service.item.IItemRegistry;
 
 class HeroAggresiveEntity extends AggresiveEntityDecorator {
 
     // region Variables
 
-    private final ItemRegistry itemRegistry;
+    private final IItemRegistry itemRegistry;
 
     private int weaponStrength = 0;
     private int weaponDefence = 0;
@@ -29,7 +29,7 @@ class HeroAggresiveEntity extends AggresiveEntityDecorator {
      * @param aggresiveEntity {@link Hero} Hrdina, který jde do boje
      * @param inventory {@link Inventory} Inventář hrdiny s jeho vybavením
      */
-    protected HeroAggresiveEntity(Hero aggresiveEntity, InventoryContentDao inventory, ItemRegistry itemRegistry) {
+    protected HeroAggresiveEntity(Hero aggresiveEntity, IInventoryContentService inventory, IItemRegistry itemRegistry) {
         super(aggresiveEntity);
 
         this.itemRegistry = itemRegistry;
@@ -41,9 +41,9 @@ class HeroAggresiveEntity extends AggresiveEntityDecorator {
 
     // region Private methods
 
-    private void initWeaponAddition(InventoryContentDao inventory) {
-        inventory.selectAsync(EquipItemContainer.SLOT_SWORD)
-            .thenAccept(inventoryRecord -> {
+    private void initWeaponAddition(IInventoryContentService inventory) {
+        inventory.select(EquipItemContainer.SLOT_SWORD)
+            .ifPresent(inventoryRecord -> {
                 final String itemId = inventoryRecord.getItemId();
                 itemRegistry.getItemById(itemId).ifPresent(itemBase -> {
                     assert itemBase instanceof WeaponBase;
@@ -57,9 +57,9 @@ class HeroAggresiveEntity extends AggresiveEntityDecorator {
             });
     }
 
-    private void initArmorAddition(InventoryContentDao inventory) {
-        inventory.selectAsync(EquipItemContainer.SLOT_BODY)
-            .thenAccept(inventoryRecord -> {
+    private void initArmorAddition(IInventoryContentService inventory) {
+        inventory.select(EquipItemContainer.SLOT_BODY)
+            .ifPresent(inventoryRecord -> {
                 final String itemId = inventoryRecord.getItemId();
                 itemRegistry.getItemById(itemId).ifPresent(itemBase -> {
                     assert itemBase instanceof Armor;

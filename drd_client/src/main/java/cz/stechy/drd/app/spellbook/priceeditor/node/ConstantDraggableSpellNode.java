@@ -7,8 +7,8 @@ import cz.stechy.drd.app.spellbook.priceeditor.INodeManipulator;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.spell.price.BasicSpellPrice;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
+import cz.stechy.drd.service.translator.ITranslatorService;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.Translator;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -23,8 +23,7 @@ public class ConstantDraggableSpellNode extends DraggableSpellNode {
 
     // region Constructors
 
-    public ConstantDraggableSpellNode(INodeManipulator nodeManipulator, ILinkListener linkListener,
-        Translator translator) {
+    public ConstantDraggableSpellNode(INodeManipulator nodeManipulator, ILinkListener linkListener, ITranslatorService translator) {
         super(nodeManipulator, linkListener, translator);
     }
 

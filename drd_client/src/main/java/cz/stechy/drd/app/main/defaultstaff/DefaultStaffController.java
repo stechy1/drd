@@ -1,9 +1,10 @@
 package cz.stechy.drd.app.main.defaultstaff;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.app.main.MainScreen;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
 import cz.stechy.drd.widget.Card;
 import cz.stechy.drd.widget.LabeledMaxActValue;
 import cz.stechy.drd.widget.MoneyWidget;
@@ -52,14 +53,15 @@ public class DefaultStaffController implements MainScreen, Initializable {
 
     // endregion
 
-    private final Translator translator;
+    private final ITranslatorService translator;
 
     // endregion
 
     // region Constructors
 
-    public DefaultStaffController(Translator translator) {
-        this.translator = translator;
+    @Inject
+    public DefaultStaffController(ITranslatorService translatorService) {
+        translator = translatorService;
     }
 
     // endregion

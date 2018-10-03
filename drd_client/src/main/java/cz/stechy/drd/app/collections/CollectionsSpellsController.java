@@ -1,15 +1,14 @@
 package cz.stechy.drd.app.collections;
 
-import cz.stechy.drd.dao.ItemCollectionDao;
-import cz.stechy.drd.dao.SpellBookDao;
-import cz.stechy.drd.model.item.ItemCollection;
-import cz.stechy.drd.model.item.ItemCollection.CollectionType;
+import cz.stechy.drd.db.base.ITableWrapperFactory;
+import cz.stechy.drd.db.base.OfflineOnlineTableWrapper;
+import cz.stechy.drd.model.item.OnlineCollection;
+import cz.stechy.drd.model.item.OnlineCollection.CollectionType;
 import cz.stechy.drd.model.spell.Spell;
 import cz.stechy.drd.model.spell.Spell.SpellProfessionType;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
-import cz.stechy.drd.util.Translator;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.List;
@@ -59,7 +58,7 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
     private final ObservableList<SpellEntry> collectionItems = FXCollections.observableArrayList();
     private final ObservableList<ChoiceEntry> spellRegistry = FXCollections.observableArrayList();
 
-    private final SpellBookDao spellService;
+    private final OfflineOnlineTableWrapper<Spell> spellService;
 
     private StringProperty selectedEntry;
 
@@ -67,15 +66,14 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
 
     // region Constructors
 
-    public CollectionsSpellsController(SpellBookDao spellService,
-        Translator translator, ItemCollectionDao collectionService) {
-        this.spellService = spellService;
-        Translator translator1 = translator;
+    public CollectionsSpellsController(ITableWrapperFactory tableFactory) {
+        this.spellService = tableFactory.getTableWrapper(Spell.class);
         // Nemůžu dát "final", protože by mi to brečelo v bestiaryCollectionContentListener
-        ItemCollectionDao collectionService1 = collectionService;
+//        ItemCollectionDao collectionService1 = collectionService;
 
         spellService.selectAllAsync()
-            .thenAccept(spells -> this.spellRegistry.setAll(DialogUtils.getSpellChoices(spells)));
+            .thenAccept(spells ->
+                this.spellRegistry.setAll(DialogUtils.getSpellChoices(spells)));
     }
 
     // endregion
@@ -113,7 +111,7 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
     }
 
     @Override
-    public void setSelectedCollection(ReadOnlyObjectProperty<ItemCollection> selectedCollection) {
+    public void setSelectedCollection(ReadOnlyObjectProperty<OnlineCollection> selectedCollection) {
         selectedCollection.addListener((observableValue, oldValue, newValue) -> {
             collectionItems.clear();
             if (oldValue != null) {

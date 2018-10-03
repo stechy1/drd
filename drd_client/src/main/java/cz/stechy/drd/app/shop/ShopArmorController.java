@@ -1,15 +1,16 @@
 package cz.stechy.drd.app.shop;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.shop.entry.ArmorEntry;
-import cz.stechy.drd.dao.ArmorDao;
+import cz.stechy.drd.db.base.ITableWrapperFactory;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.service.UserService;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -48,8 +49,9 @@ public class ShopArmorController extends AShopItemController<Armor, ArmorEntry> 
 
     // region Constructors
 
-    public ShopArmorController(UserService userService, ArmorDao armorDao, Translator translator) {
-        super(armorDao, translator, userService);
+    @Inject
+    public ShopArmorController(IUserService userService, ITableWrapperFactory tableFactory, ITranslatorService translator) {
+        super(tableFactory.getTableWrapper(Armor.class), translator, userService);
     }
 
     // endregion

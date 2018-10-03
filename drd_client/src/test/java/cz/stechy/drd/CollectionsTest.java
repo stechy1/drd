@@ -1,7 +1,6 @@
 package cz.stechy.drd;
 
-import cz.stechy.drd.di.DiContainer;
-import cz.stechy.drd.util.Translator;
+//import cz.stechy.drd.di.DiContainer;
 import cz.stechy.drd.util.UTF8ResourceBundleControl;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -21,9 +20,9 @@ public class CollectionsTest extends Application {
         ResourceBundle resources = ResourceBundle.getBundle(
             LANG_FILE_CONVENTION, Locale.getDefault(), new UTF8ResourceBundleControl());
         loader.setResources(resources);
-        DiContainer di = new DiContainer();
-        di.addService(Translator.class, new Translator(resources));
-        loader.setControllerFactory(new ControllerFactory(di));
+//        DiContainer di = new DiContainer();
+//        di.addService(TranslatorService.class, new TranslatorService(resources));
+//        loader.setControllerFactory(new ControllerFactory(di));
         Parent parent = loader.load();
         primaryStage.setScene(new Scene(parent));
         primaryStage.setWidth(800);

@@ -3,18 +3,19 @@ package cz.stechy.drd.app.bestiary;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.ThreadPool;
-import cz.stechy.drd.dao.BestiaryDao;
-import cz.stechy.drd.db.AdvancedDatabaseService;
+import cz.stechy.drd.db.BaseOfflineTable;
+import cz.stechy.drd.db.base.ITableWrapperFactory;
+import cz.stechy.drd.db.base.OfflineOnlineTableWrapper;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.entity.mob.Mob;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
-import cz.stechy.drd.service.UserService;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.HashGenerator;
 import cz.stechy.drd.util.ObservableMergers;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -45,6 +46,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
+import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,10 +114,10 @@ public class BestiaryController extends BaseController implements Initializable 
     private final BooleanProperty disableDownloadBtn = new SimpleBooleanProperty(this, "disableDownloadBtn", true);
     private final BooleanProperty disableUploadBtn = new SimpleBooleanProperty(this, "disableUploadBtn", true);
     private final BooleanProperty disableRemoveOnlineBtn = new SimpleBooleanProperty(this, "disableRemoveOnlineBtn", true);
-    private final User user;
-    private final Translator translator;
 
-    private AdvancedDatabaseService<Mob> service;
+    private final User user;
+    private final ITranslatorService translator;
+    private final OfflineOnlineTableWrapper<Mob> service;
 
     private String title;
 
@@ -123,9 +125,9 @@ public class BestiaryController extends BaseController implements Initializable 
 
     // region Constructors
 
-    public BestiaryController(UserService userService, BestiaryDao bestiaryDao,
-        Translator translator) {
-        this.service = bestiaryDao;
+    @Inject
+    public BestiaryController(ITableWrapperFactory tableFactory, IUserService userService, ITranslatorService translator) {
+        this.service = tableFactory.getTableWrapper(Mob.class);
         this.translator = translator;
         this.user = userService.getUser();
         if (this.user != null) {
@@ -256,8 +258,7 @@ public class BestiaryController extends BaseController implements Initializable 
         columnMobClass.setCellFactory(TextFieldTableCell.forTableColumn(translator.getConvertor(Key.MOB_CLASSES)));
         columnRulesType.setCellFactory(TextFieldTableCell.forTableColumn(translator.getConvertor(Key.RULES)));
 
-        service.selectAllAsync()
-            .thenAccept(m -> ObservableMergers.mergeList(MobEntry::new, mobs, m));
+        ObservableMergers.mergeList(MobEntry::new, mobs, service.getUsed());
     }
 
     @Override
@@ -366,14 +367,14 @@ public class BestiaryController extends BaseController implements Initializable 
     private void handleDownloadItem(ActionEvent actionEvent) {
         getSelectedEntry().ifPresent(mobEntry -> {
             if (diffHighlightMode.get()) {
-                service.selectOnline(AdvancedDatabaseService.ID_FILTER(mobEntry.getId()))
-                    .ifPresent(generalItem -> {
-                        service.updateAsync(generalItem)
+                service.selectOnline(BaseOfflineTable.ID_FILTER(mobEntry.getId()))
+                    .ifPresent(mob ->
+                        service.updateAsync(mob)
                             .thenAccept(entry -> {
                                 LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                                showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPDATED), entry.getName())));
                                 mobEntry.clearDiffMap();
-                        });
-                    });
+                            }));
             } else {
                 service.insertAsync(mobEntry.getMobBase())
                     .exceptionally(throwable -> {

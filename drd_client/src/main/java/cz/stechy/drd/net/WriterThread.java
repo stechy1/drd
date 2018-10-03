@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Třída reprezentující vlákno, která posílá data na server
  */
-class WriterThread extends Thread {
+public class WriterThread extends Thread {
 
     // region Constants
 
@@ -36,7 +36,7 @@ class WriterThread extends Thread {
 
     // region Constructors
 
-    WriterThread(final OutputStream outputStream,
+    public WriterThread(final OutputStream outputStream,
         LostConnectionHandler lostConnectionHandler) throws IOException {
         super("WriterThread");
         this.lostConnectionHandler = lostConnectionHandler;
@@ -51,7 +51,7 @@ class WriterThread extends Thread {
     /**
      * Ukončí činnost zapisovacího vlákna
      */
-    void shutdown() {
+    public void shutdown() {
         interrupt = true;
         messageQueue.clear();
         semaphore.release();
@@ -62,7 +62,7 @@ class WriterThread extends Thread {
      *
      * @param message {@link IMessage} Zpráva, která se má odeslat
      */
-    void addMessageToQueue(IMessage message) {
+    public void addMessageToQueue(IMessage message) {
         messageQueue.add(message);
         if (!working.get()) {
             LOGGER.info("Probouzím vlákno spící na semaforu.");

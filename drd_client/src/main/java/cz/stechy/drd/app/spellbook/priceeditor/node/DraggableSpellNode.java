@@ -1,12 +1,13 @@
 package cz.stechy.drd.app.spellbook.priceeditor.node;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.app.spellbook.ISpellGraphNode;
 import cz.stechy.drd.app.spellbook.priceeditor.ILinkListener;
 import cz.stechy.drd.app.spellbook.priceeditor.INodeManipulator;
 import cz.stechy.drd.app.spellbook.priceeditor.LinkPosition;
 import cz.stechy.drd.model.DragContainer;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
-import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.service.translator.ITranslatorService;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -80,7 +81,7 @@ public abstract class DraggableSpellNode extends Group implements Initializable,
         false);
     private final INodeManipulator nodeManipulator;
     private final ILinkListener linkListener;
-    protected final Translator translator;
+    protected final ITranslatorService translator;
 
     protected DraggableSpellNode leftNode;
     protected DraggableSpellNode rightNode;
@@ -96,8 +97,8 @@ public abstract class DraggableSpellNode extends Group implements Initializable,
 
     // region Constructors
 
-    DraggableSpellNode(INodeManipulator nodeManipulator, ILinkListener linkListener,
-        Translator translator) {
+    @Inject
+    DraggableSpellNode(INodeManipulator nodeManipulator, ILinkListener linkListener, ITranslatorService translator) {
         this.nodeManipulator = nodeManipulator;
         this.linkListener = linkListener;
         this.translator = translator;

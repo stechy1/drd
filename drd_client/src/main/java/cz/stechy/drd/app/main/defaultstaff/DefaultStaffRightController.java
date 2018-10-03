@@ -1,9 +1,7 @@
 package cz.stechy.drd.app.main.defaultstaff;
 
-import cz.stechy.drd.dao.InventoryContentDao;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.widget.LabeledHeroProperty;
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -52,13 +50,13 @@ public class DefaultStaffRightController {
         lblLoadHigh.bind(hero.getHighLoad());
         lblObservationObjects.bind(hero.getObservationObjects());
         lblObservationMechanics.bind(hero.getObservationMechanics());
-        lblCapacity.textProperty().bind(
-            Bindings.concat(
-                InventoryContentDao.getWeight().asString("%d mn"),
-                " / ",
-                hero.capacityProperty().asString("%d mn")
-            )
-        );
+//        lblCapacity.textProperty().bind(
+//            Bindings.concat(
+//                InventoryContentDao.getWeight().asString("%d mn"),
+//                " / ",
+//                hero.capacityProperty().asString("%d mn")
+//            )
+//        );
     }
 
     // endregion

@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.hero.levelup;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.AppSettings;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.hero.HeroHelper;
@@ -85,9 +86,9 @@ public class LevelUpController extends BaseController implements Initializable {
 
     // region Constructors
 
+    @Inject
     public LevelUpController(AppSettings settings) {
-        remaingPoints.setValue(Integer.parseInt(settings
-            .getProperty(R.Config.HERO_LEVELUP_POINTS_PER_LEVEL, DEFAULT_VALUE_POINTS_PER_LEVEL)));
+        remaingPoints.setValue(Integer.parseInt(settings.getProperty(R.Config.HERO_LEVELUP_POINTS_PER_LEVEL, DEFAULT_VALUE_POINTS_PER_LEVEL)));
 
         rollFinish.bind(remaingPoints.greaterThan(0).not());
     }

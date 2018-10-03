@@ -3,7 +3,7 @@ package cz.stechy.drd.model.item;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.annotation.TranslateEntry;
-import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.Row;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.ITranslatedEnum;
 import cz.stechy.drd.model.Money;
@@ -135,7 +135,7 @@ public final class Armor extends ItemBase {
     }
 
     @Override
-    public void update(DatabaseItem other) {
+    public void update(Row other) {
         super.update(other);
 
         Armor armor = (Armor) other;
@@ -261,7 +261,7 @@ public final class Armor extends ItemBase {
     // endregion
 
     @Override
-    public List<String> getDiffList(DatabaseItem other) {
+    public List<String> getDiffList(Row other) {
         final List<String> diffList = super.getDiffList(other);
         final Armor armor = (Armor) other;
 

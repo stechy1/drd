@@ -1,13 +1,14 @@
 package cz.stechy.drd.app.shop;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.shop.entry.BackpackEntry;
-import cz.stechy.drd.dao.BackpackDao;
+import cz.stechy.drd.db.base.ITableWrapperFactory;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.service.UserService;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.drd.util.CellUtils;
-import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -41,8 +42,9 @@ public class ShopBackpackController extends AShopItemController<Backpack, Backpa
 
     // region Constrollers
 
-    public ShopBackpackController(UserService userService, BackpackDao backpackDao, Translator translator) {
-        super(backpackDao, translator, userService);
+    @Inject
+    public ShopBackpackController(IUserService userService, ITableWrapperFactory tableFactory, ITranslatorService translator) {
+        super(tableFactory.getTableWrapper(Backpack.class), translator, userService);
     }
     // endregion
 

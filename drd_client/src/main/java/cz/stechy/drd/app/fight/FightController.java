@@ -2,10 +2,11 @@ package cz.stechy.drd.app.fight;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.fight.Battlefield.BattlefieldAction;
-import cz.stechy.drd.dao.InventoryDao;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.service.HeroService;
-import cz.stechy.drd.service.ItemRegistry;
+import cz.stechy.drd.service.hero.HeroService;
+import cz.stechy.drd.service.inventory.IInventoryContentService;
+import cz.stechy.drd.service.inventory.InventoryService;
+import cz.stechy.drd.service.item.ItemRegistry;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -179,17 +180,17 @@ public class FightController extends BaseController implements Initializable {
         bundle.put(FightCommentController.COMMENT, comment);
         startNewDialog(R.Fxml.FIGHT_COMMENT, bundle);
 
-        heroService.getInventoryAsync()
-            .thenCompose(inventoryService ->
-                inventoryService.selectAsync(InventoryDao.EQUIP_INVENTORY_FILTER)
-                    .thenCompose(inventoryService::getInventoryContentAsync))
-            .thenAccept(equipContent -> {
-                battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent, itemRegistry),
-                    fightOpponentController.getMob());
-                battlefield.setFightFinishListener(this::fightFinishHandler);
-                battlefield.setOnActionVisualizeListener(this::fightVisualizeHandler);
-                battlefield.fight();
-                isFighting.setValue(true);
+        heroService.getInventoryService()
+            .ifPresent(inventoryService -> {
+                inventoryService.getInventory(InventoryService.EQUIP_INVENTORY_FILTER)
+                    .ifPresent(inventory -> {
+                        final IInventoryContentService equipContent = inventoryService.getInventoryContentService(inventory);
+                        battlefield = new Battlefield(new HeroAggresiveEntity(hero, equipContent, itemRegistry), fightOpponentController.getMob());
+                        battlefield.setFightFinishListener(this::fightFinishHandler);
+                        battlefield.setOnActionVisualizeListener(this::fightVisualizeHandler);
+                        battlefield.fight();
+                        isFighting.setValue(true);
+                    });
             });
     }
 

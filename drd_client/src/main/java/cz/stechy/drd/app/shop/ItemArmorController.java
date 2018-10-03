@@ -9,8 +9,8 @@ import cz.stechy.drd.model.item.Armor;
 import cz.stechy.drd.model.item.Armor.ArmorType;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
+import cz.stechy.drd.service.translator.TranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.io.IOException;
@@ -111,7 +111,7 @@ public class ItemArmorController extends BaseController implements Initializable
     // endregion
 
     private final ArmorModel model = new ArmorModel();
-    private final Translator translator;
+    private final TranslatorService translator;
     private String titleNew;
     private String titleUpdate;
     private int action;
@@ -121,7 +121,7 @@ public class ItemArmorController extends BaseController implements Initializable
 
     // region Constructors
 
-    public ItemArmorController(Translator translator) {
+    public ItemArmorController(TranslatorService translator) {
         this.translator = translator;
     }
 

@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.settings;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.AppSettings;
 import cz.stechy.drd.R;
 import cz.stechy.screens.BaseController;
@@ -35,6 +36,7 @@ public class SettingsController extends BaseController implements Initializable 
 
     // region Constructors
 
+    @Inject
     public SettingsController(AppSettings settings) {
         this.settings = settings;
     }

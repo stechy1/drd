@@ -2,8 +2,8 @@ package cz.stechy.drd.model.entity;
 
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.annotation.TranslateEntry;
-import cz.stechy.drd.db.base.DatabaseItem;
-import cz.stechy.drd.db.base.OnlineItem;
+import cz.stechy.drd.db.base.Row;
+import cz.stechy.drd.db.base.OnlineRecord;
 import cz.stechy.drd.model.MaxActValue;
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +23,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Základní společná třída pro všechny entity ve světě Dračího doupěte
  */
-public abstract class EntityBase extends OnlineItem implements IAggressive {
+public abstract class EntityBase extends OnlineRecord implements IAggressive {
 
     // region Variales
 
@@ -106,7 +106,7 @@ public abstract class EntityBase extends OnlineItem implements IAggressive {
     // region Public methods
 
     @Override
-    public void update(DatabaseItem other) {
+    public void update(Row other) {
         super.update(other);
 
         EntityBase entity = (EntityBase) other;
@@ -225,7 +225,7 @@ public abstract class EntityBase extends OnlineItem implements IAggressive {
     // endregion
 
     @Override
-    public List<String> getDiffList(DatabaseItem other) {
+    public List<String> getDiffList(Row other) {
         final List<String> diffList = super.getDiffList(other);
         final EntityBase entityBase = (EntityBase) other;
 

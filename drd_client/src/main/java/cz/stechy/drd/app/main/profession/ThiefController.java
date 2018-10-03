@@ -1,12 +1,13 @@
 package cz.stechy.drd.app.main.profession;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Dice;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.profession.Thief;
 import cz.stechy.drd.model.entity.hero.profession.Thief.Ability;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -46,7 +47,7 @@ public class ThiefController implements IProfessionController, Initializable {
         .observableArrayList(Ability.values());
     private final ObjectProperty<Ability> selectedAbility = new SimpleObjectProperty<>();
     private final IntegerProperty success = new SimpleIntegerProperty();
-    private final Translator translator;
+    private final ITranslatorService translator;
     private String successText;
     private String failText;
     private Thief thief;
@@ -55,7 +56,8 @@ public class ThiefController implements IProfessionController, Initializable {
 
     // region Constructors
 
-    public ThiefController(Translator translator) {
+    @Inject
+    public ThiefController(ITranslatorService translator) {
         this.translator = translator;
     }
 

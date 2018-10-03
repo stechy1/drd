@@ -1,8 +1,8 @@
 package cz.stechy.drd.app;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
-import cz.stechy.drd.dao.InventoryDao;
-import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
+import cz.stechy.drd.model.inventory.InventoryContent.Metadata;
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.inventory.ItemStack;
@@ -11,9 +11,9 @@ import cz.stechy.drd.model.inventory.container.FlowItemContainer;
 import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.ItemBase;
 import cz.stechy.drd.model.item.ItemType;
-import cz.stechy.drd.service.HeroService;
-import cz.stechy.drd.service.ItemRegistry;
-import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.service.hero.IHeroService;
+import cz.stechy.drd.service.item.IItemRegistry;
+import cz.stechy.drd.service.translator.ITranslatorService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.util.Map;
@@ -58,9 +58,9 @@ public class BackpackController extends BaseController implements TooltipTransla
 
     // endregion
 
-    private final HeroService heroService;
-    private final Translator translator;
-    private final ItemRegistry itemRegistry;
+    private final IHeroService heroService;
+    private final ITranslatorService translator;
+    private final IItemRegistry itemRegistry;
     private ItemContainer itemContainer;
     private String inventoryId;
 
@@ -68,8 +68,8 @@ public class BackpackController extends BaseController implements TooltipTransla
 
     // region Constructors
 
-    public BackpackController(HeroService heroService, Translator translator,
-        ItemRegistry itemRegistry) {
+    @Inject
+    public BackpackController(IHeroService heroService, ITranslatorService translator, IItemRegistry itemRegistry) {
         this.heroService = heroService;
         this.translator = translator;
         this.itemRegistry = itemRegistry;
@@ -143,16 +143,17 @@ public class BackpackController extends BaseController implements TooltipTransla
         itemContainer.setInventoryFilter(this::backpackFilter);
         setScreenSize(WIDTH, BackpackController.computeHeight(backpackSize));
 
-        heroService.getInventoryAsync()
-            .thenCompose(inventoryService ->
-                inventoryService.selectAsync(InventoryDao.ID_FILTER(inventoryId))
-                    .thenCompose(backpackInventory ->
-                        itemContainer.setInventoryManager(inventoryService, backpackInventory)))
-            .exceptionally(throwable -> {
-                itemContainer.clear();
-                LOGGER.error("Nepodařilo se načíst data inventáře.", throwable);
-                throw new RuntimeException(throwable);
-            });
+        heroService.getInventoryService()
+            .ifPresent(inventoryService ->
+                inventoryService.getInventory(inventoryId).ifPresent(backpackInventory ->
+                    itemContainer.setInventoryManager(inventoryService, backpackInventory)));
+//                    .thenCompose(backpackInventory ->
+//                        itemContainer.setInventoryManager(inventoryService, backpackInventory)));
+//            .exceptionally(throwable -> {
+//                itemContainer.clear();
+//                LOGGER.error("Nepodařilo se načíst data inventáře.", throwable);
+//                throw new RuntimeException(throwable);
+//            });
     }
 
     @Override

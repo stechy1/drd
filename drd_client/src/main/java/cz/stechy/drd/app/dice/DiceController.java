@@ -1,14 +1,16 @@
 package cz.stechy.drd.app.dice;
 
 import cz.stechy.drd.R;
-import cz.stechy.drd.app.dice.DiceHelper.AdditionType;
-import cz.stechy.drd.app.dice.DiceHelper.DiceAddition;
-import cz.stechy.drd.app.dice.DiceHelper.DiceType;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.entity.hero.Hero;
+import cz.stechy.drd.service.dice.IDiceService;
+import cz.stechy.drd.service.dice.IDiceService.AdditionType;
+import cz.stechy.drd.service.dice.IDiceService.DiceAddition;
+import cz.stechy.drd.service.dice.IDiceService.DiceType;
+import cz.stechy.drd.service.dice.IDiceServiceFactory;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -65,17 +67,18 @@ public class DiceController extends BaseController implements Initializable {
     private final MaxActValue diceSideCount = new MaxActValue(1, Integer.MAX_VALUE, 1);
     private final MaxActValue diceRollCount = new MaxActValue(1, Integer.MAX_VALUE, 1);
     private final Hero hero;
-    private final Translator translator;
+    private final ITranslatorService translator;
+    private final IDiceService diceService;
 
-    private DiceHelper diceHelper;
     private String title;
 
     // endregion
 
     // region Constructors
 
-    public DiceController(Hero hero, Translator translator) {
+    public DiceController(Hero hero, IDiceServiceFactory diceServiceFactory, ITranslatorService translator) {
         this.hero = hero;
+        this.diceService = diceServiceFactory.getService(hero);
         this.translator = translator;
     }
 
@@ -87,21 +90,18 @@ public class DiceController extends BaseController implements Initializable {
      * Inicializuje tabulku pro přidávání konstant k hodu kostkou
      */
     private void initTable() {
-        columnAdditionType.setCellFactory(ComboBoxTableCell.forTableColumn(translator.getConvertor(
-            Key.DICE_ADDITION_PROPERTIES), AdditionType.values()));
-        columnAdditionType.setOnEditCommit(
-            event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
-                .setAdditionType(event.getNewValue()));
+        columnAdditionType.setCellFactory(ComboBoxTableCell.forTableColumn(translator.getConvertor(Key.DICE_ADDITION_PROPERTIES), AdditionType.values()));
+        columnAdditionType.setOnEditCommit(event ->
+            tableAdditions.getItems().get(event.getTablePosition().getRow()).setAdditionType(event.getNewValue()));
 
         columnUseRepair.setCellFactory(CheckBoxTableCell.forTableColumn(columnUseRepair));
-        columnUseRepair.setOnEditCommit(
-            event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
-                .setUseRepair(event.getNewValue()));
+        columnUseRepair.setOnEditCommit(event ->
+            tableAdditions.getItems().get(event.getTablePosition().getRow()).setUseRepair(event.getNewValue()));
 
         columnUseSubtract.setCellFactory(CheckBoxTableCell.forTableColumn(columnUseSubtract));
-        columnUseSubtract.setOnEditCommit(
-            event -> tableAdditions.getItems().get(event.getTablePosition().getRow())
-                .setUseSubtract(event.getNewValue()));
+        columnUseSubtract.setOnEditCommit(event ->
+            tableAdditions.getItems().get(event.getTablePosition().getRow()).setUseSubtract(event.getNewValue()));
+
         btnAddAddition.setDisable(hero == null);
     }
 
@@ -113,8 +113,7 @@ public class DiceController extends BaseController implements Initializable {
 
         final String customDiceTranslate = resources.getString(R.Translate.DICE_CUSTOM);
         final List<RadioButton> radioButtons = Arrays.stream(DiceType.values()).map(diceType -> {
-            final RadioButton radio = new RadioButton(
-                diceType == DiceType.CUSTOM ? customDiceTranslate : diceType.toString());
+            final RadioButton radio = new RadioButton(diceType == DiceType.CUSTOM ? customDiceTranslate : diceType.toString());
             radio.setToggleGroup(diceGroup);
             radio.setUserData(diceType == DiceType.CUSTOM ? 0 : diceType.getSideCount());
             if (diceType == DiceType.CUSTOM) {
@@ -137,10 +136,9 @@ public class DiceController extends BaseController implements Initializable {
 
     @Override
     protected void onCreate(Bundle bundle) {
-        diceHelper = new DiceHelper(hero);
-        tableAdditions.setItems(diceHelper.additions);
+        tableAdditions.setItems(diceService.getAdditions());
 
-        diceHelper.rollResults.addListener((ListChangeListener<Integer>) c -> {
+        diceService.getRollResulsts().addListener((ListChangeListener<Integer>) c -> {
             String result = c.getList().stream().map(o -> {
                 int value1 = o.intValue();
                 if (value1 >= 0) {
@@ -165,18 +163,17 @@ public class DiceController extends BaseController implements Initializable {
 
     @FXML
     private void handleAddAddition(ActionEvent actionEvent) {
-        diceHelper.additions.add(new DiceAddition());
+        diceService.addAddition(new DiceAddition());
     }
 
     @FXML
     private void handleRemoveAddition(ActionEvent actionEvent) {
-        diceHelper.additions.removeAll(tableAdditions.getSelectionModel().getSelectedItems());
+        diceService.removeAdditions(tableAdditions.getSelectionModel().getSelectedItems());
     }
 
     @FXML
     private void handleRoll(ActionEvent actionEvent) {
-        diceHelper
-            .roll(diceSideCount.getActValue().intValue(), diceRollCount.getActValue().intValue());
+        diceService.roll(diceSideCount.getActValue().intValue(), diceRollCount.getActValue().intValue());
     }
 
     // endregion

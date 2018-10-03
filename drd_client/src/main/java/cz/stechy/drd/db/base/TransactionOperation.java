@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Třída představující jednu operaci transakce
  */
-public abstract class TransactionOperation<T extends DatabaseItem> {
+public abstract class TransactionOperation<T extends Row> {
 
     // region Constants
 
@@ -50,7 +50,7 @@ public abstract class TransactionOperation<T extends DatabaseItem> {
 
     // endregion
 
-    public static final class InsertOperation<T extends DatabaseItem> extends TransactionOperation<T> {
+    public static final class InsertOperation<T extends Row> extends TransactionOperation<T> {
 
         public InsertOperation(T model) {
             super(null, model);
@@ -63,7 +63,7 @@ public abstract class TransactionOperation<T extends DatabaseItem> {
         }
     }
 
-    public static final class UpdateOperation<T extends DatabaseItem> extends TransactionOperation<T> {
+    public static final class UpdateOperation<T extends Row> extends TransactionOperation<T> {
 
         public UpdateOperation(T before, T after) {
             super(before, after);
@@ -77,7 +77,7 @@ public abstract class TransactionOperation<T extends DatabaseItem> {
         }
     }
 
-    public static final class DeleteOperation<T extends DatabaseItem> extends TransactionOperation<T> {
+    public static final class DeleteOperation<T extends Row> extends TransactionOperation<T> {
 
         public DeleteOperation(T model) {
             super(model, null);

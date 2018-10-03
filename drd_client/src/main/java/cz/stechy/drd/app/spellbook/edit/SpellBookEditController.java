@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.spellbook.edit;
 
+import com.google.inject.Inject;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import cz.stechy.drd.R;
@@ -14,10 +15,10 @@ import cz.stechy.drd.model.spell.Spell.SpellProfessionType;
 import cz.stechy.drd.model.spell.Spell.SpellTarget;
 import cz.stechy.drd.model.spell.price.BasicSpellPrice;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.DrDTimeWidget;
 import cz.stechy.drd.widget.EnumComboBox;
 import cz.stechy.drd.widget.SpellPriceWidget;
@@ -91,7 +92,7 @@ public class SpellBookEditController extends BaseController implements Initializ
     // endregion
 
     private final SpellModel model = new SpellModel();
-    private final Translator translator;
+    private final ITranslatorService translator;
 
     private String titleNew;
     private String titleUpdate;
@@ -103,7 +104,8 @@ public class SpellBookEditController extends BaseController implements Initializ
 
     // region Constructors
 
-    public SpellBookEditController(Translator translator) {
+    @Inject
+    public SpellBookEditController(ITranslatorService translator) {
         this.translator = translator;
     }
 

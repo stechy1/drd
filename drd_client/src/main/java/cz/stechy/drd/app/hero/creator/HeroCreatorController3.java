@@ -1,9 +1,10 @@
 package cz.stechy.drd.app.hero.creator;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.hero.HeroHelper;
 import cz.stechy.drd.model.MaxActValue;
-import cz.stechy.drd.service.ItemRegistry;
+import cz.stechy.drd.service.item.IItemRegistry;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
@@ -55,7 +56,7 @@ public class HeroCreatorController3 extends BaseController implements Initializa
     private final ObservableList<ChoiceEntry> choiceEntries = FXCollections.observableArrayList();
     private final IntegerProperty selectedItem = new SimpleIntegerProperty();
 
-    private final ItemRegistry itemRegistry;
+    private final IItemRegistry itemRegistry;
 
     private String title;
     private Bundle bundle;
@@ -64,7 +65,8 @@ public class HeroCreatorController3 extends BaseController implements Initializa
 
     // region Constructors
 
-    public HeroCreatorController3(ItemRegistry itemRegistry) {
+    @Inject
+    public HeroCreatorController3(IItemRegistry itemRegistry) {
         this.itemRegistry = itemRegistry;
     }
 

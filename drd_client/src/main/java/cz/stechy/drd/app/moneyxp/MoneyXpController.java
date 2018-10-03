@@ -1,10 +1,11 @@
 package cz.stechy.drd.app.moneyxp;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.service.HeroService;
+import cz.stechy.drd.service.hero.IHeroService;
 import cz.stechy.drd.util.FormUtils;
 import cz.stechy.drd.widget.LabeledProgressBar;
 import cz.stechy.drd.widget.MoneyWidget;
@@ -61,13 +62,10 @@ public class MoneyXpController extends BaseController implements Initializable {
 
     private final Money moneyModel = new Money();
     private final MaxActValue goldValue = new MaxActValue(0, Money.MAX_GOLD, moneyModel.getGold());
-    private final MaxActValue silverValue = new MaxActValue(0, Money.MAX_SILVER,
-        moneyModel.getSilver());
-    private final MaxActValue copperValue = new MaxActValue(0, Money.MAX_COPPER,
-        moneyModel.getCopper());
+    private final MaxActValue silverValue = new MaxActValue(0, Money.MAX_SILVER, moneyModel.getSilver());
+    private final MaxActValue copperValue = new MaxActValue(0, Money.MAX_COPPER, moneyModel.getCopper());
     private final MaxActValue experienceModel = new MaxActValue(Integer.MAX_VALUE);
-    private final BooleanProperty disableButtons = new SimpleBooleanProperty(this, "disableButtons",
-        true);
+    private final BooleanProperty disableButtons = new SimpleBooleanProperty(this, "disableButtons", true);
 
     private final Money heroMoney = new Money();
     private final MaxActValue heroExperience = new MaxActValue();
@@ -79,7 +77,8 @@ public class MoneyXpController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public MoneyXpController(HeroService heroService) {
+    @Inject
+    public MoneyXpController(IHeroService heroService) {
         final Hero hero = heroService.getHero();
 
         if (hero == null) {

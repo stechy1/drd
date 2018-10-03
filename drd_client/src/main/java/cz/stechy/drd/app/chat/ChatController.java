@@ -1,11 +1,12 @@
 package cz.stechy.drd.app.chat;
 
+import com.google.inject.Inject;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTreeView;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.chat.ChatContact;
 import cz.stechy.drd.model.chat.OnChatMessageReceived;
-import cz.stechy.drd.service.ChatService;
+import cz.stechy.drd.service.chat.IChatService;
 import cz.stechy.drd.util.ObservableMergers;
 import cz.stechy.screens.BaseController;
 import java.net.URL;
@@ -42,14 +43,15 @@ public class ChatController extends BaseController implements Initializable {
 
     // endregion
 
-    private ChatService chatService;
+    private IChatService chatService;
     private String title;
 
     // endregion
 
     // region Constructors
 
-    public ChatController(ChatService chatService) {
+    @Inject
+    public ChatController(IChatService chatService) {
         this.chatService = chatService;
     }
 
@@ -95,8 +97,6 @@ public class ChatController extends BaseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.CHAT_TITLE);
 
-        chatService.addChatMessageReceivedListener(this.chatMessageReceived);
-
         listContacts.setCellFactory(param -> new ChatListViewEntry());
         listContacts.setOnMouseClicked(this.listContactsClick);
         final BooleanBinding canSendMessage = tabConversations.getSelectionModel()
@@ -113,11 +113,6 @@ public class ChatController extends BaseController implements Initializable {
     protected void onResume() {
         setTitle(title);
         setScreenSize(600, 350);
-    }
-
-    @Override
-    protected void onClose() {
-        chatService.removeChatMessageReceivedListener(this.chatMessageReceived);
     }
 
     // region Button handlers

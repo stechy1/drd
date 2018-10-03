@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.spellbook.priceeditor;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.spellbook.SpellBookHelper;
 import cz.stechy.drd.app.spellbook.priceeditor.node.ConstantDraggableSpellNode;
@@ -12,7 +13,7 @@ import cz.stechy.drd.model.SpellParser;
 import cz.stechy.drd.model.spell.price.BasicSpellPrice;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import cz.stechy.drd.model.spell.price.VariableSpellPrice;
-import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.service.translator.ITranslatorService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -75,7 +76,7 @@ public class SpellPriceEditorController extends BaseController implements Initia
     private final List<DraggableSpellNode> nodes = new ArrayList<>();
     private final INodeManipulator manipulator = new NodeManipulator();
     private final ILinkListener linkListener = new LinkListener();
-    private final Translator translator;
+    private final ITranslatorService translator;
 
     private String title;
     private DraggableSpellNode rootNode;
@@ -87,7 +88,8 @@ public class SpellPriceEditorController extends BaseController implements Initia
 
     // region Constructors
 
-    public SpellPriceEditorController(Translator translator) {
+    @Inject
+    public SpellPriceEditorController(ITranslatorService translator) {
         this.translator = translator;
     }
 

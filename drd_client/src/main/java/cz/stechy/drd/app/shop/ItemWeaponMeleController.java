@@ -8,10 +8,10 @@ import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.item.MeleWeapon;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponClass;
 import cz.stechy.drd.model.item.MeleWeapon.MeleWeaponType;
+import cz.stechy.drd.service.translator.TranslatorService;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.io.IOException;
@@ -105,7 +105,7 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
     // endregion
 
     private final WeaponMeleModel model = new WeaponMeleModel();
-    private final Translator translator;
+    private final TranslatorService translator;
     private String titleNew;
     private String titleUpdate;
     private String imageChooserTitle;
@@ -115,7 +115,7 @@ public class ItemWeaponMeleController extends BaseController implements Initiali
 
     // region Constructors
 
-    public ItemWeaponMeleController(Translator translator) {
+    public ItemWeaponMeleController(TranslatorService translator) {
         this.translator = translator;
     }
 

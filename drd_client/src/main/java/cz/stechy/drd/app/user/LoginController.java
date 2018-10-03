@@ -1,7 +1,8 @@
 package cz.stechy.drd.app.user;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
-import cz.stechy.drd.service.UserService;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -45,7 +46,7 @@ public class LoginController extends BaseController implements Initializable {
     // endregion
 
     private final LoginModel loginModel = new LoginModel();
-    private final UserService userService;
+    private final IUserService userService;
 
     private String title;
     private String loginFail;
@@ -56,7 +57,8 @@ public class LoginController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public LoginController(UserService userService) {
+    @Inject
+    public LoginController(IUserService userService) {
         this.userService = userService;
     }
 

@@ -1,14 +1,15 @@
 package cz.stechy.drd.app.hero.creator;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.hero.HeroHelper;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.Hero.Profession;
 import cz.stechy.drd.model.entity.hero.Hero.Race;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
 import cz.stechy.drd.util.BitUtils;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -57,7 +58,7 @@ public class HeroCreatorController1 extends BaseController implements Initializa
     // endregion
 
     private final NewHeroModel1 model = new NewHeroModel1();
-    private final Translator translator;
+    private final ITranslatorService translator;
 
     private String title;
     private Bundle bundle;
@@ -66,7 +67,8 @@ public class HeroCreatorController1 extends BaseController implements Initializa
 
     // region Constructors
 
-    public HeroCreatorController1(Translator translator) {
+    @Inject
+    public HeroCreatorController1(ITranslatorService translator) {
         this.translator = translator;
     }
 

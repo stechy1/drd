@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.main.profession;
 
+import com.google.inject.Inject;
 import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.MaxActValue;
@@ -8,9 +9,9 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.entity.hero.profession.Ranger;
 import cz.stechy.drd.model.entity.hero.profession.Ranger.Terrain;
 import cz.stechy.drd.model.entity.hero.profession.Ranger.TrackingProperties;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -68,11 +69,9 @@ public class RangerController implements IProfessionController, Initializable {
     private final MaxActValue teleDistance = new MaxActValue(1, Integer.MAX_VALUE, null);
     private final MaxActValue teleWeight = new MaxActValue(1, Integer.MAX_VALUE, null);
     private final MaxActValue pyroDistance = new MaxActValue(1, Integer.MAX_VALUE, null);
-    private final IntegerProperty pyroRemainingAttempts = new SimpleIntegerProperty(this,
-        "pyroRemainingAttempts", 0);
-    private final BooleanProperty pyroInicialized = new SimpleBooleanProperty(this,
-        "pyroInicialized", false);
-    private final Translator translator;
+    private final IntegerProperty pyroRemainingAttempts = new SimpleIntegerProperty(this, "pyroRemainingAttempts", 0);
+    private final BooleanProperty pyroInicialized = new SimpleBooleanProperty(this, "pyroInicialized", false);
+    private final ITranslatorService translator;
 
     private Ranger ranger;
 
@@ -80,7 +79,8 @@ public class RangerController implements IProfessionController, Initializable {
 
     // region Constructors
 
-    public RangerController(Translator translator) {
+    @Inject
+    public RangerController(ITranslatorService translator) {
         this.translator = translator;
     }
 

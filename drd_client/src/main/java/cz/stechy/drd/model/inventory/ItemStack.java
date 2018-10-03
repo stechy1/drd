@@ -1,6 +1,6 @@
 package cz.stechy.drd.model.inventory;
 
-import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
+import cz.stechy.drd.model.inventory.InventoryContent.Metadata;
 import cz.stechy.drd.model.item.ItemBase;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;

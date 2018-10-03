@@ -7,10 +7,10 @@ import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.item.RangedWeapon;
 import cz.stechy.drd.model.item.RangedWeapon.RangedWeaponType;
+import cz.stechy.drd.service.translator.TranslatorService;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.io.IOException;
@@ -106,7 +106,7 @@ public class ItemWeaponRangedController extends BaseController implements Initia
     // endregion
 
     private final WeaponRangedModel model = new WeaponRangedModel();
-    private final Translator translator;
+    private final TranslatorService translator;
 
     private String titleNew;
     private String titleUpdate;
@@ -163,7 +163,7 @@ public class ItemWeaponRangedController extends BaseController implements Initia
 
     // region Constructors
 
-    public ItemWeaponRangedController(Translator translator) {
+    public ItemWeaponRangedController(TranslatorService translator) {
         this.translator = translator;
     }
 

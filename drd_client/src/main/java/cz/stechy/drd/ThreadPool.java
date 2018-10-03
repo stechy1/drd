@@ -34,7 +34,7 @@ public final class ThreadPool {
     /**
      * Zkončí práci threadpoolu
      */
-    public static void shutDown() {
+    static void shutDown() {
         DB_EXECUTOR.shutdown();
         COMMON_EXECUTOR.shutdown();
         SCHEDULER.shutdown();

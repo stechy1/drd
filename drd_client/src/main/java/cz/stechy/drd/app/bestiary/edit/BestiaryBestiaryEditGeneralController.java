@@ -6,9 +6,9 @@ import cz.stechy.drd.model.ValidatedModel;
 import cz.stechy.drd.model.entity.Conviction;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.mob.Mob.MobClass;
+import cz.stechy.drd.service.translator.TranslatorService;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -46,13 +46,13 @@ public class BestiaryBestiaryEditGeneralController implements Initializable,
     // endregion
 
     private final Model model = new Model();
-    private final Translator translator;
+    private final TranslatorService translator;
 
     // endregion
 
     // region Constructors
 
-    public BestiaryBestiaryEditGeneralController(Translator translator) {
+    public BestiaryBestiaryEditGeneralController(TranslatorService translator) {
         this.translator = translator;
     }
 

@@ -7,7 +7,7 @@ import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.service.HeroService;
+import cz.stechy.drd.service.hero.HeroService;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -102,9 +102,9 @@ public class ShopController2 extends BaseController implements Initializable {
             final Hero heroCopy = heroService.getHero().duplicate();
             heroCopy.getMoney().subtract(shoppingCart.totalPrice);
             heroService.updateAsync(heroCopy)
-                .thenCompose(hero ->
-                    heroService.getInventoryAsync()
-                        .thenCompose(inventoryService ->
+                .thenAccept(hero ->
+                    heroService.getInventoryService()
+                        .ifPresent(inventoryService ->
                             InventoryHelper.insertItemsToInventoryAsync(inventoryService, items)))
                 .thenAcceptAsync(aVoid -> {
                     try {

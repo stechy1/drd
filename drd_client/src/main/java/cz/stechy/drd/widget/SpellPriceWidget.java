@@ -3,7 +3,7 @@ package cz.stechy.drd.widget;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.spell.price.ISpellPrice;
 import cz.stechy.drd.model.spell.price.VariableSpellPrice.VariableType;
-import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.service.translator.ITranslatorService;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.control.Label;
@@ -31,7 +31,7 @@ public class SpellPriceWidget extends VBox {
     private final Text txtExtention = new Text();
 
     private ObjectProperty<ISpellPrice> spellPrice;
-    private Translator translator;
+    private ITranslatorService translator;
 
     // endregion
 
@@ -91,7 +91,7 @@ public class SpellPriceWidget extends VBox {
 
     // region Public methods
 
-    public void bind(ObjectProperty<ISpellPrice> spellPrice, Translator translator) {
+    public void bind(ObjectProperty<ISpellPrice> spellPrice, ITranslatorService translator) {
         this.spellPrice = spellPrice;
         this.translator = translator;
         unbind();

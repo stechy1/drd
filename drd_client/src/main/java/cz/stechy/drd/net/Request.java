@@ -3,14 +3,14 @@ package cz.stechy.drd.net;
 import cz.stechy.drd.net.message.IMessage;
 import java.util.concurrent.CompletableFuture;
 
-class Request {
+public class Request {
 
     private final Object lock = new Object();
 
     private boolean waiting = true;
     private IMessage responce;
 
-    CompletableFuture<IMessage> getFuture() {
+    public CompletableFuture<IMessage> getFuture() {
         return CompletableFuture.supplyAsync(() -> {
             while(waiting) {
                 synchronized (lock) {
@@ -23,7 +23,7 @@ class Request {
         });
     }
 
-    void onResponce(IMessage message) {
+    public void onResponce(IMessage message) {
         this.responce = message;
         waiting = false;
         synchronized (lock) {

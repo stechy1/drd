@@ -3,14 +3,14 @@ package cz.stechy.drd.app.collections;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.model.item.ItemCollection;
-import cz.stechy.drd.model.item.ItemCollection.CollectionType;
-import cz.stechy.drd.service.ItemRegistry;
-import cz.stechy.drd.service.OnlineItemRegistry;
+import cz.stechy.drd.model.item.OnlineCollection;
+import cz.stechy.drd.model.item.OnlineCollection.CollectionType;
+import cz.stechy.drd.service.item.ItemRegistry;
+import cz.stechy.drd.service.online_item.OnlineItemRegistry;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
-import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.service.translator.TranslatorService;
 import cz.stechy.screens.Notification;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
@@ -62,7 +62,7 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
     private final ObservableList<ItemEntry> collectionItems = FXCollections.observableArrayList();
     private final ObservableList<ChoiceEntry> choiceEntries = FXCollections.observableArrayList();
     private final ItemRegistry itemRegistry;
-    private final Translator translator;
+    private final TranslatorService translator;
 
     private StringProperty selectedEntry;
     private CollectionsNotificationProvider notificationProvider;
@@ -71,7 +71,7 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
 
     // region Constructors
 
-    public CollectionsItemsController(ItemRegistry itemRegistry, Translator translator) {
+    public CollectionsItemsController(ItemRegistry itemRegistry, TranslatorService translator) {
         this.itemRegistry = itemRegistry;
         this.translator = translator;
 
@@ -115,7 +115,7 @@ public class CollectionsItemsController implements Initializable, CollectionsCon
     }
 
     @Override
-    public void setSelectedCollection(ReadOnlyObjectProperty<ItemCollection> selectedCollection) {
+    public void setSelectedCollection(ReadOnlyObjectProperty<OnlineCollection> selectedCollection) {
         selectedCollection.addListener((observableValue, oldValue, newValue) -> {
             collectionItems.clear();
             if (oldValue != null) {

@@ -1,13 +1,14 @@
 package cz.stechy.drd.app.hero.opener;
 
+import com.google.inject.Inject;
 import com.jfoenix.controls.JFXButton;
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.entity.hero.Hero;
-import cz.stechy.drd.service.HeroService;
-import cz.stechy.drd.service.UserService;
+import cz.stechy.drd.service.hero.IHeroService;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.drd.util.ObservableMergers;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.drd.widget.LabeledHeroProperty;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -76,9 +77,9 @@ public class HeroOpenerController extends BaseController implements Initializabl
     private final ObservableList<Hero> heroes = FXCollections.observableArrayList();
     private final FilteredList<Hero> filteredHeroes = new FilteredList<>(heroes);
     private final ObjectProperty<Hero> selectedHero = new SimpleObjectProperty<>();
-    private final HeroService heroService;
-    private final UserService userService;
-    private final Translator translator;
+    private final IHeroService heroService;
+    private final IUserService userService;
+    private final ITranslatorService translator;
 
     private String title;
 
@@ -86,8 +87,8 @@ public class HeroOpenerController extends BaseController implements Initializabl
 
     // region Constructors
 
-    public HeroOpenerController(HeroService heroService, UserService userService,
-        Translator translator) {
+    @Inject
+    public HeroOpenerController(IHeroService heroService, IUserService userService, ITranslatorService translator) {
         this.heroService = heroService;
         this.userService = userService;
         this.translator = translator;

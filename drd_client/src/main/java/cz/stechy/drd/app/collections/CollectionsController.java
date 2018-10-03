@@ -1,13 +1,14 @@
 package cz.stechy.drd.app.collections;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
-import cz.stechy.drd.dao.ItemCollectionDao;
 import cz.stechy.drd.model.User;
-import cz.stechy.drd.model.item.ItemCollection;
-import cz.stechy.drd.service.UserService;
+import cz.stechy.drd.model.item.OnlineCollection;
+import cz.stechy.drd.service.collections.ICollectionsService;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import cz.stechy.drd.util.ObservableMergers;
-import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Notification;
 import java.net.URL;
@@ -70,7 +71,7 @@ public class CollectionsController extends BaseController implements Initializab
     private TableView tableCollectionsSpells;
 
     @FXML
-    private ListView<ItemCollection> lvCollections;
+    private ListView<OnlineCollection> lvCollections;
     @FXML
     private Button btnCollectionAdd;
     @FXML
@@ -86,20 +87,16 @@ public class CollectionsController extends BaseController implements Initializab
 
     // endregion
 
-    private final ObservableList<ItemCollection> collections = FXCollections.observableArrayList();
-    private final List<String> translatedItemType = new ArrayList<>(
-        Arrays.asList("Předměty", "Nestvůry", "Kouzla"));
+    private final ObservableList<OnlineCollection> collections = FXCollections.observableArrayList();
+    private final List<String> translatedItemType = new ArrayList<>(Arrays.asList("Předměty", "Nestvůry", "Kouzla"));
 
-    private final ObjectProperty<ItemCollection> selectedCollection = new SimpleObjectProperty<>(
-        this, "selectedCollection", null);
-    private final StringProperty selectedEntry = new SimpleStringProperty(this,
-        "selectedEntry", null);
-    private final IntegerProperty selectedAccordionPaneIndex = new SimpleIntegerProperty(this,
-        "selectedAccordionPaneIndex", NO_SELECTED_INDEX);
+    private final ObjectProperty<OnlineCollection> selectedCollection = new SimpleObjectProperty<>(this, "selectedCollection", null);
+    private final StringProperty selectedEntry = new SimpleStringProperty(this, "selectedEntry", null);
+    private final IntegerProperty selectedAccordionPaneIndex = new SimpleIntegerProperty(this, "selectedAccordionPaneIndex", NO_SELECTED_INDEX);
 
+    private final ICollectionsService collectionService;
     private final User user;
-    private final Translator translator;
-    private final ItemCollectionDao collectionService;
+    private final ITranslatorService translator;
 
     private CollectionsControllerChild[] controllers;
     private String title;
@@ -107,11 +104,11 @@ public class CollectionsController extends BaseController implements Initializab
 
     // region Constructors
 
-    public CollectionsController(UserService userService, Translator translator,
-        ItemCollectionDao collectionService) {
+    @Inject
+    public CollectionsController(ICollectionsService collectionsService, IUserService userService, ITranslatorService translator) {
+        this.collectionService = collectionsService;
         this.user = userService.getUser();
         this.translator = translator;
-        this.collectionService = collectionService;
     }
 
     // endregion
@@ -145,7 +142,7 @@ public class CollectionsController extends BaseController implements Initializab
             .bind(loggedBinding.not().or(txtCollectionName.textProperty().isEmpty()));
         final BooleanBinding noSelectedCollection = selectedCollection.isNull();
         final BooleanBinding authorBinding = Bindings.createBooleanBinding(() -> {
-            final ItemCollection collection = selectedCollection.get();
+            final OnlineCollection collection = selectedCollection.get();
             if (collection == null || user == null) {
                 return false;
             }
@@ -186,11 +183,11 @@ public class CollectionsController extends BaseController implements Initializab
 
     @FXML
     private void handleCollectionAdd(ActionEvent actionEvent) {
-        ItemCollection collection = new ItemCollection.Builder()
+        OnlineCollection collection = new OnlineCollection.Builder()
             .name(txtCollectionName.getText())
             .author(user != null ? user.getName() : "")
             .build();
-        collectionService.uploadAsync(collection)
+        collectionService.uploadCollection(collection)
             .exceptionally(throwable -> {
                 showNotification(new Notification(String.format(translator.translate(
                     R.Translate.NOTIFY_RECORD_IS_NOT_UPLOADED), collection.getName())));
@@ -206,8 +203,8 @@ public class CollectionsController extends BaseController implements Initializab
 
     @FXML
     private void handleCollectionRemove(ActionEvent actionEvent) {
-        final ItemCollection collection = selectedCollection.get();
-        collectionService.deleteRemoteAsync(collection)
+        final OnlineCollection collection = selectedCollection.get();
+        collectionService.deleteCollection(collection)
             .exceptionally(throwable -> {
                 showNotification(new Notification(String.format(translator.translate(
                     R.Translate.NOTIFY_RECORD_IS_NOT_DELETED_FROM_ONLINE_DATABASE),
@@ -234,7 +231,7 @@ public class CollectionsController extends BaseController implements Initializab
     private void handleCollectionItemAdd(ActionEvent actionEvent) {
         final CollectionsControllerChild controller = controllers[selectedAccordionPaneIndex.get()];
         final Optional<ChoiceEntry> entryOptional = controller.getSelectedEntry();
-        final ItemCollection collection = selectedCollection.get();
+        final OnlineCollection collection = selectedCollection.get();
         entryOptional.ifPresent(choiceEntry -> {
             final String itemName = choiceEntry.getName();
             final String collectionName = collection.getName();
@@ -256,12 +253,11 @@ public class CollectionsController extends BaseController implements Initializab
     @FXML
     private void handleCollectionItemRemove(ActionEvent actionEvent) {
         final CollectionsControllerChild controller = controllers[selectedAccordionPaneIndex.get()];
-        final ItemCollection collection = selectedCollection.get();
+        final OnlineCollection collection = selectedCollection.get();
         final String id = selectedEntry.get();
         final String collectionName = collection.getName();
 
-        collectionService
-            .removeItemFromCollection(collection, controller.getCollectionType(), id)
+        collectionService.removeItemFromCollection(collection, controller.getCollectionType(), id)
             .exceptionally(throwable -> {
                 showNotification(new Notification(String.format(translator.translate(
                     R.Translate.NOTIFY_COLLECTION_RECORD_IS_NOT_DELETED), collectionName)));

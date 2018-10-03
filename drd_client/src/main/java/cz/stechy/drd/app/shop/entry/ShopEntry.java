@@ -1,6 +1,6 @@
 package cz.stechy.drd.app.shop.entry;
 
-import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.Row;
 import cz.stechy.drd.model.DiffEntry.DiffEntryTuple;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
@@ -81,7 +81,7 @@ public abstract class ShopEntry {
 
     // region Public methods
 
-    public void update(DatabaseItem other) {
+    public void update(Row other) {
         itemBase.update(other);
     }
 

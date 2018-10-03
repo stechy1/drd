@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.shop;
 
+import com.google.inject.Inject;
 import com.jfoenix.controls.JFXToggleButton;
 import cz.stechy.drd.R;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
@@ -7,11 +8,11 @@ import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.entity.Height;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.service.HeroService;
-import cz.stechy.drd.service.UserService;
+import cz.stechy.drd.service.hero.IHeroService;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.drd.util.HashGenerator;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import java.net.URL;
@@ -127,7 +128,7 @@ public class ShopController1 extends BaseController implements Initializable {
 
     private final User user;
     private final Hero hero;
-    private final Translator translator;
+    private final ITranslatorService translator;
 
     private ShopItemController<? extends ShopEntry>[] controllers;
     private String title;
@@ -136,16 +137,16 @@ public class ShopController1 extends BaseController implements Initializable {
 
     // region Constructors
 
-    public ShopController1(UserService userService, HeroService heroService,
-        Translator translator) {
+    @Inject
+    public ShopController1(IUserService userService, IHeroService heroService, ITranslatorService translator) {
         this.translator = translator;
         this.hero = heroService.getHero();
         heroSelected.set(this.hero != null);
         this.shoppingCart = new ShoppingCart(hero);
         this.user = userService.getUser();
-//        if (this.user != null) {
-//            userLogged.bind(this.user.loggedProperty());
-//        }
+        if (this.user != null) {
+            userLogged.bind(this.user.loggedProperty());
+        }
 
         this.translatedItemType.addAll(translator.getTranslationFor(Key.SHOP_ITEMS));
     }
@@ -156,7 +157,7 @@ public class ShopController1 extends BaseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         title = resources.getString(R.Translate.SHOP_TITLE);
 
-        controllers = new ShopItemController[]{
+        controllers = new ShopItemController<?>[] {
             tableMeleWeaponController,
             tableRangedWeaponController,
             tableArmorController,
@@ -165,14 +166,14 @@ public class ShopController1 extends BaseController implements Initializable {
         };
 
         accodionShopContainer.expandedPaneProperty().addListener((observable, oldValue, newValue) -> {
-                if (newValue == null) {
-                    selectedAccordionPaneIndex.setValue(NO_SELECTED_INDEX);
-                    selectedRowIndex.setValue(NO_SELECTED_INDEX);
-                    return;
-                }
+            if (newValue == null) {
+                selectedAccordionPaneIndex.setValue(NO_SELECTED_INDEX);
+                selectedRowIndex.setValue(NO_SELECTED_INDEX);
+                return;
+            }
 
-                selectedAccordionPaneIndex.setValue(translatedItemType.indexOf(newValue.getText()));
-            });
+            selectedAccordionPaneIndex.setValue(translatedItemType.indexOf(newValue.getText()));
+        });
 
         editMode.bindBidirectional(btnToggleEditMode.selectedProperty());
         diffHighlightMode.bind(btnToggleShowDiffItems.selectedProperty().and(editMode));

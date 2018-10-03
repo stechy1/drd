@@ -1,23 +1,9 @@
 package cz.stechy.drd;
 
 import cz.stechy.drd.R.Config;
-import cz.stechy.drd.dao.ArmorDao;
-import cz.stechy.drd.dao.BackpackDao;
-import cz.stechy.drd.dao.BestiaryDao;
-import cz.stechy.drd.dao.GeneralItemDao;
-import cz.stechy.drd.dao.HeroDao;
-import cz.stechy.drd.dao.ItemCollectionDao;
-import cz.stechy.drd.dao.MeleWeaponDao;
-import cz.stechy.drd.dao.RangedWeaponDao;
-import cz.stechy.drd.dao.SpellBookDao;
-import cz.stechy.drd.db.DatabaseService;
 import cz.stechy.drd.db.SQLite;
 import cz.stechy.drd.db.base.Database;
-import cz.stechy.drd.di.DiContainer;
-import cz.stechy.drd.di.IDependencyManager;
-import cz.stechy.drd.util.Translator;
 import java.io.File;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import javafx.application.Platform;
@@ -48,14 +34,14 @@ public class Context {
     private static final AppDirs APP_DIRS = AppDirsFactory.getInstance();
 
     private static final Class[] DAO = new Class[]{
-        HeroDao.class,
-        MeleWeaponDao.class,
-        RangedWeaponDao.class,
-        ArmorDao.class,
-        GeneralItemDao.class,
-        BackpackDao.class,
-        BestiaryDao.class,
-        SpellBookDao.class
+//        HeroDao.class,
+//        MeleWeaponDao.class,
+//        RangedWeaponDao.class,
+//        ArmorDao.class,
+//        GeneralItemDao.class,
+//        BackpackDao.class,
+//        BestiaryDao.class,
+//        SpellBookDao.class
     };
 
     // endregion
@@ -63,7 +49,7 @@ public class Context {
     // region Variables
 
     // DI kontejner obsahující všechny služby v aplikaci
-    private final IDependencyManager container = new DiContainer();
+    //private final IDependencyManager container = new DiContainer();
     // Pracovní adresář, kam můžu ukládat potřebné soubory
     private final File appDirectory;
     // Nastavení aplikace
@@ -90,7 +76,7 @@ public class Context {
         LOGGER.info("Používám pracovní adresář: {}", appDirectory.getPath());
 
         settings = new AppSettings(getConfigFile());
-        container.addService(AppSettings.class, settings);
+        //container.addService(AppSettings.class, settings);
 
         // Získání aktuální verze databáze z nastavení
         final int localDatabaseVersion = Integer.parseInt(
@@ -99,8 +85,8 @@ public class Context {
 
         final Database database = new SQLite(appDirectory.getPath() + SEPARATOR + getDatabaseName(),
             localDatabaseVersion);
-        container.addService(Database.class, database);
-        container.addService(Translator.class, new Translator(resources));
+        //container.addService(Database.class, database);
+        //container.addService(TranslatorService.class, new TranslatorService(resources));
     }
 
     // endregion
@@ -129,17 +115,18 @@ public class Context {
      * Inicializace všech správců předmětů
      */
     private CompletableFuture<Void> initDao() {
+        return CompletableFuture.completedFuture(null);
         // Inicializace jednotlivých služeb
-        return CompletableFuture.allOf(Arrays.stream(DAO)
-            .map(container::getInstance)
-            .map(instance -> (DatabaseService) instance)
-            .map(instance -> instance.createTableAsync()
-                .thenCompose(ignore -> instance.selectAllAsync()))
-            .toArray(CompletableFuture[]::new))
-            .thenAccept(ignore -> {
-                // Inicializace ItemCollectionDao
-                container.getInstance(ItemCollectionDao.class);
-            });
+//        return CompletableFuture.allOf(Arrays.stream(DAO)
+//            .map(container::getInstance)
+//            .map(instance -> (OfflineTable) instance)
+//            .map(instance -> instance.createTableAsync()
+//                .thenCompose(ignore -> instance.selectAllAsync()))
+//            .toArray(CompletableFuture[]::new))
+//            .thenAccept(ignore -> {
+//                // Inicializace ItemCollectionDao
+//                container.getInstance(ItemCollectionDao.class);
+//            });
     }
 
     // endregion
@@ -176,18 +163,18 @@ public class Context {
 
     // region Getters & Setters
 
-    public IDependencyManager getContainer() {
-        return container;
-    }
-
-    /**
-     * Přidá do DI kontejneru preloader notifikátor
-     *
-     * @param notifier {@link PreloaderNotifier}
-     */
-    public void setPreloaderNotifier(PreloaderNotifier notifier) {
-        container.addService(PreloaderNotifier.class, notifier);
-    }
+//    public IDependencyManager getContainer() {
+//        return container;
+//    }
+//
+//    /**
+//     * Přidá do DI kontejneru preloader notifikátor
+//     *
+//     * @param notifier {@link PreloaderNotifier}
+//     */
+//    public void setPreloaderNotifier(PreloaderNotifier notifier) {
+//        container.addService(PreloaderNotifier.class, notifier);
+//    }
 
     // endregion
 }

@@ -9,8 +9,8 @@ import cz.stechy.drd.model.item.Backpack;
 import cz.stechy.drd.model.item.Backpack.Size;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.FormUtils;
-import cz.stechy.drd.util.Translator;
-import cz.stechy.drd.util.Translator.Key;
+import cz.stechy.drd.service.translator.TranslatorService;
+import cz.stechy.drd.service.translator.TranslatorService.Key;
 import cz.stechy.drd.widget.EnumComboBox;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -91,7 +91,7 @@ public class ItemBackpackController extends BaseController implements Initializa
 
     // endregion
 
-    private final Translator translator;
+    private final TranslatorService translator;
     private final ItemModel model = new ItemModel();
     private String titleNew;
     private String titleUpdate;
@@ -102,7 +102,7 @@ public class ItemBackpackController extends BaseController implements Initializa
 
     // region Constructors
 
-    public ItemBackpackController(Translator translator) {
+    public ItemBackpackController(TranslatorService translator) {
         this.translator = translator;
     }
 

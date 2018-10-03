@@ -1,10 +1,11 @@
 package cz.stechy.drd.app.server;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.R;
 import cz.stechy.drd.ThreadPool;
-import cz.stechy.drd.net.ClientCommunicator;
 import cz.stechy.drd.net.ConnectionState;
 import cz.stechy.drd.net.LanServerFinder;
+import cz.stechy.drd.service.communicator.IClientCommunicator;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
 import cz.stechy.screens.Notification;
@@ -51,7 +52,7 @@ public class ServerController extends BaseController implements Initializable {
 
     // endregion
 
-    private final ClientCommunicator communicator;
+    private final IClientCommunicator communicator;
     private final LanServerFinder serverFinder;
     private String title;
 
@@ -59,7 +60,8 @@ public class ServerController extends BaseController implements Initializable {
 
     // region Constructors
 
-    public ServerController(ClientCommunicator communicator) {
+    @Inject
+    public ServerController(IClientCommunicator communicator) {
         this.communicator = communicator;
         LanServerFinder tmpServerFinder;
         try {
@@ -129,23 +131,20 @@ public class ServerController extends BaseController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         this.title = resources.getString(R.Translate.SERVER_TITLE);
 
-        lblConnectedTo.textProperty().bind(Bindings.createStringBinding(
-            () -> {
+        lblConnectedTo.textProperty().bind(Bindings.createStringBinding(() -> {
                 final ConnectionState state = communicator.getConnectionState();
                 switch (state) {
                     case CONNECTING:
                         return resources.getString(R.Translate.SERVER_STATUS_CONNECTING);
                     case CONNECTED:
-                        return String.format(resources.getString(R.Translate.SERVER_STATUS_CONNECTED), communicator.getConnectedServer());
+                        return String.format(resources.getString(R.Translate.SERVER_STATUS_CONNECTED), communicator.getConnectedServerName());
                     default:
                         return resources.getString(R.Translate.SERVER_STATUS_DISCONNECTED);
                 }
             }, communicator.connectionStateProperty()));
 
-        final BooleanBinding connected = communicator.connectionStateProperty()
-            .isEqualTo(ConnectionState.CONNECTED);
-        final BooleanBinding disconnected = communicator.connectionStateProperty()
-            .isEqualTo(ConnectionState.DISCONNECTED);
+        final BooleanBinding connected = communicator.connectionStateProperty().isEqualTo(ConnectionState.CONNECTED);
+        final BooleanBinding disconnected = communicator.connectionStateProperty().isEqualTo(ConnectionState.DISCONNECTED);
 
         btnDisconnect.disableProperty().bind(connected.not());
         btnConnect.disableProperty()

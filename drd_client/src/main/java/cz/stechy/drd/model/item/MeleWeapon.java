@@ -3,7 +3,7 @@ package cz.stechy.drd.model.item;
 import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.annotation.TranslateEntry;
-import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.Row;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.ITranslatedEnum;
 import java.util.List;
@@ -87,7 +87,7 @@ public final class MeleWeapon extends WeaponBase {
     // region Public methods
 
     @Override
-    public void update(DatabaseItem other) {
+    public void update(Row other) {
         super.update(other);
 
         MeleWeapon weapon = (MeleWeapon) other;
@@ -160,7 +160,7 @@ public final class MeleWeapon extends WeaponBase {
     // endregion
 
     @Override
-    public List<String> getDiffList(DatabaseItem other) {
+    public List<String> getDiffList(Row other) {
         final List<String> diffList = super.getDiffList(other);
         final MeleWeapon meleWeapon = (MeleWeapon) other;
 

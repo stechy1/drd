@@ -135,7 +135,7 @@ interface ShopItemController<T extends ShopEntry> {
     /**
      * Vrátí {@link Optional} který může obsahovat referenci na vybraný předmět
      *
-     * @return {@link Optional<ItemBase>}
+     * @return {@link Optional<  ItemBase  >}
      */
     Optional<T> getSelectedItem();
 

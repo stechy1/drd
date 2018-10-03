@@ -1,14 +1,14 @@
 package cz.stechy.drd.model.inventory;
 
-import cz.stechy.drd.ThreadPool;
-import cz.stechy.drd.dao.InventoryContentDao;
-import cz.stechy.drd.dao.InventoryDao;
-import cz.stechy.drd.model.inventory.InventoryRecord.Metadata;
+import com.google.inject.Inject;
+import cz.stechy.drd.model.inventory.InventoryContent.Metadata;
 import cz.stechy.drd.model.inventory.ItemSlot.ClickListener;
 import cz.stechy.drd.model.inventory.ItemSlot.DragDropHandlers;
 import cz.stechy.drd.model.inventory.ItemSlot.HighlightState;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.service.ItemRegistry;
+import cz.stechy.drd.service.inventory.IInventoryContentService;
+import cz.stechy.drd.service.inventory.IInventoryService;
+import cz.stechy.drd.service.item.IItemRegistry;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
@@ -19,6 +19,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Třída představující inventář
@@ -26,6 +28,9 @@ import javafx.scene.Node;
 public abstract class ItemContainer {
 
     // region Constsnts
+
+    @SuppressWarnings("unused")
+    private static final Logger LOGGER = LoggerFactory.getLogger(ItemContainer.class);
 
     public static final int SLOT_SPACING = 1;
 
@@ -37,13 +42,13 @@ public abstract class ItemContainer {
 
     // region Variables
 
-    private final ItemRegistry itemRegistry;
+    private final IItemRegistry itemRegistry;
     protected final int capacity;
     private final TooltipTranslator tooltipTranslator;
 
-    private InventoryDao inventoryManager;
-    private InventoryContentDao inventoryContentDao;
-    private ObservableList<InventoryRecord> oldRecords;
+    private IInventoryService inventoryService;
+    private IInventoryContentService inventoryContentService;
+    private ObservableList<InventoryContent> oldRecords;
     private ItemClickListener itemClickListener;
     private Predicate<ItemStack> inventoryFilter = DEFAULT_INVENTORY_FILTER;
     // Kolekce slotů pro itemy v inventáři
@@ -53,8 +58,8 @@ public abstract class ItemContainer {
 
     // region Constructors
 
-    protected ItemContainer(ItemRegistry itemRegistry, TooltipTranslator tooltipTranslator,
-        int capacity) {
+    @Inject
+    protected ItemContainer(IItemRegistry itemRegistry, TooltipTranslator tooltipTranslator, int capacity) {
         this.itemRegistry = itemRegistry;
         this.capacity = capacity;
         this.tooltipTranslator = tooltipTranslator;
@@ -73,11 +78,11 @@ public abstract class ItemContainer {
     // region Private methods
 
     /**
-     * Vloží item z {@link InventoryRecord} do správného slotu
+     * Vloží item z {@link InventoryContent} do správného slotu
      *
-     * @param record {@link InventoryRecord}
+     * @param record {@link InventoryContent}
      */
-    private void insert(final InventoryRecord record) {
+    private void insert(final InventoryContent record) {
         final Optional<ItemBase> itemOptional = itemRegistry.getItemById(record.getItemId());
         itemOptional.ifPresent(itemBase -> {
             final ItemBase item = itemBase;
@@ -97,9 +102,9 @@ public abstract class ItemContainer {
     /**
      * Odebere item ze se slotu
      *
-     * @param record {@link InventoryRecord}
+     * @param record {@link InventoryContent}
      */
-    private void remove(final InventoryRecord record) {
+    private void remove(final InventoryContent record) {
         final int ammount = record.getAmmount();
         final int slotIndex = record.getSlotId();
         final ItemSlot itemSlot = itemSlots.get(slotIndex);
@@ -113,69 +118,64 @@ public abstract class ItemContainer {
     /**
      * Zajištění přesunu itemu
      *
-     * @param sourceInventoryId Id zdrojového inventáře
+     * @param sourceInventory {@link Inventory} Zdrojový inventář
      * @param sourceSlot {@link ItemSlot} Zdrojový slot, ze kterého je vyjmut předmět
      * @param destinationSlot {@link ItemSlot} Cílový slot, do kterého se má vložit item
      * @param transferAmmount Přenášené množství předmětů
      */
-    private void handleDragEnd(final String sourceInventoryId, final ItemSlot sourceSlot,
+    private void handleDragEnd(final Inventory sourceInventory, final ItemSlot sourceSlot,
         final ItemSlot destinationSlot, final int transferAmmount) {
         final int sourceAmmount = sourceSlot.getItemStack().getAmmount();
         final int sourceAmmountResult = sourceAmmount - transferAmmount;
 
-        final CompletableFuture<InventoryContentDao> content = inventoryManager
-            .getInventoryContentByIdAsync(sourceInventoryId);
-        assert content != null;
-        content.thenAccept(sourceInventoryContent -> sourceInventoryContent
-            .selectAsync(record -> record.getSlotId() == sourceSlot.getId())
-            .thenAccept(sourceInventoryRecord -> inventoryContentDao
-                    .selectAsync(record -> record.getSlotId() == destinationSlot.getId())
-                    .handle((destinationInventoryRecord, throwable) -> {
-                        if (throwable == null) { // Cílový slot již obsahuje stejný předmět
-                            final InventoryRecord destinationInventoryRecordCopy = destinationInventoryRecord
-                                .duplicate();
-                            destinationInventoryRecordCopy.addAmmount(transferAmmount);
-                            return inventoryContentDao
-                                .updateAsync(destinationInventoryRecordCopy)
-                                .thenApply(inventoryRecord -> {
-                                    destinationSlot.getItemStack().addAmmount(transferAmmount);
-                                    return inventoryRecord;
-                                });
-                        } else { // Musím vytvořit nový cílový slot
-                            final InventoryRecord destinationInventoryRecord1 = new InventoryRecord.Builder()
-                                .inventoryId(inventoryContentDao.getInventory().getId())
-                                .ammount(transferAmmount)
-                                .itemId(sourceInventoryRecord.getItemId())
-                                .slotId(destinationSlot.getId())
-                                .metadata(sourceInventoryRecord.getMetadata())
-                                .build();
-                            return inventoryContentDao.insertAsync(destinationInventoryRecord1);
-                        }
-                    })
-                    .thenCompose(future -> future.thenCompose(sourceInventoryRecord1 -> {
-                            if (sourceAmmountResult > 0) {
-                                final InventoryRecord recordCopy = sourceInventoryRecord
-                                    .duplicate();
-                                recordCopy.subtractAmmount(transferAmmount);
-                                return sourceInventoryContent.updateAsync(recordCopy)
-                                    .thenApply(inventoryRecord -> {
-                                        sourceSlot.getItemStack()
-                                            .subtractAmmount(transferAmmount);
-                                        return inventoryRecord;
-                                    });
-                            } else {
-                                return sourceInventoryContent
-                                    .deleteAsync(sourceInventoryRecord);
-                            }
-                        })))
-            .exceptionally(throwable -> {
-                throwable.printStackTrace();
-                throw new RuntimeException(throwable);
-            }))
-            .exceptionally(throwable -> {
-                throwable.printStackTrace();
+        final IInventoryContentService sourceInventoryService = inventoryService.getInventoryContentService(sourceInventory);
+        assert sourceInventoryService != null;
+        final Optional<InventoryContent> optionalSourceInventoryContent = sourceInventoryService.select(record -> record.getSlotId() == sourceSlot.getId());
+        if (optionalSourceInventoryContent.isPresent()) { // Cílový slot již obsahuje stejný předmět
+            final InventoryContent sourceInventoryContent = optionalSourceInventoryContent.get();
+            final Optional<InventoryContent> optionalDestinationInventoryContent = inventoryContentService.select(content -> content.getSlotId() == destinationSlot.getId());
+            CompletableFuture<InventoryContent> futureDestinationContent;
+            if (optionalDestinationInventoryContent.isPresent()) {
+                final InventoryContent destinationInventoryContent = optionalDestinationInventoryContent.get();
+                final InventoryContent destinationInventoryContentCopy = destinationInventoryContent.duplicate();
+                destinationInventoryContentCopy.addAmmount(transferAmmount);
+                futureDestinationContent = inventoryContentService.updateContent(destinationInventoryContentCopy)
+                    .thenApply(inventoryContent -> {
+                        destinationSlot.getItemStack().addAmmount(transferAmmount);
+                        return inventoryContent;
+                    });
+            } else { // Musím vytvořit nový cílový slot
+                final InventoryContent destinationInventoryContent1 = new InventoryContent.Builder()
+                    .inventoryId(inventoryContentService.getInventory().getId())
+                    .ammount(transferAmmount)
+                    .itemId(sourceInventoryContent.getItemId())
+                    .slotId(destinationSlot.getId())
+                    .metadata(sourceInventoryContent.getMetadata())
+                    .build();
+                futureDestinationContent = inventoryContentService.insertContent(destinationInventoryContent1);
+            }
+            futureDestinationContent.exceptionally(throwable -> {
+                LOGGER.error("Nepodařilo se mi vložit/aktualizovat cílový slot.", throwable);
                 throw new RuntimeException(throwable);
             });
+            futureDestinationContent.thenCompose(destinationContent -> {
+                if (sourceAmmountResult > 0) {
+                    final InventoryContent recordCopy = sourceInventoryContent.duplicate();
+                    recordCopy.subtractAmmount(transferAmmount);
+                    return sourceInventoryService.updateContent(recordCopy)
+                        .thenApply(inventoryRecord -> {
+                            sourceSlot.getItemStack().subtractAmmount(transferAmmount);
+                            return inventoryRecord;
+                        });
+                } else {
+                    return sourceInventoryService.deleteContent(sourceInventoryContent);
+                }
+            })
+                .exceptionally(throwable -> {
+                    LOGGER.error("Nepodařilo se mi smazat/aktualizovat zdrojový slot.", throwable);
+                    throw new RuntimeException(throwable);
+                });
+        }
     }
 
     /**
@@ -247,19 +247,18 @@ public abstract class ItemContainer {
     /**
      * Inicializuje obsah inventáře
      *
-     * @param inventoryContentDao {@link InventoryContentDao}
+     * @param inventoryContentDao {@link IInventoryContentService}
      */
-    private void initInventoryContent(InventoryContentDao inventoryContentDao) {
+    private void initInventoryContent(IInventoryContentService inventoryContentDao) {
         clear();
 
-        InventoryContentDao.getWeight().addListener(weightListener);
-        inventoryContentDao.selectAllAsync()
-            .thenAccept(inventoryRecords -> {
-                inventoryRecords.forEach(this::insert);
-                inventoryRecords.addListener(inventoryRecordListener);
-                this.inventoryContentDao = inventoryContentDao;
-                this.oldRecords = inventoryRecords;
-            });
+        //IInventoryContentService.getWeight().addListener(weightListener);
+        inventoryContentDao.selectAll().thenAccept(inventoryContents -> {
+            inventoryContents.forEach(this::insert);
+            inventoryContents.addListener(inventoryRecordListener);
+            this.inventoryContentService = inventoryContentDao;
+            this.oldRecords = inventoryContents;
+        });
     }
 
     // endregion
@@ -281,11 +280,9 @@ public abstract class ItemContainer {
 
     // region Getters & Setters
 
-    public CompletableFuture<Void> setInventoryManager(InventoryDao inventoryManager,
-        Inventory inventory) {
-        this.inventoryManager = inventoryManager;
-        return inventoryManager.getInventoryContentAsync(inventory)
-            .thenAcceptAsync(this::initInventoryContent, ThreadPool.JAVAFX_EXECUTOR);
+    public void setInventoryManager(IInventoryService inventoryManager, Inventory inventory) {
+        this.inventoryService = inventoryManager;
+        this.initInventoryContent(inventoryManager.getInventoryContentService(inventory));
     }
 
     /**
@@ -319,9 +316,7 @@ public abstract class ItemContainer {
     protected final DragDropHandlers dragDropHandlers = new DragDropHandlers() {
         @Override
         public void onDragStart(ItemSlot sourceSlot, ItemStack itemStack) {
-            dragInformations
-                .setValue(new DragInformations(inventoryContentDao.getInventory().getId(),
-                    sourceSlot, itemStack));
+            dragInformations.setValue(new DragInformations(inventoryContentService.getInventory(), sourceSlot, itemStack));
         }
 
         @Override
@@ -333,8 +328,7 @@ public abstract class ItemContainer {
         @Override
         public void onDragDrop(ItemSlot destinationSlot) {
             final DragInformations dragInformations = ItemContainer.dragInformations.get();
-            handleDragEnd(dragInformations.sourceInventoryId, dragInformations.sourceSlot,
-                destinationSlot, dragInformations.draggedStack.getAmmount());
+            handleDragEnd(dragInformations.sourceInventory, dragInformations.sourceSlot, destinationSlot, dragInformations.draggedStack.getAmmount());
         }
 
         @Override
@@ -344,7 +338,7 @@ public abstract class ItemContainer {
     };
 
     // Listener pro změnu obsahu inventáře
-    private final ListChangeListener<? super InventoryRecord> inventoryRecordListener = (ListChangeListener<InventoryRecord>) c -> {
+    private final ListChangeListener<? super InventoryContent> inventoryRecordListener = (ListChangeListener<InventoryContent>) c -> {
         while (c.next()) {
             c.getAddedSubList().forEach(this::insert);
             c.getRemoved().forEach(this::remove);
@@ -365,13 +359,14 @@ public abstract class ItemContainer {
 
     private static final class DragInformations {
 
-        final String sourceInventoryId;
+        //final String sourceInventoryId;
+        final Inventory sourceInventory;
         final ItemSlot sourceSlot;
         final ItemStack draggedStack;
 
-        private DragInformations(String sourceInventoryId, ItemSlot sourceSlot,
-            ItemStack draggedStack) {
-            this.sourceInventoryId = sourceInventoryId;
+        private DragInformations(Inventory sourceInventory, ItemSlot sourceSlot, ItemStack draggedStack) {
+//            this.sourceInventoryId = sourceInventoryId;
+            this.sourceInventory = sourceInventory;
             this.sourceSlot = sourceSlot;
             this.draggedStack = draggedStack;
         }

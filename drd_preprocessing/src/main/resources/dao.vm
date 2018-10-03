@@ -1,0 +1,16 @@
+package cz.stechy.drd;
+
+import com.google.inject.AbstractModule;
+#foreach($clazz in $classes)
+import ${clazz.getPackage()}.${clazz.getClassName()};
+import ${clazz.getPackage()}.${clazz.getImplementation()};
+#end
+
+public class ${className} extends AbstractModule {
+    @Override
+    protected void configure() {
+#foreach($clazz in $classes)
+        bind(${clazz.getClassName()} .class).to(${clazz.getImplementation()} .class).asEagerSingleton();
+#end
+    }
+}

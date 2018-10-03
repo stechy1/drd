@@ -1,7 +1,7 @@
 package cz.stechy.drd.model;
 
 import cz.stechy.drd.annotation.TranslateEntry;
-import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.Row;
 import cz.stechy.drd.util.StringUtils;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class DiffEntry<T extends DatabaseItem> {
+public class DiffEntry<T extends Row> {
 
     // region Variables
 

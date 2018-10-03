@@ -1,7 +1,7 @@
 package cz.stechy.drd.app.collections;
 
-import cz.stechy.drd.model.item.ItemCollection;
-import cz.stechy.drd.model.item.ItemCollection.CollectionType;
+import cz.stechy.drd.model.item.OnlineCollection;
+import cz.stechy.drd.model.item.OnlineCollection.CollectionType;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
 import java.util.Optional;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -22,9 +22,9 @@ public interface CollectionsControllerChild {
     /**
      * Nastaví vybranou kolekci
      *
-     * @param selectedCollection {@link ItemCollection} Kolekce, která jse vybraná
+     * @param selectedCollection {@link OnlineCollection} Kolekce, která jse vybraná
      */
-    void setSelectedCollection(ReadOnlyObjectProperty<ItemCollection> selectedCollection);
+    void setSelectedCollection(ReadOnlyObjectProperty<OnlineCollection> selectedCollection);
 
     /**
      * Nastaví poskytovatele notifikací

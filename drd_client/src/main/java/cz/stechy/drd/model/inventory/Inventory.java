@@ -1,6 +1,6 @@
 package cz.stechy.drd.model.inventory;
 
-import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.Row;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.util.HashGenerator;
 import java.util.List;
@@ -18,7 +18,7 @@ import javafx.beans.property.StringProperty;
 /**
  * Třída reprezentující záznam v databázi o jednom inventáři
  */
-public final class Inventory extends DatabaseItem {
+public final class Inventory extends Row {
 
     // region Variables
     // Id hrdiny, kterému patří inventář
@@ -63,7 +63,7 @@ public final class Inventory extends DatabaseItem {
     // region Public methods
 
     @Override
-    public void update(DatabaseItem other) {
+    public void update(Row other) {
         super.update(other);
 
         Inventory inventory = (Inventory) other;
@@ -121,7 +121,7 @@ public final class Inventory extends DatabaseItem {
     // endregion
 
     @Override
-    public List<String> getDiffList(DatabaseItem other) {
+    public List<String> getDiffList(Row other) {
         final List<String> diffList = super.getDiffList(other);
         final Inventory inventory = (Inventory) other;
 

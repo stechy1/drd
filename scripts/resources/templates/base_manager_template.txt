@@ -1,6 +1,6 @@
 package cz.stechy.drd.dao;
 
-import cz.stechy.drd.db.BaseDatabaseService;
+import cz.stechy.drd.db.BaseOfflineTable;
 import cz.stechy.drd.db.base.Database;
 import cz.stechy.drd.service.ItemRegistry;
 import cz.stechy.drd.model.item.{generic_class};

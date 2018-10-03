@@ -2,7 +2,7 @@ package cz.stechy.drd.model.entity.mob;
 
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.annotation.TranslateEntry;
-import cz.stechy.drd.db.base.DatabaseItem;
+import cz.stechy.drd.db.base.Row;
 import cz.stechy.drd.model.IClonable;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.WithSameProperties;
@@ -162,7 +162,7 @@ public final class Mob extends EntityBase implements WithSameProperties {
     // region Public methods
 
     @Override
-    public void update(DatabaseItem other) {
+    public void update(Row other) {
         super.update(other);
 
         Mob mob = (Mob) other;
@@ -353,7 +353,7 @@ public final class Mob extends EntityBase implements WithSameProperties {
     // endregion
 
     @Override
-    public List<String> getDiffList(DatabaseItem other) {
+    public List<String> getDiffList(Row other) {
         final List<String> diffList = super.getDiffList(other);
         final Mob mob = (Mob) other;
 

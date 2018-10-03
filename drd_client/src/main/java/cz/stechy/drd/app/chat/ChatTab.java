@@ -32,10 +32,8 @@ class ChatTab extends Tab {
 
     // region Constants
 
-    private static final URL PATH_CONTENT_INCOMING = ChatTab.class
-        .getResource("/fxml/chat/chat_tab_content_incoming.fxml");
-    private static final URL PATH_CONTENT_OUTCOMING = ChatTab.class
-        .getResource("/fxml/chat/chat_tab_content_outcoming.fxml");
+    private static final URL PATH_CONTENT_INCOMING = ChatTab.class.getResource("/fxml/chat/chat_tab_content_incoming.fxml");
+    private static final URL PATH_CONTENT_OUTCOMING = ChatTab.class.getResource("/fxml/chat/chat_tab_content_outcoming.fxml");
 
     // endregion
 

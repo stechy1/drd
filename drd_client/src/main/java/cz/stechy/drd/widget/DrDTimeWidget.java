@@ -2,7 +2,7 @@ package cz.stechy.drd.widget;
 
 import cz.stechy.drd.R;
 import cz.stechy.drd.model.DrDTime;
-import cz.stechy.drd.util.Translator;
+import cz.stechy.drd.service.translator.ITranslatorService;
 import javafx.beans.NamedArg;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Label;
@@ -56,7 +56,7 @@ public class DrDTimeWidget extends VBox {
     private final Text cycleText = new Text();
 
     private DrDTime time = new DrDTime();
-    private Translator translator;
+    private ITranslatorService translator;
 
     // endregion
 
@@ -144,9 +144,9 @@ public class DrDTimeWidget extends VBox {
      * Nastaví listenery pro správné zobrazení textu
      *
      * @param time {@link DrDTime}
-     * @param translator {@link Translator}
+     * @param translator {@link ITranslatorService}
      */
-    public void bind(DrDTime time, Translator translator) {
+    public void bind(DrDTime time, ITranslatorService translator) {
         this.time = time;
         this.translator = translator;
         unbind();

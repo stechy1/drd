@@ -6,16 +6,17 @@ import cz.stechy.drd.R;
 import cz.stechy.drd.R.Translate;
 import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.app.shop.entry.ShopEntry;
-import cz.stechy.drd.db.AdvancedDatabaseService;
-import cz.stechy.drd.db.base.OnlineItem;
+import cz.stechy.drd.db.BaseOfflineTable;
+import cz.stechy.drd.db.base.OfflineOnlineTableWrapper;
+import cz.stechy.drd.db.base.OnlineRecord;
 import cz.stechy.drd.model.MaxActValue;
 import cz.stechy.drd.model.Money;
 import cz.stechy.drd.model.User;
 import cz.stechy.drd.model.item.ItemBase;
-import cz.stechy.drd.service.UserService;
+import cz.stechy.drd.service.translator.ITranslatorService;
+import cz.stechy.drd.service.user.IUserService;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.ObservableMergers;
-import cz.stechy.drd.util.Translator;
 import cz.stechy.screens.Notification;
 import java.net.URL;
 import java.util.Comparator;
@@ -37,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("unchecked")
-public abstract class AShopItemController<T extends OnlineItem, E extends ShopEntry> implements Initializable, ShopItemController<E> {
+public abstract class AShopItemController<T extends OnlineRecord, E extends ShopEntry> implements Initializable, ShopItemController<E> {
 
     // region Constants
 
@@ -73,8 +74,9 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
     final SortedList<E> sortedList = new SortedList<>(entries, Comparator.comparing(ShopEntry::getName));
     private final BooleanProperty ammountEditable = new SimpleBooleanProperty(true);
     private final BooleanProperty highlightDiffItem = new SimpleBooleanProperty(false);
-    protected final AdvancedDatabaseService<T> service;
-    protected final Translator translator;
+
+    protected final OfflineOnlineTableWrapper<T> service;
+    protected final ITranslatorService translator;
     protected final User user;
 
     private IntegerProperty selectedRowIndex;
@@ -85,7 +87,7 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
 
     // region Constructors
 
-    AShopItemController(AdvancedDatabaseService<T> service, Translator translator, UserService userService) {
+    AShopItemController(OfflineOnlineTableWrapper<T> service, ITranslatorService translator, IUserService userService) {
         this.service = service;
         this.translator = translator;
         this.user = userService.getUser();
@@ -147,8 +149,7 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
             return entry;
         };
 
-        service.selectAllAsync()
-            .thenAccept(entryList -> ObservableMergers.mergeList(mapper, entries, entryList));
+        ObservableMergers.mergeList(mapper, entries, service.getUsed());
     }
 
     @Override
@@ -275,7 +276,7 @@ public abstract class AShopItemController<T extends OnlineItem, E extends ShopEn
 
     @Override
     public void updateLocalItem(ShopEntry itemBase) {
-        service.selectOnline(AdvancedDatabaseService.ID_FILTER(itemBase.getId()))
+        service.selectOnline(BaseOfflineTable.ID_FILTER(itemBase.getId()))
             .ifPresent(generalItem -> {
                 service.updateAsync(generalItem).thenAccept(entry -> {
                     LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");

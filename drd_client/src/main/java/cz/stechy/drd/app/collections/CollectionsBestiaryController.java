@@ -1,14 +1,15 @@
 package cz.stechy.drd.app.collections;
 
-import cz.stechy.drd.dao.BestiaryDao;
+import com.google.inject.Inject;
+import cz.stechy.drd.db.base.ITableWrapperFactory;
+import cz.stechy.drd.db.base.OfflineOnlineTableWrapper;
 import cz.stechy.drd.model.Rule;
 import cz.stechy.drd.model.entity.mob.Mob;
-import cz.stechy.drd.model.item.ItemCollection;
-import cz.stechy.drd.model.item.ItemCollection.CollectionType;
+import cz.stechy.drd.model.item.OnlineCollection;
+import cz.stechy.drd.model.item.OnlineCollection.CollectionType;
 import cz.stechy.drd.util.CellUtils;
 import cz.stechy.drd.util.DialogUtils;
 import cz.stechy.drd.util.DialogUtils.ChoiceEntry;
-import cz.stechy.drd.util.Translator;
 import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.List;
@@ -60,19 +61,20 @@ public class CollectionsBestiaryController implements Initializable, Collections
     private final ObservableList<ChoiceEntry> mobRegistry = FXCollections.observableArrayList();
 
     // Nemůžu dát "final", protože by mi to brečelo v bestiaryCollectionContentListener
-    private BestiaryDao bestiaryService;
+    private OfflineOnlineTableWrapper<Mob> mobTable;
     private StringProperty selectedEntry;
 
     // endregion
 
     // region Constructors
 
-    public CollectionsBestiaryController(Translator translator, BestiaryDao bestiaryService) {
-        Translator translator1 = translator;
-        this.bestiaryService = bestiaryService;
+    @Inject
+    public CollectionsBestiaryController(ITableWrapperFactory tableFactory) {
+        this.mobTable = tableFactory.getTableWrapper(Mob.class);
 
-        bestiaryService.selectAllAsync()
-            .thenAccept(mobs -> this.mobRegistry.setAll(DialogUtils.getMobsChoices(mobs)));
+        mobTable.selectAllAsync()
+            .thenAccept(mobs ->
+                this.mobRegistry.setAll(DialogUtils.getMobsChoices(mobs)));
     }
 
     // endregion
@@ -110,12 +112,13 @@ public class CollectionsBestiaryController implements Initializable, Collections
     }
 
     @Override
-    public void setSelectedCollection(ReadOnlyObjectProperty<ItemCollection> selectedCollection) {
+    public void setSelectedCollection(ReadOnlyObjectProperty<OnlineCollection> selectedCollection) {
         selectedCollection.addListener((observableValue, oldValue, newValue) -> {
             collectionItems.clear();
             if (oldValue != null) {
                 oldValue.getCollection(CollectionType.BESTIARY).removeListener(this.bestiaryCollectionContentListener);
             }
+
             if (newValue == null) {
                 return;
             }
@@ -146,7 +149,7 @@ public class CollectionsBestiaryController implements Initializable, Collections
         final List<Mob> mobList = collectionItems.stream()
             .map(BestiaryEntry::getMob)
             .collect(Collectors.toList());
-        bestiaryService.saveAll(mobList)
+        mobTable.saveAll(mobList)
             .exceptionally(throwable -> {
                 System.out.println("Něco se zvrtlo");
                 throwable.printStackTrace();
@@ -164,7 +167,7 @@ public class CollectionsBestiaryController implements Initializable, Collections
 
         public BestiaryEntry(String id) {
             this.id = id;
-            final Optional<Mob> optionalMob = bestiaryService.selectOnline(mob -> mob.getId().equals(id));
+            final Optional<Mob> optionalMob = mobTable.selectOnline(mob -> mob.getId().equals(id));
             optionalMob.ifPresent(mob -> {
                 this.mob = mob;
                 setName(mob.getName());

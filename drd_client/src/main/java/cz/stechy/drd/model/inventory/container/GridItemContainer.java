@@ -1,9 +1,10 @@
 package cz.stechy.drd.model.inventory.container;
 
+import com.google.inject.Inject;
 import cz.stechy.drd.model.inventory.ItemContainer;
 import cz.stechy.drd.model.inventory.ItemSlot;
 import cz.stechy.drd.model.inventory.TooltipTranslator;
-import cz.stechy.drd.service.ItemRegistry;
+import cz.stechy.drd.service.item.IItemRegistry;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 
@@ -26,13 +27,14 @@ public class GridItemContainer extends ItemContainer {
     /**
      * Inicializuje inventář
      *
-     * @param itemRegistry
+     * @param itemRegistry {@link IItemRegistry}
      * @param tooltipTranslator {@link TooltipTranslator}
      * @param capacity Počet slotů v inventáři
      * @param cols Počet sloupečků
      * @param rows Počet řádků
      */
-    public GridItemContainer(ItemRegistry itemRegistry, TooltipTranslator tooltipTranslator,
+    @Inject
+    public GridItemContainer(IItemRegistry itemRegistry, TooltipTranslator tooltipTranslator,
         int capacity, int cols, int rows) {
         super(itemRegistry, tooltipTranslator, capacity);
 
