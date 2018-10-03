@@ -22,7 +22,7 @@ public interface OfflineTable<T> {
      * @param filter Filtr pro výběr konkrétního předmětu
      * @return {@link Optional<T>}
      */
-    Optional<T> selectAsync(Predicate<? super T> filter);
+    CompletableFuture<T> selectAsync(Predicate<? super T> filter);
 
     /**
      * Provede výběr všech záznamů a vrátí je jako pozorovatelnou kolekci

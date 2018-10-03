@@ -1,6 +1,7 @@
 package cz.stechy.drd.app.collections;
 
 import com.google.inject.Inject;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.db.base.ITableWrapperFactory;
 import cz.stechy.drd.db.base.OfflineOnlineTableWrapper;
 import cz.stechy.drd.model.Rule;
@@ -167,14 +168,13 @@ public class CollectionsBestiaryController implements Initializable, Collections
 
         public BestiaryEntry(String id) {
             this.id = id;
-            final Optional<Mob> optionalMob = mobTable.selectOnline(mob -> mob.getId().equals(id));
-            optionalMob.ifPresent(mob -> {
+            mobTable.selectOnline(mob -> mob.getId().equals(id)).thenAcceptAsync(mob -> {
                 this.mob = mob;
                 setName(mob.getName());
                 setRuleType(mob.getRulesType());
                 ByteArrayInputStream bais = new ByteArrayInputStream(mob.getImage());
                 setImage(new Image(bais));
-            });
+            }, ThreadPool.JAVAFX_EXECUTOR);
         }
 
         public String getId() {

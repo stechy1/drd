@@ -75,8 +75,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
     // region Private methods
 
     // region Method handlers
-    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue,
-        Hero newValue) {
+    private void heroHandler(ObservableValue<? extends Hero> observable, Hero oldValue, Hero newValue) {
         //InventoryContentDao.clearWeight();
         if (newValue == null) {
             mainItemContainer.clear();

@@ -10,7 +10,6 @@ import cz.stechy.drd.service.inventory.IInventoryContentService;
 import cz.stechy.drd.service.inventory.IInventoryService;
 import cz.stechy.drd.service.item.IItemRegistry;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -123,59 +122,54 @@ public abstract class ItemContainer {
      * @param destinationSlot {@link ItemSlot} Cílový slot, do kterého se má vložit item
      * @param transferAmmount Přenášené množství předmětů
      */
-    private void handleDragEnd(final Inventory sourceInventory, final ItemSlot sourceSlot,
-        final ItemSlot destinationSlot, final int transferAmmount) {
+    private void handleDragEnd(final Inventory sourceInventory, final ItemSlot sourceSlot, final ItemSlot destinationSlot, final int transferAmmount) {
         final int sourceAmmount = sourceSlot.getItemStack().getAmmount();
         final int sourceAmmountResult = sourceAmmount - transferAmmount;
 
-        final IInventoryContentService sourceInventoryService = inventoryService.getInventoryContentService(sourceInventory);
-        assert sourceInventoryService != null;
-        final Optional<InventoryContent> optionalSourceInventoryContent = sourceInventoryService.select(record -> record.getSlotId() == sourceSlot.getId());
-        if (optionalSourceInventoryContent.isPresent()) { // Cílový slot již obsahuje stejný předmět
-            final InventoryContent sourceInventoryContent = optionalSourceInventoryContent.get();
-            final Optional<InventoryContent> optionalDestinationInventoryContent = inventoryContentService.select(content -> content.getSlotId() == destinationSlot.getId());
-            CompletableFuture<InventoryContent> futureDestinationContent;
-            if (optionalDestinationInventoryContent.isPresent()) {
-                final InventoryContent destinationInventoryContent = optionalDestinationInventoryContent.get();
-                final InventoryContent destinationInventoryContentCopy = destinationInventoryContent.duplicate();
-                destinationInventoryContentCopy.addAmmount(transferAmmount);
-                futureDestinationContent = inventoryContentService.updateContent(destinationInventoryContentCopy)
-                    .thenApply(inventoryContent -> {
-                        destinationSlot.getItemStack().addAmmount(transferAmmount);
-                        return inventoryContent;
-                    });
-            } else { // Musím vytvořit nový cílový slot
-                final InventoryContent destinationInventoryContent1 = new InventoryContent.Builder()
-                    .inventoryId(inventoryContentService.getInventory().getId())
-                    .ammount(transferAmmount)
-                    .itemId(sourceInventoryContent.getItemId())
-                    .slotId(destinationSlot.getId())
-                    .metadata(sourceInventoryContent.getMetadata())
-                    .build();
-                futureDestinationContent = inventoryContentService.insertContent(destinationInventoryContent1);
-            }
-            futureDestinationContent.exceptionally(throwable -> {
-                LOGGER.error("Nepodařilo se mi vložit/aktualizovat cílový slot.", throwable);
+        final IInventoryContentService sourceInventoryContentService = inventoryService.getInventoryContentService(sourceInventory);
+        sourceInventoryContentService.select(record -> record.getSlotId() == sourceSlot.getId())
+            .thenAccept(sourceInventoryRecord -> inventoryContentService
+                .select(record -> record.getSlotId() == destinationSlot.getId())
+                // Vložení/aktualizace cílového slotu
+                .handle((destinationInventoryRecord, throwable) -> {
+                    if (throwable == null) { // Cílový slot již obsahuje stejný předmět
+                        final InventoryContent destinationInventoryContentCopy = destinationInventoryRecord.duplicate();
+                        destinationInventoryContentCopy.addAmmount(transferAmmount);
+                        return inventoryContentService
+                            .updateContent(destinationInventoryContentCopy)
+                            .thenApply(inventoryRecord -> {
+                                destinationSlot.getItemStack().addAmmount(transferAmmount);
+                                return inventoryRecord;
+                            });
+                    } else { // Musím vytvořit nový cílový slot
+                        final InventoryContent destinationInventoryRecord1 = new InventoryContent.Builder()
+                            .inventoryId(inventoryContentService.getInventory().getId())
+                            .ammount(transferAmmount)
+                            .itemId(sourceInventoryRecord.getItemId())
+                            .slotId(destinationSlot.getId())
+                            .metadata(sourceInventoryRecord.getMetadata())
+                            .build();
+                        return inventoryContentService.insertContent(destinationInventoryRecord1);
+                    }
+                })
+                // Smazání/aktualizace zdrojového slotu
+                .thenCompose(future -> future.thenCompose(sourceInventoryRecord1 -> {
+                    if (sourceAmmountResult > 0) {
+                        final InventoryContent recordCopy = sourceInventoryRecord.duplicate();
+                        recordCopy.subtractAmmount(transferAmmount);
+                        return sourceInventoryContentService.updateContent(recordCopy)
+                            .thenApply(inventoryRecord -> {
+                                sourceSlot.getItemStack().subtractAmmount(transferAmmount);
+                                return inventoryRecord;
+                            });
+                    } else {
+                        return sourceInventoryContentService.deleteContent(sourceInventoryRecord);
+                    }
+                })))
+            .exceptionally(throwable -> {
+                throwable.printStackTrace();
                 throw new RuntimeException(throwable);
             });
-            futureDestinationContent.thenCompose(destinationContent -> {
-                if (sourceAmmountResult > 0) {
-                    final InventoryContent recordCopy = sourceInventoryContent.duplicate();
-                    recordCopy.subtractAmmount(transferAmmount);
-                    return sourceInventoryService.updateContent(recordCopy)
-                        .thenApply(inventoryRecord -> {
-                            sourceSlot.getItemStack().subtractAmmount(transferAmmount);
-                            return inventoryRecord;
-                        });
-                } else {
-                    return sourceInventoryService.deleteContent(sourceInventoryContent);
-                }
-            })
-                .exceptionally(throwable -> {
-                    LOGGER.error("Nepodařilo se mi smazat/aktualizovat zdrojový slot.", throwable);
-                    throw new RuntimeException(throwable);
-                });
-        }
     }
 
     /**

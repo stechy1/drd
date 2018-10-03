@@ -56,7 +56,7 @@ class InventoryContentService implements IInventoryContentService {
     // region Public methods
 
     @Override
-    public Optional<InventoryContent> select(Predicate<InventoryContent> filter) {
+    public CompletableFuture<InventoryContent> select(Predicate<InventoryContent> filter) {
         return inventoryContentTable.selectAsync(filter);
     }
 

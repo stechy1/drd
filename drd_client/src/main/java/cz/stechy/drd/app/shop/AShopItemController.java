@@ -277,12 +277,11 @@ public abstract class AShopItemController<T extends OnlineRecord, E extends Shop
     @Override
     public void updateLocalItem(ShopEntry itemBase) {
         service.selectOnline(BaseOfflineTable.ID_FILTER(itemBase.getId()))
-            .ifPresent(generalItem -> {
-                service.updateAsync(generalItem).thenAccept(entry -> {
-                    LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
-                    itemBase.clearDiffMap();
-                });
-            });
+            .thenCompose(service::updateAsync)
+            .thenAcceptAsync(entry -> {
+                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                itemBase.clearDiffMap();
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     @Override

@@ -94,13 +94,19 @@ public class HeroService implements IHeroService {
 
     @Override
     public CompletableFuture<Hero> loadAsync(String heroId) {
-        return CompletableFuture.supplyAsync(() -> {
-            final Hero hero = heroTable.selectAsync(ID_FILTER(heroId)).orElse(null);
+        return heroTable.selectAsync(ID_FILTER(heroId)).thenApplyAsync(hero -> {
             this.hero.setValue(hero);
 
             return hero;
         }, ThreadPool.JAVAFX_EXECUTOR);
     }
+//        return CompletableFuture.supplyAsync(() -> {
+//            final Hero hero = heroTable.selectAsync(ID_FILTER(heroId)).orElse(null);
+//            this.hero.setValue(hero);
+//
+//            return hero;
+//        }, ThreadPool.JAVAFX_EXECUTOR);
+//    }
 
     public synchronized void resetHero() {
         hero.setValue(null);

@@ -220,19 +220,25 @@ public abstract class BaseOfflineTable<T extends Row> implements OfflineTable<T>
                 } else {
                     return CompletableFuture.completedFuture(null);
                 }
-            })
-            .thenAccept(ignore ->
-                db.selectAsync((resultSet -> {
-                    final int count = resultSet.getInt(1);
-                    // TODO nějak zobrazit počet načtených hodnot
-                    return null;
-                }), String.format("SELECT COUNT(%s) FROM %s", getColumnWithId(), getTable())));
+            });
+//            .thenAccept(ignore ->
+//                db.selectAsync((resultSet -> {
+//                    final int count = resultSet.getInt(1);
+//                    // TODO nějak zobrazit počet načtených hodnot
+//                    return null;
+//                }), String.format("SELECT COUNT(%s) FROM %s", getColumnWithId(), getTable())));
     }
 
     @Override
-    public Optional<T> selectAsync(Predicate<? super T> filter) {
-        LOGGER.trace("Provádím select dotaz v tabulce: {}.", getTable());
-        return records.stream().filter(filter).findFirst();
+    public CompletableFuture<T> selectAsync(Predicate<? super T> filter) {
+        return CompletableFuture.supplyAsync(() -> {
+            final Optional<T> optionalRecord = records.stream().filter(filter).findFirst();
+            if (!optionalRecord.isPresent()) {
+                throw new RuntimeException("Record not found.");
+            }
+
+            return optionalRecord.get();
+        }, ThreadPool.COMMON_EXECUTOR);
     }
 
     @Override

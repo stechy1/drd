@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
@@ -72,7 +71,7 @@ public abstract class OfflineOnlineTableWrapper<T extends OnlineRecord> implemen
     }
 
     @Override
-    public Optional<T> selectAsync(Predicate<? super T> filter) {
+    public CompletableFuture<T> selectAsync(Predicate<? super T> filter) {
         return offlineTable.selectAsync(filter);
     }
 
@@ -126,7 +125,7 @@ public abstract class OfflineOnlineTableWrapper<T extends OnlineRecord> implemen
     }
 
     @Override
-    public Optional<T> selectOnline(Predicate<? super T> filter) {
+    public CompletableFuture<T> selectOnline(Predicate<? super T> filter) {
         return onlineTable.selectOnline(filter);
     }
 
@@ -238,7 +237,7 @@ public abstract class OfflineOnlineTableWrapper<T extends OnlineRecord> implemen
             final Set<DiffEntry<T>> diff = new HashSet<>();
             for (T record : offlineTable.records) {
                 final String itemId = record.getId();
-                selectOnline(ID_FILTER(itemId)).ifPresent(onlineItem -> {
+                selectOnline(ID_FILTER(itemId)).thenAccept(onlineItem -> {
                     final DiffEntry<T> diffEntry = new DiffEntry<>(record, onlineItem);
                     if (diffEntry.hasDifferentValues()) {
                         diff.add(diffEntry);

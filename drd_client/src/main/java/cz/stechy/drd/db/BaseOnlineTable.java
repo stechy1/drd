@@ -1,6 +1,7 @@
 package cz.stechy.drd.db;
 
 import com.google.inject.Inject;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.db.base.BaseTableDefinitions;
 import cz.stechy.drd.db.base.OnlineRecord;
 import cz.stechy.drd.db.base.OnlineTable;
@@ -57,8 +58,7 @@ public abstract class BaseOnlineTable<T extends OnlineRecord> implements OnlineT
     @SuppressWarnings("unchecked")
     private final OnDataReceivedListener databaseListener = message -> {
         final DatabaseMessage databaseMessage = (DatabaseMessage) message;
-        final IDatabaseMessageData databaseMessageData = (IDatabaseMessageData) databaseMessage
-            .getData();
+        final IDatabaseMessageData databaseMessageData = (IDatabaseMessageData) databaseMessage.getData();
         if (databaseMessageData.getDataType() != DatabaseMessageDataType.DATA_MANIPULATION) {
             return;
         }
@@ -115,9 +115,15 @@ public abstract class BaseOnlineTable<T extends OnlineRecord> implements OnlineT
     // region Public methods
 
     @Override
-    public Optional<T> selectOnline(Predicate<? super T> filter) {
-        LOGGER.trace("Provádím select dotaz v tabulce: {}.", getFirebaseChildName());
-        return records.stream().filter(filter).findFirst();
+    public CompletableFuture<T> selectOnline(Predicate<? super T> filter) {
+        return CompletableFuture.supplyAsync(() -> {
+            final Optional<T> optionalRecord = records.stream().filter(filter).findFirst();
+            if (!optionalRecord.isPresent()) {
+                throw new RuntimeException("Online record not found.");
+            }
+
+            return optionalRecord.get();
+        }, ThreadPool.COMMON_EXECUTOR);
     }
 
     @Override
@@ -130,7 +136,8 @@ public abstract class BaseOnlineTable<T extends OnlineRecord> implements OnlineT
         LOGGER.trace("Nahrávám záznam {} do online databáze do tabulky: {}", item.toString(), getFirebaseChildName());
         return communicator.sendMessageFuture(
             new DatabaseMessage(MessageSource.CLIENT,
-                new DatabaseMessageCRUD(toStringItemMap(item), getFirebaseChildName(), DatabaseAction.CREATE, item.getId())))
+                new DatabaseMessageCRUD(
+                    toStringItemMap(item), getFirebaseChildName(), DatabaseAction.CREATE, item.getId())))
             .thenAccept(responce -> {
                 if (!responce.isSuccess()) {
                     LOGGER.error("Nahrání záznamu {} se nezdařilo.", item.toString());
@@ -147,7 +154,8 @@ public abstract class BaseOnlineTable<T extends OnlineRecord> implements OnlineT
         LOGGER.trace("Aktualizuji online záznam {} v tabulce: {}", item.toString(), getFirebaseChildName());
         return communicator.sendMessageFuture(
             new DatabaseMessage(MessageSource.CLIENT,
-                new DatabaseMessageCRUD(toStringItemMap(item), getFirebaseChildName(), DatabaseAction.UPDATE, item.getId())))
+                new DatabaseMessageCRUD(
+                    toStringItemMap(item), getFirebaseChildName(), DatabaseAction.UPDATE, item.getId())))
             .thenAccept(responce-> {
                 if(!responce.isSuccess()) {
                     LOGGER.error("Aktualizace záznamu {} se nezdařila.", item.toString());
@@ -161,7 +169,8 @@ public abstract class BaseOnlineTable<T extends OnlineRecord> implements OnlineT
         LOGGER.trace("Mažu záznam {} z online databáze z tabulky: {}", item.toString(), getFirebaseChildName());
         return communicator.sendMessageFuture(
             new DatabaseMessage(MessageSource.CLIENT,
-                new DatabaseMessageCRUD(toStringItemMap(item), getFirebaseChildName(), DatabaseAction.DELETE, item.getId())))
+                new DatabaseMessageCRUD(
+                    toStringItemMap(item), getFirebaseChildName(), DatabaseAction.DELETE, item.getId())))
             .thenAccept(responce -> {
                     if (!responce.isSuccess()) {
                         LOGGER.error("Odstranění záznamu {} se nezdařilo.", item.toString());
@@ -197,7 +206,8 @@ public abstract class BaseOnlineTable<T extends OnlineRecord> implements OnlineT
             LOGGER.info("Posílám registrační požadavek pro tabulku: {}", getFirebaseChildName());
             this.communicator.sendMessage(
                 new DatabaseMessage(MessageSource.CLIENT,
-                    new DatabaseMessageAdministration(getFirebaseChildName(), DatabaseMessageAdministration.DatabaseAction.REGISTER)));
+                    new DatabaseMessageAdministration(
+                        getFirebaseChildName(), DatabaseMessageAdministration.DatabaseAction.REGISTER)));
         });
     }
 }

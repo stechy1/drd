@@ -1,6 +1,7 @@
 package cz.stechy.drd.app.collections;
 
 import com.google.inject.Inject;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.db.base.ITableWrapperFactory;
 import cz.stechy.drd.db.base.OfflineOnlineTableWrapper;
 import cz.stechy.drd.model.item.OnlineCollection;
@@ -169,15 +170,13 @@ public class CollectionsSpellsController implements Initializable, CollectionsCo
 
         public SpellEntry(String id) {
             this.id = id;
-            final Optional<Spell> optionalSpell = spellService
-                .selectOnline(spell -> spell.getId().equals(id));
-            optionalSpell.ifPresent(spell -> {
+            spellService.selectOnline(spell -> spell.getId().equals(id)).thenAcceptAsync(spell -> {
                 this.spell = spell;
                 setName(spell.getName());
                 setType(spell.getType());
                 ByteArrayInputStream bais = new ByteArrayInputStream(spell.getImage());
                 setImage(new Image(bais));
-            });
+            }, ThreadPool.JAVAFX_EXECUTOR);
         }
 
         public String getId() {

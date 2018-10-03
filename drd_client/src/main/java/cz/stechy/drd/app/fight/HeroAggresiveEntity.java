@@ -1,5 +1,6 @@
 package cz.stechy.drd.app.fight;
 
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.Inventory;
 import cz.stechy.drd.model.inventory.container.EquipItemContainer;
@@ -43,7 +44,7 @@ class HeroAggresiveEntity extends AggresiveEntityDecorator {
 
     private void initWeaponAddition(IInventoryContentService inventory) {
         inventory.select(EquipItemContainer.SLOT_SWORD)
-            .ifPresent(inventoryRecord -> {
+            .thenAcceptAsync(inventoryRecord -> {
                 final String itemId = inventoryRecord.getItemId();
                 itemRegistry.getItemById(itemId).ifPresent(itemBase -> {
                     assert itemBase instanceof WeaponBase;
@@ -54,19 +55,19 @@ class HeroAggresiveEntity extends AggresiveEntityDecorator {
                         weaponDefence = meleWeapon.getDefence();
                     }
                 });
-            });
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     private void initArmorAddition(IInventoryContentService inventory) {
         inventory.select(EquipItemContainer.SLOT_BODY)
-            .ifPresent(inventoryRecord -> {
+            .thenAcceptAsync(inventoryRecord -> {
                 final String itemId = inventoryRecord.getItemId();
                 itemRegistry.getItemById(itemId).ifPresent(itemBase -> {
                     assert itemBase instanceof Armor;
                     Armor armor = (Armor) itemBase;
                     armorDefence = armor.getDefenceNumber();
                 });
-            });
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     // endregion

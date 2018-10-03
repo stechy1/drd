@@ -24,7 +24,7 @@ public interface OnlineTable<T> {
      * @param filter Filter záznamů
      * @return {@link Optional<T>} Optional s nalezeným záznamem, nebo prázdnou hodnotu
      */
-    Optional<T> selectOnline(Predicate<? super T> filter);
+    CompletableFuture<T> selectOnline(Predicate<? super T> filter);
 
     /**
      * Vrátí pozorovatelnou kolekci všech online záznamů

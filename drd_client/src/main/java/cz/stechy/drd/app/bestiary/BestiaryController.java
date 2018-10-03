@@ -361,14 +361,12 @@ public class BestiaryController extends BaseController implements Initializable 
     private void handleDownloadItem(ActionEvent actionEvent) {
         getSelectedEntry().ifPresent(mobEntry -> {
             if (diffHighlightMode.get()) {
-                service.selectOnline(BaseOfflineTable.ID_FILTER(mobEntry.getId()))
-                    .ifPresent(mob ->
-                        service.updateAsync(mob)
-                            .thenAccept(entry -> {
-                                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
-                                showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPDATED), entry.getName())));
-                                mobEntry.clearDiffMap();
-                            }));
+                service.selectOnline(BaseOfflineTable.ID_FILTER(mobEntry.getId())).thenAccept(mob ->
+                    service.updateAsync(mob).thenAcceptAsync(entry -> {
+                        LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                        showNotification(new Notification(String.format(translator.translate(R.Translate.NOTIFY_RECORD_IS_UPDATED), entry.getName())));
+                        mobEntry.clearDiffMap();
+                    }, ThreadPool.JAVAFX_EXECUTOR));
             } else {
                 service.insertAsync(mobEntry.getMobBase())
                     .exceptionally(throwable -> {

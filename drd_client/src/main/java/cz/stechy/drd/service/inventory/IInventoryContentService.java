@@ -5,14 +5,13 @@ import cz.stechy.drd.model.inventory.InventoryContent;
 import cz.stechy.drd.model.inventory.InventoryException;
 import cz.stechy.drd.model.item.ItemBase;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import javafx.collections.ObservableList;
 
 public interface IInventoryContentService {
 
-    Optional<InventoryContent> select(final Predicate<InventoryContent> filter);
+    CompletableFuture<InventoryContent> select(final Predicate<InventoryContent> filter);
 
     CompletableFuture<ObservableList<InventoryContent>> selectAll();
 

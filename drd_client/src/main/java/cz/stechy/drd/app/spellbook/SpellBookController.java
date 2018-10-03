@@ -369,12 +369,11 @@ public class SpellBookController extends BaseController implements Initializable
         getSelectedEntry().ifPresent(spellEntry -> {
             if (diffHighlightMode.get()) {
                 spellBook.selectOnline(BaseOfflineTable.ID_FILTER(spellEntry.getId()))
-                    .ifPresent(spell ->
-                        spellBook.updateAsync(spell)
-                            .thenAccept(entry -> {
-                                LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
-                                spellEntry.clearDiffMap();
-                            }));
+                    .thenCompose(spellBook::updateAsync)
+                    .thenAcceptAsync(entry -> {
+                        LOGGER.info("Aktualizace proběhla v pořádku, jdu vymazat mapu rozdílů.");
+                        spellEntry.clearDiffMap();
+                    }, ThreadPool.JAVAFX_EXECUTOR);
             } else {
                 insertSpell(spellEntry.getSpellBase());
             }
