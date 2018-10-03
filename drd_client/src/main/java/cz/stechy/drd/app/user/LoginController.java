@@ -69,7 +69,6 @@ public class LoginController extends BaseController implements Initializable {
     private void login() {
         userService.loginAsync(loginModel.login.getValue(), loginModel.password.getValue())
             .exceptionally(throwable -> {
-                LOGGER.info("Přihlášení se nezdařilo.");
                 showNotification(new Notification(loginFail));
                 loginModel.valid.set(false);
                 throw new RuntimeException(throwable);

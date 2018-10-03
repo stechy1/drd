@@ -57,7 +57,7 @@
       <SeparatorMenuItem />
       <MenuItem fx:id="menuLogin" onAction="#handleMenuLogin" text="%drd_main_menu_file_login">
         <graphic>
-          <ImageView>
+          <ImageView fx:id="loginImage">
             <Image requestedHeight="16" requestedWidth="16" url="@../../images/icon/login.png" />
           </ImageView>
         </graphic>

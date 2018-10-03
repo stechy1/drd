@@ -22,11 +22,11 @@ version 'alfa-0.1'
 
 apply plugin: 'javafx-gradle-plugin'
 
-compileJava.options.encoding = 'UTF-8'
-compileTestJava.options.encoding = 'UTF-8'
-
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
 
 repositories {
     jcenter()

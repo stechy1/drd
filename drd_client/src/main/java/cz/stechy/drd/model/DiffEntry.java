@@ -146,7 +146,7 @@ public class DiffEntry<T extends Row> {
 
         @Override
         public String toString() {
-            return "Left: " + leftValue + " right: " + rightValue;
+            return String.format("%s -> %s", leftValue, rightValue);
         }
     }
 
