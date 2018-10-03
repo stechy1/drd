@@ -102,9 +102,9 @@ public class ShopController2 extends BaseController implements Initializable {
             final Hero heroCopy = heroService.getHero().duplicate();
             heroCopy.getMoney().subtract(shoppingCart.totalPrice);
             heroService.updateAsync(heroCopy)
-                .thenAccept(hero ->
+                .thenCompose(hero ->
                     heroService.getInventoryService()
-                        .ifPresent(inventoryService ->
+                        .thenAccept(inventoryService ->
                             InventoryHelper.insertItemsToInventoryAsync(inventoryService, items)))
                 .thenAcceptAsync(aVoid -> {
                     try {

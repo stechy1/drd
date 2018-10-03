@@ -3,7 +3,6 @@ package cz.stechy.drd.service.hero;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.service.inventory.IInventoryService;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.collections.ObservableList;
@@ -63,7 +62,7 @@ public interface IHeroService {
      *
      * @return {@link IInventoryService} Servisu, která se stará o inventář zadaného hrdiny
      */
-    Optional<IInventoryService> getInventoryService();
+    CompletableFuture<IInventoryService> getInventoryService();
 
     /**
      * Vyresetuje aktuálně používaného hrdinu

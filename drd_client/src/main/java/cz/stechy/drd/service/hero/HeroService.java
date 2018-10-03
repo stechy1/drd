@@ -13,7 +13,6 @@ import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.model.inventory.InventoryHelper;
 import cz.stechy.drd.service.inventory.IInventoryService;
 import cz.stechy.drd.service.inventory.InventoryService;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -80,16 +79,18 @@ public class HeroService implements IHeroService {
     // endregion
 
     @Override
-    public synchronized Optional<IInventoryService> getInventoryService() {
+    public synchronized CompletableFuture<IInventoryService> getInventoryService() {
         if (getHero() == null) {
-            return Optional.empty();
+            throw new RuntimeException("Hero not defined.");
         }
 
-        if (inventoryService == null) {
-            inventoryService = new InventoryService(tableDefinitionsFactory, db, getHero());
-        }
+        return CompletableFuture.supplyAsync(() -> {
+            if (inventoryService == null) {
+                inventoryService = new InventoryService(tableDefinitionsFactory, db, getHero());
+            }
 
-        return Optional.of(inventoryService);
+            return inventoryService;
+        }, ThreadPool.COMMON_EXECUTOR);
     }
 
     @Override

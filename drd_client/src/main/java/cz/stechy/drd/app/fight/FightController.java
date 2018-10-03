@@ -1,6 +1,7 @@
 package cz.stechy.drd.app.fight;
 
 import cz.stechy.drd.R;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.app.fight.Battlefield.BattlefieldAction;
 import cz.stechy.drd.model.entity.hero.Hero;
 import cz.stechy.drd.service.hero.HeroService;
@@ -181,7 +182,7 @@ public class FightController extends BaseController implements Initializable {
         startNewDialog(R.Fxml.FIGHT_COMMENT, bundle);
 
         heroService.getInventoryService()
-            .ifPresent(inventoryService -> {
+            .thenAcceptAsync(inventoryService -> {
                 inventoryService.getInventory(InventoryService.EQUIP_INVENTORY_FILTER)
                     .ifPresent(inventory -> {
                         final IInventoryContentService equipContent = inventoryService.getInventoryContentService(inventory);
@@ -191,7 +192,7 @@ public class FightController extends BaseController implements Initializable {
                         battlefield.fight();
                         isFighting.setValue(true);
                     });
-            });
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     @FXML

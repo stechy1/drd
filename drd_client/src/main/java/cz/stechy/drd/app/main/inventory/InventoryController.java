@@ -2,6 +2,7 @@ package cz.stechy.drd.app.main.inventory;
 
 import com.google.inject.Inject;
 import cz.stechy.drd.R;
+import cz.stechy.drd.ThreadPool;
 import cz.stechy.drd.app.BackpackController;
 import cz.stechy.drd.app.InjectableChild;
 import cz.stechy.drd.app.main.MainScreen;
@@ -84,7 +85,7 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
         }
 
         heroService.getInventoryService()
-            .ifPresent(inventoryService ->
+            .thenAcceptAsync(inventoryService -> {
                 inventoryService.getInventory(InventoryService.MAIN_INVENTORY_FILTER)
                     .ifPresent(mainInventory -> {
                         mainItemContainer.setInventoryManager(inventoryService, mainInventory);
@@ -106,7 +107,8 @@ public class InventoryController implements Initializable, MainScreen, Injectabl
 //                                            futureEquipInventory.thenCompose(inventory ->
 //                                                equipItemContainer.setInventoryManager(inventoryService, inventory)),
 //                                        ThreadPool.JAVAFX_EXECUTOR);
-                            }));
+                    });
+            }, ThreadPool.JAVAFX_EXECUTOR);
     }
 
     private void itemClickHandler(ItemSlot itemSlot) {

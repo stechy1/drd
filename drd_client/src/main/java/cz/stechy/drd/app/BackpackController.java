@@ -144,9 +144,10 @@ public class BackpackController extends BaseController implements TooltipTransla
         setScreenSize(WIDTH, BackpackController.computeHeight(backpackSize));
 
         heroService.getInventoryService()
-            .ifPresent(inventoryService ->
+            .thenAcceptAsync(inventoryService -> {
                 inventoryService.getInventory(inventoryId).ifPresent(backpackInventory ->
-                    itemContainer.setInventoryManager(inventoryService, backpackInventory)));
+                    itemContainer.setInventoryManager(inventoryService, backpackInventory));
+            });
 //                    .thenCompose(backpackInventory ->
 //                        itemContainer.setInventoryManager(inventoryService, backpackInventory)));
 //            .exceptionally(throwable -> {
