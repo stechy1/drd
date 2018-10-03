@@ -35,7 +35,7 @@ repositories {
 
 jfx {
     verbose = true
-    mainClass = 'cz.stechy.drd.App'
+    mainClass = 'cz.stechy.drd.GuiceApp'
     vendor = 'Petr Štechmüller'
     additionalAppResources = 'src/main/resources'
     jfxMainAppJarName = "drd.jar"

@@ -1,7 +1,6 @@
 package cz.stechy.drd;
 
 import cz.stechy.drd.app.PreloaderController;
-import cz.stechy.drd.model.MyPreloaderNotification;
 import javafx.application.Preloader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,7 +8,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-public class AppPreloader extends Preloader {
+@SuppressWarnings("all")
+public class GuicePreloader extends Preloader {
 
     // region Constants
 
@@ -35,20 +35,21 @@ public class AppPreloader extends Preloader {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.initStyle(StageStyle.UNDECORATED);
-        stage.setAlwaysOnTop(true);
+        stage.setTitle("Dračí doupě - načítání...");
+//        stage.setAlwaysOnTop(true);
         stage.show();
     }
 
     @Override
-    public void handleApplicationNotification(PreloaderNotification info) {
-        if (info instanceof MyPreloaderNotification) {
-            final MyPreloaderNotification notification = (MyPreloaderNotification) info;
-            controller.updateProgress(notification.getProgress(), notification.getDescription());
-            return;
-        }
-
-        if (info instanceof MyClosePreloaderNotification) {
-            stage.hide();
-        }
+    public void handleProgressNotification(ProgressNotification pn) {
+        final double progress = pn.getProgress();
+        controller.updateProgress(pn.getProgress(), "");
     }
+
+//    @Override
+//    public void handleStateChangeNotification(StateChangeNotification stateChangeNotification) {
+//        if (stateChangeNotification.getType() == Type.BEFORE_START) {
+//            stage.hide();
+//        }
+//    }
 }

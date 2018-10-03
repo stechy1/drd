@@ -1,5 +1,7 @@
 package cz.stechy.drd;
 
+import com.google.inject.Inject;
+import cz.stechy.drd.annotations.ConfigFile;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -17,7 +19,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Třída reprezentuje nastavení aplikace
  */
-public final class AppSettings {
+public final class AppSettings implements IAppSettings {
 
     // region Constants
 
@@ -41,7 +43,8 @@ public final class AppSettings {
      *
      * @param propertiesFile {@link File} Soubor s konfigurací aplikace
      */
-    public AppSettings(File propertiesFile) {
+    @Inject
+    public AppSettings(@ConfigFile File propertiesFile) {
         this.propertiesFile = propertiesFile;
         try {
             properties.load(new FileInputStream(propertiesFile));
@@ -54,9 +57,7 @@ public final class AppSettings {
 
     // region Public methods
 
-    /**
-     * Uloží konfiguraci do souboru
-     */
+    @Override
     public void save() {
         try {
             properties.store(new FileOutputStream(propertiesFile), "");
@@ -65,16 +66,16 @@ public final class AppSettings {
         }
     }
 
+    @Override
     public void addListener(String propertyName, PropertyChangeListener listener) {
-        List<PropertyChangeListener> changeListeners = propertyListeners
-            .computeIfAbsent(propertyName, k -> new ArrayList<>());
+        List<PropertyChangeListener> changeListeners = propertyListeners.computeIfAbsent(propertyName, k -> new ArrayList<>());
 
         changeListeners.add(listener);
     }
 
+    @Override
     public void removeListener(String propertyName, PropertyChangeListener listener) {
-        final List<PropertyChangeListener> changeListeners = propertyListeners
-            .get(propertyName);
+        final List<PropertyChangeListener> changeListeners = propertyListeners.get(propertyName);
 
         if (changeListeners == null) {
             return;
@@ -94,6 +95,7 @@ public final class AppSettings {
      * @param key Klič záznamu
      * @return Hodnotu záznamu
      */
+    @Override
     public String getProperty(String key) {
         return properties.getProperty(key);
     }
@@ -106,6 +108,7 @@ public final class AppSettings {
      * @param defaultValue Výchozí hodnota, která se má vrátit, kdy záznam neexistuje
      * @return {@link String}
      */
+    @Override
     public String getProperty(String key, String defaultValue) {
         final String property = properties.getProperty(key, defaultValue);
         properties.setProperty(key, property);
@@ -118,6 +121,7 @@ public final class AppSettings {
      * @param key Klíč
      * @param value Hodnota
      */
+    @Override
     public void setProperty(String key, String value) {
         final String oldValue = properties.getProperty(key);
         properties.setProperty(key, value);

@@ -17,6 +17,8 @@ import static cz.stechy.drd.R.Database.Weaponmele.COLUMN_UPLOADED;
 import static cz.stechy.drd.R.Database.Weaponmele.COLUMN_WEIGHT;
 import static cz.stechy.drd.R.Database.Weaponmele.TABLE_NAME;
 
+import cz.stechy.drd.annotation.Table;
+import cz.stechy.drd.annotation.Table.Type;
 import cz.stechy.drd.db.base.BaseTableDefinitions;
 import cz.stechy.drd.model.item.MeleWeapon;
 import java.sql.ResultSet;
@@ -26,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@Table(type = Type.DEFINITION, clazz = MeleWeapon.class)
 public class MeleWeaponTableDefinitions extends BaseTableDefinitions<MeleWeapon> {
 
     // region Constants

@@ -62,6 +62,7 @@ public class AppModule extends AbstractModule {
         bind(File.class).annotatedWith(AppDirectory.class).toProvider(() -> applicationDirectory);
         bind(File.class).annotatedWith(ConfigFile.class).toProvider(() -> new File(applicationDirectory, CONFIG_FILE_NAME));
         bind(Database.class).toInstance(new SQLite(new File(applicationDirectory, DEFAULT_VALUE_DATABASE).toString(), 1));
+        bind(IAppSettings.class).to(AppSettings.class).asEagerSingleton();
 
         bind(ITableDefinitionsFactory.class).to(TableDefinitionsFactory.class).asEagerSingleton();
         bind(ITableWrapperFactory.class).to(TableWrapperFactory.class).asEagerSingleton();

@@ -242,7 +242,6 @@ public abstract class BaseOfflineTable<T extends Row> implements OfflineTable<T>
 
     @Override
     public CompletableFuture<ObservableList<T>> selectAllAsync(Object... params) {
-        LOGGER.trace("Provádím dotaz selectAll nad tabulkou: {}", getTable());
         if (records.isEmpty() && !selectAllCalled) {
             return db
                 .selectAsync(this::parseResultSet, getQuerySelectAll(), params)
@@ -337,4 +336,8 @@ public abstract class BaseOfflineTable<T extends Row> implements OfflineTable<T>
 
     // endregion
 
+    @Override
+    public String toString() {
+        return getTable();
+    }
 }

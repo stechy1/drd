@@ -36,4 +36,5 @@ public interface PreloaderNotifier {
      */
     void increaseProgress(int progress, String description);
 
+    void closePreloader();
 }

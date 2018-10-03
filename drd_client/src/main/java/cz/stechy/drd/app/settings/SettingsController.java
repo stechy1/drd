@@ -1,7 +1,7 @@
 package cz.stechy.drd.app.settings;
 
 import com.google.inject.Inject;
-import cz.stechy.drd.AppSettings;
+import cz.stechy.drd.IAppSettings;
 import cz.stechy.drd.R;
 import cz.stechy.screens.BaseController;
 import cz.stechy.screens.Bundle;
@@ -27,7 +27,7 @@ public class SettingsController extends BaseController implements Initializable 
 
     // endregion
 
-    private final AppSettings settings;
+    private final IAppSettings settings;
 
     private String title;
     private Config config = new Config();
@@ -37,7 +37,7 @@ public class SettingsController extends BaseController implements Initializable 
     // region Constructors
 
     @Inject
-    public SettingsController(AppSettings settings) {
+    public SettingsController(IAppSettings settings) {
         this.settings = settings;
     }
 

@@ -198,5 +198,10 @@ public class App extends Application {
                 }
             }
         }
+
+        @Override
+        public void closePreloader() {
+
+        }
     };
 }

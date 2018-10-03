@@ -30,12 +30,12 @@ public class InventoryOfflineTable extends BaseOfflineTable<Inventory> {
 
     @Override
     protected Inventory parseResultSet(ResultSet resultSet) throws SQLException {
-        return null;
+        return tableDefinitions.parseResultSet(resultSet);
     }
 
     @Override
-    protected List<Object> toParamList(Inventory item) {
-        return null;
+    protected List<Object> toParamList(Inventory inventory) {
+        return tableDefinitions.toParamList(inventory);
     }
 
     @Override
